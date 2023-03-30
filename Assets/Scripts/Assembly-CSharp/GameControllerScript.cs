@@ -18,6 +18,12 @@ public class GameControllerScript : MonoBehaviour
 		//base..ctor();
 	}
 
+	private void Awake()
+	{
+		debugActions = FindObjectOfType<DebugMenuActions>();
+		debugScreen = FindObjectOfType<DebugScreenSwitch>();
+	}
+
 	// Token: 0x06000964 RID: 2404 RVA: 0x00021AC4 File Offset: 0x0001FEC4
 	private void Start()
 	{
@@ -33,6 +39,8 @@ public class GameControllerScript : MonoBehaviour
 		this.UpdateNotebookCount(); //Update the notebook count
 		this.itemSelected = 0; //Set selection to item slot 0(the first item slot)
 		this.gameOverDelay = 0.5f;
+
+		debugScreen.DebugCloseMenu();
 	}
 
 	// Token: 0x06000965 RID: 2405 RVA: 0x00021B5C File Offset: 0x0001FF5C
@@ -146,6 +154,11 @@ public class GameControllerScript : MonoBehaviour
 		//	this.audioDevice.loop = true;
 		//	this.audioDevice.Play();
 		//}
+
+		if (Input.GetKeyDown(KeyCode.Tab))
+		{
+			DebugStuff();
+		}
 	}
 
 	// Token: 0x06000966 RID: 2406 RVA: 0x00021F8C File Offset: 0x0002038C
@@ -679,6 +692,18 @@ public class GameControllerScript : MonoBehaviour
 		}
 	}
 
+	private void DebugStuff()
+	{
+		if (debugScreen.isDebugMenuActive == true)
+		{
+			PauseGame();
+		}
+		else if (debugScreen.isDebugMenuActive == false)
+		{
+			UnpauseGame();
+		}
+	}
+
 	
 
 	// Token: 0x040005F7 RID: 1527
@@ -913,4 +938,6 @@ public class GameControllerScript : MonoBehaviour
 	public PlaytimeScript playtimeScript;
 	public FirstPrizeScript firstPrizeScript;
 	[SerializeField] private MathGameScript mathScript;
+	[SerializeField] private DebugMenuActions debugActions;
+	[SerializeField] private DebugScreenSwitch debugScreen;
 }

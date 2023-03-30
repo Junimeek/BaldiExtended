@@ -9,6 +9,7 @@ public class LoadingManager : MonoBehaviour
     private static LoadingManager instance;
     public string curLevel;
     public bool isDebugActive;
+    public bool allowGlobalStateUnload;
 
     [SerializeField] TMP_Text boot_DebugText;
     [SerializeField] GameObject debugCanvas;
@@ -32,8 +33,12 @@ public class LoadingManager : MonoBehaviour
     {
         if (isDebugActive)
         {
-            SceneManager.UnloadScene("GlobalState");
             ClearDebugText(7f);
+
+            if (allowGlobalStateUnload)
+            {
+                SceneManager.UnloadScene("GlobalState");
+            }
         }
         else
         {
