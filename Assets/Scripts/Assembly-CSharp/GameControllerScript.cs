@@ -40,7 +40,7 @@ public class GameControllerScript : MonoBehaviour
 		this.itemSelected = 0; //Set selection to item slot 0(the first item slot)
 		this.gameOverDelay = 0.5f;
 
-		debugScreen.DebugCloseMenu();
+		//debugScreen.DebugCloseMenu();
 	}
 
 	// Token: 0x06000965 RID: 2405 RVA: 0x00021B5C File Offset: 0x0001FF5C
@@ -110,6 +110,7 @@ public class GameControllerScript : MonoBehaviour
 			}
 		}
 
+		/*
 		if (this.player.stamina < 0f & !this.warning.activeSelf)
 		{
 			this.warning.SetActive(true); //Set the warning text to be visible
@@ -118,6 +119,19 @@ public class GameControllerScript : MonoBehaviour
 		{
 			this.warning.SetActive(false); //Set the warning text to be invisible
 		}
+		*/
+
+		if (this.player.stamina > 0f)
+		{
+			this.staminaPercentText.text = this.player.stamina.ToString("0") + "%";
+			this.staminaPercentText.color = Color.black;
+		}
+		else if (this.player.stamina <= 0f)
+		{
+			this.staminaPercentText.text = "YOU NEED REST!";
+			this.staminaPercentText.color = Color.red;
+		}
+
 		if (this.player.gameOver)
 		{
 			if (this.mode == "endless" && this.notebooks > PlayerPrefs.GetInt("HighBooks") && !this.highScoreText.activeSelf)
@@ -855,6 +869,7 @@ public class GameControllerScript : MonoBehaviour
 
 	// Token: 0x04000627 RID: 1575
 	public GameObject warning;
+	public TMP_Text staminaPercentText;
 
 	// Token: 0x04000628 RID: 1576
 	public GameObject reticle;

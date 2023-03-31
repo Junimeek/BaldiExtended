@@ -4,6 +4,7 @@ using UnityEngine;
 // Token: 0x020000B9 RID: 185
 public class DoorScript : MonoBehaviour
 {
+
 	// Token: 0x0600093A RID: 2362 RVA: 0x0002114F File Offset: 0x0001F54F
 	private void Start()
 	{
