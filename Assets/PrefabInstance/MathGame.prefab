@@ -1775,6 +1775,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d80159bd24c92f849af9e57ecaaba4f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mathMusicDelay: 0
   gc: {fileID: 0}
   baldiScript: {fileID: 0}
   playerPosition: {x: 0, y: 0, z: 0}
@@ -1791,25 +1792,25 @@ MonoBehaviour:
   questionText3: {fileID: 6465245599051698001}
   baldiFeed: {fileID: 95577681448161251}
   baldiFeedTransform: {fileID: 224989041148496781}
-  bal_plus: {fileID: 8300000, guid: 4256e9014ca457544a8d4add81035c04, type: 3}
-  bal_minus: {fileID: 8300000, guid: 3c304cda423f45742a6ba62a95559660, type: 3}
-  bal_times: {fileID: 8300000, guid: 8ebda5a1d128c10438f26774e94b04c8, type: 3}
-  bal_divided: {fileID: 8300000, guid: bc97c92d72daa9e488108d4f2082b511, type: 3}
-  bal_equals: {fileID: 8300000, guid: b31ebb0fc77ac05448b9e76637d4bbcb, type: 3}
+  bal_plus: {fileID: 8300000, guid: 168460b5b97b7734aa6a68895e512d0b, type: 3}
+  bal_minus: {fileID: 8300000, guid: 5e9b186f3c880294d916ac00b8adbdb0, type: 3}
+  bal_times: {fileID: 8300000, guid: c258c93cab61fa94cb404c472323d317, type: 3}
+  bal_divided: {fileID: 8300000, guid: 43d5ad5c3d81aa646a0259983765f887, type: 3}
+  bal_equals: {fileID: 8300000, guid: 82aae7bb80c75c341b74ea24755e60ac, type: 3}
   bal_howto: {fileID: 8300000, guid: f4b92ba06ae550e48a0ce9b0d7befbca, type: 3}
   bal_intro: {fileID: 8300000, guid: 97197e75b0d13b740a582f1c2d4858d9, type: 3}
   bal_screech: {fileID: 8300000, guid: 136776f62eb733a46b4ad3d162612aac, type: 3}
   bal_numbers:
-  - {fileID: 8300000, guid: b2887fc8f9f2aa847b7637b116893ee7, type: 3}
-  - {fileID: 8300000, guid: 8dcbcee5b8898364c8a8db27ce0e8151, type: 3}
-  - {fileID: 8300000, guid: 53f5dc9758c9cc54d83bc05c90db058b, type: 3}
-  - {fileID: 8300000, guid: bec8d2b762e2c4842b4400f93b386dc4, type: 3}
-  - {fileID: 8300000, guid: 4222035db6569a94fa4de431a84fae53, type: 3}
-  - {fileID: 8300000, guid: be5a663a543415b4695aeefacc034dbe, type: 3}
-  - {fileID: 8300000, guid: 6734f2d82db31ac41893bb32aaea7cb2, type: 3}
-  - {fileID: 8300000, guid: 439e7a548089ecd4280c3c040d4c62af, type: 3}
-  - {fileID: 8300000, guid: d0b4eafa2e1b8364882495e84041533b, type: 3}
-  - {fileID: 8300000, guid: 47b05c7fefad8d243b01c717fb0cf3b6, type: 3}
+  - {fileID: 8300000, guid: 4b604e37bc94ab746b19d7fd63f8dc6d, type: 3}
+  - {fileID: 8300000, guid: 352c8f9e9af638248a5f02aef4fb5157, type: 3}
+  - {fileID: 8300000, guid: fc4817f89fd161e419a309a2795791e0, type: 3}
+  - {fileID: 8300000, guid: 1e213b5b158ab0146abdfc4ab331b0ee, type: 3}
+  - {fileID: 8300000, guid: 4a41e3ef93865c0488ff68ecd062b0eb, type: 3}
+  - {fileID: 8300000, guid: af4012159d1f88840aaf643d888e1390, type: 3}
+  - {fileID: 8300000, guid: 6b468824403ada246b9713a1659792ae, type: 3}
+  - {fileID: 8300000, guid: e4465093ece2eb64d92dda13fb791652, type: 3}
+  - {fileID: 8300000, guid: d88435edff399934390453fe9819cfa8, type: 3}
+  - {fileID: 8300000, guid: 5523922e2ae25e047a007e1da92a38e9, type: 3}
   bal_praises:
   - {fileID: 8300000, guid: 3e459ab200c7b6d4ca71548f9ddd3bfd, type: 3}
   - {fileID: 8300000, guid: ed49d0d858747214c965840d586b406a, type: 3}
@@ -1818,9 +1819,9 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 07d9e3b8994df65408b5ac1de4e22efd, type: 3}
   - {fileID: 8300000, guid: d5beff9b4de80e0478fb96e13843a693, type: 3}
   bal_problems:
-  - {fileID: 8300000, guid: d09167bad0fb5b546b0bf4ee5444b198, type: 3}
-  - {fileID: 8300000, guid: 1a192f1c6ef24fa4eb28afa9fde45a06, type: 3}
-  - {fileID: 8300000, guid: 5dd789d4f0b9e5a49b1e17d2f0effae9, type: 3}
+  - {fileID: 8300000, guid: 625133ce2d083ef4fa81f24662773433, type: 3}
+  - {fileID: 8300000, guid: 4ddf52b9d9fb35f41939ffb24658e4a0, type: 3}
+  - {fileID: 8300000, guid: dc35e3c10b2c71a4996d521f66838e05, type: 3}
   firstButton: {fileID: 114077775041605245}
   problem: 0
   baldiAudio: {fileID: 82212521532976993}
@@ -1839,7 +1840,8 @@ AudioSource:
   m_GameObject: {fileID: 1621128418378796}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: -454355258116272183, guid: a6df6867348b4bc40a40377c3b9f8b10,
+    type: 2}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 1
   m_Volume: 1
@@ -4088,7 +4090,8 @@ AudioSource:
   m_GameObject: {fileID: 2236366042720003853}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 2452782101882124403, guid: a6df6867348b4bc40a40377c3b9f8b10,
+    type: 2}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 1
   m_Volume: 1
@@ -4355,7 +4358,8 @@ AudioSource:
   m_GameObject: {fileID: 2459382928282556734}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 2452782101882124403, guid: a6df6867348b4bc40a40377c3b9f8b10,
+    type: 2}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 1
   m_Volume: 1
@@ -4799,7 +4803,8 @@ AudioSource:
   m_GameObject: {fileID: 4303726898934111967}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 2452782101882124403, guid: a6df6867348b4bc40a40377c3b9f8b10,
+    type: 2}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 1
   m_Volume: 1

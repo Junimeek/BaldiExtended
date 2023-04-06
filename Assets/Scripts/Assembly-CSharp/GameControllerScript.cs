@@ -142,6 +142,12 @@ public class GameControllerScript : MonoBehaviour
 			this.gameOverDelay -= Time.unscaledDeltaTime * 0.5f;
 			this.camera.farClipPlane = this.gameOverDelay * 400f; //Set camera farClip 
 			this.audioDevice.PlayOneShot(this.aud_buzz);
+
+			/*
+			int randomScare = UnityEngine.Random.Range(0, this.baldiJumpscareSounds.Length - 1);
+			this.audioDevice.PlayOneShot(this.baldiJumpscareSounds[randomScare]);
+			*/
+
 			if (PlayerPrefs.GetInt("Rumble") == 1)
 			{
 
@@ -327,6 +333,7 @@ public class GameControllerScript : MonoBehaviour
 		if (this.spoopMode && notebooks >= 2) // my music stuff
 		{
 			MusicPlayer(0,0);
+			audioManager.SetVolume(0);
 			
 			if (this.notebooks == 2) MusicPlayer(1,2);
 			else if (this.notebooks == 3) MusicPlayer(1,3);
@@ -687,8 +694,15 @@ public class GameControllerScript : MonoBehaviour
 		}
 		else if (songType == 2) // math game
 		{
-			if (SongId == 1) this.learnMusic.Play();
-			else if (SongId == 2) this.spoopLearn.Play();
+			if (SongId == 1)
+			{
+				this.learnMusic.Play();
+			}
+			else if (SongId == 2)
+			{
+				this.spoopLearn.Play();
+				audioManager.SetVolume(1);
+			}
 		}
 	}
 
@@ -918,6 +932,7 @@ public class GameControllerScript : MonoBehaviour
 	public AudioClip aud_MachineRev;
 	public AudioClip aud_MachineLoop;
 	public AudioClip aud_Switch;
+	public AudioClip[] baldiJumpscareSounds;
 
 
 	[Header("Music")]
@@ -955,4 +970,5 @@ public class GameControllerScript : MonoBehaviour
 	[SerializeField] private MathGameScript mathScript;
 	[SerializeField] private DebugMenuActions debugActions;
 	[SerializeField] private DebugScreenSwitch debugScreen;
+	[SerializeField] private AudioManager audioManager;
 }
