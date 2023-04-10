@@ -6,7 +6,7 @@ If you want to download the source code, this project uses [Unity 2021.3.13f1](h
 
 ## Credits
 - The original game and assets are from mystman12 (aka, [Basically, Games](https://basically-games.itch.io/))
-- [Junimeek](https://github.com/Junimeek), [Natasha](https://github.com/Natasha119): Programming, new maps
+- [Junimeek](https://github.com/Junimeek): Programming, new maps
 
 This project uses a decompile by Jumpman25 and [porkypowers](https://porkypowers.itch.io/) on itch.io, found here:\
 https://porkypowers.itch.io/baldi-open-source-classic-party

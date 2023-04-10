@@ -7,7 +7,7 @@ using TMPro;
 public class OptionsManager : MonoBehaviour
 {
 	// Token: 0x06000061 RID: 97 RVA: 0x000037B4 File Offset: 0x00001BB4
-	private void Start()
+	private void Awake()
 	{
 		if (PlayerPrefs.HasKey("OptionsSet"))
 		{
@@ -36,10 +36,20 @@ public class OptionsManager : MonoBehaviour
 			{
 				this.instantReset.isOn = false;
 			}
+			if (PlayerPrefs.GetInt("AdditionalMusic") == 1)
+			{
+				this.additionalMusic.isOn = true;
+			}
+			else
+			{
+				this.additionalMusic.isOn = false;
+			}
 		}
 		else
 		{
 			PlayerPrefs.SetInt("OptionsSet", 1);
+			PlayerPrefs.SetFloat("MouseSensitivity", 2f);
+			PlayerPrefs.SetInt("AdditionalMusic", 1);
 		}
 	}
 
@@ -71,6 +81,14 @@ public class OptionsManager : MonoBehaviour
 		{
 			PlayerPrefs.SetInt("InstantReset", 0);
 		}
+		if (this.additionalMusic.isOn)
+		{
+			PlayerPrefs.SetInt("AdditionalMusic", 1);
+		}
+		else
+		{
+			PlayerPrefs.SetInt("AdditionalMusic", 0);
+		}
 
 		this.sensitivityPercent = (int)(slider.value*10);
 		this.text.text = sensitivityPercent.ToString() + "%";
@@ -86,6 +104,7 @@ public class OptionsManager : MonoBehaviour
 	public Toggle analog;
 
 	public Toggle instantReset;
+	public Toggle additionalMusic;
 
 	[SerializeField] private float sensitivityPercent;
 	[SerializeField] private TMP_Text text;
