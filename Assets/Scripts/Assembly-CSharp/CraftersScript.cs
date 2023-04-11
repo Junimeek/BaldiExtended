@@ -59,7 +59,7 @@ public class CraftersScript : MonoBehaviour
 	// Token: 0x060009B0 RID: 2480 RVA: 0x00024BAC File Offset: 0x00022FAC
 	private void FixedUpdate()
 	{
-		if (this.gc.notebooks >= 7) // If the player has more then 7 notebooks
+		if (this.gc.notebooks >= this.gc.daFinalBookCount) // If the player has more then 7 notebooks
 		{
 			Vector3 direction = this.player.position - base.transform.position;
 			RaycastHit raycastHit;

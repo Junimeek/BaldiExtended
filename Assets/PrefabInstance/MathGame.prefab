@@ -1797,8 +1797,8 @@ MonoBehaviour:
   bal_times: {fileID: 8300000, guid: c258c93cab61fa94cb404c472323d317, type: 3}
   bal_divided: {fileID: 8300000, guid: 43d5ad5c3d81aa646a0259983765f887, type: 3}
   bal_equals: {fileID: 8300000, guid: 82aae7bb80c75c341b74ea24755e60ac, type: 3}
-  bal_howto: {fileID: 8300000, guid: f4b92ba06ae550e48a0ce9b0d7befbca, type: 3}
-  bal_intro: {fileID: 8300000, guid: 97197e75b0d13b740a582f1c2d4858d9, type: 3}
+  bal_howto: {fileID: 8300000, guid: bc12805ed19b3f64a8483e85394dac4f, type: 3}
+  bal_intro: {fileID: 8300000, guid: b22c32650f49934418a238924f9c0eee, type: 3}
   bal_screech: {fileID: 8300000, guid: 136776f62eb733a46b4ad3d162612aac, type: 3}
   bal_numbers:
   - {fileID: 8300000, guid: 4b604e37bc94ab746b19d7fd63f8dc6d, type: 3}

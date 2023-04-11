@@ -48,8 +48,6 @@ public class OptionsManager : MonoBehaviour
 		else
 		{
 			PlayerPrefs.SetInt("OptionsSet", 1);
-			PlayerPrefs.SetFloat("MouseSensitivity", 2f);
-			PlayerPrefs.SetInt("AdditionalMusic", 1);
 		}
 	}
 

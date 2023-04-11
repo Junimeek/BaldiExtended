@@ -306,16 +306,32 @@ public class GameControllerScript : MonoBehaviour
 			MusicPlayer(0,0); //Start playing the learn music
 			MusicPlayer(2,1);
 		}
-		else if (this.spoopMode && notebooks > 2)
+		else if (this.spoopMode)
 		{
-			MusicPlayer(0,0);
-			MusicPlayer(2,2);
+			if (PlayerPrefs.GetInt("AdditionalMusic") == 1)
+			{
+				if (notebooks > 2)
+				{
+					audioManager.SetVolume(1);
+					MusicPlayer(0,0);
+					MusicPlayer(2,2);
+				}
+				else if (notebooks == 1)
+				{
+					audioManager.SetVolume(0);
+				}
+			}
+			else
+			{
+				audioManager.SetVolume(0);
+			}
 		}
 	}
 
 	// Token: 0x06000971 RID: 2417 RVA: 0x00022278 File Offset: 0x00020678
 	public void DeactivateLearningGame(GameObject subject)
 	{
+		audioManager.SetVolume(0);
 		this.camera.cullingMask = this.cullingMask; //Sets the cullingMask to Everything
 		this.learningActive = false;
 		UnityEngine.Object.Destroy(subject);
@@ -362,7 +378,8 @@ public class GameControllerScript : MonoBehaviour
 		{
 			this.spoopLearn.Stop();
 			this.audioDevice.PlayOneShot(this.aud_AllNotebooks, 0.8f);
-			this.escapeMusic.Play();
+			
+			if (PlayerPrefs.GetInt("AdditionalMusic") == 1) this.escapeMusic.Play();
 		}
 		else if (this.notebooks > 12 && this.mode == "endless")
 		{
@@ -679,18 +696,25 @@ public class GameControllerScript : MonoBehaviour
 		}
 		else if (songType == 1 && !this.finaleMode) // schoolhouse
 		{
-			if (SongId == 1) this.schoolMusic.Play();
-			else if (SongId == 2) this.notebook2.Play();
-			else if (SongId == 3) this.notebook3.Play();
-			else if (SongId == 4) this.notebook4.Play();
-			else if (SongId == 5) this.notebook5.Play();
-			else if (SongId == 6) this.notebook6.Play();
-			else if (SongId == 7) this.notebook7.Play();
-			else if (SongId == 8) this.notebook8.Play();
-			else if (SongId == 9) this.notebook9.Play();
-			else if (SongId == 10) this.notebook10.Play();
-			else if (SongId == 11) this.notebook11.Play();
-			else if (SongId == 12) this.notebook12.Play();
+			if (SongId == 1)
+			{
+				this.schoolMusic.Play();
+			}
+			else if (SongId >= 2 && PlayerPrefs.GetInt("AdditionalMusic") == 1)
+			{
+				if (SongId == 2) this.notebook2.Play();
+				else if (SongId == 3) this.notebook3.Play();
+				else if (SongId == 4) this.notebook4.Play();
+				else if (SongId == 5) this.notebook5.Play();
+				else if (SongId == 6) this.notebook6.Play();
+				else if (SongId == 7) this.notebook7.Play();
+				else if (SongId == 8) this.notebook8.Play();
+				else if (SongId == 9) this.notebook9.Play();
+				else if (SongId == 10) this.notebook10.Play();
+				else if (SongId == 11) this.notebook11.Play();
+				else if (SongId == 12) this.notebook12.Play();
+			}
+			
 		}
 		else if (songType == 2) // math game
 		{
@@ -700,8 +724,7 @@ public class GameControllerScript : MonoBehaviour
 			}
 			else if (SongId == 2)
 			{
-				this.spoopLearn.Play();
-				audioManager.SetVolume(1);
+				if (PlayerPrefs.GetInt("AdditionalMusic") == 1) this.spoopLearn.Play();
 			}
 		}
 	}
