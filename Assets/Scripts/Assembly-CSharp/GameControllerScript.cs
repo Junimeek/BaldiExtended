@@ -559,6 +559,10 @@ public class GameControllerScript : MonoBehaviour
 				base.StartCoroutine(this.BootAnimation());
 				this.ResetItem();
 			}
+			else if (this.item[this.itemSelected] == 11)
+			{
+				this.player.ActivateSpeedShoes();
+			}
 		}
 	}
 
@@ -877,7 +881,8 @@ public class GameControllerScript : MonoBehaviour
 		"Alarm Clock",
 		"WD-NoSquee (Door Type)",
 		"Safety Scissors",
-		"Big Ol' Boots"
+		"Big Ol' Boots",
+		"Speed Shoes"
 	};
 
 	// Token: 0x0400061F RID: 1567
@@ -913,29 +918,10 @@ public class GameControllerScript : MonoBehaviour
 
 	// Token: 0x04000629 RID: 1577
 	public RectTransform itemSelect;
-
-	// Token: 0x0400062A RID: 1578
 	private int[] itemSelectOffset;
-
-	// Token: 0x0400062B RID: 1579
 	private bool gamePaused;
-
-	// Token: 0x0400062C RID: 1580
 	public bool learningActive;
-
-	// Token: 0x0400062D RID: 1581
 	private float gameOverDelay;
-
-	// Token: 0x0400062E RID: 1582
-	
-
-	// Token: 0x04000638 RID: 1592
-	
-
-	// Token: 0x04000639 RID: 1593
-	
-
-	// Token: 0x0400063A RID: 1594
 	//private Player playerInput;
 	
 	

@@ -21,6 +21,9 @@ public class PlayerScript : MonoBehaviour
 		this.principalBugFixer = 1;
 		this.flipaturn = 1f;
 		this.isInfiniteStamina = false;
+		this.isSpeedShoes = false;
+		speedSlider.gameObject.SetActive(false);
+		speedText.SetActive(false);
 	}
 
 	// Token: 0x060009D4 RID: 2516 RVA: 0x00025D04 File Offset: 0x00024104
@@ -73,7 +76,7 @@ public class PlayerScript : MonoBehaviour
 			{
 				this.playerSpeed = this.runSpeed;
 				this.sensitivity = 1f;
-				if (this.cc.velocity.magnitude > 0.1f & !this.hugging & !this.sweeping)
+				if (this.cc.velocity.magnitude > 0.1f & !this.hugging & !this.sweeping && !this.isInfiniteStamina)
 				{
 					this.ResetGuilt("running", 0.1f);
 				}
@@ -128,6 +131,21 @@ public class PlayerScript : MonoBehaviour
 	{
 		if (this.cc.velocity.magnitude > 0.1f)
 		{
+			if (this.isSpeedShoes)
+			{
+				speedSlider.value -= this.shoeRate * Time.deltaTime;
+				speedSlider.gameObject.SetActive(true);
+				speedText.SetActive(true);
+
+				if (speedSlider.value <= 0f && this.isSpeedShoes)
+				{
+					speedSlider.value = -5f;
+					speedSlider.gameObject.SetActive(false);
+					speedText.SetActive(false);
+					this.isSpeedShoes = false;
+				}
+			}
+
 			if (Input.GetButton("Run") & this.stamina > 0f && !this.isInfiniteStamina)
 			{
 				this.stamina -= this.staminaRate * Time.deltaTime;
@@ -268,6 +286,11 @@ public class PlayerScript : MonoBehaviour
 		yield break;
 	}
 
+	public void ActivateSpeedShoes()
+	{
+		this.isSpeedShoes = true;
+	}
+
 	// Token: 0x040006E9 RID: 1769
 	public GameControllerScript gc;
 
@@ -398,4 +421,8 @@ public class PlayerScript : MonoBehaviour
 	public Canvas mobile2;
 
 	[SerializeField] bool isInfiniteStamina;
+	[SerializeField] bool isSpeedShoes;
+	public Slider speedSlider;
+	public GameObject speedText;
+	[SerializeField] private float shoeRate;
 }

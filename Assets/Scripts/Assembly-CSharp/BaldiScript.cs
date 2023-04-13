@@ -21,6 +21,11 @@ public class BaldiScript : MonoBehaviour
 		{
 			this.rumble = true;
 		}
+
+		float speedFactor = (this.gc.daFinalBookCount - 1);
+		float bookSquare = (speedFactor * speedFactor);
+		Debug.Log(bookSquare);
+		baldiSpeedScale = MathF.Sqrt(15.2f / (bookSquare));
 	}
 
 	// Token: 0x060009A4 RID: 2468 RVA: 0x000245C4 File Offset: 0x000229C4
@@ -141,8 +146,8 @@ public class BaldiScript : MonoBehaviour
 		{
 			this.baldiAnger = 0.5f;
 		}
-		this.baldiWait = 3f;
-		//this.baldiWait = -3f * this.baldiAnger / (this.baldiAnger + 2f / this.baldiSpeedScale) + 3f; - Some formula I don't understand.
+		//this.baldiWait = 3f;
+		this.baldiWait = -3f * this.baldiAnger / (this.baldiAnger + 2f / this.baldiSpeedScale) + 3f; // Some formula I don't understand.
 	}
 
 	// Token: 0x060009AA RID: 2474 RVA: 0x00024992 File Offset: 0x00022D92
