@@ -562,6 +562,7 @@ public class GameControllerScript : MonoBehaviour
 			else if (this.item[this.itemSelected] == 11)
 			{
 				this.player.ActivateSpeedShoes();
+				this.ResetItem();
 			}
 		}
 	}
@@ -882,7 +883,7 @@ public class GameControllerScript : MonoBehaviour
 		"WD-NoSquee (Door Type)",
 		"Safety Scissors",
 		"Big Ol' Boots",
-		"Speed Shoes"
+		"Speedy Sneakers"
 	};
 
 	// Token: 0x0400061F RID: 1567

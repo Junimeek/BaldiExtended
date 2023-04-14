@@ -133,9 +133,18 @@ public class PlayerScript : MonoBehaviour
 		{
 			if (this.isSpeedShoes)
 			{
-				speedSlider.value -= this.shoeRate * Time.deltaTime;
-				speedSlider.gameObject.SetActive(true);
-				speedText.SetActive(true);
+				this.runSpeed = 40f;
+				this.walkSpeed = 20f;
+				this.slowSpeed = 10f;
+
+				if (!Input.GetButton("Run"))
+				{
+					speedSlider.value -= this.shoeRate * Time.deltaTime;
+				}
+				else if (Input.GetButton("Run"))
+				{
+					speedSlider.value -= (this.shoeRate * 2) * Time.deltaTime;
+				}
 
 				if (speedSlider.value <= 0f && this.isSpeedShoes)
 				{
@@ -144,6 +153,12 @@ public class PlayerScript : MonoBehaviour
 					speedText.SetActive(false);
 					this.isSpeedShoes = false;
 				}
+			}
+			else if (!this.isSpeedShoes)
+			{
+				this.runSpeed = 20f;
+				this.walkSpeed = 10f;
+				this.slowSpeed = 5f;
 			}
 
 			if (Input.GetButton("Run") & this.stamina > 0f && !this.isInfiniteStamina)
@@ -289,6 +304,9 @@ public class PlayerScript : MonoBehaviour
 	public void ActivateSpeedShoes()
 	{
 		this.isSpeedShoes = true;
+		this.speedText.SetActive(true);
+		this.speedSlider.gameObject.SetActive(true);
+		this.speedSlider.value = 100f;
 	}
 
 	// Token: 0x040006E9 RID: 1769
