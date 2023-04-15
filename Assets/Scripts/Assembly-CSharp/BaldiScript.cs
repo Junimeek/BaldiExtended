@@ -168,6 +168,11 @@ public class BaldiScript : MonoBehaviour
 		{
 			this.agent.SetDestination(soundLocation); //Go to that sound
 			this.currentPriority = priority; //Set the current priority to the priority
+			this.baldicator.BaldicatorStateSwitch("Pursuit");
+		}
+		else if (!this.antiHearing && priority < this.currentPriority)
+		{
+			this.baldicator.BaldicatorStateSwitch("Ignore");
 		}
 	}
 
@@ -267,5 +272,6 @@ public class BaldiScript : MonoBehaviour
 	private NavMeshAgent agent;
 
 	private GameControllerScript gc;
+	public Baldicator baldicator;
 
 }

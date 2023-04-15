@@ -11,9 +11,12 @@ public class GameControllerScript : MonoBehaviour
 	// Token: 0x06000963 RID: 2403 RVA: 0x00021A00 File Offset: 0x0001FE00
 	public GameControllerScript()
 	{
-		int[] array = new int[3];
-		array[0] = -80;
-		array[1] = -40;
+		int[] array = new int[5];
+		array[0] = 109;
+		array[1] = 149;
+		array[2] = 189;
+		array[3] = 229;
+		array[4] = 269;
 		this.itemSelectOffset = array;
 		//base..ctor();
 	}
@@ -98,6 +101,16 @@ public class GameControllerScript : MonoBehaviour
 				else if (Input.GetKeyDown(KeyCode.Alpha3))
 				{
 					this.itemSelected = 2;
+					this.UpdateItemSelection();
+				}
+				else if (Input.GetKeyDown(KeyCode.Alpha4))
+				{
+					this.itemSelected = 3;
+					this.UpdateItemSelection();
+				}
+				else if (Input.GetKeyDown(KeyCode.Alpha5))
+				{
+					this.itemSelected = 4;
 					this.UpdateItemSelection();
 				}
 			}
@@ -392,11 +405,11 @@ public class GameControllerScript : MonoBehaviour
 	private void IncreaseItemSelection()
 	{
 		this.itemSelected++;
-		if (this.itemSelected > 2)
+		if (this.itemSelected > 4)
 		{
 			this.itemSelected = 0;
 		}
-		this.itemSelect.anchoredPosition = new Vector3((float)this.itemSelectOffset[this.itemSelected], 0f, 0f); //Moves the item selector background(the red rectangle)
+		this.itemSelect.anchoredPosition = new Vector3((float)this.itemSelectOffset[this.itemSelected], 128f, 0f); //Moves the item selector background(the red rectangle)
 		this.UpdateItemName();
 	}
 
@@ -406,16 +419,16 @@ public class GameControllerScript : MonoBehaviour
 		this.itemSelected--;
 		if (this.itemSelected < 0)
 		{
-			this.itemSelected = 2;
+			this.itemSelected = 4;
 		}
-		this.itemSelect.anchoredPosition = new Vector3((float)this.itemSelectOffset[this.itemSelected], 0f, 0f); //Moves the item selector background(the red rectangle)
+		this.itemSelect.anchoredPosition = new Vector3((float)this.itemSelectOffset[this.itemSelected], 128f, 0f); //Moves the item selector background(the red rectangle)
 		this.UpdateItemName();
 	}
 
 	// Token: 0x06000974 RID: 2420 RVA: 0x00022425 File Offset: 0x00020825
 	private void UpdateItemSelection()
 	{
-		this.itemSelect.anchoredPosition = new Vector3((float)this.itemSelectOffset[this.itemSelected], 0f, 0f); //Moves the item selector background(the red rectangle)
+		this.itemSelect.anchoredPosition = new Vector3((float)this.itemSelectOffset[this.itemSelected], 128f, 0f); //Moves the item selector background(the red rectangle)
 		this.UpdateItemName();
 	}
 
@@ -436,6 +449,16 @@ public class GameControllerScript : MonoBehaviour
 		{
 			this.item[2] = item_ID; //Set the item slot to the Item_ID provided
             this.itemSlot[2].texture = this.itemTextures[item_ID]; //Set the item slot's texture to a texture in a list of textures based on the Item_ID
+        }
+		else if (this.item[3] == 0)
+		{
+			this.item[3] = item_ID;
+            this.itemSlot[3].texture = this.itemTextures[item_ID];
+        }
+		else if (this.item[4] == 0)
+		{
+			this.item[4] = item_ID;
+            this.itemSlot[4].texture = this.itemTextures[item_ID];
         }
 		else //This one overwrites the currently selected slot when your inventory is full
 		{
@@ -864,10 +887,10 @@ public class GameControllerScript : MonoBehaviour
 	public int itemSelected;
 
 	// Token: 0x0400061C RID: 1564
-	public int[] item = new int[3];
+	public int[] item = new int[5];
 
 	// Token: 0x0400061D RID: 1565
-	public RawImage[] itemSlot = new RawImage[3];
+	public RawImage[] itemSlot = new RawImage[5];
 
 	// Token: 0x0400061E RID: 1566
 	private string[] itemNames = new string[]
