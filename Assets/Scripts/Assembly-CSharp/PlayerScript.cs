@@ -24,6 +24,7 @@ public class PlayerScript : MonoBehaviour
 		this.isSpeedShoes = false;
 		speedSlider.gameObject.SetActive(false);
 		speedText.SetActive(false);
+		isSecret = false;
 	}
 
 	// Token: 0x060009D4 RID: 2516 RVA: 0x00025D04 File Offset: 0x00024104
@@ -190,6 +191,7 @@ public class PlayerScript : MonoBehaviour
 		{
 			this.ActivateJumpRope();
 		}
+		
 
 		if (other.transform.name == "Gym Trigger")
 		{
@@ -443,4 +445,5 @@ public class PlayerScript : MonoBehaviour
 	public Slider speedSlider;
 	public GameObject speedText;
 	[SerializeField] private float shoeRate;
+	public bool isSecret;
 }

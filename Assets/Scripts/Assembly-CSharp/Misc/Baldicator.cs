@@ -4,54 +4,121 @@ using UnityEngine;
 
 public class Baldicator : MonoBehaviour
 {
-    void Start()
+    private void Start()
     {
-        animator.SetTrigger("None");
+        allowSightTrigger = true;
+        ChangeAnimState(none);
     }
 
-    public void BaldicatorStateSwitch(string state)
+    private void ChangeAnimState(string newState)
     {
-        StartCoroutine(Attention(state));
+        
+        if (curState == newState)
+        {
+            if (curState == "Pursuit" || curState == "Ignore") return;
+        }
+        
+
+        animator.Play(newState);
+        curState = newState;
+    }
+
+    public void ChangeBaldicatorState(string state)
+    {
+        if (state == "Pursuit" || state == "Ignore")
+        {
+            attentionRem = -1f;
+            decideRem = -1f;
+            sightRem = -1f;
+            StopAllCoroutines();
+
+            StartCoroutine(Attention(state));
+        }
+        else if (state == "Sight" && allowSightTrigger)
+        {
+            StopAllCoroutines();
+            ChangeAnimState(none);
+
+            StartCoroutine(Sight());
+        }
     }
 
     private IEnumerator Attention(string state)
     {
-        animator.ResetTrigger(state);
-        animator.SetTrigger("Attention");
-        animator.ResetTrigger("None");
+        ChangeAnimState(none);
+        allowSightTrigger = false;
+        
+        float quickPause = 0.1f;
+
+        while (quickPause > 0f)
+        {
+            quickPause -= Time.deltaTime;
+            yield return null;
+        }
+
+        ChangeAnimState(attention);
 
         attentionRem = 1f;
 
         while (attentionRem > 0f)
         {
-            attentionRem -= 1f * Time.deltaTime;
+            attentionRem -= Time.deltaTime;
             yield return null;
         }
 
-        StartCoroutine(Direction(state));
+        StartCoroutine(Decide(state));
         StopCoroutine(Attention(state));
     }
 
-    private IEnumerator Direction(string state)
+    private IEnumerator Decide(string state)
     {
-        animator.ResetTrigger("Attention");
-        animator.SetTrigger(state);
+        if (state == "Pursuit") ChangeAnimState(pursuit);
+        else if (state == "Ignore") ChangeAnimState(ignore);
 
-        faceRem = 1.5f;
+        decideRem = 1.5f;
 
-        while (faceRem > 0f)
+        while (decideRem > 0f)
         {
-            faceRem -= 1f * Time.deltaTime;
+            decideRem -= Time.deltaTime;
             yield return null;
         }
 
-        animator.ResetTrigger(state);
-        animator.SetTrigger("None");
-
-        StopCoroutine(Direction(state));
+        ChangeAnimState(none);
+        allowSightTrigger = true;
+        StopCoroutine(Decide(state));
     }
 
-    public Animator animator;
+    private IEnumerator Sight()
+    {
+        ChangeAnimState(sight);
+
+        sightRem = 1.5f;
+
+        while (sightRem > 0f)
+        {
+            sightRem -= Time.deltaTime;
+            yield return null;
+        }
+
+        ChangeAnimState(none);
+        StopCoroutine(Sight());
+    }
+
+
+
+
+    [SerializeField] private Animator animator;
+    [SerializeField] private string curState;
+    [SerializeField] private BaldiScript baldi;
+    [SerializeField] private bool allowSightTrigger;
     [SerializeField] private float attentionRem;
-    [SerializeField] private float faceRem;
+    [SerializeField] private float decideRem;
+    [SerializeField] private float sightRem;
+
+    // Animation States
+    const string none = "Baldicator_none";
+    const string attention = "Baldicator_Attention";
+    const string pursuit = "Baldicator_Pursuit";
+    const string ignore = "Baldicator_Ignore";
+    const string sight = "Baldicator_Sight";
 }

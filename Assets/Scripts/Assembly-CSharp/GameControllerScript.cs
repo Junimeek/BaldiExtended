@@ -175,8 +175,17 @@ public class GameControllerScript : MonoBehaviour
 					}
 					PlayerPrefs.SetInt("CurrentBooks", this.notebooks);
 				}
-				Time.timeScale = 1f;
-				SceneManager.LoadScene("GameOver");
+
+				if (!player.isSecret)
+				{
+					Time.timeScale = 1f;
+					SceneManager.LoadScene("GameOver");
+				}
+				else if (player.isSecret)
+				{
+					Debug.Log("Game Quit");
+					Application.Quit();
+				}
 			}
 		}
 
@@ -945,7 +954,7 @@ public class GameControllerScript : MonoBehaviour
 	private int[] itemSelectOffset;
 	private bool gamePaused;
 	public bool learningActive;
-	private float gameOverDelay;
+	public float gameOverDelay;
 	//private Player playerInput;
 	
 	

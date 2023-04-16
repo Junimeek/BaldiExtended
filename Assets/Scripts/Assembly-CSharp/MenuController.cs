@@ -8,7 +8,21 @@ public class MenuController : MonoBehaviour
 	// Token: 0x06000063 RID: 99 RVA: 0x00003D32 File Offset: 0x00002132
 	private void Start()
 	{
-
+		if (PlayerPrefs.HasKey("OptionsSet"))
+		{
+			if (PlayerPrefs.GetInt("FreeRun") == 1)
+			{
+				this.freeRun.isOn = true;
+			}
+			else
+			{
+				this.freeRun.isOn = false;
+			}
+		}
+		else
+		{
+			PlayerPrefs.SetInt("OptionsSet", 1);
+		}
 	}
 
 	// Token: 0x06000064 RID: 100 RVA: 0x00003D45 File Offset: 0x00002145
@@ -28,6 +42,15 @@ public class MenuController : MonoBehaviour
 			this.back.SetActive(true);
 			base.gameObject.SetActive(false);
 		}
+
+		if (this.freeRun.isOn)
+		{
+			PlayerPrefs.SetInt("FreeRun", 1);
+		}
+		else
+		{
+			PlayerPrefs.SetInt("FreeRun", 0);
+		}
 	}
 
 	// Token: 0x04000082 RID: 130
@@ -44,5 +67,6 @@ public class MenuController : MonoBehaviour
 
 	// Token: 0x04000086 RID: 134
 	public GameObject back;
+	public Toggle freeRun;
 
 }

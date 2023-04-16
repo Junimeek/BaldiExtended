@@ -72,6 +72,9 @@ public class BaldiScript : MonoBehaviour
 				this.angerRate += this.angerRateRate; //Increase angerRate for next time
 			}
 		}
+
+		if (this.db) this.sightCooldown = 1f;
+		else if (!this.db)this.sightCooldown -= Time.deltaTime;
 	}
 
 	// Token: 0x060009A5 RID: 2469 RVA: 0x000246F8 File Offset: 0x00022AF8
@@ -113,7 +116,13 @@ public class BaldiScript : MonoBehaviour
 	{
 		this.agent.SetDestination(this.player.position); //Target the player
 		this.coolDown = 1f;
-		this.currentPriority = 0f;
+		this.currentPriority = 10f;
+
+		if (sightCooldown < 0f)
+		{
+			baldicator.ChangeBaldicatorState("Sight");
+			Debug.Log("Sighted Player");
+		}
 	}
 
 	// Token: 0x060009A8 RID: 2472 RVA: 0x0002483C File Offset: 0x00022C3C
@@ -168,11 +177,11 @@ public class BaldiScript : MonoBehaviour
 		{
 			this.agent.SetDestination(soundLocation); //Go to that sound
 			this.currentPriority = priority; //Set the current priority to the priority
-			this.baldicator.BaldicatorStateSwitch("Pursuit");
+			this.baldicator.ChangeBaldicatorState("Pursuit");
 		}
 		else if (!this.antiHearing && priority < this.currentPriority)
 		{
-			this.baldicator.BaldicatorStateSwitch("Ignore");
+			this.baldicator.ChangeBaldicatorState("Ignore");
 		}
 	}
 
@@ -212,7 +221,7 @@ public class BaldiScript : MonoBehaviour
 	private float moveFrames;
 
 	// Token: 0x04000688 RID: 1672
-	private float currentPriority;
+	public float currentPriority;
 
 	// Token: 0x04000689 RID: 1673
 	public bool antiHearing;
@@ -273,5 +282,6 @@ public class BaldiScript : MonoBehaviour
 
 	private GameControllerScript gc;
 	public Baldicator baldicator;
+	[SerializeField] private float sightCooldown;
 
 }

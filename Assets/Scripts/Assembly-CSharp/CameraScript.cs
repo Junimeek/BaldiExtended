@@ -46,10 +46,15 @@ public class CameraScript : MonoBehaviour
 			base.transform.position = this.player.transform.position + this.offset; //Teleport to the player, then move based on the offset vector
 			base.transform.rotation = this.player.transform.rotation * Quaternion.Euler(0f, (float)this.lookBehind, 0f); //Rotate based on player direction + lookbehind
 		}
-		else if (this.ps.gameOver)
+		else if (this.ps.gameOver && !this.ps.isSecret)
 		{
 			base.transform.position = this.baldi.transform.position + this.baldi.transform.forward * 2f + new Vector3(0f, 5f, 0f); //Puts the camera in front of Baldi
 			base.transform.LookAt(new Vector3(this.baldi.position.x, this.baldi.position.y + 5f, this.baldi.position.z)); //Makes the player look at baldi with an offset so the camera doesn't look at the feet
+		}
+		else if (this.ps.gameOver && this.ps.isSecret)
+		{
+			base.transform.position = this.baldi.transform.position + this.baldi.transform.forward * 2f + new Vector3(0f, 5f, 0f); //Puts the camera in front of Baldi
+			base.transform.LookAt(new Vector3(this.baldi.position.x, this.baldi.position.y + 3.5f, this.baldi.position.z)); //Makes the player look at baldi with an offset so the camera doesn't look at the feet
 		}
 		else if (this.ps.jumpRope)
 		{

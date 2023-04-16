@@ -7,11 +7,13 @@ using UnityEngine.UI;
 public class AudioManager : MonoBehaviour
 {
     [SerializeField] private AudioMixer mixer;
+    [SerializeField] private BaldiScript baldi;
 
     public void SetVolume(int id)
     {
-        if (id == 0)
+        if (id == 0) // normal
         {
+            mixer.SetFloat("volBGM", 0f);
             mixer.SetFloat("volSFX", 0f);
             mixer.SetFloat("volVoice", 0f);
         }
