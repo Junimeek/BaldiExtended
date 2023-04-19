@@ -6,11 +6,12 @@ public class NullKill : MonoBehaviour
 {
     private void OnTriggerEnter(Collider other)
     {
-        if (other.name == "Player")
+        if (other.name == "Player" && !nullAudioScript.audioDevice.isPlaying)
 		{
 			Debug.Log("Collision with Kill trigger");
             player.gameOver = true;
             nullAudioScript.audioDevice.Stop();
+            nullAudioScript.nullGlitchLoop.Stop();
             killAudio.Play();
             RenderSettings.skybox = this.blackSky;
 		}

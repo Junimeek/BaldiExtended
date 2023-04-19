@@ -16,7 +16,7 @@ public class GameControllerScript : MonoBehaviour
 		array[1] = 149;
 		array[2] = 189;
 		array[3] = 229;
-		array[4] = 269;
+		array[4] = 268;
 		this.itemSelectOffset = array;
 		//base..ctor();
 	}
@@ -154,7 +154,7 @@ public class GameControllerScript : MonoBehaviour
 			Time.timeScale = 0f;
 			this.gameOverDelay -= Time.unscaledDeltaTime * 0.5f;
 			this.camera.farClipPlane = this.gameOverDelay * 400f; //Set camera farClip 
-			this.audioDevice.PlayOneShot(this.aud_buzz);
+			if (!this.player.isSecret) this.audioDevice.PlayOneShot(this.aud_buzz);
 
 			/*
 			int randomScare = UnityEngine.Random.Range(0, this.baldiJumpscareSounds.Length - 1);
@@ -184,6 +184,7 @@ public class GameControllerScript : MonoBehaviour
 				else if (player.isSecret)
 				{
 					Debug.Log("Game Quit");
+					this.cursorController.UnlockCursor();
 					Application.Quit();
 				}
 			}

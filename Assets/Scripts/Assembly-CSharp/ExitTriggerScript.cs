@@ -12,7 +12,7 @@ public class ExitTriggerScript : MonoBehaviour
 		{
 			if (this.gc.failedNotebooks >= this.gc.daFinalBookCount) //If the player got all the problems wrong on all the 7 notebooks
 			{
-				SceneManager.LoadScene("Secret"); //Go to the secret ending
+				SceneManager.LoadScene("SecretMap"); //Go to the secret ending
 			}
 			else
 			{

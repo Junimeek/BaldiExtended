@@ -27,6 +27,7 @@ public class BullyScript : MonoBehaviour
 			this.activeTime += Time.deltaTime; //Increase active time
 			if (this.activeTime >= 180f & (base.transform.position - this.player.position).magnitude >= 120f) //If the bully has been in the map for a long time and the player is far away
 			{
+				this.audioDevice.PlayOneShot(this.aud_Bored);
 				this.Reset(); //Reset the bully
 			}
 		}
@@ -56,11 +57,11 @@ public class BullyScript : MonoBehaviour
 	// Token: 0x06000017 RID: 23 RVA: 0x00002588 File Offset: 0x00000988
 	private void Activate()
 	{
-		this.wanderer.GetNewTargetHallway(); //Get a hallway position
+		this.GetNewTarget(); //Get a hallway position
 		base.transform.position = this.wanderTarget.position + new Vector3(0f, 5f, 0f); // Go to the wanderTarget + 5 on the Y axis
 		while ((base.transform.position - this.player.position).magnitude < 20f) // While the Bully is close to the player
 		{
-			this.wanderer.GetNewTargetHallway(); //Get a new target
+			this.GetNewTarget(); //Get a new target
 			base.transform.position = this.wanderTarget.position + new Vector3(0f, 5f, 0f);// Go to the wanderTarget + 5 on the Y axis
         } //This is here to prevent the bully from spawning ontop iof the player
 		this.active = true; //Set the bully to active
@@ -109,6 +110,12 @@ public class BullyScript : MonoBehaviour
 		this.spoken = false; //Reset spoken
 	}
 
+	public void GetNewTarget()
+	{
+		this.id = Mathf.RoundToInt(UnityEngine.Random.Range(0f, 23f)); //Get a random number between 0 and 28
+		base.transform.position = this.newLocation[this.id].position; //Set it's location to a position in a list of positions using the ID variable that just got set.
+	}
+
 	// Token: 0x04000012 RID: 18
 	public Transform player;
 
@@ -150,4 +157,7 @@ public class BullyScript : MonoBehaviour
 
 	// Token: 0x0400001F RID: 31
 	public AudioClip aud_Denied;
+	public AudioClip aud_Bored;
+	public Transform[] newLocation = new Transform[29];
+	private int id;
 }

@@ -245,6 +245,7 @@ public class MathGameScript : MonoBehaviour
             {
                 int num = Mathf.RoundToInt(UnityEngine.Random.Range(0f, 1f));
                 this.questionText.text = this.endlessHintText[num];
+                this.endDelay = 1.5f;
             }
             else if (this.gc.mode == "story" & this.problemsWrong >= 3)
             {
@@ -253,10 +254,19 @@ public class MathGameScript : MonoBehaviour
                 this.questionText3.text = string.Empty;
                 if (this.baldiScript.isActiveAndEnabled) this.baldiScript.Hear(this.playerPosition, 7f);
                 this.gc.failedNotebooks++;
+
+                if (gc.notebooks < 3)
+                {
+                    this.endDelay = 3f;
+                }
+                else if (gc.notebooks > 2)
+                {
+                    this.endDelay = 1.5f;
+                }
             }
             else
             {
-                if (gc.notebooks == 2)
+                if (gc.notebooks < 3)
                 {
                     this.endDelay = 3f;
                 }
