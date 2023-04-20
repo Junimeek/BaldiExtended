@@ -8,6 +8,7 @@ public class StartButton : MonoBehaviour
 	// Token: 0x060009E3 RID: 2531 RVA: 0x00026710 File Offset: 0x00024B10
 	public void StartGame(string mapToLoad)
 	{
+		PlayerPrefs.SetString("CurrentMap", mapToLoad);
 		SceneManager.LoadSceneAsync(mapToLoad);
 	}
 

@@ -190,13 +190,27 @@ public class GameControllerScript : MonoBehaviour
 			}
 		}
 
+		/*
+		if (this.finaleMode && !this.audioDevice.isPlaying && this.exitsReached == 3)
+		{
+			this.audioDevice.clip = this.aud_MachineLoop;
+			this.audioDevice.loop = true;
+			this.audioDevice.Play();
+		}
+		*/
 
-		//if (this.finaleMode && !this.audioDevice.isPlaying && this.exitsReached == 3)
-		//{
-		//	this.audioDevice.clip = this.aud_MachineLoop;
-		//	this.audioDevice.loop = true;
-		//	this.audioDevice.Play();
-		//}
+		if (this.finaleMode && !this.audioDevice.isPlaying && this.exitsReached == 2)
+		{
+			this.audioDevice.clip = this.chaosEarlyLoop;
+			this.audioDevice.loop = true;
+			this.audioDevice.Play();
+		}
+		else if (this.finaleMode && !this.audioDevice.isPlaying && this.exitsReached == 3)
+		{
+			this.audioDevice.clip = this.chaosFinalLoop;
+			this.audioDevice.loop = true;
+			this.audioDevice.Play();
+		}
 
 		if (Input.GetKeyDown(KeyCode.Tab))
 		{
@@ -680,6 +694,22 @@ public class GameControllerScript : MonoBehaviour
 		{
 			this.audioDevice.PlayOneShot(this.aud_Switch, 0.8f);
 		}
+
+		if (this.exitsReached == 2) //Play a sound
+		{
+			this.audioDevice.volume = 0.8f;
+			this.audioDevice.clip = this.chaosEarly;
+			this.audioDevice.loop = false;
+			this.audioDevice.Play();
+		}
+		else if (this.exitsReached == 3) //Play a louder sound
+		{
+			this.audioDevice.volume = 0.8f;
+			this.audioDevice.clip = this.chaosBuildup;
+			this.audioDevice.loop = false;
+			this.audioDevice.Play();
+		}
+
 		/*
 		if (this.exitsReached == 12) //Play a sound
 		{
@@ -976,6 +1006,10 @@ public class GameControllerScript : MonoBehaviour
 	public AudioClip aud_MachineLoop;
 	public AudioClip aud_Switch;
 	public AudioClip[] baldiJumpscareSounds;
+	public AudioClip chaosEarly;
+	public AudioClip chaosEarlyLoop;
+	public AudioClip chaosBuildup;
+	public AudioClip chaosFinalLoop;
 
 
 	[Header("Music")]
