@@ -37,6 +37,7 @@ public class GameControllerScript : MonoBehaviour
 		{
 			this.baldiScrpt.endless = true; //Set Baldi use his slightly changed endless anger system
 		}
+		this.curMap = PlayerPrefs.GetString("CurrentMap");
 		MusicPlayer(1,1); //Play the school music
 		this.LockMouse(); //Prevent the mouse from moving
 		this.UpdateNotebookCount(); //Update the notebook count
@@ -896,6 +897,7 @@ public class GameControllerScript : MonoBehaviour
 
 	// Token: 0x04000612 RID: 1554
 	public string mode;
+	[SerializeField] private string curMap;
 
 	// Token: 0x04000613 RID: 1555
 	public int notebooks;

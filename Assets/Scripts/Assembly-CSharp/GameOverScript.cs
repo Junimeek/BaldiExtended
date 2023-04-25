@@ -20,13 +20,11 @@ public class GameOverScript : MonoBehaviour
 		{
 			int num = Mathf.RoundToInt(UnityEngine.Random.Range(0f, 4f));
 			this.image.sprite = this.images[num];
-
-			/*
+			
 			if (PlayerPrefs.GetInt("InstantReset") == 1)
 			{
-				StartCoroutine(LoadSceneRoutine("School"));
+				StartCoroutine(LoadSceneRoutine(PlayerPrefs.GetString("CurrentMap")));
 			}
-			*/
 		}
 		else
 		{
@@ -44,10 +42,10 @@ public class GameOverScript : MonoBehaviour
 		{
 			if (this.chance < 98f)
 			{
-				//if (PlayerPrefs.GetInt("InstantReset") != 1)
-				//{
+				if (PlayerPrefs.GetInt("InstantReset") != 1)
+				{
 					SceneManager.LoadScene("MainMenu");
-				//}
+				}
 			}
 			else
 			{

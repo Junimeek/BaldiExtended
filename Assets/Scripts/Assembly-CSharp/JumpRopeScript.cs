@@ -9,7 +9,7 @@ public class JumpRopeScript : MonoBehaviour
 	// Token: 0x06000048 RID: 72 RVA: 0x000033A4 File Offset: 0x000017A4
 	private void OnEnable()
 	{
-		this.jumpDelay = 1f;
+		this.jumpDelay = 0.8f;
 		this.ropeHit = true;
 		this.jumpStarted = false;
 		this.jumps = 0;
@@ -64,7 +64,7 @@ public class JumpRopeScript : MonoBehaviour
 		this.playtime.audioDevice.PlayOneShot(this.playtime.aud_Numbers[this.jumps]);
 		this.jumps++;
 		this.jumpCount.text = this.jumps + "/5";
-		this.jumpDelay = 0.5f;
+		this.jumpDelay = 0.3f;
 		if (this.jumps >= 5) //If players complete the minigame
 		{
 			this.playtime.audioDevice.Stop(); //Stop playtime from talking
@@ -78,7 +78,7 @@ public class JumpRopeScript : MonoBehaviour
 	{
 		this.jumps = 0; //Reset jumps
 		this.jumpCount.text = this.jumps + "/5";
-		this.jumpDelay = 2f; //Set the jump delay to 2 seconds to allow playtime to finish her line before the rope starts again
+		this.jumpDelay = 1.5f; //Set the jump delay to 2 seconds to allow playtime to finish her line before the rope starts again
 		this.playtime.audioDevice.PlayOneShot(this.playtime.aud_Oops);
 	}
 

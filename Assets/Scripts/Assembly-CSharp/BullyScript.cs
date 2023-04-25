@@ -112,7 +112,7 @@ public class BullyScript : MonoBehaviour
 
 	public void GetNewTarget()
 	{
-		this.id = Mathf.RoundToInt(UnityEngine.Random.Range(0f, 23f)); //Get a random number between 0 and 28
+		this.id = Mathf.RoundToInt(UnityEngine.Random.Range(0f, spawnCount-1f)); //Get a random number between 0 and 28
 		base.transform.position = this.newLocation[this.id].position; //Set it's location to a position in a list of positions using the ID variable that just got set.
 	}
 
@@ -158,6 +158,7 @@ public class BullyScript : MonoBehaviour
 	// Token: 0x0400001F RID: 31
 	public AudioClip aud_Denied;
 	public AudioClip aud_Bored;
+	[SerializeField] private float spawnCount;
 	public Transform[] newLocation = new Transform[29];
 	private int id;
 }

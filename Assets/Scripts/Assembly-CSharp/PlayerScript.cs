@@ -224,7 +224,7 @@ public class PlayerScript : MonoBehaviour
 		else if (other.transform.name == "1st Prize" & this.firstPrize.velocity.magnitude > 5f)
 		{
 			this.hugging = true;
-			this.sweepingFailsave = 1f;
+			this.sweepingFailsave = 0.2f;
 		}
 	}
 
