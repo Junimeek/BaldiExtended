@@ -130,7 +130,7 @@ public class PlayerScript : MonoBehaviour
 	// Token: 0x060009D7 RID: 2519 RVA: 0x00026210 File Offset: 0x00024610
 	private void StaminaCheck()
 	{
-		if (this.cc.velocity.magnitude > 0.1f)
+		if (this.cc.velocity.magnitude > 0.1f && !this.hugging)
 		{
 			if (this.isSpeedShoes)
 			{
@@ -171,7 +171,7 @@ public class PlayerScript : MonoBehaviour
 				this.stamina = -5f;
 			}
 		}
-		else if (this.stamina < this.maxStamina)
+		else if ((this.stamina < this.maxStamina) || (this.stamina < this.maxStamina && this.hugging))
 		{
 			this.stamina += (this.staminaRate*2) * Time.deltaTime;
 		}

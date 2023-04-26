@@ -23,7 +23,7 @@ public class AILocationSelectorScript : MonoBehaviour
 	// Token: 0x060009A1 RID: 2465 RVA: 0x00024517 File Offset: 0x00022917
 	public void QuarterExclusive()
 	{
-		this.id = Mathf.RoundToInt(UnityEngine.Random.Range(1f, 25f)); //Get a random number between 0 and 15
+		this.id = Mathf.RoundToInt(UnityEngine.Random.Range(1f, hallCount-1f)); //Get a random number between 0 and 15
 		base.transform.position = this.newLocation[this.id].position; //Set it's location to a position in a list of positions using the ID variable that just got set.
 	}
 
