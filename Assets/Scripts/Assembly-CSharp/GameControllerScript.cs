@@ -44,6 +44,8 @@ public class GameControllerScript : MonoBehaviour
 		this.itemSelected = 0; //Set selection to item slot 0(the first item slot)
 		this.gameOverDelay = 0.5f;
 
+		this.speedrunTimer.allowTime = true;
+
 		//debugScreen.DebugCloseMenu();
 	}
 
@@ -1050,4 +1052,5 @@ public class GameControllerScript : MonoBehaviour
 	[SerializeField] private DebugMenuActions debugActions;
 	[SerializeField] private DebugScreenSwitch debugScreen;
 	[SerializeField] private AudioManager audioManager;
+	[SerializeField] private SpeedrunTimer speedrunTimer;
 }
