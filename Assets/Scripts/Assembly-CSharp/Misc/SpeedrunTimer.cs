@@ -7,7 +7,10 @@ public class SpeedrunTimer : MonoBehaviour
 {
     private void Start()
     {
-        curTime = 0f;
+        totalTime = 0.02f;
+        curMiliseconds = 0.02f;
+        curMinutes = 0;
+        curSeconds = 0;
         timeText.text = "0:00.00";
     }
 
@@ -15,29 +18,30 @@ public class SpeedrunTimer : MonoBehaviour
     {
         if (allowTime)
         {
-            curTime += Time.unscaledDeltaTime;
-            timeText.text = curTime.ToString("0.00");
+            totalTime += Time.unscaledDeltaTime;
+            curMiliseconds += Time.unscaledDeltaTime;
+            
+            if (curMiliseconds >= 1)
+            {
+                curMiliseconds = 1f-curMiliseconds;
+                curSeconds++;
+            }
+
+            if (curSeconds >= 60)
+            {
+                curSeconds = 0;
+                curMinutes++;
+            }
+
+            if (curSeconds < 10) timeText.text = curMinutes +":0" + curSeconds + "." + (curMiliseconds*100f).ToString("0");
+            else if (curSeconds >= 10) timeText.text = curMinutes +":" + curSeconds + "." + (curMiliseconds*100f).ToString("0");
         }
     }
-
     
-    public void SaveFinalTime(float time)
-    {
-        allowTime = false;
-
-        // making my hot catgirl do this for me, thanks nat :3
-        /*
-        PlayerPrefs.SetFloat("LastTime", time);
-
-        if (PlayerPrefs.GetFloat("LastTime") < PlayerPrefs.GetFloat("BestTime"))
-        {
-            PlayerPrefs.SetFloat("BestTime", time);
-        }
-        */
-    }
-    
-
-    public float curTime;
+    public float totalTime;
     public bool allowTime;
     [SerializeField] private TMP_Text timeText;
+    [SerializeField] private int curMinutes;
+    [SerializeField] private int curSeconds;
+    [SerializeField] private float curMiliseconds;
 }

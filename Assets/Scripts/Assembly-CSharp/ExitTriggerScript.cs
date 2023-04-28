@@ -15,7 +15,8 @@ public class ExitTriggerScript : MonoBehaviour
 	{
 		if (this.gc.notebooks >= this.gc.daFinalBookCount & other.tag == "Player")
 		{
-			speedrunTimer.SaveFinalTime(speedrunTimer.curTime);
+			speedrunTimer.allowTime = false;
+			PlayerPrefs.SetFloat("LastTime", this.speedrunTimer.totalTime);
 
 			if (this.gc.failedNotebooks >= this.gc.daFinalBookCount) //If the player got all the problems wrong on all the 7 notebooks
 			{
