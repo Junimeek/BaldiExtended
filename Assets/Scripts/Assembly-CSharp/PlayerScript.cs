@@ -191,12 +191,6 @@ public class PlayerScript : MonoBehaviour
 		{
 			this.ActivateJumpRope();
 		}
-		
-
-		if (other.transform.name == "Gym Trigger")
-		{
-			this.isInfiniteStamina = true;
-		}
 	}
 
 	// Token: 0x060009D9 RID: 2521 RVA: 0x0002638C File Offset: 0x0002478C
@@ -225,6 +219,11 @@ public class PlayerScript : MonoBehaviour
 		{
 			this.hugging = true;
 			this.sweepingFailsave = 0.2f;
+		}
+
+		if (other.transform.name == "Gym Trigger")
+		{
+			this.isInfiniteStamina = true;
 		}
 	}
 
