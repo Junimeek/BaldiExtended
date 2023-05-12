@@ -710,7 +710,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4395433549777681891}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -861,6 +861,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4395433550106688812}
+  - component: {fileID: 783918134364128589}
   m_Layer: 0
   m_Name: Learn
   m_TagString: Untagged
@@ -887,6 +888,22 @@ Transform:
   m_Father: {fileID: 4395433549777674740}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &783918134364128589
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4395433550106688815}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9632c74347307b4e90f145e8d2975d4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  question1Device: {fileID: 4395433549777693128}
+  question2Device: {fileID: 4395433550981080343}
+  question3Device: {fileID: 4395433550107039118}
+  mathScript: {fileID: 0}
 --- !u!1 &4395433550107039112
 GameObject:
   m_ObjectHideFlags: 0

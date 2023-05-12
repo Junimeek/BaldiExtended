@@ -36,6 +36,9 @@ EditorBuildSettings:
     path: Assets/Scene/Scenes/Maps/SecretMap.unity
     guid: 3f4ba19992f1f5643b1949d6688677cb
   - enabled: 1
+    path: Assets/Scene/Scenes/Secret/BAD SUM.unity
+    guid: 69995556c46758b4199a0a7a5f77c09d
+  - enabled: 1
     path: Assets/Scene/Scenes/Secret/TestRoom.unity
     guid: 1bfa5adc7f589b44e8be78189891a1dd
   m_configObjects: {}

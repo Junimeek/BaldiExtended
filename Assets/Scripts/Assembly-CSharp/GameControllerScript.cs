@@ -312,6 +312,7 @@ public class GameControllerScript : MonoBehaviour
 		//this.TestEnemy.SetActive(true); //Turns on Test-Enemy
 		this.audioDevice.PlayOneShot(this.aud_Hang); //Plays the hang sound
 		MusicPlayer(0,0);
+		this.mathMusicScript.StopSong();
 	}
 
 	// Token: 0x0600096E RID: 2414 RVA: 0x000221BF File Offset: 0x000205BF
@@ -344,7 +345,7 @@ public class GameControllerScript : MonoBehaviour
 		if (!this.spoopMode) //If the player hasn't gotten a question wrong
 		{
 			MusicPlayer(0,0); //Start playing the learn music
-			MusicPlayer(2,1);
+			this.mathMusicScript.TheAwakening();
 		}
 		else if (this.spoopMode)
 		{
@@ -371,6 +372,7 @@ public class GameControllerScript : MonoBehaviour
 	// Token: 0x06000971 RID: 2417 RVA: 0x00022278 File Offset: 0x00020678
 	public void DeactivateLearningGame(GameObject subject)
 	{
+		this.mathMusicScript.StopSong();
 		audioManager.SetVolume(0);
 		this.camera.cullingMask = this.cullingMask; //Sets the cullingMask to Everything
 		this.learningActive = false;
@@ -800,20 +802,6 @@ public class GameControllerScript : MonoBehaviour
 		}
 	}
 
-	private void MathMusic()
-	{
-		this.audioDevice.clip = this.LearnQ1;
-		if (!this.audioDevice.isPlaying && this.learningActive)
-		{
-			if (mathScript.problem == 1)
-			this.audioDevice.PlayOneShot(this.LearnQ1);
-			if (mathScript.problem == 2)
-			this.audioDevice.PlayOneShot(this.LearnQ2);
-			if (mathScript.problem == 3)
-			this.audioDevice.PlayOneShot(this.LearnQ3);
-		}
-	}
-
 	private void DebugStuff()
 	{
 		if (debugScreen.isDebugMenuActive == true)
@@ -1048,9 +1036,9 @@ public class GameControllerScript : MonoBehaviour
 	public BaldiScript baldiScrpt;
 	public PlaytimeScript playtimeScript;
 	public FirstPrizeScript firstPrizeScript;
-	[SerializeField] private MathGameScript mathScript;
 	[SerializeField] private DebugMenuActions debugActions;
 	[SerializeField] private DebugScreenSwitch debugScreen;
 	[SerializeField] private AudioManager audioManager;
 	[SerializeField] private SpeedrunTimer speedrunTimer;
+	[SerializeField] private MathMusicScript mathMusicScript;
 }

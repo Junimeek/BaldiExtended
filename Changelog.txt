@@ -1,0 +1,5 @@
+v0.3.1
+- New Secret Endings
+- More bugfixes
+- New Map (juni hills, wip)
+- extended math game music

@@ -6,21 +6,35 @@ public class KillScreenTrigger : MonoBehaviour
 {
     private void Start()
     {
-        canvas.SetActive(false);
+        hasStarted = false;
+        leaveScreen.SetActive(false);
+        killScreen.SetActive(false);
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.name == "Player")
+        if (other.name == "Player" && !hasStarted)
         {
-            canvas.SetActive(true);
-            StartCoroutine(countdown());
+            hasStarted = true;
+            badSum.Play();
+            leaveScreen.SetActive(true);
+            StartCoroutine(WaitForAudio());
         }
     }
 
-    private IEnumerator countdown()
+    private IEnumerator WaitForAudio()
     {
-        float time = 2f;
+        while (badSum.isPlaying) yield return null;
+        StartCoroutine(FinalCountdown());
+        StopCoroutine(WaitForAudio());
+    }
+
+    private IEnumerator FinalCountdown()
+    {
+        leaveScreen.SetActive(false);
+        killScreen.SetActive(true);
+        baldloon.Play();
+        float time = 8f;
 
         while (time > 0f)
         {
@@ -33,5 +47,9 @@ public class KillScreenTrigger : MonoBehaviour
     }
     
     [SerializeField] private Collider audioCollider;
-    [SerializeField] private GameObject canvas;
+    [SerializeField] private GameObject leaveScreen;
+    [SerializeField] private GameObject killScreen;
+    [SerializeField] private AudioSource badSum;
+    [SerializeField] private AudioSource baldloon;
+    [SerializeField] private bool hasStarted;
 }
