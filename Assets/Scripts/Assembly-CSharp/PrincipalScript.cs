@@ -163,7 +163,7 @@ public class PrincipalScript : MonoBehaviour
 			{
 				this.detentions = 10;
 			}
-			notif.startBoardRoutine();
+			notif.DetentionBoardRoutine();
 		}
 	}
 

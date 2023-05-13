@@ -10,6 +10,7 @@ public class NotebookScript : MonoBehaviour
 	{
 		//this.playerInput = ReInput.players.GetPlayer(0);
 		this.up = true;
+		notif = FindObjectOfType<NotificationBoard>();
 	}
 
 	// Token: 0x06000990 RID: 2448 RVA: 0x00024018 File Offset: 0x00022418
@@ -29,6 +30,7 @@ public class NotebookScript : MonoBehaviour
 				base.transform.position = new Vector3(base.transform.position.x, 4f, base.transform.position.z);
 				this.up = true;
 				this.audioDevice.Play();
+				notif.StartNotebooRoutine(this.gameObject.name);
 			}
 		}
 		if (Input.GetMouseButtonDown(0) && Time.timeScale != 0f)
@@ -75,4 +77,5 @@ public class NotebookScript : MonoBehaviour
 
 	// Token: 0x04000672 RID: 1650
 	//private Player playerInput;
+	[SerializeField] private NotificationBoard notif;
 }

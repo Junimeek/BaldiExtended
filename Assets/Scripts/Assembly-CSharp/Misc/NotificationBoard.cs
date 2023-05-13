@@ -9,76 +9,127 @@ public class NotificationBoard : MonoBehaviour
     {
         princey = FindObjectOfType<PrincipalScript>();
         gc = FindObjectOfType<GameControllerScript>();
-        detentionTextScript = FindObjectOfType<DetentionTextScript>();
         doorScript = FindObjectOfType<DoorScript>();
     }
 
     // Start is called before the first frame update
     private void Start()
     {
-        this.board.SetActive(false);
-        this.text.text = string.Empty;
+        this.ruleText.text = string.Empty;
+        this.detentionText.text = string.Empty;
+        notebooText.text = string.Empty;
+
+        this.notebooGroup.SetActive(false);
+        this.detentionGroup.SetActive(false);
+        this.ruleGroup.SetActive(false);
     }
 
     // Update is called once per frame
     private void Update()
     {
-        if (detentionTextScript.door.lockTime > 0f)
-		{
-			this.text.text = "You have detention! \n" + Mathf.CeilToInt(detentionTextScript.door.lockTime) + " seconds remain!";
-		}
-        else if (isBoardActive == false)
+        if (this.doorScript != null)
         {
-            this.board.SetActive(false);
-            this.text.text = string.Empty;
+            if ((this.doorScript.lockTime > 0f))
+		    {
+			    this.detentionText.text = "You have detention! \n" + Mathf.CeilToInt(doorScript.lockTime) + " seconds remain!";
+		    }
         }
-        else if (isBoardActive == true)
-        this.board.SetActive(true);
     }
 
     public void RuleText(int rule)
     {
-        isBoardActive = true;
+        this.ruleGroup.SetActive(true);
 
         if (rule == 1)
         {
-            this.text.text = "You have broken a rule! \n \"No entering faculty!\"";
+            this.ruleText.text = "You have broken a rule! \n \"No entering faculty!\"";
         }
         else if (rule == 2)
         {
-            this.text.text = "You have broken a rule! \n \"No running!\"";
+            this.ruleText.text = "You have broken a rule! \n \"No running!\"";
         }
         else if (rule == 3)
         {
-            this.text.text = "You have broken a rule! \n \"No drinking drinks!\"";
+            this.ruleText.text = "You have broken a rule! \n \"No drinking drinks!\"";
         }
         else if (rule == 4)
         {
-            this.text.text = "You have broken a rule! \n \"No escaping detention!\"";
+            this.ruleText.text = "You have broken a rule! \n \"No escaping detention!\"";
         }
     }
 
-    public void startBoardRoutine()
+    public void DetentionBoardRoutine()
     {
-        StartCoroutine(deactivateBoard());
+        StartCoroutine(DeactivateDetentionBoard());
     }
 
-    public IEnumerator deactivateBoard()
+    public IEnumerator DeactivateDetentionBoard()
     {
+        this.ruleGroup.SetActive(false);
+        this.detentionGroup.SetActive(true);
+
         while (doorScript.lockTime > 0f)
         {
             yield return null;
         }
 
-        this.isBoardActive = false;
+        this.detentionGroup.SetActive(false);
+    }
+
+    public void StartNotebooRoutine(string notename)
+    {
+        if (notename == "Math Notebook")
+            notebooColor = new Color(0.75f, 0.52f, 0.54f, 1f);
+        else if (notename == "Spelling Notebook")
+            notebooColor = new Color(0.12f, 0.15f, 0.75f, 1f);
+        else if (notename == "English Notebook")
+            notebooColor = new Color(0.11f, 0.75f, 0.12f, 1f);
+        else if (notename == "History Notebook")
+            notebooColor = new Color(0.75f, 0.11f, 0.11f, 1f);
+        else if (notename == "Geography Notebook")
+            notebooColor = new Color(0.75f, 0.75f, 0.12f, 1f);
+        else if (notename == "Geology Notebook")
+            notebooColor = new Color(0.07f, 0.75f, 0.75f, 1f);
+        else if (notename == "Culinary Notebook")
+            notebooColor = new Color(0.42f, 0.31f, 0.12f, 1f);
+        else if (notename == "Culture Notebook")
+            notebooColor = new Color(1f, 0f, 1f, 1f);
+        else if (notename == "Art Notebook")
+            notebooColor = new Color(0.42f, 0.12f, 0.12f, 1f);
+        else if (notename == "Chemistry Notebook")
+            notebooColor = new Color(0.96f, 0.54f, 0f, 1f);
+        else if (notename == "Biology Notebook")
+            notebooColor = new Color(0.59f, 0f, 1f, 1f);
+        else notebooColor = new Color(1f, 1f, 1f, 1f);
+
+        StartCoroutine(NotebooRoutine(notename, notebooColor));
+    }
+
+    private IEnumerator NotebooRoutine(string notename, Color color)
+    {
+        this.notebooGroup.SetActive(true);
+        this.notebooText.text = notename;
+        this.notebooText.color = color;
+
+        float time = 3f;
+
+        while (time > 0f)
+        {
+            time -= Time.deltaTime;
+            yield return null;
+        }
+
+        this.notebooGroup.SetActive(false);
     }
 
     private PrincipalScript princey;
-    private PlayerScript player;
     private GameControllerScript gc;
-    private DetentionTextScript detentionTextScript;
-    private DoorScript doorScript;
-    [SerializeField] private GameObject board;
-    [SerializeField] private TMP_Text text;
-    [SerializeField] private bool isBoardActive;
+    [SerializeField] private DoorScript doorScript;
+    [SerializeField] private TMP_Text ruleText;
+    [SerializeField] private TMP_Text detentionText;
+    [SerializeField] private TMP_Text notebooText;
+    [SerializeField] private GameObject notebooGroup;
+    [SerializeField] private GameObject detentionGroup;
+    [SerializeField] private GameObject ruleGroup;
+    [SerializeField] private Color notebooColor;
 }
