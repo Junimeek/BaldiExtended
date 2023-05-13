@@ -46,12 +46,17 @@ public class MathMusicScript : MonoBehaviour
             this.question2Device.loop = true;
             this.question2Device.Play();
         }
-        else if (problem == 3) this.question3Device.Play();
+        else if (problem == 3)
+        {
+            this.question3Device.loop = true;
+            this.question3Device.Play();
+        }
         StopCoroutine(WaitForMusic(0));
     }
 
     public void StopSong()
     {
+        StopAllCoroutines();
         question1Device.Stop();
         question2Device.Stop();
         question3Device.Stop();

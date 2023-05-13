@@ -979,6 +979,10 @@ public class GameControllerScript : MonoBehaviour
 	public bool learningActive;
 	public float gameOverDelay;
 	//private Player playerInput;
+
+	[Header("Detention")]
+	public Vector3 detentionPlayerPos;
+	public Vector3 detentionPrincipalPos;
 	
 	
 	[Header("SFX and Voices")]

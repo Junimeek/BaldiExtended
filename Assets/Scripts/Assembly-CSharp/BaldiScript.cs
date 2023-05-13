@@ -22,10 +22,17 @@ public class BaldiScript : MonoBehaviour
 			this.rumble = true;
 		}
 
-		float speedFactor = (this.gc.daFinalBookCount - 1);
-		float bookSquare = (speedFactor * speedFactor);
-		Debug.Log(bookSquare);
-		baldiSpeedScale = MathF.Sqrt(15.2f / (bookSquare));
+		if (speedFactorOverride == 0f)
+		{
+			float speedFactor = (this.gc.daFinalBookCount - 1);
+			float bookSquare = (speedFactor * speedFactor);
+			Debug.Log(bookSquare);
+			baldiSpeedScale = MathF.Sqrt(15.2f / (bookSquare));
+		}
+		else
+		{
+			baldiSpeedScale = speedFactorOverride;
+		}
 	}
 
 	// Token: 0x060009A4 RID: 2468 RVA: 0x000245C4 File Offset: 0x000229C4
@@ -216,6 +223,9 @@ public class BaldiScript : MonoBehaviour
 
 	// Token: 0x04000686 RID: 1670
 	public float baldiSpeedScale;
+	
+	[Tooltip("If this value is set to 0, then the total noteboo count will be used to calculate the speed factor.")]
+	[SerializeField] private float speedFactorOverride;
 
 	// Token: 0x04000687 RID: 1671
 	private float moveFrames;
@@ -283,5 +293,4 @@ public class BaldiScript : MonoBehaviour
 	private GameControllerScript gc;
 	public Baldicator baldicator;
 	[SerializeField] private float sightCooldown;
-
 }
