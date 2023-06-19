@@ -393,18 +393,24 @@ public class GameControllerScript : MonoBehaviour
 			MusicPlayer(0,0);
 			audioManager.SetVolume(0);
 			
-			if (this.notebooks == 2) MusicPlayer(1,2);
-			else if (this.notebooks == 3) MusicPlayer(1,3);
-			else if (this.notebooks == 4) MusicPlayer(1,4);
-			else if (this.notebooks == 5) MusicPlayer(1,5);
-			else if (this.notebooks == 6) MusicPlayer(1,6);
-			else if (this.notebooks == 7) MusicPlayer(1,7);
-			else if (this.notebooks == 8) MusicPlayer(1,8);
-			else if (this.notebooks == 9) MusicPlayer(1,9);
-			else if (this.notebooks == 10) MusicPlayer(1,10);
-			else if (this.notebooks == 11) MusicPlayer(1,11);
-			else if (this.notebooks == 12) MusicPlayer(1,12);
-			else if (this.notebooks > 12) MusicPlayer(1,13);
+			if (this.notebooks < this.daFinalBookCount)
+			{
+				if (this.notebooks == 2) MusicPlayer(1,2);
+				else if (this.notebooks == 3) MusicPlayer(1,3);
+				else if (this.notebooks == 4) MusicPlayer(1,4);
+				else if (this.notebooks == 5) MusicPlayer(1,5);
+				else if (this.notebooks == 6) MusicPlayer(1,6);
+				else if (this.notebooks == 7) MusicPlayer(1,7);
+				else if (this.notebooks == 8) MusicPlayer(1,8);
+				else if (this.notebooks == 9) MusicPlayer(1,9);
+				else if (this.notebooks == 10) MusicPlayer(1,10);
+				else if (this.notebooks == 11) MusicPlayer(1,11);
+				else if (this.notebooks == 12) MusicPlayer(1,12);
+			}
+			else if (this.notebooks >= this.daFinalBookCount)
+			{
+				MusicPlayer(1,13);
+			}
 		}
 		else if (this.spoopMode && this.notebooks == 1)
 		{
@@ -420,13 +426,12 @@ public class GameControllerScript : MonoBehaviour
 		{
 			this.spoopLearn.Stop();
 			this.audioDevice.PlayOneShot(this.aud_AllNotebooks, 0.8f);
-			
-			if (PlayerPrefs.GetInt("AdditionalMusic") == 1) this.escapeMusic.Play();
+			this.escapeMusic.Play();
 		}
-		else if (this.notebooks > 12 && this.mode == "endless")
+		else if (this.notebooks >= this.daFinalBookCount && this.mode == "endless")
 		{
 			this.spoopLearn.Stop();
-			this.endlessMusic.Play();
+			if (PlayerPrefs.GetInt("AdditionalMusic") == 1) this.endlessMusic.Play();
 		}
 	}
 
@@ -1045,4 +1050,5 @@ public class GameControllerScript : MonoBehaviour
 	[SerializeField] private AudioManager audioManager;
 	[SerializeField] private SpeedrunTimer speedrunTimer;
 	[SerializeField] private MathMusicScript mathMusicScript;
+	[SerializeField] private DebugSceneLoader sceneLoader;
 }

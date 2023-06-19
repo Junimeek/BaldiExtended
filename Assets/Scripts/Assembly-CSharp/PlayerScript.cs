@@ -134,9 +134,9 @@ public class PlayerScript : MonoBehaviour
 		{
 			if (this.isSpeedShoes)
 			{
-				this.runSpeed = 40f;
-				this.walkSpeed = 20f;
-				this.slowSpeed = 10f;
+				this.runSpeed = (speedOverrides.z * 2);
+				this.walkSpeed = (speedOverrides.y * 2);
+				this.slowSpeed = (speedOverrides.x * 2);
 
 				if (!Input.GetButton("Run"))
 				{
@@ -157,9 +157,9 @@ public class PlayerScript : MonoBehaviour
 			}
 			else if (!this.isSpeedShoes)
 			{
-				this.runSpeed = 20f;
-				this.walkSpeed = 10f;
-				this.slowSpeed = 5f;
+				this.runSpeed = speedOverrides.z;
+				this.walkSpeed = speedOverrides.y;
+				this.slowSpeed = speedOverrides.x;
 			}
 
 			if (Input.GetButton("Run") & this.stamina > 0f && !this.isInfiniteStamina)
@@ -445,4 +445,6 @@ public class PlayerScript : MonoBehaviour
 	public GameObject speedText;
 	[SerializeField] private float shoeRate;
 	public bool isSecret;
+	[SerializeField] private PrincipalTriggerScript triggerScript;
+	[Tooltip("X = Slow, Y = Walk, Z = Run")] [SerializeField] private Vector3 speedOverrides;
 }

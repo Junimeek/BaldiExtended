@@ -12,6 +12,7 @@ public class WarningScreenScript : MonoBehaviour
 	{
 		//this.player = ReInput.players.GetPlayer(0);
 		partyAudio.Play();
+		loadingManager = FindObjectOfType<LoadingManager>();
 	}
 
 	// Token: 0x060009E6 RID: 2534 RVA: 0x00026766 File Offset: 0x00024B66
@@ -19,7 +20,7 @@ public class WarningScreenScript : MonoBehaviour
 	{
 		if (Input.anyKeyDown)
 		{
-			SceneManager.LoadScene("MainMenu");
+			loadingManager.LoadNewScene("MainMenu", 1);
 		}
 	}
 
@@ -27,4 +28,5 @@ public class WarningScreenScript : MonoBehaviour
 	//public Player player;
 
 	[SerializeField] private AudioSource partyAudio;
+	[SerializeField] private LoadingManager loadingManager;
 }

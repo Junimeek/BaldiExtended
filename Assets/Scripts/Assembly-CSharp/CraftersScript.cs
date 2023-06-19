@@ -99,8 +99,8 @@ public class CraftersScript : MonoBehaviour
 		if (other.tag == "Player" & this.angry) // If arts is angry and is touching the player
 		{
 			this.cc.enabled = false;
-			this.player.position = new Vector3(5f, this.player.position.y, 80f); // Teleport the player to X: 5, their current Y position, Z: 80
-			this.baldiAgent.Warp(new Vector3(5f, this.baldi.position.y, 125f)); // Teleport Baldi to X: 5, baldi's Y, Z: 125
+			this.player.position = new Vector3(this.playerTeleLocation.x, this.player.position.y, this.playerTeleLocation.z); // Teleport the player to X: 5, their current Y position, Z: 80
+			this.baldiAgent.Warp(new Vector3(this.baldiTeleLocation.x, this.baldi.position.y, this.baldiTeleLocation.z)); // Teleport Baldi to X: 5, baldi's Y, Z: 125
 			this.player.LookAt(new Vector3(this.baldi.position.x, this.player.position.y, this.baldi.position.z)); // Make the player look at baldi
 			this.cc.enabled = true;
 			this.gc.DespawnCrafters(); // Despawn Arts And Crafters
@@ -163,4 +163,6 @@ public class CraftersScript : MonoBehaviour
 
 	// Token: 0x040006AE RID: 1710
 	public AudioClip aud_Loop;
+	[SerializeField] private Vector3 playerTeleLocation;
+	[SerializeField] private Vector3 baldiTeleLocation;
 }

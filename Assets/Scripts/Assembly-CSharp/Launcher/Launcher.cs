@@ -112,7 +112,7 @@ public class Launcher : MonoBehaviour
             yield return null;
         }
 
-        SceneManager.LoadSceneAsync("Warning");
+        loadingManager.LoadNewScene("Warning", 1);
     }
 
     [SerializeField] private AudioSource audioDevice;
@@ -125,4 +125,5 @@ public class Launcher : MonoBehaviour
     [SerializeField] private GameObject logoCanvas;
     [SerializeField] private GameObject basicallyLogo;
     [SerializeField] private GameObject juniLogo;
+    [SerializeField] private LoadingManager loadingManager;
 }

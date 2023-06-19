@@ -20,16 +20,19 @@ public class ExitTriggerScript : MonoBehaviour
 
 			if (this.gc.failedNotebooks >= this.gc.daFinalBookCount) //If the player got all the problems wrong on all the 7 notebooks
 			{
-				SceneManager.LoadSceneAsync("SecretMap"); //Go to the secret ending
+				//SceneManager.LoadSceneAsync("SecretMap"); //Go to the secret ending
+				sceneLoader.LoadTheScene("SecretMap", 0);
 			}
 			else
 			{
-				SceneManager.LoadSceneAsync("Results"); //Go to the win screen
+				sceneLoader.LoadTheScene("Results", 0);
+				//SceneManager.LoadSceneAsync("Results"); //Go to the win screen
 			}
 		}
 	}
 
 	// Token: 0x040005F6 RID: 1526
 	public GameControllerScript gc;
+	[SerializeField] private DebugSceneLoader sceneLoader;
 	[SerializeField] private SpeedrunTimer speedrunTimer;
 }

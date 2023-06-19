@@ -44,7 +44,7 @@ public class GameOverScript : MonoBehaviour
 			{
 				if (PlayerPrefs.GetInt("InstantReset") != 1)
 				{
-					SceneManager.LoadScene("MainMenu");
+					sceneLoader.LoadTheScene("MainMenu", 1);
 				}
 			}
 			else
@@ -78,7 +78,8 @@ public class GameOverScript : MonoBehaviour
 			yield return null;
 		}
 
-		StopCoroutine(LoadSceneRoutine(""));
+		sceneLoader.LoadTheScene(lescene, 1);
+		StopCoroutine(LoadSceneRoutine(lescene));
 	}
 
 	// Token: 0x0400063B RID: 1595
@@ -99,6 +100,5 @@ public class GameOverScript : MonoBehaviour
 
 	// Token: 0x04000640 RID: 1600
 	private AudioSource audioDevice;
-
-	private LoadingManager globe;
+	[SerializeField] private DebugSceneLoader sceneLoader;
 }
