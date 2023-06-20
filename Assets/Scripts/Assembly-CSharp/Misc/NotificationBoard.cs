@@ -38,7 +38,7 @@ public class NotificationBoard : MonoBehaviour
 
     public void RuleText(int rule)
     {
-        this.ruleGroup.SetActive(true);
+        if (PlayerPrefs.GetInt("NotifBoard") == 1) this.ruleGroup.SetActive(true);
 
         if (rule == 1)
         {
@@ -66,6 +66,7 @@ public class NotificationBoard : MonoBehaviour
     public IEnumerator DeactivateDetentionBoard()
     {
         this.ruleGroup.SetActive(false);
+
         this.detentionGroup.SetActive(true);
 
         while (doorScript.lockTime > 0f)
@@ -107,7 +108,9 @@ public class NotificationBoard : MonoBehaviour
 
     private IEnumerator NotebooRoutine(string notename, Color color)
     {
-        this.notebooGroup.SetActive(true);
+        if (PlayerPrefs.GetInt("NotifBoard") == 1) this.notebooGroup.SetActive(true);
+        else StopCoroutine(NotebooRoutine("Science Notebook", new Color(1f, 1f, 1f, 1f)));
+
         this.notebooText.text = notename;
         this.notebooText.color = color;
 

@@ -536,6 +536,48 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: SET_SFX
+      rect:
+        serializedVersion: 2
+        x: 510
+        y: 186
+        width: 127
+        height: 60
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4aef45a592c6a7f42b97eb99185b3da5
+      internalID: -1196720018
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SET_SFX_Selected
+      rect:
+        serializedVersion: 2
+        x: 510
+        y: 125
+        width: 127
+        height: 60
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e589b68beec682c4b8f0085258d1f4a7
+      internalID: 880740002
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -561,11 +603,13 @@ TextureImporter:
       SET_ExtraMusic: 228570839
       SET_BBCROST_Selected: 2115152622
       SET_Voices_Selected: 83336789
+      SET_SFX: -1196720018
       SET_Instant_Selected: 475174679
       SET_Notif_Selected: 905721407
       SET_Left_Selected: 1896570705
       SET_GPHeader: 1665371181
       SET_BBCROST: 500029063
+      SET_SFX_Selected: 880740002
       SET_BGM_Selected: 2000701839
   spritePackingTag: 
   pSDRemoveMatte: 0

@@ -7,13 +7,31 @@ public class Launcher : MonoBehaviour
 {
     private void Start()
     {
+        stopCanvas.SetActive(false);
         logoCanvas.SetActive(false);
         launcherCanvas.SetActive(false);
         StartCoroutine(WaitForStart());
     }
 
+    private void Update()
+    {
+        if (allowInterruption && Input.GetKeyDown(KeyCode.H))
+        {
+            isInterrupted = true;
+            stopCanvas.SetActive(true);
+        }
+    }
+
+    public void RestartBootup()
+    {
+        stopCanvas.SetActive(false);
+        StartCoroutine(WaitForStart());
+    }
+
     private IEnumerator WaitForStart()
     {
+        isInterrupted = false;
+        allowInterruption = true;
         float time = 0.3f;
 
         while (time > 0f)
@@ -22,8 +40,13 @@ public class Launcher : MonoBehaviour
             yield return null;
         }
 
-        launcherCanvas.SetActive(true);
-        audioDevice.PlayOneShot(music);
+        allowInterruption = false;
+
+        if (!isInterrupted)
+        {
+            launcherCanvas.SetActive(true);
+            audioDevice.PlayOneShot(music);
+        }
     }
 
     public void DaClick(int id)
@@ -121,8 +144,11 @@ public class Launcher : MonoBehaviour
     [SerializeField] private AudioClip quitSound;
     [SerializeField] private AudioClip acceptSound;
     [SerializeField] private bool isLaunching;
+    [SerializeField] private bool allowInterruption;
+    [SerializeField] private bool isInterrupted;
     [SerializeField] private GameObject launcherCanvas;
     [SerializeField] private GameObject logoCanvas;
+    [SerializeField] private GameObject stopCanvas;
     [SerializeField] private GameObject basicallyLogo;
     [SerializeField] private GameObject juniLogo;
     [SerializeField] private LoadingManager loadingManager;

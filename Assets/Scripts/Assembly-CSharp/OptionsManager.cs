@@ -14,6 +14,7 @@ public class OptionsManager : MonoBehaviour
 			this.sensitivitySlider.value = PlayerPrefs.GetFloat("MouseSensitivity");
 			this.voiceSlider.value = PlayerPrefs.GetFloat("VolumeVoice");
 			this.bgmSlider.value = PlayerPrefs.GetFloat("VolumeBGM");
+			this.sfxSlider.value = PlayerPrefs.GetFloat("VolumeSFX");
 
 			if (PlayerPrefs.GetInt("Rumble") == 1) this.rumble.isOn = true;
 			else this.rumble.isOn = false;
@@ -39,9 +40,9 @@ public class OptionsManager : MonoBehaviour
 			PlayerPrefs.SetInt("AdditionalMusic", 0);
 			PlayerPrefs.SetInt("NotifBoard", 1);
 			PlayerPrefs.SetFloat("MouseSensitivity", 0.2f);
-			PlayerPrefs.SetFloat("VolumeVoice", 0.9f);
-			PlayerPrefs.SetFloat("VolumeBGM", 0.9f);
-			PlayerPrefs.SetFloat("VolumeSFX", 0.9f);
+			PlayerPrefs.SetFloat("VolumeVoice", 0f);
+			PlayerPrefs.SetFloat("VolumeBGM", 0f);
+			PlayerPrefs.SetFloat("VolumeSFX", 0f);
 		}
 	}
 
@@ -51,6 +52,7 @@ public class OptionsManager : MonoBehaviour
 		PlayerPrefs.SetFloat("MouseSensitivity", this.sensitivitySlider.value);
 		PlayerPrefs.SetFloat("VolumeVoice", this.voiceSlider.value);
 		PlayerPrefs.SetFloat("VolumeBGM", this.bgmSlider.value);
+		PlayerPrefs.SetFloat("VolumeSFX", this.sfxSlider.value);
 
 		if (this.rumble.isOn) PlayerPrefs.SetInt("Rumble", 1);
 		else PlayerPrefs.SetInt("Rumble", 0);
@@ -68,17 +70,20 @@ public class OptionsManager : MonoBehaviour
 		else PlayerPrefs.SetInt("NotifBoard", 0);
 
 		this.sensitivityPercent = (int)(sensitivitySlider.value*10);
-		this.voiceVolume = (int)(voiceSlider.value*100);
-		this.bgmVolume = (int)(bgmSlider.value*100);
+		this.voiceVolume = (int)(((25*voiceSlider.value)/6)+100);
+		this.bgmVolume = (int)(((25*bgmSlider.value)/6)+100);
+		this.sfxVolume = (int)(((25*sfxSlider.value)/6)+100);
 		this.sensitivityText.text = sensitivityPercent.ToString() + "%";
 		this.voiceText.text = voiceVolume.ToString() + "%";
 		this.bgmText.text = bgmVolume.ToString() + "%";
+		this.sfxText.text = sfxVolume.ToString() + "%";
 	}
 
 	// Token: 0x0400006F RID: 111
 	public Slider sensitivitySlider;
 	public Slider voiceSlider;
 	public Slider bgmSlider;
+	public Slider sfxSlider;
 
 	// Token: 0x04000070 RID: 112
 	public Toggle rumble;
@@ -96,4 +101,6 @@ public class OptionsManager : MonoBehaviour
 	[SerializeField] private TMP_Text voiceText;
 	[SerializeField] private float bgmVolume;
 	[SerializeField] private TMP_Text bgmText;
+	[SerializeField] private float sfxVolume;
+	[SerializeField] private TMP_Text sfxText;
 }
