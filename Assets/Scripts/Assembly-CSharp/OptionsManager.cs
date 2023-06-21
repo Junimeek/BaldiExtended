@@ -4,14 +4,30 @@ using UnityEngine.UI;
 using TMPro;
 
 // Token: 0x0200001B RID: 27
-public class OptionsManager : MonoBehaviour
+public class OptionsManager : MonoBehaviour, IDataPersistence
 {
-	// Token: 0x06000061 RID: 97 RVA: 0x000037B4 File Offset: 0x00001BB4
+	public void LoadData(GameData data)
+	{
+		this.instantReset.isOn = data.isInstantReset;
+		this.sensitivitySlider.value = data.turnSensitivity;
+		this.voiceSlider.value = data.volVoice;
+		this.bgmSlider.value = data.volBGM;
+		this.sfxSlider.value = data.volSFX;
+	}
+
+	public void SaveData(GameData data)
+	{
+		data.isInstantReset = this.instantReset.isOn;
+		data.turnSensitivity = this.sensitivitySlider.value;
+		data.volVoice = this.voiceSlider.value;
+		data.volBGM = this.bgmSlider.value;
+		data.volSFX = this.sfxSlider.value;
+	}
+	
 	private void Awake()
 	{
 		if (PlayerPrefs.HasKey("OptionsSet"))
 		{
-			this.sensitivitySlider.value = PlayerPrefs.GetFloat("MouseSensitivity");
 			this.voiceSlider.value = PlayerPrefs.GetFloat("VolumeVoice");
 			this.bgmSlider.value = PlayerPrefs.GetFloat("VolumeBGM");
 			this.sfxSlider.value = PlayerPrefs.GetFloat("VolumeSFX");
@@ -46,7 +62,6 @@ public class OptionsManager : MonoBehaviour
 		}
 	}
 
-	// Token: 0x06000062 RID: 98 RVA: 0x00003850 File Offset: 0x00001C50
 	private void Update()
 	{
 		PlayerPrefs.SetFloat("MouseSensitivity", this.sensitivitySlider.value);
@@ -79,16 +94,13 @@ public class OptionsManager : MonoBehaviour
 		this.sfxText.text = sfxVolume.ToString() + "%";
 	}
 
-	// Token: 0x0400006F RID: 111
 	public Slider sensitivitySlider;
 	public Slider voiceSlider;
 	public Slider bgmSlider;
 	public Slider sfxSlider;
 
-	// Token: 0x04000070 RID: 112
 	public Toggle rumble;
 
-	// Token: 0x04000071 RID: 113
 	public Toggle analog;
 
 	public Toggle instantReset;

@@ -545,7 +545,7 @@ TextureImporter:
         width: 127
         height: 60
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -566,7 +566,7 @@ TextureImporter:
         width: 127
         height: 60
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -574,6 +574,153 @@ TextureImporter:
       bones: []
       spriteID: e589b68beec682c4b8f0085258d1f4a7
       internalID: 880740002
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SET_DataHeader
+      rect:
+        serializedVersion: 2
+        x: 763
+        y: 369
+        width: 380
+        height: 60
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f31c104e5e1dfa640a0bddcb8cedb82e
+      internalID: -1760858322
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SET_HighScore
+      rect:
+        serializedVersion: 2
+        x: 763
+        y: 308
+        width: 380
+        height: 60
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ce0fa0b78f33ada4594e0ccdf61c6552
+      internalID: 1680019650
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SET_HighScore_Selected
+      rect:
+        serializedVersion: 2
+        x: 763
+        y: 247
+        width: 380
+        height: 60
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ea6dd7eed350a784f96c098dc368c440
+      internalID: -1653117428
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SET_Defaults
+      rect:
+        serializedVersion: 2
+        x: 763
+        y: 186
+        width: 380
+        height: 60
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d68c6232f4a2eb946b2521b70721f4e2
+      internalID: -1882429016
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SET_Defaults_Selected
+      rect:
+        serializedVersion: 2
+        x: 763
+        y: 125
+        width: 380
+        height: 60
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4d31f92151958124ba12d97bda42fcdc
+      internalID: 676099475
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SET_Data
+      rect:
+        serializedVersion: 2
+        x: 763
+        y: 64
+        width: 380
+        height: 60
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 73a7ef9f9894ec3439a2c42646a0486f
+      internalID: 168842065
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SET_Data_Selected
+      rect:
+        serializedVersion: 2
+        x: 763
+        y: 3
+        width: 380
+        height: 60
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ddd42b32c1664f340bfa1b5c58dd7258
+      internalID: 1041166616
       vertices: []
       indices: 
       edges: []
@@ -591,7 +738,9 @@ TextureImporter:
     nameFileIdTable:
       SET_AudioHeader: -491947728
       SET_BGM: 711054493
+      SET_Data_Selected: 1041166616
       SET_Controls: -1480664244
+      SET_Defaults: -1882429016
       SET_Notif: 1354550592
       SET_ExtraMusic_Selected: 2118440370
       SET_Right_Selecte: 1616437163
@@ -600,17 +749,22 @@ TextureImporter:
       SET_Right: 1294232901
       SET_Controls_Selected: -924158053
       SET_Voices: -1397705081
+      SET_HighScore: 1680019650
+      SET_Data: 168842065
       SET_ExtraMusic: 228570839
       SET_BBCROST_Selected: 2115152622
       SET_Voices_Selected: 83336789
+      SET_Defaults_Selected: 676099475
       SET_SFX: -1196720018
       SET_Instant_Selected: 475174679
+      SET_DataHeader: -1760858322
       SET_Notif_Selected: 905721407
       SET_Left_Selected: 1896570705
       SET_GPHeader: 1665371181
       SET_BBCROST: 500029063
       SET_SFX_Selected: 880740002
       SET_BGM_Selected: 2000701839
+      SET_HighScore_Selected: -1653117428
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0
