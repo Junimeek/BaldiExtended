@@ -10,9 +10,18 @@ public class DelayedSave : MonoBehaviour
 
     private void Start()
     {
-        this.dataManager = FindObjectOfType<DataPersistenceManager>();
+        // this.dataManager = FindObjectOfType<DataPersistenceManager>();
         saveCanvas.SetActive(false);
         isSaving = false;
+    }
+
+    private IEnumerator AssignDataManager()
+    {
+        while (this.dataManager == null)
+        {
+            this.dataManager = FindObjectOfType<DataPersistenceManager>();
+            yield return null;
+        }
     }
 
     public void DelayedSaveFunction()
