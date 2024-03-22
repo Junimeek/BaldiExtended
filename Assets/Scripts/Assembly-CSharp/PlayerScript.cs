@@ -15,6 +15,8 @@ public class PlayerScript : MonoBehaviour
 		{
 			this.sensitivityActive = true;
 		}
+		this.mouseSensitivity = PlayerPrefs.GetFloat("MouseSensitivity");
+		
 		this.height = base.transform.position.y;
 		this.stamina = this.maxStamina;
 		this.playerRotation = base.transform.rotation;
@@ -30,7 +32,7 @@ public class PlayerScript : MonoBehaviour
 	// Token: 0x060009D4 RID: 2516 RVA: 0x00025D04 File Offset: 0x00024104
 	private void Update()
 	{
-		this.mouseSensitivity = PlayerPrefs.GetFloat("MouseSensitivity");
+		
 
 		base.transform.position = new Vector3(base.transform.position.x, this.height, base.transform.position.z);
 		this.MouseMove();
