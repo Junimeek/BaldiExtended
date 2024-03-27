@@ -239,14 +239,10 @@ public class GameControllerScript : MonoBehaviour
 		}
 	}
 
-	private void FixedUpdate()
+	public void UpdatePrinceyTrigger(int type, bool triggerSetting)
 	{
-
-	}
-
-	public void UpdatePrinceyTrigger(bool triggerSetting)
-	{
-		isPrinceyTriggerShared = triggerSetting;
+		if (type == 1) this.isPrinceyTriggerShared = triggerSetting;
+		else if (type == 2) this.isPrinceyIgnore = triggerSetting;
 	}
 
 	// Token: 0x06000966 RID: 2406 RVA: 0x00021F8C File Offset: 0x0002038C
@@ -930,6 +926,7 @@ public class GameControllerScript : MonoBehaviour
 
 	[Header("Detention")]
 	public bool isPrinceyTriggerShared;
+	public bool isPrinceyIgnore;
 	public Vector3 detentionPlayerPos;
 	public Vector3 detentionPrincipalPos;
 	
