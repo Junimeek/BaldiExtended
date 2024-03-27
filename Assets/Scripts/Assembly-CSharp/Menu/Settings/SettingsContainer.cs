@@ -49,9 +49,9 @@ public class SettingsContainer : MonoBehaviour
             this.freeRun = false;
 
             this.turnSensitivity = 0.2f;
-            this.volumeVoice = 1f;
-            this.volumeBGM = 1f;
-            this.volumeSFX = 1f;
+            this.volumeVoice = 0f;
+            this.volumeBGM = 0f;
+            this.volumeSFX = 0f;
 
             this.instantReset = true;
             this.additionalMusic = false;

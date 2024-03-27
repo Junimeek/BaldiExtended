@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Linq.Expressions;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -25,6 +26,7 @@ public class GameControllerScript : MonoBehaviour
 	{
 		debugActions = FindObjectOfType<DebugMenuActions>();
 		debugScreen = FindObjectOfType<DebugScreenSwitch>();
+		audioManager = FindObjectOfType<AudioManager>();
 	}
 
 	// Token: 0x06000964 RID: 2404 RVA: 0x00021AC4 File Offset: 0x0001FEC4
@@ -73,7 +75,7 @@ public class GameControllerScript : MonoBehaviour
 			{
 				this.UnpauseGame();
 			}
-			if (!this.gamePaused & Time.timeScale != 1f)
+			if (!this.gamePaused & Time.timeScale != 1f && !this.isSlowmo)
 			{
 				Time.timeScale = 1f;
 			}
@@ -219,6 +221,32 @@ public class GameControllerScript : MonoBehaviour
 		{
 			DebugStuff();
 		}
+
+		if (Input.GetKeyDown(KeyCode.J))
+		{
+			if (!this.isSlowmo)
+			{
+				Time.timeScale = 0.5f;
+				this.isSlowmo = true;
+				Debug.Log("time is now " + Time.timeScale.ToString());
+			}
+			else
+			{
+				Time.timeScale = 1f;
+				this.isSlowmo = false;
+				Debug.Log("time is now " + Time.timeScale.ToString());
+			}
+		}
+	}
+
+	private void FixedUpdate()
+	{
+
+	}
+
+	public void UpdatePrinceyTrigger(bool triggerSetting)
+	{
+		isPrinceyTriggerShared = triggerSetting;
 	}
 
 	// Token: 0x06000966 RID: 2406 RVA: 0x00021F8C File Offset: 0x0002038C
@@ -353,18 +381,18 @@ public class GameControllerScript : MonoBehaviour
 			{
 				if (notebooks > 2)
 				{
-					audioManager.SetVolume(1);
+					if (audioManager != null) audioManager.SetVolume(1);
 					MusicPlayer(0,0);
 					MusicPlayer(2,2);
 				}
 				else if (notebooks == 1)
 				{
-					audioManager.SetVolume(0);
+					if (audioManager != null) audioManager.SetVolume(0);
 				}
 			}
 			else
 			{
-				audioManager.SetVolume(0);
+				if (audioManager != null)  audioManager.SetVolume(0);
 			}
 		}
 	}
@@ -373,7 +401,7 @@ public class GameControllerScript : MonoBehaviour
 	public void DeactivateLearningGame(GameObject subject)
 	{
 		this.mathMusicScript.StopSong();
-		audioManager.SetVolume(0);
+		if (audioManager != null) audioManager.SetVolume(0);
 		this.camera.cullingMask = this.cullingMask; //Sets the cullingMask to Everything
 		this.learningActive = false;
 		UnityEngine.Object.Destroy(subject);
@@ -391,7 +419,7 @@ public class GameControllerScript : MonoBehaviour
 		if (this.spoopMode && notebooks >= 2) // my music stuff
 		{
 			MusicPlayer(0,0);
-			audioManager.SetVolume(0);
+			if (audioManager != null) audioManager.SetVolume(0);
 			
 			if (this.notebooks < this.daFinalBookCount)
 			{
@@ -819,117 +847,66 @@ public class GameControllerScript : MonoBehaviour
 		}
 	}
 
-	
 
-	// Token: 0x040005F7 RID: 1527
-	
-
-	// Token: 0x040005F8 RID: 1528
-	
-
-	// Token: 0x040005F9 RID: 1529
-	public Transform playerTransform;
-
-	// Token: 0x040005FA RID: 1530
-	public Transform cameraTransform;
-
-	// Token: 0x040005FB RID: 1531
-	public Camera camera;
-
-	// Token: 0x040005FC RID: 1532
-	private int cullingMask;
-
-	// Token: 0x040005FD RID: 1533
-	
-
-	// Token: 0x04000601 RID: 1537
-	public GameObject baldiTutor;
-
-	// Token: 0x04000602 RID: 1538
-	public GameObject baldi;
-
-	// Token: 0x04000603 RID: 1539
-	
-
-	// Token: 0x04000604 RID: 1540
-	
-
-	// Token: 0x04000607 RID: 1543
-	public GameObject principal;
-
-	// Token: 0x04000608 RID: 1544
-	public GameObject crafters;
-
-	// Token: 0x04000609 RID: 1545
-	public GameObject playtime;
-
-	// Token: 0x0400060A RID: 1546
-	
-
-	// Token: 0x0400060B RID: 1547
-	public GameObject gottaSweep;
-
-	// Token: 0x0400060C RID: 1548
-	public GameObject bully;
-
-	// Token: 0x0400060D RID: 1549
-	public GameObject firstPrize;
-
-	// Token: 0x0400060D RID: 1549
-	public GameObject TestEnemy;
-
-	// Token: 0x0400060E RID: 1550
-	
-
-	// Token: 0x0400060F RID: 1551
-	public GameObject quarter;
-
-	// Token: 0x04000610 RID: 1552
-	
-
-	// Token: 0x04000611 RID: 1553
-	public RectTransform boots;
-
-	// Token: 0x04000612 RID: 1554
-	public string mode;
+	[Header("Game State")]
 	[SerializeField] private string curMap;
+	public string mode;
+	public bool spoopMode;
+	public bool finaleMode;
+	public bool debugMode;
+	public bool mouseLocked;
+	public int exitsReached;
+	private bool gamePaused;
+	public bool learningActive;
+	public float gameOverDelay;
+	public bool isSlowmo;
 
-	// Token: 0x04000613 RID: 1555
+
+	[Header("UI")]
+	public TMP_Text notebookCount;
+	public GameObject pauseMenu;
+	public GameObject highScoreText;
+	public GameObject warning;
+	public TMP_Text staminaPercentText;
+	public GameObject reticle;
+	public RectTransform itemSelect;
+	private int[] itemSelectOffset;
+
+
+	[Header("Noteboos")]
 	public int notebooks;
 
 	public int daFinalBookCount;
-
-	// Token: 0x04000614 RID: 1556
 	public GameObject[] notebookPickups;
-
-	// Token: 0x04000615 RID: 1557
 	public int failedNotebooks;
 
-	// Token: 0x04000616 RID: 1558
-	public bool spoopMode;
 
-	// Token: 0x04000617 RID: 1559
-	public bool finaleMode;
+	[Header("Player")]
+	public Transform playerTransform;
+	public Transform cameraTransform;
+	public Camera camera;
+	private int cullingMask;
 
-	// Token: 0x04000618 RID: 1560
-	public bool debugMode;
 
-	// Token: 0x04000619 RID: 1561
-	public bool mouseLocked;
+	[Header("Characters")]
+	public GameObject baldiTutor;
+	public GameObject baldi;
+	public GameObject principal;
+	public GameObject crafters;
+	public GameObject playtime;
+	public GameObject gottaSweep;
+	public GameObject bully;
+	public GameObject firstPrize;
+	public GameObject TestEnemy;
 
-	// Token: 0x0400061A RID: 1562
-	public int exitsReached;
 
-	// Token: 0x0400061B RID: 1563
-	public int itemSelected;
-
-	// Token: 0x0400061C RID: 1564
+	[Header("Items")]
 	public int[] item = new int[5];
-
-	// Token: 0x0400061D RID: 1565
 	public RawImage[] itemSlot = new RawImage[5];
-
-	// Token: 0x0400061E RID: 1566
+	public UnityEngine.Object[] items = new UnityEngine.Object[10];
+	public Texture[] itemTextures = new Texture[10];
+	public int itemSelected;
+	public TMP_Text itemText;
 	private string[] itemNames = new string[]
 	{
 		"Nothing",
@@ -945,47 +922,14 @@ public class GameControllerScript : MonoBehaviour
 		"Big Ol' Boots",
 		"Speedy Sneakers"
 	};
-
-	// Token: 0x0400061F RID: 1567
-	public TMP_Text itemText;
-
-	// Token: 0x04000620 RID: 1568
-	public UnityEngine.Object[] items = new UnityEngine.Object[10];
-
-	// Token: 0x04000621 RID: 1569
-	public Texture[] itemTextures = new Texture[10];
-
-	// Token: 0x04000622 RID: 1570
+	public GameObject quarter;
 	public GameObject bsodaSpray;
-
-	// Token: 0x04000623 RID: 1571
+	public RectTransform boots;
 	public GameObject alarmClock;
 
-	// Token: 0x04000624 RID: 1572
-	public TMP_Text notebookCount;
-
-	// Token: 0x04000625 RID: 1573
-	public GameObject pauseMenu;
-
-	// Token: 0x04000626 RID: 1574
-	public GameObject highScoreText;
-
-	// Token: 0x04000627 RID: 1575
-	public GameObject warning;
-	public TMP_Text staminaPercentText;
-
-	// Token: 0x04000628 RID: 1576
-	public GameObject reticle;
-
-	// Token: 0x04000629 RID: 1577
-	public RectTransform itemSelect;
-	private int[] itemSelectOffset;
-	private bool gamePaused;
-	public bool learningActive;
-	public float gameOverDelay;
-	//private Player playerInput;
 
 	[Header("Detention")]
+	public bool isPrinceyTriggerShared;
 	public Vector3 detentionPlayerPos;
 	public Vector3 detentionPrincipalPos;
 	

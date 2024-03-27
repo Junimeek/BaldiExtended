@@ -9,6 +9,7 @@ public class SettingsLoader : MonoBehaviour
     {
         curSetting = null;
         this.container = FindObjectOfType<SettingsContainer>();
+        this.audioManager = FindObjectOfType<AudioManager>();
         Scene curScene = SceneManager.GetActiveScene();
         sceneName = curScene.name;
         
@@ -71,9 +72,11 @@ public class SettingsLoader : MonoBehaviour
     public void SaveSettings()
     {
         container.RegistrySave();
+        audioManager.GetVolume();
     }
 
     [SerializeField] private SettingsContainer container;
+    [SerializeField] private AudioManager audioManager;
     [SerializeField] private string sceneName;
     [SerializeField] private string curSetting;
 

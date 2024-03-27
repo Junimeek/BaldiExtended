@@ -1,16 +1,26 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
-using UnityEngine.UI;
 
 public class AudioManager : MonoBehaviour
 {
+    [SerializeField] private static AudioManager instance;
     [SerializeField] private AudioMixer mixer;
-    [SerializeField] private BaldiScript baldi;
     [SerializeField] private float volumeBGM;
     [SerializeField] private float volumeSFX;
     [SerializeField] private float volumeVoice;
+
+    private void Awake()
+    {
+        if (instance == null)
+        {
+            instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
 
     private void Start()
     {
@@ -22,6 +32,14 @@ public class AudioManager : MonoBehaviour
         if (volumeSFX <= -24f) volumeSFX = -80f;
         if (volumeVoice <= -24f) volumeVoice = -80f;
 
+        SetVolume(0);
+    }
+
+    public void GetVolume()
+    {
+        volumeBGM = PlayerPrefs.GetFloat("VolumeBGM");
+        volumeSFX = PlayerPrefs.GetFloat("VolumeSFX");
+        volumeVoice = PlayerPrefs.GetFloat("VolumeVoice");
         SetVolume(0);
     }
 

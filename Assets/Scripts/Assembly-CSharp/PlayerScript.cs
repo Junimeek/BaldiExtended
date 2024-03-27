@@ -32,7 +32,11 @@ public class PlayerScript : MonoBehaviour
 	// Token: 0x060009D4 RID: 2516 RVA: 0x00025D04 File Offset: 0x00024104
 	private void Update()
 	{
-		
+		if (gc.isSlowmo) playerDeltaTimeScale = Time.deltaTime * 2;
+		else playerDeltaTimeScale = Time.deltaTime;
+
+		if (gc.isSlowmo) playerTimeScale = Time.timeScale * 2;
+		else playerTimeScale = Time.timeScale;
 
 		base.transform.position = new Vector3(base.transform.position.x, this.height, base.transform.position.z);
 		this.MouseMove();
@@ -62,7 +66,7 @@ public class PlayerScript : MonoBehaviour
 	private void MouseMove()
 	{
 		this.playerRotation.eulerAngles = new Vector3(this.playerRotation.eulerAngles.x, this.playerRotation.eulerAngles.y, this.fliparoo);
-		this.playerRotation.eulerAngles = this.playerRotation.eulerAngles + Vector3.up * Input.GetAxis("Mouse X") * this.mouseSensitivity * Time.timeScale * this.flipaturn;
+		this.playerRotation.eulerAngles = this.playerRotation.eulerAngles + Vector3.up * Input.GetAxis("Mouse X") * this.mouseSensitivity * this.playerTimeScale * this.flipaturn;
 		base.transform.rotation = this.playerRotation;
 	}
 
@@ -109,7 +113,9 @@ public class PlayerScript : MonoBehaviour
 				this.sensitivity = 1f;
 			}
 		}
-		this.playerSpeed *= Time.deltaTime;
+		if (gc.isSlowmo) this.playerSpeed *= this.playerDeltaTimeScale;
+		else this.playerSpeed *= this.playerDeltaTimeScale;
+
 		this.moveDirection = (vector + vector2).normalized * this.playerSpeed * this.sensitivity;
 		if (!(!this.jumpRope & !this.sweeping & !this.hugging))
 		{
@@ -142,11 +148,11 @@ public class PlayerScript : MonoBehaviour
 
 				if (!Input.GetButton("Run"))
 				{
-					speedSlider.value -= this.shoeRate * Time.deltaTime;
+					speedSlider.value -= this.shoeRate * playerDeltaTimeScale;
 				}
 				else if (Input.GetButton("Run"))
 				{
-					speedSlider.value -= (this.shoeRate * 2) * Time.deltaTime;
+					speedSlider.value -= (this.shoeRate * 2) * playerDeltaTimeScale;
 				}
 
 				if (speedSlider.value <= 0f && this.isSpeedShoes)
@@ -166,7 +172,7 @@ public class PlayerScript : MonoBehaviour
 
 			if (Input.GetButton("Run") & this.stamina > 0f && !this.isInfiniteStamina)
 			{
-				this.stamina -= this.staminaRate * Time.deltaTime;
+				this.stamina -= this.staminaRate * playerDeltaTimeScale;
 			}
 			if (this.stamina < 0f & this.stamina > -5f)
 			{
@@ -175,7 +181,7 @@ public class PlayerScript : MonoBehaviour
 		}
 		else if ((this.stamina < this.maxStamina) || (this.stamina < this.maxStamina && this.hugging))
 		{
-			this.stamina += (this.staminaRate*2) * Time.deltaTime;
+			this.stamina += (this.staminaRate*2) * playerDeltaTimeScale;
 		}
 		this.staminaBar.value = this.stamina / this.maxStamina * 100f;
 	}
@@ -265,7 +271,7 @@ public class PlayerScript : MonoBehaviour
 	{
 		if (this.guilt > 0f)
 		{
-			this.guilt -= Time.deltaTime;
+			this.guilt -= playerDeltaTimeScale;
 		}
 	}
 
@@ -365,6 +371,8 @@ public class PlayerScript : MonoBehaviour
 
 	// Token: 0x040006FA RID: 1786
 	public float mouseSensitivity;
+	[SerializeField] private float playerDeltaTimeScale;
+	[SerializeField] private float playerTimeScale;
 
 	// Token: 0x040006FB RID: 1787
 	public float walkSpeed;
