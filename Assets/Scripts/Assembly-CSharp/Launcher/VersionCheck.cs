@@ -4,6 +4,8 @@ using UnityEngine.Networking;
 using System.Collections;
 using TMPro;
 
+// This code is based on code by Hamza Herbou: https://www.youtube.com/watch?v=z-H37N6Mjlk
+
 namespace UpgradeSystem
 {
     struct GameData
@@ -26,6 +28,7 @@ namespace UpgradeSystem
         public bool isNightly;
         public string stableBuild;
         public string nightlyBuild;
+        [SerializeField] private string curVersion;
         [SerializeField] [TextArea(1,5)] string jsonDataURL;
         [SerializeField] [TextArea(1,5)] string stableURL;
         [SerializeField] [TextArea(1,5)] string nightlyURL;
@@ -40,6 +43,9 @@ namespace UpgradeSystem
 
             if (isNightly) jsonDataURL = nightlyURL;
             else jsonDataURL = stableURL;
+
+            if (isNightly) curVersion = nightlyBuild;
+            else curVersion = stableBuild;
 
             StartCoroutine(CheckForUpdates());
         }
@@ -58,7 +64,7 @@ namespace UpgradeSystem
                 if (!request.isNetworkError)
                 {
                     latestGameData = JsonUtility.FromJson<GameData> (request.downloadHandler.text);
-                    if (!string.IsNullOrEmpty(latestGameData.Version) && !Application.version.Equals (latestGameData.Version))
+                    if (!string.IsNullOrEmpty(latestGameData.Version) && curVersion != latestGameData.Version)
                     {
                         descriptionText.text = latestGameData.Description;
                         ShowPopup();

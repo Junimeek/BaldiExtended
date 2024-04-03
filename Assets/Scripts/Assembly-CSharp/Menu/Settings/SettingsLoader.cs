@@ -29,6 +29,8 @@ public class SettingsLoader : MonoBehaviour
             sliderSensitivity.value = container.turnSensitivity;
             toggleInstantReset.isOn = container.instantReset;
             toggleNotifBoard.isOn = container.notifBoard;
+
+            //ReadJson("settings_gp");
         }
 
         if (loadType == "menuAudio")
@@ -75,10 +77,59 @@ public class SettingsLoader : MonoBehaviour
         audioManager.GetVolume();
     }
 
+/*
+    public void SaveJson(string file)
+    {
+        settingsContainer = new SettingsContainer();
+
+        switch(file)
+        {
+            case "settings_gp":
+                Debug.Log("Saving settings...");
+
+                if (DataService.SaveData("/settings.json", settingsContainer, false))
+                {
+                    Debug.Log("Saved Settings");
+                }
+                else
+                {
+                    Debug.LogError("Failed to save.");
+                }
+            break;
+            default:
+                Debug.LogError("save input is empty you dumb bitch");
+            break;
+        }
+    }
+
+    public void ReadJson(string file)
+    {
+        switch(file)
+        {
+            case "settings_gp":
+                try
+                {
+                    SettingsContainer data = DataService.LoadData<SettingsContainer>("/settings.json", false);
+                    Debug.Log("Settings Loaded.");
+                }
+                catch
+                {
+                    Debug.LogError("Failed to load settings.");
+                }
+            break;
+            default:
+                Debug.LogError("rrrrrrrrr");
+            break;
+        }
+    }
+*/
+
     [SerializeField] private SettingsContainer container;
     [SerializeField] private AudioManager audioManager;
     [SerializeField] private string sceneName;
     [SerializeField] private string curSetting;
+    //private IDataService DataService = new JsonDataService();
+    //private SettingsContainer settingsContainer;
 
     [Header("Menus")]
     [SerializeField] private GameObject canvasGP;
