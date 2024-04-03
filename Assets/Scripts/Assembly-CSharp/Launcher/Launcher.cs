@@ -15,6 +15,7 @@ public class Launcher : MonoBehaviour
 
     private void Update()
     {
+        // This is only here because OBS doesn't pick up the game right away when launching
         if (allowInterruption && Input.GetKeyDown(KeyCode.H))
         {
             isInterrupted = true;
@@ -127,7 +128,7 @@ public class Launcher : MonoBehaviour
         basicallyLogo.SetActive(false);
         juniLogo.SetActive(true);
 
-        float time2 = 1.7f;
+        float time2 = 1f;
 
         while (time2 > 0f)
         {
