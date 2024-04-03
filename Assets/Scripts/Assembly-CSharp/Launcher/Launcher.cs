@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UpgradeSystem;
+using UnityEngine.UI;
+using TMPro;
 
 public class Launcher : MonoBehaviour
 {
@@ -11,6 +14,10 @@ public class Launcher : MonoBehaviour
         logoCanvas.SetActive(false);
         launcherCanvas.SetActive(false);
         StartCoroutine(WaitForStart());
+
+        if (updateScript.isNightly)
+            this.versionText.text = "Build: " + updateScript.nightlyBuild;
+        else this.versionText.text = string.Empty;
     }
 
     private void Update()
@@ -152,5 +159,7 @@ public class Launcher : MonoBehaviour
     [SerializeField] private GameObject stopCanvas;
     [SerializeField] private GameObject basicallyLogo;
     [SerializeField] private GameObject juniLogo;
+    [SerializeField] private TMP_Text versionText;
     [SerializeField] private LoadingManager loadingManager;
+    [SerializeField] private VersionCheck updateScript;
 }

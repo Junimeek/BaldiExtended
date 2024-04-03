@@ -15,21 +15,32 @@ namespace UpgradeSystem
 
     public class VersionCheck : MonoBehaviour
     {
-        [Header ("## UI References :")]
-        [SerializeField] private GameObject updateCanvas;
+        [Header ("UI")]
+        [SerializeField] private GameObject stableCanvas;
+        [SerializeField] private GameObject nightlyCanvas;
         [SerializeField] private Button updateButton;
         [SerializeField] private TextMeshProUGUI descriptionText;
 
         [Space(20f)]
-        [Header ("## Settings")]
-        [SerializeField] [TextArea (1,5)] string jsonDataURL;
+        [Header ("Settings")]
+        public bool isNightly;
+        public string stableBuild;
+        public string nightlyBuild;
+        [SerializeField] [TextArea(1,5)] string jsonDataURL;
+        [SerializeField] [TextArea(1,5)] string stableURL;
+        [SerializeField] [TextArea(1,5)] string nightlyURL;
 
         GameData latestGameData;
 
         private void Start()
         {
             StopAllCoroutines();
-            updateCanvas.SetActive(false);
+            stableCanvas.SetActive(false);
+            nightlyCanvas.SetActive(false);
+
+            if (isNightly) jsonDataURL = nightlyURL;
+            else jsonDataURL = stableURL;
+
             StartCoroutine(CheckForUpdates());
         }
 
@@ -59,9 +70,12 @@ namespace UpgradeSystem
 
         private void ShowPopup()
         {
-            updateButton.onClick.AddListener ( () => {
+            updateButton.onClick.AddListener (() => {
                 Application.OpenURL(latestGameData.Url);
             });
+
+            if (isNightly) nightlyCanvas.SetActive(true);
+            else stableCanvas.SetActive(true);
         }
 
         private void OnDestroy()
