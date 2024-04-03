@@ -50,8 +50,7 @@ public class SweepScript : MonoBehaviour
 	// Token: 0x060009F0 RID: 2544 RVA: 0x0002691E File Offset: 0x00024D1E
 	private void Wander()
 	{
-		this.wanderer.GetNewTargetHallway();
-		this.agent.SetDestination(this.wanderTarget.position);
+		this.agent.SetDestination(this.wanderer.NewTarget("Hallway"));
 		this.coolDown = 1f;
 		this.wanders++;
 	}
@@ -73,9 +72,6 @@ public class SweepScript : MonoBehaviour
 			this.audioDevice.PlayOneShot(this.aud_Sweep);
 		}
 	}
-
-	// Token: 0x0400071B RID: 1819
-	public Transform wanderTarget;
 
 	// Token: 0x0400071C RID: 1820
 	public AILocationSelectorScript wanderer;

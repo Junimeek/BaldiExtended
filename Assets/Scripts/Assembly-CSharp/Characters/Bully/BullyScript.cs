@@ -57,12 +57,10 @@ public class BullyScript : MonoBehaviour
 	// Token: 0x06000017 RID: 23 RVA: 0x00002588 File Offset: 0x00000988
 	private void Activate()
 	{
-		this.GetNewTarget(); //Get a hallway position
-		base.transform.position = this.wanderTarget.position + new Vector3(0f, 5f, 0f); // Go to the wanderTarget + 5 on the Y axis
+		base.transform.position = this.wanderer.NewTarget("Bully") + new Vector3(0f, 5f, 0f); // Go to the wanderTarget + 5 on the Y axis
 		while ((base.transform.position - this.player.position).magnitude < 20f) // While the Bully is close to the player
 		{
-			this.GetNewTarget(); //Get a new target
-			base.transform.position = this.wanderTarget.position + new Vector3(0f, 5f, 0f);// Go to the wanderTarget + 5 on the Y axis
+			base.transform.position = this.wanderer.NewTarget("Bully") + new Vector3(0f, 5f, 0f);// Go to the wanderTarget + 5 on the Y axis
         } //This is here to prevent the bully from spawning ontop iof the player
 		this.active = true; //Set the bully to active
 	}
@@ -110,12 +108,6 @@ public class BullyScript : MonoBehaviour
 		this.spoken = false; //Reset spoken
 	}
 
-	public void GetNewTarget()
-	{
-		this.id = Mathf.RoundToInt(UnityEngine.Random.Range(0f, spawnCount-1f)); //Get a random number between 0 and 28
-		base.transform.position = this.newLocation[this.id].position; //Set it's location to a position in a list of positions using the ID variable that just got set.
-	}
-
 	// Token: 0x04000012 RID: 18
 	public Transform player;
 
@@ -124,9 +116,6 @@ public class BullyScript : MonoBehaviour
 
 	// Token: 0x04000014 RID: 20
 	public Renderer bullyRenderer;
-
-	// Token: 0x04000015 RID: 21
-	public Transform wanderTarget;
 
 	// Token: 0x04000016 RID: 22
 	public AILocationSelectorScript wanderer;

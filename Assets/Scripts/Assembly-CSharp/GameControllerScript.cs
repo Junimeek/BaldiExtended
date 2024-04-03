@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 using TMPro;
 using UnityEngine;
@@ -378,13 +379,15 @@ public class GameControllerScript : MonoBehaviour
 				if (notebooks > 2)
 				{
 					if (audioManager != null) audioManager.SetVolume(1);
-					MusicPlayer(0,0);
-					MusicPlayer(2,2);
+
+					if (!this.disableSongInterruption)
+					{
+						MusicPlayer(0,0);
+						MusicPlayer(2,2);
+					}
 				}
 				else if (notebooks == 1)
-				{
 					if (audioManager != null) audioManager.SetVolume(0);
-				}
 			}
 			else
 			{
@@ -414,7 +417,13 @@ public class GameControllerScript : MonoBehaviour
 
 		if (this.spoopMode && notebooks >= 2) // my music stuff
 		{
-			MusicPlayer(0,0);
+			if (notebooks >= 2 && notebooks < this.daFinalBookCount && this.disableSongInterruption)
+			{
+				MusicPlayer(3,0);
+				return;
+			}
+			else MusicPlayer(0,0);
+
 			if (audioManager != null) audioManager.SetVolume(0);
 			
 			if (this.notebooks < this.daFinalBookCount)
@@ -776,7 +785,8 @@ public class GameControllerScript : MonoBehaviour
 		Camera.main.GetComponent<CameraScript>().offset = new Vector3(0f, -1f, 0f);
 	}
 
-	public void MusicPlayer(int songType, int SongId) // 0 = Stop All, 1 = school, 2 = learn
+	// 0 = Stop All, 1 = school, 2 = learn, 3 = uninterrupted school
+	public void MusicPlayer(int songType, int SongId)
 	{
 		if (songType == 0) // stop all
 		{
@@ -798,10 +808,7 @@ public class GameControllerScript : MonoBehaviour
 		}
 		else if (songType == 1 && !this.finaleMode) // schoolhouse
 		{
-			if (SongId == 1)
-			{
-				this.schoolMusic.Play();
-			}
+			if (SongId == 1) this.schoolMusic.Play();
 			else if (SongId >= 2 && PlayerPrefs.GetInt("AdditionalMusic") == 1)
 			{
 				if (SongId == 2) this.notebook2.Play();
@@ -816,19 +823,25 @@ public class GameControllerScript : MonoBehaviour
 				else if (SongId == 11) this.notebook11.Play();
 				else if (SongId == 12) this.notebook12.Play();
 			}
-			
 		}
 		else if (songType == 2) // math game
 		{
-			if (SongId == 1)
-			{
-				this.learnMusic.Play();
-			}
-			else if (SongId == 2)
-			{
-				if (PlayerPrefs.GetInt("AdditionalMusic") == 1) this.spoopLearn.Play();
-			}
+			if (SongId == 1) this.learnMusic.Play();
+			else if (SongId == 2 && !this.disableSongInterruption && PlayerPrefs.GetInt("AdditionalMusic") == 1)
+				this.spoopLearn.Play();
 		}
+		else if (songType == 3)
+			if (!this.notebook2.isPlaying && !this.notebook3.isPlaying) StartCoroutine(UninterruptedMusic());
+			
+	}
+
+	private IEnumerator UninterruptedMusic()
+	{
+		this.notebook2.Play();
+
+		while (this.notebook2.isPlaying) yield return null;
+
+		this.notebook3.Play();
 	}
 
 	private void DebugStuff()
@@ -955,6 +968,7 @@ public class GameControllerScript : MonoBehaviour
 
 
 	[Header("Music")]
+	[SerializeField] private bool disableSongInterruption;
 	public AudioSource schoolMusic;
 	public AudioSource escapeMusic;
 	public AudioSource endlessMusic;

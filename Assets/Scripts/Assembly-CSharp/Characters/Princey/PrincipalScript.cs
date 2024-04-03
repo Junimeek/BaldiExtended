@@ -75,8 +75,7 @@ public class PrincipalScript : MonoBehaviour
 	private void Wander()
 	{
 		this.playerScript.principalBugFixer = 1;
-		this.wanderer.GetNewTarget();
-		this.agent.SetDestination(this.wanderTarget.position);
+		this.agent.SetDestination(this.wanderer.NewTarget("Princey"));
 		if (this.agent.isStopped)
 		{
 			this.agent.isStopped = false;
@@ -201,9 +200,6 @@ public class PrincipalScript : MonoBehaviour
 
 	// Token: 0x040006BE RID: 1726
 	public BaldiScript baldiScript;
-
-	// Token: 0x040006BF RID: 1727
-	public Transform wanderTarget;
 
 	// Token: 0x040006C0 RID: 1728
 	public AILocationSelectorScript wanderer;

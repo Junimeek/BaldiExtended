@@ -112,8 +112,7 @@ public class BaldiScript : MonoBehaviour
 	// Token: 0x060009A6 RID: 2470 RVA: 0x000247D0 File Offset: 0x00022BD0
 	private void Wander()
 	{
-		this.wanderer.GetNewTarget(); //Get a new location
-		this.agent.SetDestination(this.wanderTarget.position); //Head towards the position of the wanderTarget object
+		this.agent.SetDestination(this.wanderer.NewTarget("Baldi")); //Head towards the position of the wanderTarget object
 		this.coolDown = 1f; //Set the cooldown
 		this.currentPriority = 0f;
 	}
@@ -259,9 +258,6 @@ public class BaldiScript : MonoBehaviour
 
 	// Token: 0x04000691 RID: 1681
 	public Transform player;
-
-	// Token: 0x04000692 RID: 1682
-	public Transform wanderTarget;
 
 	// Token: 0x04000693 RID: 1683
 	public AILocationSelectorScript wanderer;

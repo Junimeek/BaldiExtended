@@ -44,8 +44,7 @@ public class AgentTest : MonoBehaviour
 	// Token: 0x0600099C RID: 2460 RVA: 0x0002440D File Offset: 0x0002280D
 	private void Wander()
 	{
-		this.wanderer.GetNewTarget(); //Get a new target on the map
-		this.agent.SetDestination(this.wanderTarget.position); //Set its destination to position of the wanderTarget
+		this.agent.SetDestination(this.wanderer.NewTarget("Text")); //Set its destination to position of the wanderTarget
 		this.coolDown = 1f;
 	}
 

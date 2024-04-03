@@ -69,8 +69,7 @@ public class PlaytimeScript : MonoBehaviour
 	// Token: 0x0600006B RID: 107 RVA: 0x00003BCC File Offset: 0x00001FCC
 	private void Wander()
 	{
-		this.wanderer.GetNewTargetHallway();
-		this.agent.SetDestination(this.wanderTarget.position);
+		this.agent.SetDestination(this.wanderer.NewTarget("Hallway"));
 		this.agent.speed = 15f;
 		this.playerSpotted = false;
 		this.audVal = Mathf.RoundToInt(UnityEngine.Random.Range(0f, 1f));
@@ -123,10 +122,6 @@ public class PlaytimeScript : MonoBehaviour
 
 	// Token: 0x0400007B RID: 123
 	public PlayerScript ps;
-
-	// Token: 0x0400007C RID: 124
-	public Transform wanderTarget;
-
 	// Token: 0x0400007D RID: 125
 	public AILocationSelectorScript wanderer;
 

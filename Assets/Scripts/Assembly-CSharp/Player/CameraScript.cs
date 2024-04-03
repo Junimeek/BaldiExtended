@@ -7,6 +7,7 @@ public class CameraScript : MonoBehaviour
 	// Token: 0x0600092D RID: 2349 RVA: 0x00020CC4 File Offset: 0x0001F0C4
 	private void Start()
 	{
+		cameraObject = base.GetComponent<Camera>();
 		this.offset = base.transform.position - this.player.transform.position; //Defines the offset
 	}
 
@@ -27,14 +28,11 @@ public class CameraScript : MonoBehaviour
 			}
 			this.jumpHeightV3 = new Vector3(0f, this.jumpHeight, 0f); //Turn the float into a vector
 		}
-		else if (Input.GetButton("Look Behind"))
-		{
-			this.lookBehind = 180; //Look behind you
-		}
-		else
-		{
-			this.lookBehind = 0; //Don't look behind you
-		}
+		else if (Input.GetButton("Look Behind")) this.lookBehind = 180; //Look behind you
+		else this.lookBehind = 0; //Don't look behind you
+
+		if (Input.GetKey(KeyCode.C)) this.zoom = 15;
+		else this.zoom = 60;
 	}
 
 	// Token: 0x0600092F RID: 2351 RVA: 0x00020DD8 File Offset: 0x0001F1D8
@@ -61,6 +59,8 @@ public class CameraScript : MonoBehaviour
 			base.transform.position = this.player.transform.position + this.offset + this.jumpHeightV3; //Apply the jump rope vector onto the normal offset
 			base.transform.rotation = this.player.transform.rotation; //Rotate based on player direction
 		}
+
+		this.cameraObject.fieldOfView = this.zoom;
 	}
 
 	// Token: 0x040005B0 RID: 1456
@@ -92,5 +92,8 @@ public class CameraScript : MonoBehaviour
 
 	// Token: 0x040005B9 RID: 1465
 	public Vector3 jumpHeightV3;
+
+	[SerializeField] private Camera cameraObject;
+	[SerializeField] private int zoom;
 
 }
