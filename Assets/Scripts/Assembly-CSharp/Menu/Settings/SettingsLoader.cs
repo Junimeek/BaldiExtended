@@ -2,6 +2,7 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using System.Collections;
 
 public class SettingsLoader : MonoBehaviour
 {
@@ -29,6 +30,7 @@ public class SettingsLoader : MonoBehaviour
             sliderSensitivity.value = container.turnSensitivity;
             toggleInstantReset.isOn = container.instantReset;
             toggleNotifBoard.isOn = container.notifBoard;
+            sliderScript.UpdateSensitivityText();
 
             //ReadJson("settings_gp");
         }
@@ -42,6 +44,7 @@ public class SettingsLoader : MonoBehaviour
             sliderBGM.value = container.volumeBGM;
             sliderSFX.value = container.volumeSFX;
             toggleAdditionalMusic.isOn = container.additionalMusic;
+            sliderScript.UpdateVolumeText();
         }
 
         if (loadType == "menuData")
@@ -126,8 +129,9 @@ public class SettingsLoader : MonoBehaviour
 
     [SerializeField] private SettingsContainer container;
     [SerializeField] private AudioManager audioManager;
+    [SerializeField] private SettingsSliders sliderScript;
     [SerializeField] private string sceneName;
-    [SerializeField] private string curSetting;
+    public string curSetting;
     //private IDataService DataService = new JsonDataService();
     //private SettingsContainer settingsContainer;
 

@@ -29,7 +29,7 @@ namespace UpgradeSystem
         public string stableBuild;
         public string nightlyBuild;
         [SerializeField] private string curVersion;
-        [SerializeField] [TextArea(1,5)] string jsonDataURL;
+        [TextArea(1,5)] string jsonDataURL;
         [SerializeField] [TextArea(1,5)] string stableURL;
         [SerializeField] [TextArea(1,5)] string nightlyURL;
 

@@ -70,6 +70,15 @@ public class MathGameScript : MonoBehaviour
         this.playerAnswer.text = string.Empty;
         this.problem++;
         this.playerAnswer.ActivateInputField();
+
+        /*
+        if (this.problem <= 3)
+        {
+            this.QueueAudio(this.bal_problems[this.problem - 1]);
+
+        }
+        */
+
         if (this.problem <= 3)
         {
             this.QueueAudio(this.bal_problems[this.problem - 1]);
@@ -286,6 +295,31 @@ public class MathGameScript : MonoBehaviour
                 this.questionText3.text = string.Empty;
             }
         }
+    }
+
+    private void NewAdditionProblem()
+    {
+
+    }
+
+    private void NewSubtractionProblem()
+    {
+
+    }
+
+    private void NewMultiplicationProblem()
+    {
+
+    }
+
+    private void NewDivisionProblem()
+    {
+
+    }
+
+    private void NewImpossibleProblem()
+    {
+
     }
 
     // Token: 0x06000985 RID: 2437 RVA: 0x00023BB8 File Offset: 0x00021FB8
