@@ -1,5 +1,19 @@
-v0.3.1
+### v0.4.0 ###
+Gameplay Changes:
+- New Map: The Line
+- Added Multiplication and Division to the math game
+- The Principal will only be able to see you when you can obviously see him. This is essentially just nerfing his x-ray vision that allows him to see you through multiple sets of yellow doors.
+
+Other Changes:
+- Added settings for BGM, SFX, and Voice audio
+
+Coding Changes:
+- The game will now check for updates. In the launcher, you will be prompted to download a new update if a new version is found.
+- a LOT of bugfixing
+
+
+### v0.3.1 ###
 - New Secret Endings
 - More bugfixes
-- New Map (juni hills, wip)
-- extended math game music
+- New Map: Juniper Hills
+- Added the new math music that was used in BBCR

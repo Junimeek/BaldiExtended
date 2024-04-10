@@ -11,9 +11,12 @@ public class MathGameScript : MonoBehaviour
     // Token: 0x06000982 RID: 2434 RVA: 0x000231E0 File Offset: 0x000215E0
     private void Start()
     {   
+        this.spider.SetActive(false);
         if (mathMusicScript == null) mathMusicScript = FindObjectOfType<MathMusicScript>();
 
         this.gc.ActivateLearningGame();
+        this.problem = 0;
+
         if (this.gc.notebooks == 1)
         {
             this.QueueAudio(this.bal_intro);
@@ -26,7 +29,6 @@ public class MathGameScript : MonoBehaviour
         }
     }
 
-    // Token: 0x06000983 RID: 2435 RVA: 0x00023270 File Offset: 0x00021670
     private void Update()
     {
         if (!this.baldiAudio.isPlaying)
@@ -55,190 +57,48 @@ public class MathGameScript : MonoBehaviour
                 this.ExitGame();
             }
         }
-
-
     }
 
-    // Token: 0x06000984 RID: 2436 RVA: 0x00023350 File Offset: 0x00021750
     private void NewProblem()
     {
-        if (!this.gc.spoopMode)
-        {
-            this.mathMusicScript.PlaySong();
-        }
+        if (!this.gc.spoopMode) this.mathMusicScript.PlaySong();
 
         this.playerAnswer.text = string.Empty;
         this.problem++;
         this.playerAnswer.ActivateInputField();
 
-        /*
         if (this.problem <= 3)
         {
             this.QueueAudio(this.bal_problems[this.problem - 1]);
 
-        }
-        */
+            int questionType = Mathf.RoundToInt(UnityEngine.Random.Range(1f,4f));
+            int digit1 = Mathf.RoundToInt(UnityEngine.Random.Range(0f,9f));
+            int digit2 = Mathf.RoundToInt(UnityEngine.Random.Range(0f,9f));
 
-        if (this.problem <= 3)
-        {
-            this.QueueAudio(this.bal_problems[this.problem - 1]);
-            if ((this.gc.mode == "story" & (this.problem <= 2 || this.gc.notebooks <= 1)) || (this.gc.mode == "endless" & (this.problem <= 2 || this.gc.notebooks != 2)))
+            if ((this.gc.mode == "story" && (this.problem <= 2 || this.gc.notebooks <= 1)) || (this.gc.mode == "endless" && (this.problem <= 2 || this.gc.notebooks != 2)))
             {
-                this.num1 = (float)Mathf.RoundToInt(UnityEngine.Random.Range(0f, 9f));
-                this.num2 = (float)Mathf.RoundToInt(UnityEngine.Random.Range(0f, 9f));
-                this.sign = Mathf.RoundToInt(UnityEngine.Random.Range(0f, 1f));
-                this.QueueAudio(this.bal_numbers[Mathf.RoundToInt(this.num1)]);
-                if (this.sign == 0)
+                switch(questionType)
                 {
-                    this.solution = this.num1 + this.num2;
-                    this.questionText.text = string.Concat(new object[]
-                    {
-                        "SOLVE MATH Q",
-                        this.problem,
-                        ": \n \n",
-                        this.num1,
-                        "+",
-                        this.num2,
-                        "="
-                    });
-                    this.QueueAudio(this.bal_plus);
+                    case 2:
+                        NewSubtractionProblem(digit1, digit2);
+                    break;
+                    case 3:
+                        NewMultiplicationProblem(digit1, digit2);
+                    break;
+                    case 4:
+                        NewDivisionProblem(digit1, digit2);
+                    break;
+                    default:
+                        NewAdditionProblem(digit1, digit2);
+                    break;
                 }
-                else if (this.sign == 1)
-                {
-                    this.solution = this.num1 - this.num2;
-                    this.questionText.text = string.Concat(new object[]
-                    {
-                        "SOLVE MATH Q",
-                        this.problem,
-                        ": \n \n",
-                        this.num1,
-                        "-",
-                        this.num2,
-                        "="
-                    });
-                    this.QueueAudio(this.bal_minus);
-                }
-                this.QueueAudio(this.bal_numbers[Mathf.RoundToInt(this.num2)]);
-                this.QueueAudio(this.bal_equals);
             }
             else
             {
                 this.impossibleMode = true;
-                this.num1 = UnityEngine.Random.Range(1f, 9999f);
-                this.num2 = UnityEngine.Random.Range(1f, 9999f);
-                this.num3 = UnityEngine.Random.Range(1f, 9999f);
-                this.sign = Mathf.RoundToInt((float)UnityEngine.Random.Range(0, 1));
-                this.QueueAudio(this.bal_screech);
-                if (this.sign == 0)
-                {
-                    this.questionText.text = string.Concat(new object[]
-                    {
-                        "SOLVE MATH Q",
-                        this.problem,
-                        ": \n",
-                        this.num1,
-                        "+(",
-                        this.num2,
-                        "X",
-                        this.num3,
-                        "="
-                    });
-                    this.QueueAudio(this.bal_plus);
-                    this.QueueAudio(this.bal_screech);
-                    this.QueueAudio(this.bal_times);
-                    this.QueueAudio(this.bal_screech);
-                    this.QueueAudio(this.bal_divided);
-                    this.QueueAudio(this.bal_screech);
-                }
-                else if (this.sign == 1)
-                {
-                    this.questionText.text = string.Concat(new object[]
-                    {
-                        "SOLVE MATH Q",
-                        this.problem,
-                        ": \n (",
-                        this.num1,
-                        "/",
-                        this.num2,
-                        ")+",
-                        this.num3,
-                        "="
-                    });
-                    this.QueueAudio(this.bal_divided);
-                    this.QueueAudio(this.bal_screech);
-                    this.QueueAudio(this.bal_plus);
-                    this.QueueAudio(this.bal_screech);
-                }
-                this.num1 = UnityEngine.Random.Range(1f, 9999f);
-                this.num2 = UnityEngine.Random.Range(1f, 9999f);
-                this.num3 = UnityEngine.Random.Range(1f, 9999f);
-                this.sign = Mathf.RoundToInt((float)UnityEngine.Random.Range(0, 1));
-                if (this.sign == 0)
-                {
-                    this.questionText2.text = string.Concat(new object[]
-                    {
-                        "SOLVE MATH Q",
-                        this.problem,
-                        ": \n",
-                        this.num1,
-                        "+(",
-                        this.num2,
-                        "X",
-                        this.num3,
-                        "="
-                    });
-                }
-                else if (this.sign == 1)
-                {
-                    this.questionText2.text = string.Concat(new object[]
-                    {
-                        "SOLVE MATH Q",
-                        this.problem,
-                        ": \n (",
-                        this.num1,
-                        "/",
-                        this.num2,
-                        ")+",
-                        this.num3,
-                        "="
-                    });
-                }
-                this.num1 = UnityEngine.Random.Range(1f, 9999f);
-                this.num2 = UnityEngine.Random.Range(1f, 9999f);
-                this.num3 = UnityEngine.Random.Range(1f, 9999f);
-                this.sign = Mathf.RoundToInt((float)UnityEngine.Random.Range(0, 1));
-                if (this.sign == 0)
-                {
-                    this.questionText3.text = string.Concat(new object[]
-                    {
-                        "SOLVE MATH Q",
-                        this.problem,
-                        ": \n",
-                        this.num1,
-                        "+(",
-                        this.num2,
-                        "X",
-                        this.num3,
-                        "="
-                    });
-                }
-                else if (this.sign == 1)
-                {
-                    this.questionText3.text = string.Concat(new object[]
-                    {
-                        "SOLVE MATH Q",
-                        this.problem,
-                        ": \n (",
-                        this.num1,
-                        "/",
-                        this.num2,
-                        ")+",
-                        this.num3,
-                        "="
-                    });
-                }
-                this.QueueAudio(this.bal_equals);
+                this.NewImpossibleProblem(digit1, digit2);
             }
+
             this.questionInProgress = true;
         }
         else
@@ -255,6 +115,16 @@ public class MathGameScript : MonoBehaviour
 
                 this.questionText.text = "WOW! YOU EXIST!";
             }
+            else if (this.isKitsune)
+            {
+                this.spider.SetActive(false);
+                this.endDelay = 3.75f;
+                this.questionText.color = new Color(0f, 0f, 0f, 1f);
+                this.questionText.text = "THAT LAST ONE\nWAS NOT VERY\nSIGHTREADABLE";
+                this.questionText2.text = string.Empty;
+                this.questionText3.text = string.Empty;
+                this.baldiAudio.PlayOneShot(this.dash);
+            }
             else if (this.gc.mode == "endless" & this.problemsWrong <= 0)
             {
                 int num = Mathf.RoundToInt(UnityEngine.Random.Range(0f, 1f));
@@ -269,25 +139,13 @@ public class MathGameScript : MonoBehaviour
                 if (this.baldiScript.isActiveAndEnabled) this.baldiScript.Hear(this.playerPosition, 7f);
                 this.gc.failedNotebooks++;
 
-                if (gc.notebooks < 3)
-                {
-                    this.endDelay = 3f;
-                }
-                else if (gc.notebooks > 2)
-                {
-                    this.endDelay = 1.5f;
-                }
+                if (gc.notebooks < 3) this.endDelay = 3f;
+                else if (gc.notebooks > 2) this.endDelay = 1.5f;
             }
             else
             {
-                if (gc.notebooks < 3)
-                {
-                    this.endDelay = 3f;
-                }
-                else if (gc.notebooks > 2)
-                {
-                    this.endDelay = 1.5f;
-                }
+                if (gc.notebooks < 3) this.endDelay = 3f;
+                else if (gc.notebooks > 2) this.endDelay = 1.5f;
 
                 int num2 = Mathf.RoundToInt(UnityEngine.Random.Range(0f, 2f));
                 this.questionText.text = this.hintText[num2];
@@ -297,44 +155,238 @@ public class MathGameScript : MonoBehaviour
         }
     }
 
-    private void NewAdditionProblem()
+    private void NewAdditionProblem(int digit1, int digit2)
     {
-
+        this.solution = digit1 + digit2;
+        this.questionText.text = string.Concat(new object[]
+        {
+            "SOLVE MATH Q",
+            this.problem,
+            ": \n \n",
+            digit1,
+            "+",
+            digit2,
+            "="
+        });
+        this.QueueAudio(this.bal_numbers[digit1]);
+        this.QueueAudio(this.bal_plus);
+        this.QueueAudio(this.bal_numbers[digit2]);
+        this.QueueAudio(this.bal_equals);
     }
 
-    private void NewSubtractionProblem()
+    private void NewSubtractionProblem(int digit1, int digit2)
     {
-
+        this.solution = digit1 - digit2;
+        this.questionText.text = string.Concat(new object[]
+        {
+            "SOLVE MATH Q",
+            this.problem,
+            ": \n \n",
+            digit1,
+            "-",
+            digit2,
+            "="
+        });
+        this.QueueAudio(this.bal_numbers[digit1]);
+        this.QueueAudio(this.bal_minus);
+        this.QueueAudio(this.bal_numbers[digit2]);
+        this.QueueAudio(this.bal_equals);
     }
 
-    private void NewMultiplicationProblem()
+    private void NewMultiplicationProblem(int digit1, int digit2)
     {
-
+        this.solution = digit1 * digit2;
+        this.questionText.text = string.Concat(new object[]
+        {
+            "SOLVE MATH Q",
+            this.problem,
+            ": \n \n",
+            digit1,
+            "x",
+            digit2,
+            "="
+        });
+        this.QueueAudio(this.bal_numbers[digit1]);
+        this.QueueAudio(this.bal_times);
+        this.QueueAudio(this.bal_numbers[digit2]);
+        this.QueueAudio(this.bal_equals);
     }
 
-    private void NewDivisionProblem()
+    private void NewDivisionProblem(int digit1, int digit2)
     {
+        int index = digit1 + digit2;
+        int newDigit1;
+        int newDigit2;
 
+        switch(index)
+        {
+            case 1: newDigit1 = 1; newDigit2 = 1; break; // 1÷1
+            case 2: newDigit1 = 2; newDigit2 = 1; break; // 2÷1
+            case 3: newDigit1 = 2; newDigit2 = 2; break; // 2÷2
+            case 4: newDigit1 = 3; newDigit2 = 1; break; // 3÷1
+            case 5: newDigit1 = 3; newDigit2 = 3; break; // 3÷3
+            case 6: newDigit1 = 4; newDigit2 = 1; break; // 4÷1
+            case 7: newDigit1 = 4; newDigit2 = 2; break; // 4÷2
+            case 8: newDigit1 = 5; newDigit2 = 1; break; // 5÷1
+            case 9: newDigit1 = 5; newDigit2 = 5; break; // 5÷5
+            case 10: newDigit1 = 6; newDigit2 = 2; break; // 6÷2
+            case 11: newDigit1 = 6; newDigit2 = 3; break; // 6÷3
+            case 12: newDigit1 = 7; newDigit2 = 1; break; // 7÷1
+            case 13: newDigit1 = 7; newDigit2 = 7; break; // 7÷7
+            case 14: newDigit1 = 8; newDigit2 = 2; break; // 8÷2
+            case 15: newDigit1 = 8; newDigit2 = 4; break; // 8÷4
+            case 16: newDigit1 = 8; newDigit2 = 8; break; // 8÷8
+            case 17: newDigit1 = 9; newDigit2 = 3; break; // 9÷3
+            case 18: newDigit1 = 9; newDigit2 = 9; break; // 9÷9
+            default: newDigit1 = 0; newDigit2 = 1; break; // 0÷1
+        }
+        this.solution = newDigit1 / newDigit2;
+        this.questionText.text = string.Concat(new object[]
+        {
+            "SOLVE MATH Q",
+            this.problem,
+            ": \n \n",
+            newDigit1,
+            "÷",
+            newDigit2,
+            "="
+        });
+        this.QueueAudio(this.bal_numbers[newDigit1]);
+        this.QueueAudio(this.bal_divided);
+        this.QueueAudio(this.bal_numbers[newDigit2]);
+        this.QueueAudio(this.bal_equals);
     }
 
-    private void NewImpossibleProblem()
+    private void NewImpossibleProblem(int digit1, int digit2)
     {
+        string sign1;
+        string sign2;
+        string sign3;
+        float glitch1;
+        float glitch2;
+        float glitch3;
 
+        float randblah = UnityEngine.Random.Range(1f,22f);
+        Debug.LogWarning(randblah);
+        int randblah2 = Mathf.RoundToInt(randblah);
+
+        if (randblah2 == 22)
+        {
+            this.isKitsune = true;
+            this.spider.SetActive(true);
+            this.questionText.color = new Color(1f, 1f, 1f, 1f);
+            this.questionText.text = "SOLVE LEVEL 22:";
+            this.QueueAudio(this.colonge);
+            this.QueueAudio(this.bal_equals);
+            return;
+        }
+
+        switch(digit1)
+        {
+            case 1: sign1 = "-"; break;
+            case 2: sign1 = "x"; break;
+            case 3: sign1 = "*"; break;
+            case 4: sign1 = "÷"; break;
+            case 5: sign1 = "/"; break;
+            case 6: sign1 = "%"; break;
+            case 7: sign1 = "("; break;
+            case 8: sign1 = ")"; break;
+            case 9: sign1 = "!"; break;
+            default: sign1 = "+"; break;
+        }
+        switch(digit2)
+        {
+            case 1: sign2 = "-"; break;
+            case 2: sign2 = "x"; break;
+            case 3: sign2 = "*"; break;
+            case 4: sign2 = "÷"; break;
+            case 5: sign2 = "/"; break;
+            case 6: sign2 = "%"; break;
+            case 7: sign2 = "("; break;
+            case 8: sign2 = ")"; break;
+            case 9: sign2 = "!"; break;
+            default: sign2 = "+"; break;
+        }
+        switch(Mathf.Abs(digit1 - digit2))
+        {
+            case 1: sign3 = "+("; break;
+            case 2: sign3 = "X"; break;
+            case 3: sign3 = "/"; break;
+            case 4: sign3 = ")+"; break;
+            case 5: sign3 = "sqrt("; break;
+            case 6: sign3 = "abs("; break;
+            case 7: sign3 = "^"; break;
+            case 8: sign3 = "y"; break;
+            case 9: sign3 = "log("; break;
+            default: sign3 = "e"; break;
+        }
+
+        glitch1 = UnityEngine.Random.Range(1f, 9999f);
+        glitch2 = UnityEngine.Random.Range(1f, 9999f);
+        glitch3 = UnityEngine.Random.Range(1f, 9999f);
+        this.questionText.text = string.Concat(new object[]
+        {
+            "SOLVE MATH Q",
+            this.problem,
+            ": \n",
+            glitch1, sign1, glitch2, sign2, glitch3,
+            "="
+        });
+
+        glitch1 = UnityEngine.Random.Range(1f, 9999f);
+        glitch2 = UnityEngine.Random.Range(1f, 9999f);
+        glitch3 = UnityEngine.Random.Range(1f, 9999f);
+        this.questionText2.text = string.Concat(new object[]
+        {
+            "SOLVE MATH Q",
+            this.problem,
+            ": \n",
+            glitch1, sign2, glitch2, sign3, glitch3,
+            "="
+        });
+
+        glitch1 = UnityEngine.Random.Range(1f, 9999f);
+        glitch2 = UnityEngine.Random.Range(1f, 9999f);
+        glitch3 = UnityEngine.Random.Range(1f, 9999f);
+        this.questionText3.text = string.Concat(new object[]
+        {
+            "SOLVE MATH Q",
+            this.problem,
+            ": \n",
+            glitch1, sign3, glitch2, sign1, glitch3,
+            "="
+        });
+
+        this.QueueAudio(this.bal_screech);
+
+        if (digit1 < 3) this.QueueAudio(this.bal_plus);
+        else if (digit1 == 3 || digit1 == 4) this.QueueAudio(this.bal_minus);
+        else if (digit1 == 5 || digit1 == 6) this.QueueAudio(this.bal_times);
+        else this.QueueAudio(this.bal_divided);
+
+        this.QueueAudio(this.bal_screech);
+
+        if (digit2 < 3) this.QueueAudio(this.bal_plus);
+        else if (digit2 == 3 || digit2 == 4) this.QueueAudio(this.bal_minus);
+        else if (digit2 == 5 || digit2 == 6) this.QueueAudio(this.bal_times);
+        else this.QueueAudio(this.bal_divided);
+
+        this.QueueAudio(this.bal_screech);
+        this.QueueAudio(this.bal_equals);
     }
 
-    // Token: 0x06000985 RID: 2437 RVA: 0x00023BB8 File Offset: 0x00021FB8
     public void OKButton()
     {
         this.CheckAnswer();
     }
 
-    // Token: 0x06000986 RID: 2438 RVA: 0x00023BC0 File Offset: 0x00021FC0
     public void CheckAnswer()
     {
         if (this.playerAnswer.text == "31718")
         {
             base.StartCoroutine(this.CheatText("THIS IS WHERE IT ALL BEGAN"));
             SceneManager.LoadSceneAsync("TestRoom");
+            return;
         }
         else if (this.playerAnswer.text == "53045009")
         {
@@ -361,6 +413,8 @@ public class MathGameScript : MonoBehaviour
                 {
                     this.baldiFeed.SetTrigger("angry");
                     this.gc.ActivateSpoopMode();
+
+
                 }
                 if (this.gc.mode == "story")
                 {
@@ -384,21 +438,18 @@ public class MathGameScript : MonoBehaviour
         }
     }
 
-    // Token: 0x06000987 RID: 2439 RVA: 0x00023D9F File Offset: 0x0002219F
     private void QueueAudio(AudioClip sound)
     {
         this.audioQueue[this.audioInQueue] = sound;
         this.audioInQueue++;
     }
 
-    // Token: 0x06000988 RID: 2440 RVA: 0x00023DBD File Offset: 0x000221BD
     private void PlayQueue()
     {
         this.baldiAudio.PlayOneShot(this.audioQueue[0]);
         this.UnqueueAudio();
     }
 
-    // Token: 0x06000989 RID: 2441 RVA: 0x00023DD8 File Offset: 0x000221D8
     private void UnqueueAudio()
     {
         for (int i = 1; i < this.audioInQueue; i++)
@@ -408,13 +459,11 @@ public class MathGameScript : MonoBehaviour
         this.audioInQueue--;
     }
 
-    // Token: 0x0600098A RID: 2442 RVA: 0x00023E1C File Offset: 0x0002221C
     private void ClearAudioQueue()
     {
         this.audioInQueue = 0;
     }
 
-    // Token: 0x0600098B RID: 2443 RVA: 0x00023E28 File Offset: 0x00022228
     private void ExitGame()
     {
         if (this.problemsWrong <= 0 & this.gc.mode == "endless")
@@ -424,7 +473,6 @@ public class MathGameScript : MonoBehaviour
         this.gc.DeactivateLearningGame(base.gameObject);
     }
 
-    // Token: 0x0600098C RID: 2444 RVA: 0x00023E80 File Offset: 0x00022280
     public void ButtonPress(int value)
     {
         if (value >= 0 & value <= 9)
@@ -441,7 +489,6 @@ public class MathGameScript : MonoBehaviour
         }
     }
 
-    // Token: 0x0600098D RID: 2445 RVA: 0x00023F04 File Offset: 0x00022304
     private IEnumerator CheatText(string text)
     {
         for (; ; )
@@ -451,110 +498,42 @@ public class MathGameScript : MonoBehaviour
             this.questionText3.text = string.Empty;
             yield return new WaitForEndOfFrame();
         }
-        yield break;
     }
 
 
-    // Token: 0x04000641 RID: 1601
     public GameControllerScript gc;
-
-    // Token: 0x04000642 RID: 1602
     public BaldiScript baldiScript;
-
-    // Token: 0x04000643 RID: 1603
     public Vector3 playerPosition;
-
-    // Token: 0x04000644 RID: 1604
     public GameObject mathGame;
-
-    // Token: 0x04000645 RID: 1605
     public RawImage[] results = new RawImage[3];
-
-    // Token: 0x04000646 RID: 1606
     public Texture correct;
-
-    // Token: 0x04000647 RID: 1607
     public Texture incorrect;
-
-    // Token: 0x04000648 RID: 1608
     public TMP_InputField playerAnswer;
-
-    // Token: 0x04000649 RID: 1609
     public TMP_Text questionText;
-
-    // Token: 0x0400064A RID: 1610
     public TMP_Text questionText2;
-
-    // Token: 0x0400064B RID: 1611
     public TMP_Text questionText3;
-
-    // Token: 0x0400064C RID: 1612
     public Animator baldiFeed;
-
-    // Token: 0x0400064D RID: 1613
     public Transform baldiFeedTransform;
-
-    // Token: 0x0400064E RID: 1614
     public AudioClip bal_plus;
-
-    // Token: 0x0400064F RID: 1615
     public AudioClip bal_minus;
-
-    // Token: 0x04000650 RID: 1616
     public AudioClip bal_times;
-
-    // Token: 0x04000651 RID: 1617
     public AudioClip bal_divided;
-
-    // Token: 0x04000652 RID: 1618
     public AudioClip bal_equals;
-
-    // Token: 0x04000653 RID: 1619
     public AudioClip bal_howto;
-
-    // Token: 0x04000654 RID: 1620
     public AudioClip bal_intro;
-
-    // Token: 0x04000655 RID: 1621
     public AudioClip bal_screech;
-
-    // Token: 0x04000656 RID: 1622
     public AudioClip[] bal_numbers = new AudioClip[10];
-
-    // Token: 0x04000657 RID: 1623
     public AudioClip[] bal_praises = new AudioClip[5];
-
-    // Token: 0x04000658 RID: 1624
     public AudioClip[] bal_problems = new AudioClip[3];
-
-    // Token: 0x04000659 RID: 1625
     public Button firstButton;
-
-    // Token: 0x0400065A RID: 1626
     private float endDelay;
-
-    // Token: 0x0400065B RID: 1627
     public int problem;
-
-    // Token: 0x0400065C RID: 1628
     private int audioInQueue;
-
-    // Token: 0x0400065D RID: 1629
     private float num1;
-
-    // Token: 0x0400065E RID: 1630
     private float num2;
-
-    // Token: 0x0400065F RID: 1631
     private float num3;
-
-    // Token: 0x04000660 RID: 1632
     private int sign;
-
-    // Token: 0x04000661 RID: 1633
     private float solution;
-
-    // Token: 0x04000662 RID: 1634
     private string[] hintText = new string[]
     {
         "I GET ANGRIER FOR EVERY PROBLEM YOU GET WRONG",
@@ -562,30 +541,22 @@ public class MathGameScript : MonoBehaviour
         "(placeholder text; remember to fill in later)"
     };
 
-    // Token: 0x04000663 RID: 1635
     private string[] endlessHintText = new string[]
     {
         "That's more like it...",
         "Keep up the good work or see me after class..."
     };
 
-    // Token: 0x04000664 RID: 1636
     private bool questionInProgress;
-
-    // Token: 0x04000665 RID: 1637
     private bool impossibleMode;
-
-    // Token: 0x04000666 RID: 1638
     private bool joystickEnabled;
-
-    // Token: 0x04000667 RID: 1639
     private int problemsWrong;
-
-    // Token: 0x04000668 RID: 1640
     private AudioClip[] audioQueue = new AudioClip[20];
-
-    // Token: 0x04000669 RID: 1641
     public AudioSource baldiAudio;
     private int randompraise;
     [SerializeField] private MathMusicScript mathMusicScript;
+    [SerializeField] private AudioClip colonge;
+    [SerializeField] private AudioClip dash;
+    [SerializeField] private GameObject spider;
+    public bool isKitsune;
 }
