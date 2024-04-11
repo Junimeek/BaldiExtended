@@ -148,6 +148,5 @@ public class BullyScript : MonoBehaviour
 	public AudioClip aud_Denied;
 	public AudioClip aud_Bored;
 	[SerializeField] private float spawnCount;
-	public Transform[] newLocation = new Transform[29];
 	private int id;
 }
