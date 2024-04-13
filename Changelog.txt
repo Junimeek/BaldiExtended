@@ -2,6 +2,7 @@
 Gameplay Changes:
 - New Map: The Line
 - Added Multiplication and Division to the math game
+- Achievements!
 - The Principal will only be able to see you when you can obviously see him. This is essentially just nerfing his x-ray vision that allows him to see you through multiple sets of yellow doors.
 
 Other Changes:

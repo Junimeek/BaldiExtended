@@ -121,7 +121,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 1
-        y: 369
+        y: 491
         width: 380
         height: 60
       alignment: 0
@@ -142,7 +142,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 382
-        y: 369
+        y: 491
         width: 380
         height: 60
       alignment: 0
@@ -163,7 +163,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 1
-        y: 308
+        y: 430
         width: 380
         height: 60
       alignment: 0
@@ -184,7 +184,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 1
-        y: 247
+        y: 369
         width: 380
         height: 60
       alignment: 0
@@ -205,7 +205,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 1
-        y: 186
+        y: 308
         width: 380
         height: 60
       alignment: 0
@@ -226,7 +226,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 1
-        y: 125
+        y: 247
         width: 380
         height: 60
       alignment: 0
@@ -247,7 +247,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 130
-        y: 64
+        y: 186
         width: 251
         height: 60
       alignment: 0
@@ -267,8 +267,8 @@ TextureImporter:
       name: SET_Controls_Selected
       rect:
         serializedVersion: 2
-        x: 130
-        y: 3
+        x: 132
+        y: 125
         width: 251
         height: 60
       alignment: 0
@@ -289,7 +289,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 382
-        y: 308
+        y: 430
         width: 380
         height: 60
       alignment: 0
@@ -310,7 +310,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 382
-        y: 247
+        y: 369
         width: 380
         height: 60
       alignment: 0
@@ -331,7 +331,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 382
-        y: 186
+        y: 308
         width: 127
         height: 60
       alignment: 0
@@ -352,7 +352,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 382
-        y: 125
+        y: 247
         width: 127
         height: 60
       alignment: 0
@@ -373,7 +373,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 382
-        y: 64
+        y: 186
         width: 127
         height: 60
       alignment: 0
@@ -394,7 +394,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 382
-        y: 3
+        y: 125
         width: 127
         height: 60
       alignment: 0
@@ -415,7 +415,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 510
-        y: 64
+        y: 186
         width: 60
         height: 60
       alignment: 0
@@ -436,7 +436,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 570
-        y: 64
+        y: 186
         width: 60
         height: 60
       alignment: 0
@@ -457,7 +457,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 510
-        y: 27
+        y: 149
         width: 22
         height: 36
       alignment: 0
@@ -478,7 +478,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 533
-        y: 27
+        y: 149
         width: 22
         height: 36
       alignment: 0
@@ -499,7 +499,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 556
-        y: 27
+        y: 149
         width: 22
         height: 36
       alignment: 0
@@ -520,7 +520,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 579
-        y: 27
+        y: 149
         width: 22
         height: 36
       alignment: 0
@@ -541,7 +541,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 510
-        y: 186
+        y: 308
         width: 127
         height: 60
       alignment: 0
@@ -562,7 +562,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 510
-        y: 125
+        y: 247
         width: 127
         height: 60
       alignment: 0
@@ -583,11 +583,11 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 763
-        y: 369
+        y: 491
         width: 380
         height: 60
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -604,11 +604,11 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 763
-        y: 308
+        y: 430
         width: 380
         height: 60
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -625,11 +625,11 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 763
-        y: 247
+        y: 369
         width: 380
         height: 60
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -646,11 +646,11 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 763
-        y: 186
+        y: 308
         width: 380
         height: 60
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -667,11 +667,11 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 763
-        y: 125
+        y: 247
         width: 380
         height: 60
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -688,11 +688,11 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 763
-        y: 64
+        y: 186
         width: 380
         height: 60
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -709,6 +709,48 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 763
+        y: 125
+        width: 380
+        height: 60
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ddd42b32c1664f340bfa1b5c58dd7258
+      internalID: 1041166616
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SET_Achievement
+      rect:
+        serializedVersion: 2
+        x: 763
+        y: 64
+        width: 380
+        height: 60
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6908e43d5af4ee54e8cf6da730ec1ea8
+      internalID: -1035839042
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SET_Achievement_Selected
+      rect:
+        serializedVersion: 2
+        x: 763
         y: 3
         width: 380
         height: 60
@@ -719,8 +761,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: ddd42b32c1664f340bfa1b5c58dd7258
-      internalID: 1041166616
+      spriteID: 326859ed4c5827849a2d91d3be630dab
+      internalID: -475109155
       vertices: []
       indices: 
       edges: []
@@ -737,6 +779,7 @@ TextureImporter:
     secondaryTextures: []
     nameFileIdTable:
       SET_AudioHeader: -491947728
+      SET_Data_Selecte: 76340146
       SET_BGM: 711054493
       SET_Data_Selected: 1041166616
       SET_Controls: -1480664244
@@ -755,6 +798,7 @@ TextureImporter:
       SET_BBCROST_Selected: 2115152622
       SET_Voices_Selected: 83336789
       SET_Defaults_Selected: 676099475
+      SET_Achievement_Selected: -475109155
       SET_SFX: -1196720018
       SET_Instant_Selected: 475174679
       SET_DataHeader: -1760858322
@@ -762,9 +806,11 @@ TextureImporter:
       SET_Left_Selected: 1896570705
       SET_GPHeader: 1665371181
       SET_BBCROST: 500029063
+      SET_Achievement: -1035839042
       SET_SFX_Selected: 880740002
       SET_BGM_Selected: 2000701839
       SET_HighScore_Selected: -1653117428
+      SettingsSheet_1: -2127469301
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

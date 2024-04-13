@@ -10,24 +10,66 @@ public class AchievementManager : MonoBehaviour
 {
     
     public int[] ach_Maps;
+    public int[] ach_Misc;
     [SerializeField] private string dataPath;
+    [SerializeField] private static AchievementManager instance;
+    [SerializeField] private AudioClip wow;
+    [SerializeField] private AudioSource audioSource;
 
     private void Awake()
     {
         this.dataPath = Application.persistentDataPath + "/achievements.sav";
+        this.audioSource = GetComponent<AudioSource>();
+
+        if (instance == null)
+        {
+            instance = this;
+            DontDestroyOnLoad(this.gameObject);
+        }
+        else Destroy(this.gameObject);
     }
 
-    public void SaveNewAchievement(int map)
+    private void Start()
     {
         
-        Array.Resize<int>(ref this.ach_Maps, this.ach_Maps.Length+1);
-        this.ach_Maps[this.ach_Maps.Length-1] = map;
-        this.SaveAchievementData();
     }
 
-    public void GetAchievements()
+    public void GiveAchievement(string type, int id)
     {
-        //Array.Find<int>(ref this.ach_Maps, )
+        switch(type)
+        {
+            case "misc":
+                if (!Array.Exists<int>(this.ach_Misc, h => h == id))
+                {
+                    CollectAchievement(type, id);
+                }
+            break;
+        }
+    }
+
+    public void CollectAchievement(string type, int id)
+    {
+        switch(type)
+        {
+            case "misc":
+                Array.Resize<int>(ref this.ach_Misc, this.ach_Misc.Length+1);
+                this.ach_Misc[this.ach_Misc.Length-1] = id;
+                Array.Sort(this.ach_Misc);
+            break;
+            case "map":
+                Array.Resize<int>(ref this.ach_Maps, this.ach_Maps.Length+1);
+                this.ach_Maps[this.ach_Maps.Length-1] = id;
+                Array.Sort(this.ach_Maps);
+            break;
+        }
+
+        this.SaveAchievementData();
+        this.audioSource.PlayOneShot(this.wow);
+    }
+
+    public void AddNewAchievement()
+    {
+        
     }
 
     public void SaveAchievementData()
@@ -50,6 +92,7 @@ public class AchievementManager : MonoBehaviour
             AchievementData data = (AchievementData)bf.Deserialize(file);
             file.Close();
             this.ach_Maps = data.ach_Maps;
+            Array.Sort(this.ach_Maps);
             Debug.Log("LAOD");
         }
         else Debug.LogError("No Achievements Found");
