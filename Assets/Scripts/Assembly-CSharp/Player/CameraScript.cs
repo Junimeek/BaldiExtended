@@ -21,7 +21,7 @@ public class CameraScript : MonoBehaviour
 			if (this.jumpHeight <= 0f) //When the player is on the floor, prevent the player from falling through.
 			{
 				this.jumpHeight = 0f;
-				if (Input.GetKeyDown(KeyCode.Space))
+				if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Mouse0) || Input.GetKeyDown(KeyCode.Mouse1))
 				{
 					this.velocity = this.initVelocity; //Start the jump
 				}
@@ -33,6 +33,11 @@ public class CameraScript : MonoBehaviour
 
 		if (Input.GetKey(KeyCode.C)) this.zoom = 15;
 		else this.zoom = 60;
+
+		if (Input.GetKeyDown(KeyCode.DownArrow))
+		{
+			this.gravity = 20f;
+		}
 	}
 
 	// Token: 0x0600092F RID: 2351 RVA: 0x00020DD8 File Offset: 0x0001F1D8

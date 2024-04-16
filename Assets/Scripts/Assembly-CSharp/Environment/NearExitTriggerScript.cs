@@ -11,7 +11,11 @@ public class NearExitTriggerScript : MonoBehaviour
 		{
 			this.gc.ExitReached();
 			this.es.Lower();
-			if (this.gc.baldiScrpt.isActiveAndEnabled) this.gc.baldiScrpt.Hear(base.transform.position, 8f);
+			if (this.gc.baldiScrpt.isActiveAndEnabled)
+			{
+				this.gc.baldiScrpt.Hear(base.transform.position, 8f);
+				this.gc.baldiScrpt.GetAngry(0.5f);
+			}
 		}
 	}
 

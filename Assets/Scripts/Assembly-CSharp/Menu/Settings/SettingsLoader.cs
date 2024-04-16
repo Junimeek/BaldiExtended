@@ -17,41 +17,48 @@ public class SettingsLoader : MonoBehaviour
         if (sceneName == "MainMenu") LoadSettings("menuGP");
     }
 
+    private void OnDisable()
+    {
+        this.StoreSettings();
+
+        if (sceneName == "MainMenu")
+            this.SaveSettings(1);
+        else if (sceneName == "Classic" || sceneName == "ClassicExtended" ||
+                sceneName == "JuniperHills" || sceneName == "TheLine")
+            this.SaveSettings(2);
+    }
+
     public void LoadSettings(string loadType)
     {
         if (curSetting != null) this.StoreSettings();
         curSetting = loadType;
 
-        if (loadType == "menuGP")
+        switch(loadType)
         {
-            canvasGP.SetActive(true);
-            canvasAudio.SetActive(false);
-            canvasData.SetActive(false);
-            sliderSensitivity.value = container.turnSensitivity;
-            toggleInstantReset.isOn = container.instantReset;
-            toggleNotifBoard.isOn = container.notifBoard;
-            sliderScript.UpdateSensitivityText();
-
-            //ReadJson("settings_gp");
-        }
-
-        if (loadType == "menuAudio")
-        {
-            canvasGP.SetActive(false);
-            canvasAudio.SetActive(true);
-            canvasData.SetActive(false);
-            sliderVoice.value = container.volumeVoice;
-            sliderBGM.value = container.volumeBGM;
-            sliderSFX.value = container.volumeSFX;
-            toggleAdditionalMusic.isOn = container.additionalMusic;
-            sliderScript.UpdateVolumeText();
-        }
-
-        if (loadType == "menuData")
-        {
-            canvasGP.SetActive(false);
-            canvasAudio.SetActive(false);
-            canvasData.SetActive(true);
+            case "menuGP":
+                canvasGP.SetActive(true);
+                canvasAudio.SetActive(false);
+                canvasData.SetActive(false);
+                sliderSensitivity.value = container.turnSensitivity;
+                toggleInstantReset.isOn = container.instantReset;
+                toggleNotifBoard.isOn = container.notifBoard;
+                sliderScript.UpdateSensitivityText();
+            break;
+            case "menuAudio":
+                canvasGP.SetActive(false);
+                canvasAudio.SetActive(true);
+                canvasData.SetActive(false);
+                sliderVoice.value = container.volumeVoice;
+                sliderBGM.value = container.volumeBGM;
+                sliderSFX.value = container.volumeSFX;
+                toggleAdditionalMusic.isOn = container.additionalMusic;
+                sliderScript.UpdateVolumeText();
+            break;
+            case "menuData":
+                canvasGP.SetActive(false);
+                canvasAudio.SetActive(false);
+                canvasData.SetActive(true);
+            break;
         }
     }
 
@@ -62,7 +69,6 @@ public class SettingsLoader : MonoBehaviour
             container.turnSensitivity = this.sliderSensitivity.value;
             container.instantReset = this.toggleInstantReset.isOn;
             container.notifBoard = this.toggleNotifBoard.isOn;
-            this.SaveSettings();
         }
         else if (curSetting == "menuAudio")
         {
@@ -70,13 +76,12 @@ public class SettingsLoader : MonoBehaviour
             container.volumeBGM = sliderBGM.value;
             container.volumeSFX = sliderSFX.value;
             container.additionalMusic = toggleAdditionalMusic.isOn;
-            this.SaveSettings();
         }
     }
 
-    public void SaveSettings()
+    public void SaveSettings(int type)
     {
-        container.RegistrySave();
+        container.SaveSettingsData(type);
         audioManager.GetVolume();
     }
 

@@ -8,10 +8,8 @@ public class EntranceScript : MonoBehaviour
 	public void Lower()
 	{
 		base.transform.position = base.transform.position - new Vector3(0f, 10f, 0f);
-		if (this.gc.finaleMode)
-		{
-			this.wall.material = this.map;
-		}
+		
+		if (this.gc.finaleMode && gc.exitsReached >= 1) this.wall.material = this.map;
 	}
 
 	// Token: 0x0600095E RID: 2398 RVA: 0x00021955 File Offset: 0x0001FD55

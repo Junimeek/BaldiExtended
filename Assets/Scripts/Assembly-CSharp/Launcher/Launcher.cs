@@ -121,6 +121,7 @@ public class Launcher : MonoBehaviour
 
     private IEnumerator WaitForLogo()
     {
+        loadingManager = FindObjectOfType<LoadingManager>();
         basicallyLogo.SetActive(true);
         juniLogo.SetActive(false);
 

@@ -5,26 +5,28 @@ using TMPro;
 
 public class NotificationBoard : MonoBehaviour
 {
-    private void Awake()
+    private void Start()
     {
         princey = FindObjectOfType<PrincipalScript>();
         gc = FindObjectOfType<GameControllerScript>();
         doorScript = FindObjectOfType<DoorScript>();
+        
+        try
+        {
+            this.ruleText.text = string.Empty;
+            this.detentionText.text = string.Empty;
+            this.notebooText.text = string.Empty;
+
+            this.notebooGroup.SetActive(false);
+            this.detentionGroup.SetActive(false);
+            this.ruleGroup.SetActive(false);
+        }
+        catch
+        {
+            Debug.LogError("Failed to disable the notif board");
+        }
     }
 
-    // Start is called before the first frame update
-    private void Start()
-    {
-        this.ruleText.text = string.Empty;
-        this.detentionText.text = string.Empty;
-        notebooText.text = string.Empty;
-
-        this.notebooGroup.SetActive(false);
-        this.detentionGroup.SetActive(false);
-        this.ruleGroup.SetActive(false);
-    }
-
-    // Update is called once per frame
     private void Update()
     {
         if (this.doorScript != null)

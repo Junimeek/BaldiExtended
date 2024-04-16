@@ -24,9 +24,9 @@ public class BaldiScript : MonoBehaviour
 
 		if (speedFactorOverride == 0f)
 		{
-			float speedFactor = (this.gc.daFinalBookCount - 1);
+			float speedFactor = (this.gc.daFinalBookCount + 0.5f);
 			float bookSquare = (speedFactor * speedFactor);
-			Debug.Log(bookSquare);
+			Debug.Log("Baldi Speed Factor: " + bookSquare);
 			baldiSpeedScale = MathF.Sqrt(15.2f / (bookSquare));
 		}
 		else
@@ -139,7 +139,8 @@ public class BaldiScript : MonoBehaviour
 			this.Wander();
 		}
 		this.moveFrames = 10f;
-		this.timeToMove = this.baldiWait - this.baldiTempAnger;
+		if (this.baldiAnger == 0) this.timeToMove = 3f;
+		else this.timeToMove = this.baldiWait - this.baldiTempAnger;
 		this.previous = base.transform.position; // Set previous to Baldi's current location
 		this.baldiAudio.PlayOneShot(this.slap); //Play the slap sound
 		this.baldiAnimator.SetTrigger("slap"); // Play the slap animation
@@ -163,17 +164,13 @@ public class BaldiScript : MonoBehaviour
 		}
 		//this.baldiWait = 3f;
 		this.baldiWait = -3f * this.baldiAnger / (this.baldiAnger + 2f / this.baldiSpeedScale) + 3f; // Some formula I don't understand.
+		if (this.baldiWait <= 0f) this.baldiWait = 3f;
 	}
 
 	// Token: 0x060009AA RID: 2474 RVA: 0x00024992 File Offset: 0x00022D92
 	public void GetTempAngry(float value)
 	{
 		this.baldiTempAnger += value; //Increase Baldi's Temporary Anger
-
-		if (gc.notebooks == 1)
-		{
-			this.baldiWait = 3f;
-		}
 	}
 
 	// Token: 0x060009AB RID: 2475 RVA: 0x000249A2 File Offset: 0x00022DA2

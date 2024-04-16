@@ -455,6 +455,5 @@ public class PlayerScript : MonoBehaviour
 	public GameObject speedText;
 	[SerializeField] private float shoeRate;
 	public bool isSecret;
-	[SerializeField] private PrincipalTriggerScript triggerScript;
 	[Tooltip("X = Slow, Y = Walk, Z = Run")] [SerializeField] private Vector3 speedOverrides;
 }

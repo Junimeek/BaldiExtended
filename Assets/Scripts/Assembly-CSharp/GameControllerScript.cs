@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using TMPro;
+using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -33,6 +34,22 @@ public class GameControllerScript : MonoBehaviour
 	// Token: 0x06000964 RID: 2404 RVA: 0x00021AC4 File Offset: 0x0001FEC4
 	private void Start()
 	{
+		Scene curScene = SceneManager.GetActiveScene();
+		string curSceneName = curScene.name;
+
+		if (curSceneName == "SecretMap")
+		{
+			RenderSettings.fog = true;
+			RenderSettings.fogColor = new Color(0.79f, 0.79f, 0.79f);
+			RenderSettings.ambientLight = new Color(0.86f, 0.86f, 0.86f);
+		}
+		else
+		{
+			RenderSettings.fog = false;
+			RenderSettings.fogColor = new Color(1f, 1f, 1f);
+			RenderSettings.ambientLight = new Color(1f, 1f, 1f);
+		}
+
 		this.cullingMask = this.camera.cullingMask; // Changes cullingMask in the Camera
 		this.audioDevice = base.GetComponent<AudioSource>(); //Get the Audio Source
 		this.mode = PlayerPrefs.GetString("CurrentMode"); //Get the current mode
@@ -47,7 +64,7 @@ public class GameControllerScript : MonoBehaviour
 		this.itemSelected = 0; //Set selection to item slot 0(the first item slot)
 		this.gameOverDelay = 0.5f;
 
-		this.speedrunTimer.allowTime = true;
+		//this.speedrunTimer.allowTime = true;
 
 		//debugScreen.DebugCloseMenu();
 	}
@@ -724,19 +741,21 @@ public class GameControllerScript : MonoBehaviour
 	public void ExitReached()
 	{
 		this.exitsReached++;
+		AngrySchoolColors(this.exitsReached);
+
+		/*
 		if (this.exitsReached == 1)
 		{
-			RenderSettings.ambientLight = Color.red; //Make everything red and start player the weird sound
+			//RenderSettings.ambientLight = Color.red; //Make everything red and start player the weird sound
 			//RenderSettings.fog = true;
 			
 			//this.audioDevice.clip = this.aud_MachineQuiet;
 			//this.audioDevice.loop = true;
 			//this.audioDevice.Play();
 		}
-		if (this.exitsReached >= 0)
-		{
-			this.audioDevice.PlayOneShot(this.aud_Switch, 0.8f);
-		}
+		*/
+
+		if (this.exitsReached != 2) this.audioDevice.PlayOneShot(this.aud_Switch, 0.8f);
 
 		if (this.exitsReached == 2) //Play a sound
 		{
@@ -744,6 +763,7 @@ public class GameControllerScript : MonoBehaviour
 			this.audioDevice.clip = this.chaosEarly;
 			this.audioDevice.loop = false;
 			this.audioDevice.Play();
+			this.escapeMusic.volume = 0.32f;
 		}
 		else if (this.exitsReached == 3) //Play a louder sound
 		{
@@ -824,10 +844,11 @@ public class GameControllerScript : MonoBehaviour
 				else if (SongId == 12) this.notebook12.Play();
 			}
 		}
-		else if (songType == 2) // math game
+		else if (songType == 2 && !(this.notebooks >= this.daFinalBookCount)) // math game
 		{
 			if (SongId == 1) this.learnMusic.Play();
-			else if (SongId == 2 && !this.disableSongInterruption && PlayerPrefs.GetInt("AdditionalMusic") == 1)
+			else if (SongId == 2 && !this.disableSongInterruption
+					&& PlayerPrefs.GetInt("AdditionalMusic") == 1 && !(this.notebooks >= this.daFinalBookCount))
 				this.spoopLearn.Play();
 		}
 		else if (songType == 3)
@@ -842,6 +863,91 @@ public class GameControllerScript : MonoBehaviour
 		while (this.notebook2.isPlaying) yield return null;
 
 		this.notebook3.Play();
+	}
+
+	private void AngrySchoolColors(int phase)
+	{
+		StartCoroutine(ChangeSchoolColor(phase));
+		StartCoroutine(ChangeFogColor(phase));
+	}
+
+	private IEnumerator ChangeSchoolColor(int phase)
+	{
+		float curValue;
+		switch(phase)
+		{
+			case 2:
+				curValue = 1f;
+				while (curValue > 0f)
+				{
+					curValue -= Time.deltaTime/5f;
+					RenderSettings.ambientLight = new Color(1f, curValue, curValue);
+					yield return null;
+				}
+			break;
+			case 3:
+				curValue = 1f;
+				while (curValue > 0.388f)
+				{
+					curValue -= Time.deltaTime/5f;
+					RenderSettings.ambientLight = new Color(curValue, 0f, 0f);
+					yield return null;
+				}
+			break;
+		}
+	}
+
+	private IEnumerator ChangeFogColor(int phase)
+	{
+		float curValue;
+		switch(phase)
+		{
+			case 1:
+				curValue = 0f;
+				RenderSettings.fogDensity = 0f;
+				RenderSettings.fog = true;
+				while (curValue < 0.01f)
+				{
+					curValue += Time.deltaTime/100f;
+					RenderSettings.fogDensity = curValue;
+					yield return null;
+				}
+				RenderSettings.fogDensity = 0.01f;
+				curValue = 1f;
+				while (curValue > 0f)
+				{
+					curValue -= Time.deltaTime/5f;
+					RenderSettings.fogColor = new Color(1f, curValue, curValue);
+					yield return null;
+				}
+			break;
+			case 2:
+				curValue = 2f;
+				while (curValue > 0f)
+				{
+					curValue -= Time.deltaTime;
+					yield return null;
+				}
+				curValue = 0.01f;
+				while (curValue > 0f)
+				{
+					curValue -= Time.deltaTime/100f;
+					RenderSettings.fogDensity = curValue;
+					yield return null;
+				}
+			break;
+			case 3:
+				curValue = 0f;
+				RenderSettings.fogColor = new Color(1f, 0f, 0f);
+				while (curValue < 0.01f)
+				{
+					curValue += Time.deltaTime/100f;
+					RenderSettings.fogDensity = curValue;
+					yield return null;
+				}
+				RenderSettings.fogDensity = 0.01f;
+			break;
+		}
 	}
 
 	private void DebugStuff()

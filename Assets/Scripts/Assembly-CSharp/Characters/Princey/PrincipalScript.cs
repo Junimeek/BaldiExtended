@@ -296,5 +296,4 @@ public class PrincipalScript : MonoBehaviour
 	
 	private NotificationBoard notif;
 	[SerializeField] private GameControllerScript gc;
-	[SerializeField] private PrincipalTriggerScript triggerScript;
 }

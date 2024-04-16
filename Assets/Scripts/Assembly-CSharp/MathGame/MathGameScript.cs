@@ -413,19 +413,11 @@ public class MathGameScript : MonoBehaviour
                 {
                     this.baldiFeed.SetTrigger("angry");
                     this.gc.ActivateSpoopMode();
-
-
                 }
                 if (this.gc.mode == "story")
                 {
-                    if (this.problem == 3)
-                    {
-                        this.baldiScript.GetAngry(1f);
-                    }
-                    else
-                    {
-                        this.baldiScript.GetTempAngry(0.25f);
-                    }
+                    if (this.problem == 3 && this.impossibleMode) this.baldiScript.GetAngry(1f);
+                    else this.baldiScript.GetTempAngry(0.25f);
                 }
                 else
                 {

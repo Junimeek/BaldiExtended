@@ -22,6 +22,7 @@ public class DataResetScript : MonoBehaviour
     {
         promptBackground.color = new Color(1f, 1f, 1f, 1f);
         promptBackground.raycastTarget = true;
+        backButton.interactable = false;
         this.curAction = id;
         this.noButton.SetActive(true);
         this.yesButton.SetActive(true);
@@ -41,6 +42,7 @@ public class DataResetScript : MonoBehaviour
                 this.curAction = 0;
                 promptBackground.color = new Color(1f, 1f, 1f, 0f);
                 promptBackground.raycastTarget = false;
+                backButton.interactable = true;
                 promptText.text = string.Empty;
                 this.noButton.SetActive(false);
                 this.yesButton.SetActive(false);
@@ -79,4 +81,5 @@ public class DataResetScript : MonoBehaviour
     [SerializeField] private TMP_Text promptText;
     [SerializeField] private GameObject noButton;
     [SerializeField] private GameObject yesButton;
+    [SerializeField] private Button backButton;
 }
