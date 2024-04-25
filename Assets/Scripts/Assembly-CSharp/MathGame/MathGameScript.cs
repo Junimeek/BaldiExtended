@@ -2,6 +2,7 @@
 using System.Collections;
 using TMPro;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -33,7 +34,7 @@ public class MathGameScript : MonoBehaviour
     {
         if (!this.baldiAudio.isPlaying)
         {
-            if (this.audioInQueue > 0 & !this.gc.spoopMode)
+            if (this.audioInQueue > 0 & (!this.gc.spoopMode))
             {
                 this.PlayQueue();
             }
@@ -75,7 +76,7 @@ public class MathGameScript : MonoBehaviour
             int digit1 = Mathf.RoundToInt(UnityEngine.Random.Range(0f,9f));
             int digit2 = Mathf.RoundToInt(UnityEngine.Random.Range(0f,9f));
 
-            if ((this.gc.mode == "story" && (this.problem <= 2 || this.gc.notebooks <= 1)) || (this.gc.mode == "endless" && (this.problem <= 2 || this.gc.notebooks != 2)))
+            if ((this.gc.mode == "story" && (this.problem <= 2 || this.gc.notebooks <= 1)) || (this.gc.mode == "endless" && (this.problem <= 2 || this.gc.notebooks != 2)) || gc.isSafeMode)
             {
                 switch(questionType)
                 {
@@ -111,9 +112,25 @@ public class MathGameScript : MonoBehaviour
                 else if (randompraise == 2) this.endDelay = 2.4f;
                 else if (randompraise == 3) this.endDelay = 3.5f;
                 else if (randompraise == 4) this.endDelay = 3.7f;
-                else if (randompraise == 5) this.endDelay = 4.6f; 
+                else if (randompraise == 5) this.endDelay = 4.6f;
 
                 this.questionText.text = "WOW! YOU EXIST!";
+
+                if (gc.isSafeMode)
+                {
+                    if (this.problemsWrong >= 3)
+                    {
+                        this.endDelay = 1.5f;
+                        this.gc.failedNotebooks++;
+                        int num2 = Mathf.RoundToInt(UnityEngine.Random.Range(0f, 1f));
+                        this.questionText.text = this.safeText[num2];
+                    }
+                    else if ((this.problemsWrong == 1 || this.problemsWrong == 2) && (this.results[2].texture == this.incorrect))
+                    {
+                        this.endDelay = 1.5f;
+                        this.questionText.text = "It's ok, everyone makes mistakes.";
+                    }
+                }
             }
             else if (this.isKitsune)
             {
@@ -393,6 +410,7 @@ public class MathGameScript : MonoBehaviour
             base.StartCoroutine(this.CheatText("USE THESE TO STICK TO THE CEILING!"));
             this.gc.Fliparoo();
         }
+
         if (this.problem <= 3)
         {
             if (this.playerAnswer.text == this.solution.ToString() & !this.impossibleMode)
@@ -409,22 +427,33 @@ public class MathGameScript : MonoBehaviour
             {
                 this.problemsWrong++;
                 this.results[this.problem - 1].texture = this.incorrect;
-                if (!this.gc.spoopMode)
+
+                if (this.gc.isSafeMode)
+                {
+                    this.baldiAudio.Stop();
+                    this.ClearAudioQueue();
+                    this.NewProblem();
+                    return;
+                }
+                else
                 {
                     this.baldiFeed.SetTrigger("angry");
-                    this.gc.ActivateSpoopMode();
+                    if(!gc.spoopMode) this.gc.ActivateSpoopMode();
                 }
-                if (this.gc.mode == "story")
+
+                if (this.gc.mode == "story" && !gc.isSafeMode)
                 {
                     if (this.problem == 3 && this.impossibleMode) this.baldiScript.GetAngry(1f);
                     else this.baldiScript.GetTempAngry(0.25f);
                 }
                 else
                 {
-                    this.baldiScript.GetAngry(1f);
+                    if (!gc.isSafeMode) this.baldiScript.GetAngry(1f);
                 }
+
                 this.ClearAudioQueue();
                 this.baldiAudio.Stop();
+                if (this.problemsWrong == 1 && !gc.isSafeMode) this.baldiAudio.PlayOneShot(this.aud_Hang);
                 this.NewProblem();
             }
         }
@@ -462,7 +491,10 @@ public class MathGameScript : MonoBehaviour
         {
             this.baldiScript.GetAngry(-1f);
         }
-        this.gc.DeactivateLearningGame(base.gameObject);
+
+        if (this.problemsWrong == 0)
+            this.gc.DeactivateLearningGame(base.gameObject, true);
+        else this.gc.DeactivateLearningGame(base.gameObject, false);
     }
 
     public void ButtonPress(int value)
@@ -539,6 +571,12 @@ public class MathGameScript : MonoBehaviour
         "Keep up the good work or see me after class..."
     };
 
+    private string[] safeText = new string[]
+    {
+        "Looks like you might need a little help...",
+        "Please see me after class..."
+    };
+
     private bool questionInProgress;
     private bool impossibleMode;
     private bool joystickEnabled;
@@ -547,6 +585,7 @@ public class MathGameScript : MonoBehaviour
     public AudioSource baldiAudio;
     private int randompraise;
     [SerializeField] private MathMusicScript mathMusicScript;
+    [SerializeField] private AudioClip aud_Hang;
     [SerializeField] private AudioClip colonge;
     [SerializeField] private AudioClip dash;
     [SerializeField] private GameObject spider;

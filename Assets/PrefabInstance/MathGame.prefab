@@ -1826,6 +1826,7 @@ MonoBehaviour:
   problem: 0
   baldiAudio: {fileID: 82212521532976993}
   mathMusicScript: {fileID: 0}
+  aud_Hang: {fileID: 8300000, guid: 717e355fb583799408f280e2ee67bcc4, type: 3}
   colonge: {fileID: 8300000, guid: b5488fa7640f3db4db9de1762365b1ab, type: 3}
   dash: {fileID: 8300000, guid: 38f6e5a2414e82b4f990dcd9751951e0, type: 3}
   spider: {fileID: 956797308909029360}

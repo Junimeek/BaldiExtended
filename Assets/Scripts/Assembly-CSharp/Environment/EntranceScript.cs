@@ -15,7 +15,8 @@ public class EntranceScript : MonoBehaviour
 	// Token: 0x0600095E RID: 2398 RVA: 0x00021955 File Offset: 0x0001FD55
 	public void Raise()
 	{
-		base.transform.position = base.transform.position + new Vector3(0f, 10f, 0f);
+		if (!gc.isSafeMode)
+			base.transform.position = base.transform.position + new Vector3(0f, 10f, 0f);
 	}
 
 	// Token: 0x040005F3 RID: 1523

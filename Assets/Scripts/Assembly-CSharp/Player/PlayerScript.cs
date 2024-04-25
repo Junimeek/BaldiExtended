@@ -38,7 +38,7 @@ public class PlayerScript : MonoBehaviour
 		if (gc.isSlowmo) playerTimeScale = Time.timeScale * 2;
 		else playerTimeScale = Time.timeScale;
 
-		base.transform.position = new Vector3(base.transform.position.x, this.height, base.transform.position.z);
+		//base.transform.position = new Vector3(base.transform.position.x, this.height, base.transform.position.z);
 		this.MouseMove();
 		this.PlayerMove();
 		this.StaminaCheck();
@@ -358,7 +358,7 @@ public class PlayerScript : MonoBehaviour
 	public float flipaturn;
 
 	// Token: 0x040006F6 RID: 1782
-	private Quaternion playerRotation;
+	[SerializeField] private Quaternion playerRotation;
 
 	// Token: 0x040006F7 RID: 1783
 	public Vector3 frozenPosition;

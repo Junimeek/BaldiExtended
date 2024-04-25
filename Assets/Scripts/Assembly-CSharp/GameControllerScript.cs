@@ -8,10 +8,8 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-// Token: 0x020000C0 RID: 192
 public class GameControllerScript : MonoBehaviour
 {
-	// Token: 0x06000963 RID: 2403 RVA: 0x00021A00 File Offset: 0x0001FE00
 	public GameControllerScript()
 	{
 		int[] array = new int[5];
@@ -29,9 +27,9 @@ public class GameControllerScript : MonoBehaviour
 		debugActions = FindObjectOfType<DebugMenuActions>();
 		debugScreen = FindObjectOfType<DebugScreenSwitch>();
 		audioManager = FindObjectOfType<AudioManager>();
+		handIconScript = FindObjectOfType<HandIconScript>();
 	}
 
-	// Token: 0x06000964 RID: 2404 RVA: 0x00021AC4 File Offset: 0x0001FEC4
 	private void Start()
 	{
 		Scene curScene = SceneManager.GetActiveScene();
@@ -69,7 +67,6 @@ public class GameControllerScript : MonoBehaviour
 		//debugScreen.DebugCloseMenu();
 	}
 
-	// Token: 0x06000965 RID: 2405 RVA: 0x00021B5C File Offset: 0x0001FF5C
 	private void Update()
 	{
 		if (!this.learningActive)
@@ -255,6 +252,53 @@ public class GameControllerScript : MonoBehaviour
 				Debug.Log("time is now " + Time.timeScale.ToString());
 			}
 		}
+
+		CheckRaycast();
+	}
+
+	private void CheckRaycast()
+	{
+		Ray ray = Camera.main.ScreenPointToRay(new Vector3((float)(Screen.width / 2), (float)(Screen.height / 2), 0f));
+		RaycastHit raycastHit;
+		float distance;
+
+		if (Physics.Raycast(ray, out raycastHit) && raycastHit.collider.name == "_DoorOut" && !(raycastHit.collider.tag == "SwingingDoor"))
+			distance = 15f;
+		else distance = 10f;
+
+		if (this.player.jumpRope && this.item[this.itemSelected] == 9)
+			handIconScript.ChangeIcon(8);
+		else if (Vector3.Distance(this.playerTransform.position, raycastHit.transform.position) <= distance)
+		{
+			if (raycastHit.collider.name == "1st Prize" && this.item[this.itemSelected] == 9)
+				handIconScript.ChangeIcon(8);
+			else if (raycastHit.collider.tag == "Notebook")
+			{
+				if (raycastHit.collider.name == "PayPhone" && this.item[this.itemSelected] == 5)
+					handIconScript.ChangeIcon(3);
+				else if (raycastHit.collider.name == "TapePlayer" && this.item[this.itemSelected] == 6)
+					handIconScript.ChangeIcon(5);
+				else if (!(raycastHit.collider.name == "PayPhone" || raycastHit.collider.name == "TapePlayer"))
+					handIconScript.ChangeIcon(2);
+			}
+			else if (raycastHit.collider.name == "_DoorOut")
+			{
+				if (raycastHit.collider.tag == "SwingingDoor"  && this.item[this.itemSelected] == 2)
+					handIconScript.ChangeIcon(6);
+				else if (raycastHit.collider.tag == "PrincipalDoor" && this.item[this.itemSelected] == 3)
+					handIconScript.ChangeIcon(4);
+				else if (this.item[this.itemSelected] == 8)
+					handIconScript.ChangeIcon(7);
+				else if (!(raycastHit.collider.tag == "SwingingDoor"))
+					handIconScript.ChangeIcon(1);
+			}
+			else if ((raycastHit.collider.name == "BSODAMachine" || raycastHit.collider.name == "ZestyMachine") && this.item[this.itemSelected] == 5)
+				handIconScript.ChangeIcon(3);
+			else if (raycastHit.collider.tag == "Item")
+				handIconScript.ChangeIcon(1);
+			else handIconScript.ChangeIcon(0);
+		}
+		else handIconScript.ChangeIcon(0);
 	}
 
 	public void UpdatePrinceyTrigger(int type, bool triggerSetting)
@@ -263,50 +307,38 @@ public class GameControllerScript : MonoBehaviour
 		else if (type == 2) this.isPrinceyIgnore = triggerSetting;
 	}
 
-	// Token: 0x06000966 RID: 2406 RVA: 0x00021F8C File Offset: 0x0002038C
 	private void UpdateNotebookCount()
 	{
 		if (this.mode == "story")
-		{
 			this.notebookCount.text = this.notebooks.ToString() + "/" + daFinalBookCount.ToString() + " Notebooks";
-		}
 		else
-		{
 			this.notebookCount.text = this.notebooks.ToString() + " Notebooks";
-		}
+
 		if (this.notebooks == daFinalBookCount & this.mode == "story")
-		{
 			this.ActivateFinaleMode();
-		}
 	}
 
-	// Token: 0x06000967 RID: 2407 RVA: 0x00022024 File Offset: 0x00020424
 	public void CollectNotebook()
 	{
 		this.notebooks++;
 		this.UpdateNotebookCount();
 	}
 
-	// Token: 0x06000968 RID: 2408 RVA: 0x0002203A File Offset: 0x0002043A
 	public void LockMouse()
 	{
 		if (!this.learningActive)
 		{
 			this.cursorController.LockCursor(); //Prevent the cursor from moving
 			this.mouseLocked = true;
-			this.reticle.SetActive(true);
 		}
 	}
 
-	// Token: 0x06000969 RID: 2409 RVA: 0x00022065 File Offset: 0x00020465
 	public void UnlockMouse()
 	{
 		this.cursorController.UnlockCursor(); //Allow the cursor to move
 		this.mouseLocked = false;
-		this.reticle.SetActive(false);
 	}
 
-	// Token: 0x0600096A RID: 2410 RVA: 0x00022085 File Offset: 0x00020485
 	public void PauseGame()
 	{
 		if (!this.learningActive)
@@ -320,13 +352,11 @@ public class GameControllerScript : MonoBehaviour
 		}
 	}
 
-	// Token: 0x0600096B RID: 2411 RVA: 0x000220C5 File Offset: 0x000204C5
 	public void ExitGame()
 	{
 		SceneManager.LoadScene("MainMenu");
 	}
 
-	// Token: 0x0600096C RID: 2412 RVA: 0x000220D1 File Offset: 0x000204D1
 	public void UnpauseGame()
 	{
 		Time.timeScale = 1f;
@@ -335,7 +365,6 @@ public class GameControllerScript : MonoBehaviour
 		this.LockMouse();
 	}
 
-	// Token: 0x0600096D RID: 2413 RVA: 0x000220F8 File Offset: 0x000204F8
 	public void ActivateSpoopMode()
 	{
 		this.spoopMode = true; //Tells the game its time for spooky
@@ -352,12 +381,20 @@ public class GameControllerScript : MonoBehaviour
         this.bully.SetActive(true); //Turns on Bully
         this.firstPrize.SetActive(true); //Turns on First-Prize
 		//this.TestEnemy.SetActive(true); //Turns on Test-Enemy
-		this.audioDevice.PlayOneShot(this.aud_Hang); //Plays the hang sound
 		MusicPlayer(0,0);
-		this.mathMusicScript.StopSong();
+		mathMusicScript.StopSong();
 	}
 
-	// Token: 0x0600096E RID: 2414 RVA: 0x000221BF File Offset: 0x000205BF
+	private void ActivateSafeMode()
+	{
+		this.principal.SetActive(true); //Turns on Principal
+        this.crafters.SetActive(true); //Turns on Crafters
+        this.playtime.SetActive(true); //Turns on Playtime
+        this.gottaSweep.SetActive(true); //Turns on Gotta Sweep
+        this.bully.SetActive(true); //Turns on Bully
+        this.firstPrize.SetActive(true); //Turns on First-Prize
+	}
+
 	private void ActivateFinaleMode()
 	{
 		this.finaleMode = true;
@@ -367,24 +404,20 @@ public class GameControllerScript : MonoBehaviour
 		this.entrance_3.Raise();
 	}
 
-	// Token: 0x0600096F RID: 2415 RVA: 0x000221F4 File Offset: 0x000205F4
 	public void GetAngry(float value) //Make Baldi get angry
 	{
-		if (!this.spoopMode)
-		{
-			this.ActivateSpoopMode();
-		}
+		if (!this.spoopMode) this.ActivateSpoopMode();
+			
 		this.baldiScrpt.GetAngry(value);
 	}
 
-	// Token: 0x06000970 RID: 2416 RVA: 0x00022214 File Offset: 0x00020614
 	public void ActivateLearningGame()
 	{
 		//this.camera.cullingMask = 0; //Sets the cullingMask to nothing
 		this.learningActive = true;
 		this.UnlockMouse(); //Unlock the mouse
 		this.tutorBaldi.Stop(); //Make tutor Baldi stop talking
-		if (!this.spoopMode) //If the player hasn't gotten a question wrong
+		if (!this.spoopMode || this.isSafeMode) //If the player hasn't gotten a question wrong
 		{
 			MusicPlayer(0,0); //Start playing the learn music
 			this.mathMusicScript.TheAwakening();
@@ -413,8 +446,7 @@ public class GameControllerScript : MonoBehaviour
 		}
 	}
 
-	// Token: 0x06000971 RID: 2417 RVA: 0x00022278 File Offset: 0x00020678
-	public void DeactivateLearningGame(GameObject subject)
+	public void DeactivateLearningGame(GameObject subject, bool reward)
 	{
 		this.mathMusicScript.StopSong();
 		if (audioManager != null) audioManager.SetVolume(0);
@@ -431,6 +463,8 @@ public class GameControllerScript : MonoBehaviour
 			MusicPlayer(0,0);
 			MusicPlayer(1,1);
 		}
+
+		if (this.isSafeMode && this.notebooks == 2) ActivateSafeMode();
 
 		if (this.spoopMode && notebooks >= 2) // my music stuff
 		{
@@ -467,7 +501,7 @@ public class GameControllerScript : MonoBehaviour
 			MusicPlayer(2,2);
 		}
 
-		if (this.notebooks == 1 & !this.spoopMode) // If this is the players first notebook and they didn't get any questions wrong, reward them with a quarter
+		if (this.notebooks == 1 && reward) // If this is the players first notebook and they didn't get any questions wrong, reward them with a quarter
 		{
 			this.quarter.SetActive(true);
 			this.tutorBaldi.PlayOneShot(this.aud_Prize);
@@ -475,7 +509,7 @@ public class GameControllerScript : MonoBehaviour
 		else if (this.notebooks == daFinalBookCount & this.mode == "story") // Plays the all 7 notebook sound
 		{
 			this.spoopLearn.Stop();
-			this.audioDevice.PlayOneShot(this.aud_AllNotebooks, 0.8f);
+			if(!this.isSafeMode) this.audioDevice.PlayOneShot(this.aud_AllNotebooks, 0.8f);
 			this.escapeMusic.Play();
 		}
 		else if (this.notebooks >= this.daFinalBookCount && this.mode == "endless")
@@ -485,7 +519,6 @@ public class GameControllerScript : MonoBehaviour
 		}
 	}
 
-	// Token: 0x06000972 RID: 2418 RVA: 0x00022360 File Offset: 0x00020760
 	private void IncreaseItemSelection()
 	{
 		this.itemSelected++;
@@ -497,7 +530,6 @@ public class GameControllerScript : MonoBehaviour
 		this.UpdateItemName();
 	}
 
-	// Token: 0x06000973 RID: 2419 RVA: 0x000223C4 File Offset: 0x000207C4
 	private void DecreaseItemSelection()
 	{
 		this.itemSelected--;
@@ -509,14 +541,12 @@ public class GameControllerScript : MonoBehaviour
 		this.UpdateItemName();
 	}
 
-	// Token: 0x06000974 RID: 2420 RVA: 0x00022425 File Offset: 0x00020825
 	private void UpdateItemSelection()
 	{
 		this.itemSelect.anchoredPosition = new Vector3((float)this.itemSelectOffset[this.itemSelected], 128f, 0f); //Moves the item selector background(the red rectangle)
 		this.UpdateItemName();
 	}
 
-	// Token: 0x06000975 RID: 2421 RVA: 0x0002245C File Offset: 0x0002085C
 	public void CollectItem(int item_ID)
 	{
 		if (this.item[0] == 0)
@@ -552,7 +582,6 @@ public class GameControllerScript : MonoBehaviour
 		this.UpdateItemName();
 	}
 
-	// Token: 0x06000976 RID: 2422 RVA: 0x00022528 File Offset: 0x00020928
 	private void UseItem()
 	{
 		if (this.item[this.itemSelected] != 0)
@@ -674,7 +703,6 @@ public class GameControllerScript : MonoBehaviour
 		}
 	}
 
-	// Token: 0x06000977 RID: 2423 RVA: 0x00022B40 File Offset: 0x00020F40
 	private IEnumerator BootAnimation()
 	{
 		float time = 15f;
@@ -715,7 +743,6 @@ public class GameControllerScript : MonoBehaviour
 		yield break;
 	}
 
-	// Token: 0x06000978 RID: 2424 RVA: 0x00022B5B File Offset: 0x00020F5B
 	private void ResetItem()
 	{
 		this.item[this.itemSelected] = 0;
@@ -723,7 +750,6 @@ public class GameControllerScript : MonoBehaviour
 		this.UpdateItemName();
 	}
 
-	// Token: 0x06000979 RID: 2425 RVA: 0x00022B8B File Offset: 0x00020F8B
 	public void LoseItem(int id)
 	{
 		this.item[id] = 0;
@@ -731,13 +757,11 @@ public class GameControllerScript : MonoBehaviour
 		this.UpdateItemName();
 	}
 
-	// Token: 0x0600097A RID: 2426 RVA: 0x00022BB1 File Offset: 0x00020FB1
 	private void UpdateItemName()
 	{
 		this.itemText.text = this.itemNames[this.item[this.itemSelected]];
 	}
 
-	// Token: 0x0600097B RID: 2427 RVA: 0x00022BD4 File Offset: 0x00020FD4
 	public void ExitReached()
 	{
 		this.exitsReached++;
@@ -790,13 +814,11 @@ public class GameControllerScript : MonoBehaviour
 		*/
 	}
 
-	// Token: 0x0600097C RID: 2428 RVA: 0x00022CC1 File Offset: 0x000210C1
 	public void DespawnCrafters()
 	{
 		this.crafters.SetActive(false); //Make Arts And Crafters Inactive
 	}
 
-	// Token: 0x0600097D RID: 2429 RVA: 0x00022CD0 File Offset: 0x000210D0
 	public void Fliparoo()
 	{
 		this.player.height = 6f;
@@ -867,8 +889,11 @@ public class GameControllerScript : MonoBehaviour
 
 	private void AngrySchoolColors(int phase)
 	{
-		StartCoroutine(ChangeSchoolColor(phase));
-		StartCoroutine(ChangeFogColor(phase));
+		if (!this.isSafeMode)
+		{
+			StartCoroutine(ChangeSchoolColor(phase));
+			StartCoroutine(ChangeFogColor(phase));
+		}
 	}
 
 	private IEnumerator ChangeSchoolColor(int phase)
@@ -975,6 +1000,7 @@ public class GameControllerScript : MonoBehaviour
 	public bool learningActive;
 	public float gameOverDelay;
 	public bool isSlowmo;
+	public bool isSafeMode;
 
 
 	[Header("UI")]
@@ -986,6 +1012,7 @@ public class GameControllerScript : MonoBehaviour
 	public GameObject reticle;
 	public RectTransform itemSelect;
 	private int[] itemSelectOffset;
+	[SerializeField] private GameObject pointer;
 
 
 	[Header("Noteboos")]
@@ -1112,4 +1139,5 @@ public class GameControllerScript : MonoBehaviour
 	[SerializeField] private SpeedrunTimer speedrunTimer;
 	[SerializeField] private MathMusicScript mathMusicScript;
 	[SerializeField] private DebugSceneLoader sceneLoader;
+	[SerializeField] private HandIconScript handIconScript;
 }
