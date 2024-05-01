@@ -3531,7 +3531,7 @@ MonoBehaviour:
   descriptionText: {fileID: 1091418939}
   isNightly: 1
   stableBuild: 0.4.0
-  nightlyBuild: 24w17a
+  nightlyBuild: 24w18a
   curVersion: 
   stableURL: https://raw.githubusercontent.com/Junimeek/BaldiExtended/main/VersionStable.json
   nightlyURL: https://raw.githubusercontent.com/Junimeek/BaldiExtended/main/VersionNightly.json

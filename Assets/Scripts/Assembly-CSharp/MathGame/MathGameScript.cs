@@ -6,10 +6,8 @@ using UnityEngine.AI;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-// Token: 0x020000C2 RID: 194
 public class MathGameScript : MonoBehaviour
 {
-    // Token: 0x06000982 RID: 2434 RVA: 0x000231E0 File Offset: 0x000215E0
     private void Start()
     {   
         this.spider.SetActive(false);
@@ -284,7 +282,6 @@ public class MathGameScript : MonoBehaviour
         float glitch3;
 
         float randblah = UnityEngine.Random.Range(1f,22f);
-        Debug.LogWarning(randblah);
         int randblah2 = Mathf.RoundToInt(randblah);
 
         if (randblah2 == 22)

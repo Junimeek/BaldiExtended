@@ -253,7 +253,7 @@ public class GameControllerScript : MonoBehaviour
 			}
 		}
 
-		CheckRaycast();
+		if (this.handIconScript != null) CheckRaycast();
 	}
 
 	private void CheckRaycast()
@@ -899,10 +899,12 @@ public class GameControllerScript : MonoBehaviour
 	private IEnumerator ChangeSchoolColor(int phase)
 	{
 		float curValue;
+		
 		switch(phase)
 		{
 			case 2:
 				curValue = 1f;
+				
 				while (curValue > 0f)
 				{
 					curValue -= Time.deltaTime/5f;
@@ -1028,6 +1030,7 @@ public class GameControllerScript : MonoBehaviour
 	public Transform cameraTransform;
 	public Camera camera;
 	private int cullingMask;
+	[SerializeField] private Material redSky;
 
 
 	[Header("Characters")]
