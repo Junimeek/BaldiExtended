@@ -72,10 +72,10 @@ crashlytics-build.properties
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
 
-# Other stuff
+# other stuff that i added to my own build
 
 .vscode/
 z-add.bat
 z-commit.bat
 z-push.bat
-nat.exe
+gitpush.exe

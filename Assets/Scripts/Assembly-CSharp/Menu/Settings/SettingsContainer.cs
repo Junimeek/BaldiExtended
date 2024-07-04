@@ -150,6 +150,47 @@ public class SettingsContainer : MonoBehaviour
         }
     }
 
+    public void SaveToRegistry(string type, string type2) // lmao i give up
+    {
+        switch(type)
+        {
+            case "settings":
+                PlayerPrefs.SetFloat("MouseSensitivity", this.turnSensitivity);
+                PlayerPrefs.SetFloat("VolumeVoice", this.volumeVoice);
+                PlayerPrefs.SetFloat("VolumeBGM", this.volumeBGM);
+                PlayerPrefs.SetFloat("VolumeSFX", this.volumeSFX);
+
+                if (this.instantReset) PlayerPrefs.SetInt("InstantReset", 1);
+                else PlayerPrefs.SetInt("InstantReset", 0);
+
+                if (this.additionalMusic) PlayerPrefs.SetInt("AdditionalMusic", 1);
+                else PlayerPrefs.SetInt("AdditionalMusic", 0);
+
+                if (this.notifBoard) PlayerPrefs.SetInt("NotifBoard", 1);
+                else PlayerPrefs.SetInt("NotifBoard", 0);
+            break;
+            case "map":
+                PlayerPrefs.SetString("CurrentMap", type2);
+            break;
+            case "gamesettings":
+                PlayerPrefs.SetString("gp_safemode", type2);
+                PlayerPrefs.SetString("gp_mathmultiply", type2);
+            break;
+            case "defaults":
+                PlayerPrefs.SetFloat("MouseSensitivity", 2f);
+                PlayerPrefs.SetFloat("VolumeVoice", 0f);
+                PlayerPrefs.SetFloat("VolumeBGM", 0f);
+                PlayerPrefs.SetFloat("VolumeSFX", 0f);
+                PlayerPrefs.SetInt("InstantReset", 1);
+                PlayerPrefs.SetInt("AdditionalMusic", 0);
+                PlayerPrefs.SetInt("NotifBoard", 0);
+            break;
+            default:
+                Debug.LogWarning("Nothing to save");
+            break;
+        }
+    }
+
 /*
     public void RegistrySave()
     {

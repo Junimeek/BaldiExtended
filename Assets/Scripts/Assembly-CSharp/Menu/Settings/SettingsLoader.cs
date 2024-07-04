@@ -82,7 +82,8 @@ public class SettingsLoader : MonoBehaviour
     public void SaveSettings(int type)
     {
         container.SaveSettingsData(type);
-        audioManager.GetVolume();
+        if (audioManager != null)
+            audioManager.GetVolume();
     }
 
 /*
