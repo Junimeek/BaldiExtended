@@ -32,6 +32,10 @@ public class GameControllerScript : MonoBehaviour
 
 	private void Start()
 	{
+		Debug.Log("Loaded " + PlayerPrefs.GetString("CurrentMap"));
+		Debug.Log("Safe Mode: " + PlayerPrefs.GetInt("gps_safemode"));
+		Debug.Log("Difficult Math: " + PlayerPrefs.GetInt("gps_difficultmath"));
+
 		Scene curScene = SceneManager.GetActiveScene();
 		string curSceneName = curScene.name;
 
@@ -47,6 +51,12 @@ public class GameControllerScript : MonoBehaviour
 			RenderSettings.fogColor = new Color(1f, 1f, 1f);
 			RenderSettings.ambientLight = new Color(1f, 1f, 1f);
 		}
+
+		if (PlayerPrefs.GetInt("gps_safemode") == 1) this.isSafeMode = true;
+		else this.isSafeMode = false;
+
+		if (PlayerPrefs.GetInt("gps_difficultmath") == 1) this.isDifficultMath = true;
+		else this.isDifficultMath = false;
 
 		this.cullingMask = this.camera.cullingMask; // Changes cullingMask in the Camera
 		this.audioDevice = base.GetComponent<AudioSource>(); //Get the Audio Source
@@ -1003,6 +1013,7 @@ public class GameControllerScript : MonoBehaviour
 	public float gameOverDelay;
 	public bool isSlowmo;
 	public bool isSafeMode;
+	public bool isDifficultMath;
 
 
 	[Header("UI")]

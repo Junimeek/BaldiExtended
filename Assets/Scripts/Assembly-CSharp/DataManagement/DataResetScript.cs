@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using TMPro;
 using System;
+using System.IO;
 
 public class DataResetScript : MonoBehaviour
 {
@@ -65,6 +66,7 @@ public class DataResetScript : MonoBehaviour
                 catch { Debug.LogError("Failed to clear achievements."); }
             break;
             case 99:
+                File.Delete(Application.persistentDataPath + "/settings.sav");
                 SceneManager.LoadSceneAsync("Launcher");
             break;
         }

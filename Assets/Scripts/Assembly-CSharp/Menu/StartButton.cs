@@ -1,16 +1,26 @@
 ﻿using System;
+using UnityEditor.MPE;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 // Token: 0x020000D2 RID: 210
 public class StartButton : MonoBehaviour
 {
-
-	// Token: 0x060009E3 RID: 2531 RVA: 0x00026710 File Offset: 0x00024B10
-	public void StartGame(string mapToLoad)
+	public void SelectMap(string themap)
 	{
-		PlayerPrefs.SetString("CurrentMap", mapToLoad);
-		this.sceneLoader.LoadTheScene(mapToLoad, 1);
+		container = FindObjectOfType<SettingsContainer>();
+		container.curMap = themap;
+		container.SaveToRegistry("map");
+		this.gpMenu.SetActive(true);
+		this.mapMenu.SetActive(false);
+	}
+
+	public void StartGame()
+	{
+		container = FindObjectOfType<SettingsContainer>();
+		this.baldiLoadScreen.SetActive(true);
+		this.gpMenu.SetActive(false);
+		this.sceneLoader.LoadTheScene(container.curMap, 1);
 	}
 
 	public void SetGamePref()
@@ -25,16 +35,15 @@ public class StartButton : MonoBehaviour
 		}
 	}
 
-	// Token: 0x04000715 RID: 1813
 	public StartButton.Mode currentMode;
-	[SerializeField] private DebugSceneLoader sceneLoader; 
-
-	// Token: 0x020000D3 RID: 211
+	[SerializeField] private DebugSceneLoader sceneLoader;
+	[SerializeField] private SettingsContainer container;
+	[SerializeField] private GameObject baldiLoadScreen;
+	[SerializeField] private GameObject gpMenu;
+	[SerializeField] private GameObject mapMenu;
 	public enum Mode
 	{
-		// Token: 0x04000717 RID: 1815
 		Story,
-		// Token: 0x04000718 RID: 1816
 		Endless
 	}
 }

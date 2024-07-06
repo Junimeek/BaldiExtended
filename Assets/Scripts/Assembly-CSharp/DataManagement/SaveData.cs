@@ -10,6 +10,8 @@ public class AchievementData
 [Serializable]
 public class SettingsData
 {
+    public bool isSettingsSaved;
+    /*
     public float turnSensitivity;
     public bool isInstantReset;
     public bool isNotifBoard;
@@ -17,4 +19,5 @@ public class SettingsData
     public float volBGM;
     public float volSFX;
     public bool isAdditionalMusic;
+    */
 }

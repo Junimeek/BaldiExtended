@@ -7,6 +7,7 @@ using System;
 
 public class SettingsContainer : MonoBehaviour
 {
+    /*
     private void Awake()
     {
         if (instance == null)
@@ -19,25 +20,37 @@ public class SettingsContainer : MonoBehaviour
             Destroy(gameObject);
             return;
         }
-
-        this.dataPath = Application.persistentDataPath + "/settings.sav";
     }
+    */
 
     private void Start()
     {
-        if (PlayerPrefs.HasKey("OptionsSet"))
+        this.dataPath = Application.persistentDataPath + "/settings.sav";
+
+        if (!File.Exists(this.dataPath))
         {
-            this.optionsSet = true;
+            this.turnSensitivity = 2f;
+            this.volumeVoice = 0f;
+            this.volumeBGM = 0f;
+            this.volumeSFX = 0f;
+            this.instantReset = true;
+            this.additionalMusic = false;
+            this.notifBoard = false;
+            PlayerPrefs.SetInt("AnalogMove", 0);
+            PlayerPrefs.SetInt("Rumble", 0);
+            PlayerPrefs.SetString("CurrentMap", "Classic");
+            PlayerPrefs.SetInt("gps_safemode", 0);
+            PlayerPrefs.SetInt("gps_difficultmath", 0);
+            SaveToRegistry("settings");
+            SaveToSettingsFile();
+            Debug.LogWarning("Settings binary file not found. Settings reset to defaults.");
+        }
+        else
+        {
             this.turnSensitivity = PlayerPrefs.GetFloat("MouseSensitivity");
             this.volumeVoice = PlayerPrefs.GetFloat("VolumeVoice");
             this.volumeBGM = PlayerPrefs.GetFloat("VolumeBGM");
             this.volumeSFX = PlayerPrefs.GetFloat("VolumeSFX");
-
-            if (PlayerPrefs.GetInt("AnalogMove") == 1) this.analogMove = true;
-            else this.analogMove = false;
-
-            if (PlayerPrefs.GetInt("Rumble") == 1) this.rumble = true;
-            else this.rumble = false;
 
             if (PlayerPrefs.GetInt("InstantReset") == 1) this.instantReset = true;
             else this.instantReset = false;
@@ -47,29 +60,78 @@ public class SettingsContainer : MonoBehaviour
 
             if (PlayerPrefs.GetInt("NotifBoard") == 1) this.notifBoard = true;
             else this.notifBoard = false;
+
+            this.safeMode = PlayerPrefs.GetInt("gps_safemode");
+            this.difficultMath = PlayerPrefs.GetInt("gps_difficultmath");
+
+            Debug.Log("Loaded data from registry");
         }
-
-        else
-        {
-            PlayerPrefs.SetInt("OptionsSet", 1);
-            this.freeRun = false;
-
-            this.turnSensitivity = 0.2f;
-            this.volumeVoice = 0f;
-            this.volumeBGM = 0f;
-            this.volumeSFX = 0f;
-
-            this.instantReset = true;
-            this.additionalMusic = false;
-            this.notifBoard = false;
-
-            this.analogMove = false;
-            this.rumble = false;
-        }
-
-        LoadSettingsData(1);
     }
 
+    public void SaveToRegistry(string type) // lmao i give up
+    {
+        Debug.Log("Saved " + type + " to registry");
+        switch(type)
+        {
+            case "settings":
+                PlayerPrefs.SetFloat("MouseSensitivity", this.turnSensitivity);
+                PlayerPrefs.SetFloat("VolumeVoice", this.volumeVoice);
+                PlayerPrefs.SetFloat("VolumeBGM", this.volumeBGM);
+                PlayerPrefs.SetFloat("VolumeSFX", this.volumeSFX);
+
+                if (this.instantReset) PlayerPrefs.SetInt("InstantReset", 1);
+                else PlayerPrefs.SetInt("InstantReset", 0);
+
+                if (this.additionalMusic) PlayerPrefs.SetInt("AdditionalMusic", 1);
+                else PlayerPrefs.SetInt("AdditionalMusic", 0);
+
+                if (this.notifBoard) PlayerPrefs.SetInt("NotifBoard", 1);
+                else PlayerPrefs.SetInt("NotifBoard", 0);
+            break;
+            case "map":
+                PlayerPrefs.SetString("CurrentMap", this.curMap);
+            break;
+            case "gamestyles":
+                PlayerPrefs.SetInt("gps_safemode", this.safeMode);
+                PlayerPrefs.SetInt("gps_difficultmath", this.difficultMath);
+            break;
+            case "defaults":
+                PlayerPrefs.SetFloat("MouseSensitivity", 2f);
+                PlayerPrefs.SetFloat("VolumeVoice", 0f);
+                PlayerPrefs.SetFloat("VolumeBGM", 0f);
+                PlayerPrefs.SetFloat("VolumeSFX", 0f);
+                PlayerPrefs.SetInt("InstantReset", 1);
+                PlayerPrefs.SetInt("AdditionalMusic", 0);
+                PlayerPrefs.SetInt("NotifBoard", 0);
+            break;
+            default:
+                Debug.LogWarning("Nothing to save");
+            break;
+        }
+    }
+
+    private void SaveToSettingsFile()
+    {
+        BinaryFormatter bf = new BinaryFormatter();
+        FileStream file = File.Create(this.dataPath);
+        SettingsData data = new SettingsData();
+
+        data.isSettingsSaved = true;
+
+        try
+        {
+            bf.Serialize(file, data);
+        }
+        catch
+        {
+            Debug.LogError("Failed to save settings binary file");
+        }
+        
+        file.Close();
+        Debug.Log("Settings file created");
+    }
+
+    /*
     public void SaveSettingsData(int type)
     {
         BinaryFormatter bf = new BinaryFormatter();
@@ -149,79 +211,12 @@ public class SettingsContainer : MonoBehaviour
             this.SaveSettingsData(1);
         }
     }
-
-    public void SaveToRegistry(string type, string type2) // lmao i give up
-    {
-        switch(type)
-        {
-            case "settings":
-                PlayerPrefs.SetFloat("MouseSensitivity", this.turnSensitivity);
-                PlayerPrefs.SetFloat("VolumeVoice", this.volumeVoice);
-                PlayerPrefs.SetFloat("VolumeBGM", this.volumeBGM);
-                PlayerPrefs.SetFloat("VolumeSFX", this.volumeSFX);
-
-                if (this.instantReset) PlayerPrefs.SetInt("InstantReset", 1);
-                else PlayerPrefs.SetInt("InstantReset", 0);
-
-                if (this.additionalMusic) PlayerPrefs.SetInt("AdditionalMusic", 1);
-                else PlayerPrefs.SetInt("AdditionalMusic", 0);
-
-                if (this.notifBoard) PlayerPrefs.SetInt("NotifBoard", 1);
-                else PlayerPrefs.SetInt("NotifBoard", 0);
-            break;
-            case "map":
-                PlayerPrefs.SetString("CurrentMap", type2);
-            break;
-            case "gamesettings":
-                PlayerPrefs.SetString("gp_safemode", type2);
-                PlayerPrefs.SetString("gp_mathmultiply", type2);
-            break;
-            case "defaults":
-                PlayerPrefs.SetFloat("MouseSensitivity", 2f);
-                PlayerPrefs.SetFloat("VolumeVoice", 0f);
-                PlayerPrefs.SetFloat("VolumeBGM", 0f);
-                PlayerPrefs.SetFloat("VolumeSFX", 0f);
-                PlayerPrefs.SetInt("InstantReset", 1);
-                PlayerPrefs.SetInt("AdditionalMusic", 0);
-                PlayerPrefs.SetInt("NotifBoard", 0);
-            break;
-            default:
-                Debug.LogWarning("Nothing to save");
-            break;
-        }
-    }
-
-/*
-    public void RegistrySave()
-    {
-        PlayerPrefs.SetFloat("MouseSensitivity", this.turnSensitivity);
-        PlayerPrefs.SetFloat("VolumeVoice", this.volumeVoice);
-        PlayerPrefs.SetFloat("VolumeBGM", this.volumeBGM);
-        PlayerPrefs.SetFloat("VolumeSFX", this.volumeSFX);
-
-        if (this.analogMove == true) PlayerPrefs.SetInt("AnalogMove", 1);
-        else PlayerPrefs.SetInt("AnalogMove", 0);
-
-        if (this.rumble == true) PlayerPrefs.SetInt("Rumble", 1);
-        else PlayerPrefs.SetInt("Rumble", 0);
-
-        if (this.instantReset == true) PlayerPrefs.SetInt("InstantReset", 1);
-        else PlayerPrefs.SetInt("InstantReset", 0);
-
-        if (this.instantReset == true) PlayerPrefs.SetInt("NotifBoard", 1);
-        else PlayerPrefs.SetInt("NotifBoard", 0);
-
-        if (this.additionalMusic == true) PlayerPrefs.SetInt("AdditionalMusic", 1);
-        else PlayerPrefs.SetInt("AdditionalMusic", 0);
-    }
     */
 
     private static SettingsContainer instance;
     [SerializeField] private string dataPath;
-
-    public bool optionsSet;
-    public bool freeRun;
     
+    //options
     public float turnSensitivity;
     public float volumeVoice;
     public float volumeBGM;
@@ -230,7 +225,8 @@ public class SettingsContainer : MonoBehaviour
     public bool additionalMusic;
     public bool notifBoard;
 
-    // useless settings
-    public bool analogMove;
-    public bool rumble;
+    //gameplay styles
+    public string curMap;
+    public int safeMode;
+    public int difficultMath;
 }

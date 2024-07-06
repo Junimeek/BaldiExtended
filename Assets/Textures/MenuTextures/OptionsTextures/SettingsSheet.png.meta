@@ -267,7 +267,7 @@ TextureImporter:
       name: SET_Controls_Selected
       rect:
         serializedVersion: 2
-        x: 132
+        x: 130
         y: 125
         width: 251
         height: 60
@@ -734,7 +734,7 @@ TextureImporter:
         width: 380
         height: 60
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -755,7 +755,7 @@ TextureImporter:
         width: 380
         height: 60
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -763,6 +763,27 @@ TextureImporter:
       bones: []
       spriteID: 326859ed4c5827849a2d91d3be630dab
       internalID: -475109155
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SET_BlankCheckbox
+      rect:
+        serializedVersion: 2
+        x: 605
+        y: 160
+        width: 23
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c0f6a17a65dee3346855a7c0972b49aa
+      internalID: -714411635
       vertices: []
       indices: 
       edges: []
@@ -804,6 +825,7 @@ TextureImporter:
       SET_DataHeader: -1760858322
       SET_Notif_Selected: 905721407
       SET_Left_Selected: 1896570705
+      SET_BlankCheckbox: -714411635
       SET_GPHeader: 1665371181
       SET_BBCROST: 500029063
       SET_Achievement: -1035839042

@@ -15,6 +15,8 @@ public class SettingsLoader : MonoBehaviour
         sceneName = curScene.name;
         
         if (sceneName == "MainMenu") LoadSettings("menuGP");
+
+        audioManager.GetVolume();
     }
 
     private void OnDisable()
@@ -22,10 +24,10 @@ public class SettingsLoader : MonoBehaviour
         this.StoreSettings();
 
         if (sceneName == "MainMenu")
-            this.SaveSettings(1);
+            this.SaveSettings();
         else if (sceneName == "Classic" || sceneName == "ClassicExtended" ||
                 sceneName == "JuniperHills" || sceneName == "TheLine")
-            this.SaveSettings(2);
+            this.SaveSettings();
     }
 
     public void LoadSettings(string loadType)
@@ -79,9 +81,9 @@ public class SettingsLoader : MonoBehaviour
         }
     }
 
-    public void SaveSettings(int type)
+    public void SaveSettings()
     {
-        container.SaveSettingsData(type);
+        container.SaveToRegistry("settings");
         if (audioManager != null)
             audioManager.GetVolume();
     }
