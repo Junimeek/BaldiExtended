@@ -450,7 +450,6 @@ public class MathGameScript : MonoBehaviour
 
                 this.ClearAudioQueue();
                 this.baldiAudio.Stop();
-                if (this.problemsWrong == 1 && !gc.isSafeMode) this.baldiAudio.PlayOneShot(this.aud_Hang);
                 this.NewProblem();
             }
         }
@@ -578,11 +577,10 @@ public class MathGameScript : MonoBehaviour
     private bool impossibleMode;
     private bool joystickEnabled;
     private int problemsWrong;
-    private AudioClip[] audioQueue = new AudioClip[20];
+    [SerializeField] private AudioClip[] audioQueue = new AudioClip[20];
     public AudioSource baldiAudio;
     private int randompraise;
     [SerializeField] private MathMusicScript mathMusicScript;
-    [SerializeField] private AudioClip aud_Hang;
     [SerializeField] private AudioClip colonge;
     [SerializeField] private AudioClip dash;
     [SerializeField] private GameObject spider;

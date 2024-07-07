@@ -393,6 +393,7 @@ public class GameControllerScript : MonoBehaviour
 		//this.TestEnemy.SetActive(true); //Turns on Test-Enemy
 		MusicPlayer(0,0);
 		mathMusicScript.StopSong();
+		this.audioDevice.PlayOneShot(this.aud_Hang);
 	}
 
 	private void ActivateSafeMode()
@@ -516,16 +517,21 @@ public class GameControllerScript : MonoBehaviour
 			this.quarter.SetActive(true);
 			this.tutorBaldi.PlayOneShot(this.aud_Prize);
 		}
-		else if (this.notebooks == daFinalBookCount & this.mode == "story") // Plays the all 7 notebook sound
+		else if (this.notebooks >= daFinalBookCount && this.mode == "story") // Plays the all 7 notebook sound
 		{
-			this.spoopLearn.Stop();
-			if(!this.isSafeMode) this.audioDevice.PlayOneShot(this.aud_AllNotebooks, 0.8f);
-			this.escapeMusic.Play();
-		}
-		else if (this.notebooks >= this.daFinalBookCount && this.mode == "endless")
-		{
-			this.spoopLearn.Stop();
-			if (PlayerPrefs.GetInt("AdditionalMusic") == 1) this.endlessMusic.Play();
+			if (this.mode == "story")
+			{
+				this.spoopLearn.Stop();
+				if(!this.isSafeMode) this.audioDevice.PlayOneShot(this.aud_AllNotebooks, 0.8f);
+				this.escapeMusic.Play();
+			}
+			else if (this.mode == "endless")
+			{
+				if (this.spoopLearn.isPlaying)
+					this.spoopLearn.Stop();
+				if (PlayerPrefs.GetInt("AdditionalMusic") == 1 && !this.endlessMusic.isPlaying)
+					this.endlessMusic.Play();
+			}
 		}
 	}
 
@@ -879,9 +885,14 @@ public class GameControllerScript : MonoBehaviour
 		else if (songType == 2 && !(this.notebooks >= this.daFinalBookCount)) // math game
 		{
 			if (SongId == 1) this.learnMusic.Play();
-			else if (SongId == 2 && !this.disableSongInterruption
-					&& PlayerPrefs.GetInt("AdditionalMusic") == 1 && !(this.notebooks >= this.daFinalBookCount))
-				this.spoopLearn.Play();
+			else if (SongId == 2 && !this.disableSongInterruption && PlayerPrefs.GetInt("AdditionalMusic") == 1)
+			{
+				if (!(this.mode == "endless")) this.spoopLearn.Play();
+				else
+				{
+					if (this.notebooks < this.daFinalBookCount) this.spoopLearn.Play();
+				}
+			}
 		}
 		else if (songType == 3)
 			if (!this.notebook2.isPlaying && !this.notebook3.isPlaying) StartCoroutine(UninterruptedMusic());

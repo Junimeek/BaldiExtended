@@ -55,6 +55,9 @@ public class DataResetScript : MonoBehaviour
     {
         switch(curAction)
         {
+            case 1:
+                PlayerPrefs.SetInt("HighBooks", 0);
+            break;
             case 3:
                 try
                 {

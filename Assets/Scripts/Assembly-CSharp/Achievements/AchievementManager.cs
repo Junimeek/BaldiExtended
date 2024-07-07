@@ -36,7 +36,7 @@ public class AchievementManager : MonoBehaviour
 
     public void GiveAchievement(string type, int id)
     {
-        switch(type)
+        switch(type) // some function i dont understand
         {
             case "misc":
                 if (!Array.Exists<int>(this.ach_Misc, h => h == id))
