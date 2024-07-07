@@ -36,10 +36,16 @@ public class GameControllerScript : MonoBehaviour
 		Debug.Log("Safe Mode: " + PlayerPrefs.GetInt("gps_safemode"));
 		Debug.Log("Difficult Math: " + PlayerPrefs.GetInt("gps_difficultmath"));
 
+		if (PlayerPrefs.GetInt("gps_safemode") == 1) this.isSafeMode = true;
+		else this.isSafeMode = false;
+
+		if (PlayerPrefs.GetInt("gps_difficultmath") == 1) this.isDifficultMath = true;
+		else this.isDifficultMath = false;
+
 		Scene curScene = SceneManager.GetActiveScene();
 		string curSceneName = curScene.name;
 
-		if (curSceneName == "SecretMap")
+		if (curSceneName == "SecretMap" && !this.isSafeMode)
 		{
 			RenderSettings.fog = true;
 			RenderSettings.fogColor = new Color(0.79f, 0.79f, 0.79f);
@@ -51,12 +57,6 @@ public class GameControllerScript : MonoBehaviour
 			RenderSettings.fogColor = new Color(1f, 1f, 1f);
 			RenderSettings.ambientLight = new Color(1f, 1f, 1f);
 		}
-
-		if (PlayerPrefs.GetInt("gps_safemode") == 1) this.isSafeMode = true;
-		else this.isSafeMode = false;
-
-		if (PlayerPrefs.GetInt("gps_difficultmath") == 1) this.isDifficultMath = true;
-		else this.isDifficultMath = false;
 
 		this.cullingMask = this.camera.cullingMask; // Changes cullingMask in the Camera
 		this.audioDevice = base.GetComponent<AudioSource>(); //Get the Audio Source
