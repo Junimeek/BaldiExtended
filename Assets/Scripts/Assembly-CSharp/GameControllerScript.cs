@@ -440,11 +440,19 @@ public class GameControllerScript : MonoBehaviour
 				if (notebooks > 2)
 				{
 					if (audioManager != null) audioManager.SetVolume(1);
-
+					
 					if (!this.disableSongInterruption)
 					{
-						MusicPlayer(0,0);
-						MusicPlayer(2,2);
+						if (!(this.mode == "endless"))
+						{
+							MusicPlayer(0,0);
+							MusicPlayer(2,2);
+						}
+						else if (this.notebooks <= this.daFinalBookCount)
+						{
+							MusicPlayer(0,0);
+							MusicPlayer(2,2);
+						}
 					}
 				}
 				else if (notebooks == 1)
@@ -484,7 +492,7 @@ public class GameControllerScript : MonoBehaviour
 				MusicPlayer(3,0);
 				return;
 			}
-			else MusicPlayer(0,0);
+			else if (!this.isEndlessSong) MusicPlayer(0,0);
 
 			if (audioManager != null) audioManager.SetVolume(0);
 			
@@ -517,7 +525,7 @@ public class GameControllerScript : MonoBehaviour
 			this.quarter.SetActive(true);
 			this.tutorBaldi.PlayOneShot(this.aud_Prize);
 		}
-		else if (this.notebooks >= daFinalBookCount && this.mode == "story") // Plays the all 7 notebook sound
+		else if (this.notebooks >= daFinalBookCount) // Plays the all 7 notebook sound
 		{
 			if (this.mode == "story")
 			{
@@ -529,8 +537,9 @@ public class GameControllerScript : MonoBehaviour
 			{
 				if (this.spoopLearn.isPlaying)
 					this.spoopLearn.Stop();
-				if (PlayerPrefs.GetInt("AdditionalMusic") == 1 && !this.endlessMusic.isPlaying)
+				if (PlayerPrefs.GetInt("AdditionalMusic") == 1 && !this.isEndlessSong)
 					this.endlessMusic.Play();
+					this.isEndlessSong = true;
 			}
 		}
 	}
@@ -882,16 +891,12 @@ public class GameControllerScript : MonoBehaviour
 				else if (SongId == 12) this.notebook12.Play();
 			}
 		}
-		else if (songType == 2 && !(this.notebooks >= this.daFinalBookCount)) // math game
+		else if (songType == 2) // math game
 		{
 			if (SongId == 1) this.learnMusic.Play();
 			else if (SongId == 2 && !this.disableSongInterruption && PlayerPrefs.GetInt("AdditionalMusic") == 1)
 			{
-				if (!(this.mode == "endless")) this.spoopLearn.Play();
-				else
-				{
-					if (this.notebooks < this.daFinalBookCount) this.spoopLearn.Play();
-				}
+				this.spoopLearn.Play();
 			}
 		}
 		else if (songType == 3)
@@ -1127,6 +1132,7 @@ public class GameControllerScript : MonoBehaviour
 
 	[Header("Music")]
 	[SerializeField] private bool disableSongInterruption;
+	[SerializeField] private bool isEndlessSong;
 	public AudioSource schoolMusic;
 	public AudioSource escapeMusic;
 	public AudioSource endlessMusic;

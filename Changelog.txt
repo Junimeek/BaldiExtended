@@ -1,16 +1,13 @@
 ### v0.4.0 ###
 Gameplay Changes:
-- New Map: The Line
-- Added Multiplication and Division to the math game
-- Achievements!
+- New gameplay style options! Add multiplication/division problems to the math game, or play in Safe Mode for a stress-free experience
 - The Principal will only be able to see you when you can obviously see him. This is essentially just nerfing his x-ray vision that allows him to see you through multiple sets of yellow doors.
-- New gameplay style options!
 
 Other Changes:
 - Added settings for BGM, SFX, and Voice audio
-
-Coding Changes:
+- Added the ability to reset your data
 - The game will now check for updates. In the launcher, you will be prompted to download a new update if a new version is found.
+- Finally fixed Arts and Crafters teleporting you to the wrong place in Juniper Hills. Only took me a year to fix it lmao
 - a LOT of bugfixing
 
 

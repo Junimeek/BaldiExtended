@@ -70,7 +70,11 @@ public class MathGameScript : MonoBehaviour
         {
             this.QueueAudio(this.bal_problems[this.problem - 1]);
 
-            int questionType = Mathf.RoundToInt(UnityEngine.Random.Range(1f,4f));
+            int questionType;
+            if (PlayerPrefs.GetInt("gps_difficultmath") == 1)
+                questionType = Mathf.RoundToInt(UnityEngine.Random.Range(1f,4f));
+            else questionType = Mathf.RoundToInt(UnityEngine.Random.Range(1f,2f));
+            
             int digit1 = Mathf.RoundToInt(UnityEngine.Random.Range(0f,9f));
             int digit2 = Mathf.RoundToInt(UnityEngine.Random.Range(0f,9f));
 

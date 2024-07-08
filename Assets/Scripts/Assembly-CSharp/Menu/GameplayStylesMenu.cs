@@ -14,6 +14,13 @@ public class GameplayStylesMenu : MonoBehaviour
 
         if (container.difficultMath == 1) difficultMathToggle.isOn = true;
         else difficultMathToggle.isOn = false;
+
+        if (container.curMap == "ClassicExtended")
+            this.mapIcon.sprite = this.extendedSprite;
+        else if (container.curMap == "JuniperHills")
+            this.mapIcon.sprite = this.juniSprite;
+        else
+            this.mapIcon.sprite = this.classicSprite;
     }
 
     private void OnDisable()
@@ -30,4 +37,8 @@ public class GameplayStylesMenu : MonoBehaviour
     [SerializeField] private SettingsContainer container;
     [SerializeField] private Toggle safeModeToggle;
     [SerializeField] private Toggle difficultMathToggle;
+    [SerializeField] private Image mapIcon;
+    [SerializeField] private Sprite classicSprite;
+    [SerializeField] private Sprite extendedSprite;
+    [SerializeField] private Sprite juniSprite;
 }

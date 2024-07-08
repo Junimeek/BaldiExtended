@@ -12,21 +12,13 @@ public class DataResetScript : MonoBehaviour
     private void OnEnable()
     {
         this.curAction = 0;
-        promptBackground.color = new Color(1f, 1f, 1f, 0f);
-        promptBackground.raycastTarget = false;
-        promptText.text = string.Empty;
-        this.noButton.SetActive(false);
-        this.yesButton.SetActive(false);
+        this.HidePrompt();
     }
 
     public void ResetPrompt(int id)
     {
-        promptBackground.color = new Color(1f, 1f, 1f, 1f);
-        promptBackground.raycastTarget = true;
-        backButton.interactable = false;
         this.curAction = id;
-        this.noButton.SetActive(true);
-        this.yesButton.SetActive(true);
+        this.ShowPrompt();
 
         switch(id)
         {
@@ -41,18 +33,14 @@ public class DataResetScript : MonoBehaviour
             break;
             default:
                 this.curAction = 0;
-                promptBackground.color = new Color(1f, 1f, 1f, 0f);
-                promptBackground.raycastTarget = false;
-                backButton.interactable = true;
-                promptText.text = string.Empty;
-                this.noButton.SetActive(false);
-                this.yesButton.SetActive(false);
+                this.HidePrompt();
             break;
         }
     }
 
     public void Confirm()
     {
+        this.HidePrompt();
         switch(curAction)
         {
             case 1:
@@ -78,6 +66,25 @@ public class DataResetScript : MonoBehaviour
     public void Cancel()
     {
         ResetPrompt(0);
+    }
+
+    private void ShowPrompt()
+    {
+        promptBackground.color = new Color(1f, 1f, 1f, 1f);
+        promptBackground.raycastTarget = true;
+        backButton.interactable = false;
+        this.noButton.SetActive(true);
+        this.yesButton.SetActive(true);
+    }
+
+    private void HidePrompt()
+    {
+        promptBackground.color = new Color(1f, 1f, 1f, 0f);
+        promptBackground.raycastTarget = false;
+        backButton.interactable = true;
+        promptText.text = string.Empty;
+        this.noButton.SetActive(false);
+        this.yesButton.SetActive(false);
     }
 
     [SerializeField] private int curAction;

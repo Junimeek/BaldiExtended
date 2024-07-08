@@ -3,7 +3,6 @@ using UnityEditor.MPE;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-// Token: 0x020000D2 RID: 210
 public class StartButton : MonoBehaviour
 {
 	public void SelectMap(string themap)
@@ -33,12 +32,15 @@ public class StartButton : MonoBehaviour
 		{
 			PlayerPrefs.SetString("CurrentMode", "endless");
 		}
+		this.mapMenu.SetActive(true);
+		this.storyMenu.SetActive(false);
 	}
 
 	public StartButton.Mode currentMode;
 	[SerializeField] private DebugSceneLoader sceneLoader;
 	[SerializeField] private SettingsContainer container;
 	[SerializeField] private GameObject baldiLoadScreen;
+	[SerializeField] private GameObject storyMenu;
 	[SerializeField] private GameObject gpMenu;
 	[SerializeField] private GameObject mapMenu;
 	public enum Mode

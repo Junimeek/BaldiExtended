@@ -13,6 +13,7 @@ public class SecretSafeCheck : MonoBehaviour
             else
             {
                 Destroy(this.balChar);
+                Destroy(this.oink);
                 Destroy(this.gameObject);
             }
         }
@@ -29,4 +30,5 @@ public class SecretSafeCheck : MonoBehaviour
     [SerializeField] private GameObject nullChar;
     [SerializeField] private GameObject balChar;
     [SerializeField] private GameObject balStretched;
+    [SerializeField] private GameObject oink;
 }
