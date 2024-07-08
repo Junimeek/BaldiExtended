@@ -5,8 +5,8 @@ public class BadSumTeleporter : MonoBehaviour
 {
     private void OnTriggerEnter(Collider other)
     {
-        SceneManager.LoadSceneAsync("BAD SUM");
+        sceneLoader.LoadTheScene("BAD SUM", 0);
     }
     
-    [SerializeField] private Collider badsumCollider;
+    [SerializeField] private DebugSceneLoader sceneLoader;
 }

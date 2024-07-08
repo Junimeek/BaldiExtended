@@ -455,7 +455,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 64, y: 64}
+  m_SizeDelta: {x: 128, y: 128}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2890136024257705484
 CanvasRenderer:
@@ -485,7 +485,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: a874ce6d1c3432c40ba14b269587f1ed, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 905c8a77d8a0099498d118cff042b75b, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -2124,8 +2124,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d566fb64a047af45841850945a6ec64, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gc: {fileID: 0}
-  playerScript: {fileID: 0}
   icon: {fileID: 2975362244372248035}
   recticle: {fileID: -847949278, guid: 1a8fd50782529154dbb539e613ddc078, type: 3}
   hand: {fileID: 262442673, guid: 1a8fd50782529154dbb539e613ddc078, type: 3}

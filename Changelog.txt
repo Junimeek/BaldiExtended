@@ -1,14 +1,17 @@
 ### v0.4.0 ###
 Gameplay Changes:
 - New gameplay style options! Add multiplication/division problems to the math game, or play in Safe Mode for a stress-free experience
-- The Principal will only be able to see you when you can obviously see him. This is essentially just nerfing his x-ray vision that allows him to see you through multiple sets of yellow doors.
+- The Principal will now only be able to see you when you can obviously see him. This is essentially just nerfing his x-ray vision that allows him to see you through multiple sets of yellow doors.
 
 Other Changes:
+- The game will now check for updates. In the launcher, you will be prompted to download a new update if a new version is found. The code I used for this is based on code created by Hamza Herbou, which can be found here: https://www.youtube.com/watch?v=z-H37N6Mjlk
 - Added settings for BGM, SFX, and Voice audio
 - Added the ability to reset your data
-- The game will now check for updates. In the launcher, you will be prompted to download a new update if a new version is found.
+- Added new icons that appear in the center of the screen when you can interact with something. For example, doors and picking up items will show a hand, having the quarter selected while looking at a vending machine will show a quarter, etc.
+- There's two different versions of the same secret ending now: one for getting all questions wrong with safe mode turned on, and one without using safe mode.
+
+Bug Fixes:
 - Finally fixed Arts and Crafters teleporting you to the wrong place in Juniper Hills. Only took me a year to fix it lmao
-- a LOT of bugfixing
 
 
 ### v0.3.1 ###

@@ -249,6 +249,7 @@ public class GameControllerScript : MonoBehaviour
 
 		if (Input.GetKeyDown(KeyCode.J))
 		{
+			return; // debug function. might use for a potential new item later
 			if (!this.isSlowmo)
 			{
 				Time.timeScale = 0.5f;
