@@ -8,7 +8,7 @@ public class PlayerMovement : MonoBehaviour
 	// Token: 0x060009CC RID: 2508 RVA: 0x00025A36 File Offset: 0x00023E36
 	private void Awake()
 	{
-		this.mouseSensitivity = 2f;
+		this.mouseSensitivity = 500f;
 		// PlayerPrefs.GetFloat("MouseSensitivity");
 		//this.reInput = ReInput.players.GetPlayer(0);
 	}

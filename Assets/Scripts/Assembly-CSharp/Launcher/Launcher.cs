@@ -23,7 +23,7 @@ public class Launcher : MonoBehaviour
     private void Update()
     {
         // This is only here because OBS doesn't pick up the game right away when launching
-        if (allowInterruption && Input.GetKeyDown(KeyCode.H))
+        if (allowInterruption && Input.GetKeyDown(KeyCode.Alpha7))
         {
             isInterrupted = true;
             stopCanvas.SetActive(true);
