@@ -4,14 +4,12 @@ using UnityEngine;
 // Token: 0x02000007 RID: 7
 public class BullyScript : MonoBehaviour
 {
-	// Token: 0x06000014 RID: 20 RVA: 0x00002396 File Offset: 0x00000796
 	private void Start()
 	{
 		this.audioDevice = base.GetComponent<AudioSource>(); //Get the Audio Source
 		this.waitTime = UnityEngine.Random.Range(60f, 120f); //Set the amount of time before the bully appears again
 	}
 
-	// Token: 0x06000015 RID: 21 RVA: 0x000023BC File Offset: 0x000007BC
 	private void Update()
 	{
 		if (this.waitTime > 0f) //Decrease the waittime
@@ -37,7 +35,6 @@ public class BullyScript : MonoBehaviour
 		}
 	}
 
-	// Token: 0x06000016 RID: 22 RVA: 0x0000248C File Offset: 0x0000088C
 	private void FixedUpdate()
 	{
 		Vector3 direction = this.player.position - base.transform.position;
@@ -54,7 +51,6 @@ public class BullyScript : MonoBehaviour
 		}
 	}
 
-	// Token: 0x06000017 RID: 23 RVA: 0x00002588 File Offset: 0x00000988
 	private void Activate()
 	{
 		base.transform.position = this.wanderer.NewTarget("Bully") + new Vector3(0f, 5f, 0f); // Go to the wanderTarget + 5 on the Y axis
@@ -65,7 +61,6 @@ public class BullyScript : MonoBehaviour
 		this.active = true; //Set the bully to active
 	}
 
-	// Token: 0x06000018 RID: 24 RVA: 0x00002644 File Offset: 0x00000A44
 	private void OnTriggerEnter(Collider other)
 	{
 		if (other.transform.tag == "Player") // If touching the player
@@ -89,7 +84,6 @@ public class BullyScript : MonoBehaviour
 		}
 	}
 
-	// Token: 0x06000019 RID: 25 RVA: 0x00002733 File Offset: 0x00000B33
 	private void OnTriggerStay(Collider other)
 	{
 		if (other.transform.name == "Principal of the Thing" & this.guilt > 0f) //If touching the principal and the bully is guilty
@@ -98,7 +92,6 @@ public class BullyScript : MonoBehaviour
 		}
 	}
 
-	// Token: 0x0600001A RID: 26 RVA: 0x00002764 File Offset: 0x00000B64
 	private void Reset()
 	{
 		base.transform.position = base.transform.position - new Vector3(0f, 20f, 0f); // Go to X: 0, Y: 20, Z: 20
@@ -108,43 +101,18 @@ public class BullyScript : MonoBehaviour
 		this.spoken = false; //Reset spoken
 	}
 
-	// Token: 0x04000012 RID: 18
 	public Transform player;
-
-	// Token: 0x04000013 RID: 19
 	public GameControllerScript gc;
-
-	// Token: 0x04000014 RID: 20
 	public Renderer bullyRenderer;
-
-	// Token: 0x04000016 RID: 22
 	public AILocationSelectorScript wanderer;
-
-	// Token: 0x04000017 RID: 23
 	public float waitTime;
-
-	// Token: 0x04000018 RID: 24
 	public float activeTime;
-
-	// Token: 0x04000019 RID: 25
 	public float guilt;
-
-	// Token: 0x0400001A RID: 26
 	public bool active;
-
-	// Token: 0x0400001B RID: 27
 	public bool spoken;
-
-	// Token: 0x0400001C RID: 28
 	private AudioSource audioDevice;
-
-	// Token: 0x0400001D RID: 29
 	public AudioClip[] aud_Taunts = new AudioClip[2];
-
-	// Token: 0x0400001E RID: 30
 	public AudioClip[] aud_Thanks = new AudioClip[2];
-
-	// Token: 0x0400001F RID: 31
 	public AudioClip aud_Denied;
 	public AudioClip aud_Bored;
 	[SerializeField] private float spawnCount;

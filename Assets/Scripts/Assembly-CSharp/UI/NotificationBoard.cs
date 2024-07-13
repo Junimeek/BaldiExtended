@@ -42,21 +42,23 @@ public class NotificationBoard : MonoBehaviour
     {
         if (PlayerPrefs.GetInt("NotifBoard") == 1) this.ruleGroup.SetActive(true);
 
-        if (rule == 1)
+        switch(rule)
         {
-            this.ruleText.text = "You have broken a rule! \n \"No entering faculty!\"";
-        }
-        else if (rule == 2)
-        {
-            this.ruleText.text = "You have broken a rule! \n \"No running!\"";
-        }
-        else if (rule == 3)
-        {
-            this.ruleText.text = "You have broken a rule! \n \"No drinking drinks!\"";
-        }
-        else if (rule == 4)
-        {
-            this.ruleText.text = "You have broken a rule! \n \"No escaping detention!\"";
+            case 1:
+                this.ruleText.text = "You have broken a rule!\n\"No entering faculty!\"";
+            break;
+            case 2:
+                this.ruleText.text = "You have broken a rule!\n\"No running!\"";
+            break;
+            case 3:
+                this.ruleText.text = "You have broken a rule!\n\"No drinking drinks!\"";
+            break;
+            case 4:
+                this.ruleText.text = "You have broken a rule!\n\"No escaping detention!\"";
+            break;
+            case 5:
+                this.ruleText.text = "You have broken a rule!\n\"No Bullying!\"";
+            break;
         }
     }
 

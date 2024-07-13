@@ -2134,6 +2134,7 @@ MonoBehaviour:
   doorlock: {fileID: 339174705, guid: 1a8fd50782529154dbb539e613ddc078, type: 3}
   nosquee: {fileID: -1350866996, guid: 1a8fd50782529154dbb539e613ddc078, type: 3}
   scissors: {fileID: -446585466, guid: 1a8fd50782529154dbb539e613ddc078, type: 3}
+  attendanceSlip: {fileID: 247820036, guid: 1a8fd50782529154dbb539e613ddc078, type: 3}
 --- !u!1 &7390056078875830259
 GameObject:
   m_ObjectHideFlags: 0

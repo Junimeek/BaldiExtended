@@ -39,6 +39,9 @@ public class HandIconScript : MonoBehaviour
             case 8:
                 this.icon.sprite = this.scissors;
             break;
+            case 9:
+                this.icon.sprite = this.attendanceSlip;
+            break;
             default:
                 this.icon.sprite = this.recticle;
             break;
@@ -56,4 +59,5 @@ public class HandIconScript : MonoBehaviour
     [SerializeField] private Sprite doorlock;
     [SerializeField] private Sprite nosquee;
     [SerializeField] private Sprite scissors;
+    [SerializeField] private Sprite attendanceSlip;
 }

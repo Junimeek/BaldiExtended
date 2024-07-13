@@ -3529,9 +3529,9 @@ MonoBehaviour:
   nightlyCanvas: {fileID: 1127998096}
   updateButton: {fileID: 692943460}
   descriptionText: {fileID: 1091418939}
-  isNightly: 0
-  stableBuild: 0.4.0
-  nightlyBuild: 24w28e
+  isNightly: 1
+  stableBuild: 0.4.1
+  nightlyBuild: 24w28g
   curVersion: 
   stableURL: https://raw.githubusercontent.com/Junimeek/BaldiExtended/main/VersionStable.json
   nightlyURL: https://raw.githubusercontent.com/Junimeek/BaldiExtended/main/VersionNightly.json

@@ -57,6 +57,15 @@ public class PlayerScript : MonoBehaviour
 			this.sweeping = false;
 			this.hugging = false;
 		}
+
+		/*
+		if (Input.GetKeyDown(KeyCode.J))
+		{
+			Ray ray = new Ray(Vector3.Down, this.gameObject.transform.position);
+			RaycastHit raycastHit;
+			Debug.Log(this.cc.Raycast(ray, out raycastHit, 5f));
+		}
+		*/
 	}
 
 	private void MouseMove()
@@ -136,17 +145,17 @@ public class PlayerScript : MonoBehaviour
 		{
 			if (this.isSpeedShoes)
 			{
-				this.runSpeed = (speedOverrides.z * 2);
-				this.walkSpeed = (speedOverrides.y * 2);
-				this.slowSpeed = (speedOverrides.x * 2);
+				this.runSpeed = speedOverrides.z * 2;
+				this.walkSpeed = speedOverrides.y * 2;
+				this.slowSpeed = speedOverrides.x * 2;
 
 				if (!Input.GetButton("Run"))
 				{
-					speedSlider.value -= this.shoeRate * playerDeltaTimeScale;
+					speedSlider.value -= this.shoeRate * 2.5f * playerDeltaTimeScale;
 				}
 				else if (Input.GetButton("Run"))
 				{
-					speedSlider.value -= (this.shoeRate * 2) * playerDeltaTimeScale;
+					speedSlider.value -= this.shoeRate * 5 * playerDeltaTimeScale;
 				}
 
 				if (speedSlider.value <= 0f && this.isSpeedShoes)
@@ -188,7 +197,8 @@ public class PlayerScript : MonoBehaviour
 			RenderSettings.skybox = this.blackSky; //Sets the skybox black
 			base.StartCoroutine(this.KeepTheHudOff()); //Hides the Hud
 		}
-		else if (other.transform.name == "Playtime" & !this.jumpRope & this.playtime.playCool <= 0f)
+		else if (other.transform.name == "Playtime" && !this.jumpRope
+			&& this.playtime.playCool <= 0f && !this.playtime.isDisabled)
 		{
 			this.ActivateJumpRope();
 		}
@@ -214,7 +224,7 @@ public class PlayerScript : MonoBehaviour
 			this.sweeping = true;
 			this.sweepingFailsave = 1f;
 		}
-		else if (other.transform.name == "1st Prize" & this.firstPrize.velocity.magnitude > 5f)
+		else if (other.transform.name == "1st Prize" && this.firstPrize.velocity.magnitude > 5f && !firstPrize.GetComponent<FirstPrizeScript>().isDisabled)
 		{
 			this.hugging = true;
 			this.sweepingFailsave = 0.2f;

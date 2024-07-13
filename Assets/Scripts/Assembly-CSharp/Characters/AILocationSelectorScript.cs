@@ -36,6 +36,10 @@ public class AILocationSelectorScript : MonoBehaviour
 					break;
 				}
 			break;
+			case "Attendance":
+				randomID = Mathf.RoundToInt(UnityEngine.Random.Range(0f, attendancePoints.Length-1));
+				newLocation = this.attendancePoints[randomID].position;
+			break;
 		}
 
 		this.ambience.PlayAudio();
@@ -46,4 +50,5 @@ public class AILocationSelectorScript : MonoBehaviour
 	public Transform[] quarterPoints;
 	public Transform[] hallwayPoints;
 	public Transform[] roomPoints;
+	public Transform[] attendancePoints;
 }

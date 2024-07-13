@@ -6,6 +6,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using UnityEngine.AI;
 //using UnityEditor.UIElements;
 
 public class GameControllerScript : MonoBehaviour
@@ -275,41 +276,63 @@ public class GameControllerScript : MonoBehaviour
 
 		if (Physics.Raycast(ray, out raycastHit) && raycastHit.collider.name == "_DoorOut" && !(raycastHit.collider.tag == "SwingingDoor"))
 			distance = 15f;
-		else distance = 10f;
 
-		if (this.player.jumpRope && this.item[this.itemSelected] == 9)
-			handIconScript.ChangeIcon(8);
-		else if (Vector3.Distance(this.playerTransform.position, raycastHit.transform.position) <= distance)
+		else if (Physics.Raycast(ray, out raycastHit) && this.item[this.itemSelected] == 12
+				&& (raycastHit.collider.name == "Playtime" || raycastHit.collider.name == "Gotta Sweep" || raycastHit.collider.name == "1st Prize"))
+				distance = 20f;
+		else distance = 10f;
+		
+
+		try
 		{
-			if (raycastHit.collider.name == "1st Prize" && this.item[this.itemSelected] == 9)
-				handIconScript.ChangeIcon(8);
-			else if (raycastHit.collider.tag == "Notebook")
+			if (this.player.jumpRope)
 			{
-				if (raycastHit.collider.name == "PayPhone" && this.item[this.itemSelected] == 5)
+				if (this.item[this.itemSelected] == 9)
+					handIconScript.ChangeIcon(8);
+				else if (this.item[this.itemSelected] == 12)
+					handIconScript.ChangeIcon(9);
+			}
+				
+			else if (Vector3.Distance(this.playerTransform.position, raycastHit.transform.position) <= distance)
+			{
+				if (raycastHit.collider.name == "1st Prize" && this.item[this.itemSelected] == 9)
+					handIconScript.ChangeIcon(8);
+				else if (raycastHit.collider.tag == "Notebook")
+				{
+					if (raycastHit.collider.name == "PayPhone" && this.item[this.itemSelected] == 5)
+						handIconScript.ChangeIcon(3);
+					else if (raycastHit.collider.name == "TapePlayer" && this.item[this.itemSelected] == 6)
+						handIconScript.ChangeIcon(5);
+					else if (!(raycastHit.collider.name == "PayPhone" || raycastHit.collider.name == "TapePlayer"))
+						handIconScript.ChangeIcon(2);
+				}
+				else if (raycastHit.collider.name == "_DoorOut")
+				{
+					if (raycastHit.collider.tag == "SwingingDoor"  && this.item[this.itemSelected] == 2)
+						handIconScript.ChangeIcon(6);
+					else if (raycastHit.collider.tag == "PrincipalDoor" && this.item[this.itemSelected] == 3)
+						handIconScript.ChangeIcon(4);
+					else if (this.item[this.itemSelected] == 8)
+						handIconScript.ChangeIcon(7);
+					else if (!(raycastHit.collider.tag == "SwingingDoor"))
+						handIconScript.ChangeIcon(1);
+				}
+				else if ((raycastHit.collider.name == "BSODAMachine" || raycastHit.collider.name == "ZestyMachine") && this.item[this.itemSelected] == 5)
 					handIconScript.ChangeIcon(3);
-				else if (raycastHit.collider.name == "TapePlayer" && this.item[this.itemSelected] == 6)
-					handIconScript.ChangeIcon(5);
-				else if (!(raycastHit.collider.name == "PayPhone" || raycastHit.collider.name == "TapePlayer"))
-					handIconScript.ChangeIcon(2);
-			}
-			else if (raycastHit.collider.name == "_DoorOut")
-			{
-				if (raycastHit.collider.tag == "SwingingDoor"  && this.item[this.itemSelected] == 2)
-					handIconScript.ChangeIcon(6);
-				else if (raycastHit.collider.tag == "PrincipalDoor" && this.item[this.itemSelected] == 3)
-					handIconScript.ChangeIcon(4);
-				else if (this.item[this.itemSelected] == 8)
-					handIconScript.ChangeIcon(7);
-				else if (!(raycastHit.collider.tag == "SwingingDoor"))
+				else if ((raycastHit.collider.name == "Playtime" || raycastHit.collider.name == "Gotta Sweep" || raycastHit.collider.name == "1st Prize")
+					&& this.item[this.itemSelected] == 12)
+					handIconScript.ChangeIcon(9);
+				else if (raycastHit.collider.tag == "Item")
 					handIconScript.ChangeIcon(1);
+				else handIconScript.ChangeIcon(0);
 			}
-			else if ((raycastHit.collider.name == "BSODAMachine" || raycastHit.collider.name == "ZestyMachine") && this.item[this.itemSelected] == 5)
-				handIconScript.ChangeIcon(3);
-			else if (raycastHit.collider.tag == "Item")
-				handIconScript.ChangeIcon(1);
 			else handIconScript.ChangeIcon(0);
 		}
-		else handIconScript.ChangeIcon(0);
+		catch
+		{
+			handIconScript.ChangeIcon(0);
+			return;
+		}
 	}
 
 	public void UpdatePrinceyTrigger(int type, bool triggerSetting)
@@ -478,6 +501,10 @@ public class GameControllerScript : MonoBehaviour
 		{
 			this.player.stamina = 100f;
 		}
+
+		if (this.notebooks == this.notebookCharReturn)
+			this.ReactivateAttendanceCharacter();
+
 		if (!this.spoopMode) //If it isn't spoop mode, play the school music
 		{
 			MusicPlayer(0,0);
@@ -726,6 +753,53 @@ public class GameControllerScript : MonoBehaviour
 				this.player.ActivateSpeedShoes();
 				this.ResetItem();
 			}
+			else if (this.item[this.itemSelected] == 12)
+			{
+				Ray ray7 = Camera.main.ScreenPointToRay(new Vector3((float)(Screen.width / 2), (float)(Screen.height / 2), 0f));
+				RaycastHit raycastHit7;
+				if (Physics.Raycast(ray7, out raycastHit7))
+				{
+					this.SendCharacterHome(raycastHit7.collider.name);
+				}
+			}
+		}
+	}
+
+	private void SendCharacterHome(string character)
+	{
+		this.charInAttendance = character;
+		switch(character)
+		{
+			case "Playtime":
+				this.playtimeScript.GoToAttendance();
+				this.player.DeactivateJumpRope();
+				this.ResetItem();
+			break;
+			case "Gotta Sweep":
+				this.sweepScript.GoToAttendance();
+				this.ResetItem();
+			break;
+			case "1st Prize":
+				this.firstPrizeScript.GoToAttendance();
+				this.ResetItem();
+			break;
+		}
+	}
+
+	private void ReactivateAttendanceCharacter()
+	{
+		switch (this.charInAttendance)
+		{
+			case "Playtime":
+				this.playtime.SetActive(true);
+			break;
+			case "Gotta Sweep":
+				this.gottaSweep.SetActive(true);
+				this.sweepScript.GoHome();
+			break;
+			case "1st Prize":
+				this.firstPrize.SetActive(true);
+			break;
 		}
 	}
 
@@ -1031,6 +1105,7 @@ public class GameControllerScript : MonoBehaviour
 	public bool isSlowmo;
 	public bool isSafeMode;
 	public bool isDifficultMath;
+	[SerializeField] private string charInAttendance;
 
 
 	[Header("UI")]
@@ -1047,10 +1122,10 @@ public class GameControllerScript : MonoBehaviour
 
 	[Header("Noteboos")]
 	public int notebooks;
-
 	public int daFinalBookCount;
 	public GameObject[] notebookPickups;
 	public int failedNotebooks;
+	public int notebookCharReturn;
 
 
 	[Header("Player")]
@@ -1071,6 +1146,7 @@ public class GameControllerScript : MonoBehaviour
 	public GameObject bully;
 	public GameObject firstPrize;
 	public GameObject TestEnemy;
+	public Transform attendanceOffice;
 
 
 	[Header("Items")]
@@ -1093,7 +1169,8 @@ public class GameControllerScript : MonoBehaviour
 		"WD-NoSquee (Door Type)",
 		"Safety Scissors",
 		"Big Ol' Boots",
-		"Speedy Sneakers"
+		"Speedy Sneakers",
+		"Attendance Slip"
 	};
 	public GameObject quarter;
 	public GameObject bsodaSpray;
@@ -1165,6 +1242,7 @@ public class GameControllerScript : MonoBehaviour
 	public BaldiScript baldiScrpt;
 	public PlaytimeScript playtimeScript;
 	public FirstPrizeScript firstPrizeScript;
+	[SerializeField] private SweepScript sweepScript;
 	[SerializeField] private DebugMenuActions debugActions;
 	[SerializeField] private DebugScreenSwitch debugScreen;
 	[SerializeField] private AudioManager audioManager;

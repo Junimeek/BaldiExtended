@@ -1,19 +1,21 @@
 ﻿using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 
-// Token: 0x0200001E RID: 30
 public class PlaytimeScript : MonoBehaviour
 {
-	// Token: 0x06000068 RID: 104 RVA: 0x00003982 File Offset: 0x00001D82
-	private void Start()
+	private void OnEnable()
 	{
+		this.isDisabled = false;
+		this.gc = FindObjectOfType<GameControllerScript>();
 		this.agent = base.GetComponent<NavMeshAgent>(); //Get AI Agent
+		this.agent.speed = 15f;
+		this.coolDown = 0f;
 		this.audioDevice = base.GetComponent<AudioSource>();
 		this.Wander(); //Start wandering
 	}
 
-	// Token: 0x06000069 RID: 105 RVA: 0x000039A4 File Offset: 0x00001DA4
 	private void Update()
 	{
 		if (this.coolDown > 0f)
@@ -31,7 +33,6 @@ public class PlaytimeScript : MonoBehaviour
 		}
 	}
 
-	// Token: 0x0600006A RID: 106 RVA: 0x00003A34 File Offset: 0x00001E34
 	private void FixedUpdate()
 	{
 		if (!this.ps.jumpRope)
@@ -66,9 +67,9 @@ public class PlaytimeScript : MonoBehaviour
 		}
 	}
 
-	// Token: 0x0600006B RID: 107 RVA: 0x00003BCC File Offset: 0x00001FCC
 	private void Wander()
 	{
+		if (this.isDisabled) return;
 		this.agent.SetDestination(this.wanderer.NewTarget("Hallway"));
 		this.agent.speed = 15f;
 		this.playerSpotted = false;
@@ -80,10 +81,10 @@ public class PlaytimeScript : MonoBehaviour
 		this.coolDown = 1f;
 	}
 
-	// Token: 0x0600006C RID: 108 RVA: 0x00003C60 File Offset: 0x00002060
 	private void TargetPlayer()
 	{
 		this.animator.SetBool("disappointed", false); //No longer be sad
+		if (this.isDisabled) return;
 		this.agent.SetDestination(this.player.position); // Go after the player
 		this.agent.speed = 20f; // Speed up
 		this.coolDown = 0.2f;
@@ -94,7 +95,6 @@ public class PlaytimeScript : MonoBehaviour
 		}
 	}
 
-	// Token: 0x0600006D RID: 109 RVA: 0x00003CD3 File Offset: 0x000020D3
 	public void Disappoint()
 	{
 		this.animator.SetBool("disappointed", true); //Get sad
@@ -102,68 +102,36 @@ public class PlaytimeScript : MonoBehaviour
 		this.audioDevice.PlayOneShot(this.aud_Sad);
 	}
 
-	// Token: 0x04000075 RID: 117
+	public void GoToAttendance()
+	{
+		this.isDisabled = true;
+		this.animator.SetBool("disappointed", false);
+		this.agent.speed = 30f;
+		this.agent.SetDestination(gc.attendanceOffice.position);
+	}
+
 	public bool db;
-
-	// Token: 0x04000076 RID: 118
 	public bool playerSeen;
-
-	// Token: 0x04000077 RID: 119
 	public bool disappointed;
-
-	// Token: 0x04000078 RID: 120
 	public int audVal;
-
-	// Token: 0x04000079 RID: 121
 	public Animator animator;
-
-	// Token: 0x0400007A RID: 122
 	public Transform player;
-
-	// Token: 0x0400007B RID: 123
 	public PlayerScript ps;
-	// Token: 0x0400007D RID: 125
 	public AILocationSelectorScript wanderer;
-
-	// Token: 0x0400007E RID: 126
+	[SerializeField] private GameControllerScript gc;
 	public float coolDown;
-
-	// Token: 0x0400007F RID: 127
 	public float playCool;
-
-	// Token: 0x04000080 RID: 128
 	public bool playerSpotted;
-
-	// Token: 0x04000081 RID: 129
 	public bool jumpRopeStarted;
-
-	// Token: 0x04000082 RID: 130
 	private NavMeshAgent agent;
-
-	// Token: 0x04000083 RID: 131
 	public AudioClip[] aud_Numbers = new AudioClip[10];
-
-	// Token: 0x04000084 RID: 132
 	public AudioClip[] aud_Random = new AudioClip[2];
-
-	// Token: 0x04000085 RID: 133
 	public AudioClip aud_Instrcutions;
-
-	// Token: 0x04000086 RID: 134
 	public AudioClip aud_Oops;
-
-	// Token: 0x04000087 RID: 135
 	public AudioClip aud_LetsPlay;
-
-	// Token: 0x04000088 RID: 136
 	public AudioClip aud_Congrats;
-
-	// Token: 0x04000089 RID: 137
 	public AudioClip aud_ReadyGo;
-
-	// Token: 0x0400008A RID: 138
 	public AudioClip aud_Sad;
-
-	// Token: 0x0400008B RID: 139
 	public AudioSource audioDevice;
+	public bool isDisabled;
 }

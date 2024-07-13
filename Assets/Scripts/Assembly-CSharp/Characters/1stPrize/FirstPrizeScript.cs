@@ -2,12 +2,14 @@
 using UnityEngine;
 using UnityEngine.AI;
 
-// Token: 0x02000010 RID: 16
 public class FirstPrizeScript : MonoBehaviour
 {
-	private void Start()
+	private void OnEnable()
 	{
+		this.currentSpeed = this.normSpeed;
+		this.isDisabled = false;
 		this.agent = base.GetComponent<NavMeshAgent>();
+		this.gc = FindObjectOfType<GameControllerScript>();
 		this.coolDown = 1f;
 		this.Wander();
 	}
@@ -56,6 +58,8 @@ public class FirstPrizeScript : MonoBehaviour
 
 	private void FixedUpdate()
 	{
+		if (this.isDisabled) return;
+
 		Vector3 direction = this.player.position - base.transform.position;
 		RaycastHit raycastHit;
 		if (Physics.Raycast(base.transform.position, direction, out raycastHit, float.PositiveInfinity, 769, QueryTriggerInteraction.Ignore) & raycastHit.transform.tag == "Player")
@@ -110,7 +114,7 @@ public class FirstPrizeScript : MonoBehaviour
 
 	private void OnTriggerEnter(Collider other)
 	{
-		if (other.tag == "Player")
+		if (other.tag == "Player" && !this.isDisabled)
 		{
 			if (!this.audioDevice.isPlaying & !this.hugAnnounced)
 			{
@@ -133,6 +137,13 @@ public class FirstPrizeScript : MonoBehaviour
 	public void GoCrazy()
 	{
 		this.crazyTime = 15f;
+	}
+
+	public void GoToAttendance()
+	{
+		this.isDisabled = true;
+		this.currentSpeed = this.normSpeed;
+		this.agent.SetDestination(this.gc.attendanceOffice.position);
 	}
 
 	public float debug;
@@ -161,4 +172,6 @@ public class FirstPrizeScript : MonoBehaviour
 	public AudioSource audioDevice;
 	public AudioSource motorAudio;
 	private NavMeshAgent agent;
+	public bool isDisabled;
+	private GameControllerScript gc;
 }
