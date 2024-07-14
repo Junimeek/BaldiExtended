@@ -155,7 +155,7 @@ public class MathGameScript : MonoBehaviour
                 this.questionText.text = "I HEAR MATH THAT BAD";
                 this.questionText2.text = string.Empty;
                 this.questionText3.text = string.Empty;
-                if (this.baldiScript.isActiveAndEnabled) this.baldiScript.Hear(this.playerPosition, 7f);
+                if (this.baldiScript.isActiveAndEnabled) this.baldiScript.AddNewSound(this.playerPosition, 2);
                 this.gc.failedNotebooks++;
 
                 if (gc.notebooks < 3) this.endDelay = 3f;

@@ -109,7 +109,6 @@ public class Baldicator : MonoBehaviour
 
     [SerializeField] private Animator animator;
     [SerializeField] private string curState;
-    [SerializeField] private BaldiScript baldi;
     [SerializeField] private bool allowSightTrigger;
     [SerializeField] private float attentionRem;
     [SerializeField] private float decideRem;
@@ -121,4 +120,5 @@ public class Baldicator : MonoBehaviour
     const string pursuit = "Baldicator_Pursuit";
     const string ignore = "Baldicator_Ignore";
     const string sight = "Baldicator_Sight";
+    const string nextSound = "Baldicator_NextSound";
 }
