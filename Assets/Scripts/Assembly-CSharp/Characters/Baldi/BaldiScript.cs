@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -34,7 +35,12 @@ public class BaldiScript : MonoBehaviour
 		if (this.timeToMove > 0f) //If timeToMove is greater then 0, decrease it
 			this.timeToMove -= 1f * Time.deltaTime;
 
-		else this.Move(); //Start moving
+		else
+		{
+			if (this.baldiAnger == 0) this.timeToMove = 3f;
+			else this.timeToMove = this.baldiWait - this.baldiTempAnger;
+			this.Move(); //Start moving
+		}
 
 		if (this.coolDown > 0f) //If coolDown is greater then 0, decrease it
 			this.coolDown -= 1f * Time.deltaTime;
@@ -112,8 +118,6 @@ public class BaldiScript : MonoBehaviour
 			this.DecreasePriority();
 		}
 		this.moveFrames = 10f;
-		if (this.baldiAnger == 0) this.timeToMove = 3f;
-		else this.timeToMove = this.baldiWait - this.baldiTempAnger;
 		this.previous = base.transform.position; // Set previous to Baldi's current location
 		this.baldiAudio.PlayOneShot(this.slap); //Play the slap sound
 		this.baldiAnimator.SetTrigger("slap"); // Play the slap animation
@@ -177,7 +181,7 @@ public class BaldiScript : MonoBehaviour
 	5 = Sight
 	*/
 	{
-		if (this.db) this.agent.SetDestination(this.player.position);
+		if (this.db) this.StartCoroutine(FollowPlayer());
 		if (this.antiHearing) return;
 
 		if (priority >= this.currentPriority)
@@ -190,7 +194,6 @@ public class BaldiScript : MonoBehaviour
 				this.baldicator.ChangeBaldicatorState("Pursuit");
 				this.agent.SetDestination(this.soundList[this.currentPriority - 1]);
 			}
-			
 		}
 		else
 		{
@@ -210,16 +213,24 @@ public class BaldiScript : MonoBehaviour
 
 	private void DecreasePriority()
 	{
-		this.currentPriority--;
-		this.soundList[this.currentPriority] = new Vector3(99.9f, -99.9f, 39f);
-		Debug.LogWarning("Heading to destination with priortity " + this.currentPriority);
-		
 		if (this.currentPriority <= 0)
 		{
-			Wander();
-			baldicator.ChangeBaldicatorState("End");
+			this.Wander();
 			return;
 		}
+		
+		this.soundList[this.currentPriority - 1] = new Vector3(99.9f, -99.9f, 39f);
+		this.currentPriority--;
+
+		if (this.currentPriority <= 0)
+		{
+			this.currentPriority = 0;
+			baldicator.ChangeBaldicatorState("End");
+			Wander();
+			return;
+		}
+
+		Debug.LogWarning("Heading to destination with priortity " + this.currentPriority);
 
 		if (this.soundList[this.currentPriority - 1].x == 99.9f && this.soundList[this.currentPriority - 1].y == -99.9f && this.soundList[this.currentPriority - 1].z == 39f)
 		{
@@ -229,7 +240,20 @@ public class BaldiScript : MonoBehaviour
 		else
 		{
 			this.agent.SetDestination(this.soundList[this.currentPriority - 1]);
+			this.theNewLocation = agent.destination;
 			baldicator.ChangeBaldicatorState("Next");
+		}
+	}
+
+	private IEnumerator FollowPlayer()
+	{
+		while (this.db)
+		{
+			this.currentPriority = 5;
+			this.ClearSoundList();
+			this.soundList[this.currentPriority - 1] = this.player.position;
+			this.agent.SetDestination(this.soundList[this.currentPriority - 1]);
+			yield return null;
 		}
 	}
 
@@ -238,6 +262,7 @@ public class BaldiScript : MonoBehaviour
 	[SerializeField] private Vector3[] soundList;
 	public Baldicator baldicator;
 	[SerializeField] private float sightCooldown;
+	[SerializeField] private Vector3 theNewLocation;
 	[Space(20f)]
 	public bool db;
 	public float baseTime;

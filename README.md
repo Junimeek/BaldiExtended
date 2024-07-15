@@ -12,7 +12,7 @@ Changes made from Baldi's Basics Classic 1.4.3:
 - more stuff im probably forgetting
 
 ## Downloading the Source Code
-**Note**: If you just want to play the game, the download link is [here](https://github.com/Junimeek/BaldiExtended/releases/tag/beta-0.4.1). Just scroll down and click on `BaldiExtended_Windows_0.4.1` and it'll start downloading.
+**Note**: If you just want to play the game, the download link is [here](https://github.com/Junimeek/BaldiExtended/releases/tag/beta-0.4.2). Just scroll down and click on `BaldiExtended_Windows_0.4.1` and it'll start downloading.
 
 The stuff that follows is just for the nerds such as myself:<br/>
 Download and install [Unity Hub](https://unity.com/download), and create a Unity account or log into your Unity account if you already have one. Next, install [Unity Engine 2021.3.13f1](https://unity.com/releases/editor/whats-new/2021.3.13).

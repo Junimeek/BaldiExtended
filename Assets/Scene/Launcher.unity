@@ -3530,8 +3530,8 @@ MonoBehaviour:
   updateButton: {fileID: 692943460}
   descriptionText: {fileID: 1091418939}
   isNightly: 0
-  stableBuild: 0.4.1
-  nightlyBuild: 24w29c
+  stableBuild: 0.4.2
+  nightlyBuild: 24w29d
   curVersion: 
   stableURL: https://raw.githubusercontent.com/Junimeek/BaldiExtended/main/VersionStable.json
   nightlyURL: https://raw.githubusercontent.com/Junimeek/BaldiExtended/main/VersionNightly.json

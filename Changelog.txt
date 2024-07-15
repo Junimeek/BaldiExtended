@@ -1,3 +1,10 @@
+### v0.4.2 ###
+Bug Fixes:
+- Fixed a bug that made Juniper Hills completely impossible
+- Fixed a bug with the Baldicator. Which actually turned out to be an even bigger bug with Baldi's wandering AI as a whole.* oops
+
+*Important Note: It's still not completely fixed. Although it's mostly working now, it appears that getting sent to detention completely resets his priority. This includes when Baldi sees you before you get sent there, even though detention is supposed to have a lower priority. I can't think of a single reason as to why this is, but I really need to push this update out as Juniper Hills DESPERATELY needs to be fixed ASAP. If anyone with Unity knowledge stumbles across this and knows how to fix it, open an issue on the GitHub repo and let me know how to fix it.
+
 ### v0.4.1 ###
 Gameplay Changes:
 - New Item: The Attendance Slip! It will spawn in a random faculty room in Classic Extended and Juniper Hills. It will send Playtime, 1st Prize, or Gotta Sweep home (at least until the Principal notices. He WILL catch you, so use it wisely)!
@@ -6,7 +13,7 @@ Gameplay Changes:
 - When you open Gotta Sweep's door for the first time, he will immediately begin sweeping
 
 Other Changes:
-- New Help menu! It explains the story, items, controls, and the baldicator.
+- New Help menu! It explains the story, items, controls, and the Baldicator.
 - Background music volume has been slightly decreased
 
 Bug Fixes:
