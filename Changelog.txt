@@ -2,7 +2,18 @@
 Gameplay Changes:
 - New Item: The Attendance Slip! It will spawn in a random faculty room in Classic Extended and Juniper Hills. It will send Playtime, 1st Prize, or Gotta Sweep home (at least until the Principal notices. He WILL catch you, so use it wisely)!
 - The Speedy Sneakers have been nerfed, as they were EXTREMELY broken before. Trying to work on keeping the game reasonably balanced
-- Baldi's AI has changed slightly: he will remember more sounds that you make, so be careful where you go!
+- Baldi's AI has changed slightly: he will remember more sounds that you make, so be careful where you go, he can follow you a lot easier now!
+- When you open Gotta Sweep's door for the first time, he will immediately begin sweeping
+
+Other Changes:
+- New Help menu! It explains the items, controls, and the story
+- Background music volume has been slightly decreased
+
+Bug Fixes:
+- Fog should be fixed now
+
+Note:
+From here on out, the original Classic map is no longer going to receive any changes, as I feel that it should remain as close to the original game as possible.
 
 ### v0.4.0 ###
 Gameplay Changes:

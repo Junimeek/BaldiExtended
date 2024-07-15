@@ -76,11 +76,19 @@ public class SweepScript : MonoBehaviour
 		}
 	}
 
+	public void EarlyActivate()
+	{
+		if (this.isEarlyActivation) return;
+		this.isEarlyActivation = true;
+		this.waitTime = 0f;
+	}
+
 	public AILocationSelectorScript wanderer;
 	public float coolDown;
 	public float waitTime;
 	public int wanders;
 	public bool active;
+	public bool isEarlyActivation;
 	private Vector3 origin;
 	public AudioClip aud_Sweep;
 	public AudioClip aud_Intro;

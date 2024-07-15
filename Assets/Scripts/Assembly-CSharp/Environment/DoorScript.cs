@@ -42,6 +42,7 @@ public class DoorScript : MonoBehaviour
 					//this.baldi.Hear(base.transform.position, 1f); //If the door isn't silent, Baldi hears the door with a priority of 1.
 					this.baldi.AddNewSound(base.transform.position, 1);
 				}
+				if (this.sweepDoor) this.sweepScript.EarlyActivate();
 				this.OpenDoor();
 				if (this.silentOpens > 0) //If the door is silent
 				{
@@ -100,6 +101,7 @@ public class DoorScript : MonoBehaviour
 	public float openingDistance;
 	public Transform player;
 	public BaldiScript baldi;
+	[SerializeField] private SweepScript sweepScript;
 	public MeshCollider barrier;
 	public MeshCollider trigger;
 	public MeshCollider invisibleBarrier;
@@ -115,4 +117,5 @@ public class DoorScript : MonoBehaviour
 	private float openTime;
 	public float lockTime;
 	private AudioSource myAudio;
+	public bool sweepDoor;
 }
