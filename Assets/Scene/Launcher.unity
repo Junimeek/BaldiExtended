@@ -3531,7 +3531,7 @@ MonoBehaviour:
   descriptionText: {fileID: 1091418939}
   isNightly: 0
   stableBuild: 0.4.1
-  nightlyBuild: 24w29b
+  nightlyBuild: 24w29c
   curVersion: 
   stableURL: https://raw.githubusercontent.com/Junimeek/BaldiExtended/main/VersionStable.json
   nightlyURL: https://raw.githubusercontent.com/Junimeek/BaldiExtended/main/VersionNightly.json
@@ -6663,7 +6663,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Total development time: at least 120 hours i think.'
+  m_text: 'Total development time: at least 124 hours i think.'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}

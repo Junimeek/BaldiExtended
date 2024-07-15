@@ -335,7 +335,7 @@ TextureImporter:
         width: 126
         height: 126
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -343,6 +343,48 @@ TextureImporter:
       bones: []
       spriteID: c5f214043d098a0438476b7ea1920d32
       internalID: -869070934
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BaldicatorNext
+      rect:
+        serializedVersion: 2
+        x: 385
+        y: 385
+        width: 126
+        height: 126
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b0bbc9e4917f319469fff4786962ddf6
+      internalID: -1592710530
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BaldicatorEnd
+      rect:
+        serializedVersion: 2
+        x: 129
+        y: 1
+        width: 126
+        height: 126
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 65073c9d01100d14d94a117ee37c188a
+      internalID: 402995921
       vertices: []
       indices: 
       edges: []
@@ -358,12 +400,14 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
+      BaldicatorEnd: 402995921
       Baldicator07: 1938309097
       Baldicator08: -205588187
       Baldicator06: -1387877908
       BaldicatorIgnore: 1303595410
       BaldicatorPursuit: 1186887556
       Baldicator01: 1014547654
+      BaldicatorNext: -1592710530
       Baldicator02: 1620737797
       Baldicator03: 1091090241
       Baldicator05: 208322554

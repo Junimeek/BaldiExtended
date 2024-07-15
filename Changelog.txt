@@ -6,7 +6,7 @@ Gameplay Changes:
 - When you open Gotta Sweep's door for the first time, he will immediately begin sweeping
 
 Other Changes:
-- New Help menu! It explains the items, controls, and the story
+- New Help menu! It explains the story, items, controls, and the baldicator.
 - Background music volume has been slightly decreased
 
 Bug Fixes:

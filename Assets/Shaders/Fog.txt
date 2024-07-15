@@ -1,9 +1,0 @@
-Shader "Fog"
-{
-    SubShader
-    {
-        CGPROGRAM
-            #include "Lighting.cginc"
-        ENDCG
-    }
-}

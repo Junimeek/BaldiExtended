@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Baldicator : MonoBehaviour
@@ -12,12 +11,10 @@ public class Baldicator : MonoBehaviour
 
     private void ChangeAnimState(string newState)
     {
-        
         if (curState == newState)
         {
             if (curState == "Pursuit" || curState == "Ignore") return;
         }
-        
 
         animator.Play(newState);
         curState = newState;
@@ -34,12 +31,12 @@ public class Baldicator : MonoBehaviour
 
             StartCoroutine(Attention(state));
         }
-        else if (state == "Sight" && allowSightTrigger)
+        else if ((state == "Sight" || state == "Next" || state == "End") && allowSightTrigger)
         {
             StopAllCoroutines();
             ChangeAnimState(none);
 
-            StartCoroutine(Sight());
+            StartCoroutine(Sight(state));
         }
     }
 
@@ -72,10 +69,10 @@ public class Baldicator : MonoBehaviour
 
     private IEnumerator Decide(string state)
     {
+        decideRem = 1.5f;
+        
         if (state == "Pursuit") ChangeAnimState(pursuit);
         else if (state == "Ignore") ChangeAnimState(ignore);
-
-        decideRem = 1.5f;
 
         while (decideRem > 0f)
         {
@@ -88,11 +85,22 @@ public class Baldicator : MonoBehaviour
         StopCoroutine(Decide(state));
     }
 
-    private IEnumerator Sight()
+    private IEnumerator Sight(string state)
     {
-        ChangeAnimState(sight);
-
         sightRem = 1.5f;
+
+        switch(state)
+        {
+            case "Sight":
+                ChangeAnimState(sight);
+            break;
+            case "Next":
+                ChangeAnimState(next);
+            break;
+            case "End":
+                ChangeAnimState(end);
+            break;
+        }
 
         while (sightRem > 0f)
         {
@@ -101,11 +109,8 @@ public class Baldicator : MonoBehaviour
         }
 
         ChangeAnimState(none);
-        StopCoroutine(Sight());
+        StopCoroutine(Sight(state));
     }
-
-
-
 
     [SerializeField] private Animator animator;
     [SerializeField] private string curState;
@@ -120,5 +125,6 @@ public class Baldicator : MonoBehaviour
     const string pursuit = "Baldicator_Pursuit";
     const string ignore = "Baldicator_Ignore";
     const string sight = "Baldicator_Sight";
-    const string nextSound = "Baldicator_NextSound";
+    const string next = "Baldicator_Next";
+    const string end = "Baldicator_End";
 }

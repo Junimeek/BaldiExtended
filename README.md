@@ -3,18 +3,16 @@
 It's Baldi's Basics, but with a simple twist: somehow, Baldi has raised enough money to expand the school! And of course, more space means more classroom, which means more noteboos for your friend to forget. Like usual, find all the notebooks to win!
 
 Changes made from Baldi's Basics Classic 1.4.3:
-- Three new maps to play
+- Two new maps to play
 - Two gameplay style options
 - Optional Background music
-- Added many changes introduced in BBCR (new voice clips, baldicator, etc.)
-- New item: Speedy Sneakers
-- Small changes to Baldi's AI
+- Added a few changes introduced in BB+ and BBCR (new voice clips, baldicator, etc.)
+- Two new item: the Speedy Sneakers, and the Attendance Slip!
+- Changes to Baldi's AI
 - more stuff im probably forgetting
 
-Download the latest stable release 
-
 ## Downloading the Source Code
-**Note**: If you just want to play the game, the download link is [here](https://github.com/Junimeek/BaldiExtended/releases/tag/beta-0.4.0). Just scroll down and click on `BES_Windows_0.4.0` and it'll start downloading.
+**Note**: If you just want to play the game, the download link is [here](https://github.com/Junimeek/BaldiExtended/releases/tag/beta-0.4.1). Just scroll down and click on `BaldiExtended_Windows_0.4.1` and it'll start downloading.
 
 The stuff that follows is just for the nerds such as myself:<br/>
 Download and install [Unity Hub](https://unity.com/download), and create a Unity account or log into your Unity account if you already have one. Next, install [Unity Engine 2021.3.13f1](https://unity.com/releases/editor/whats-new/2021.3.13).

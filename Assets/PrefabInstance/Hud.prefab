@@ -1239,7 +1239,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   animator: {fileID: 7390056077422887018}
   curState: 
-  baldi: {fileID: 0}
   allowSightTrigger: 0
   attentionRem: 0
   decideRem: 0

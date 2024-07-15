@@ -217,6 +217,7 @@ public class BaldiScript : MonoBehaviour
 		if (this.currentPriority <= 0)
 		{
 			Wander();
+			baldicator.ChangeBaldicatorState("End");
 			return;
 		}
 
@@ -225,7 +226,11 @@ public class BaldiScript : MonoBehaviour
 			this.DecreasePriority();
 			return;
 		}
-		else this.agent.SetDestination(this.soundList[this.currentPriority - 1]);
+		else
+		{
+			this.agent.SetDestination(this.soundList[this.currentPriority - 1]);
+			baldicator.ChangeBaldicatorState("Next");
+		}
 	}
 
 	[Header("Priority System")]
