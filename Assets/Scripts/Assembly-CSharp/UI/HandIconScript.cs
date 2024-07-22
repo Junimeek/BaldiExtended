@@ -17,43 +17,43 @@ public class HandIconScript : MonoBehaviour
         {
             case 1:
                 this.icon.sprite = this.hand;
-            break;
+                break;
             case 2:
                 this.icon.sprite = this.thinkpad;
-            break;
+                break;
             case 3:
                 this.icon.sprite = this.quarter;
-            break;
+                break;
             case 4:
                 this.icon.sprite = this.keys;
-            break;
+                break;
             case 5:
                 this.icon.sprite = this.tape;
-            break;
+                break;
             case 6:
                 this.icon.sprite = this.doorlock;
-            break;
+                break;
             case 7:
                 this.icon.sprite = this.nosquee;
-            break;
+                break;
             case 8:
                 this.icon.sprite = this.scissors;
-            break;
+                break;
             case 9:
                 this.icon.sprite = this.attendanceSlip;
-            break;
+                break;
             default:
                 this.icon.sprite = this.recticle;
-            break;
+                break;
         }
     }
 
-    [SerializeField] private Image icon;
+    public Image icon;
 
     [SerializeField] private Sprite recticle;
     [SerializeField] private Sprite hand;
     [SerializeField] private Sprite thinkpad;
-    [SerializeField] private Sprite quarter;
+    public Sprite quarter;
     [SerializeField] private Sprite keys;
     [SerializeField] private Sprite tape;
     [SerializeField] private Sprite doorlock;

@@ -72,6 +72,9 @@ public class GameControllerScript : MonoBehaviour
 		this.UpdateNotebookCount(); //Update the notebook count
 		this.itemSelected = 0; //Set selection to item slot 0(the first item slot)
 		this.gameOverDelay = 0.5f;
+		this.UpdateDollarAmount(0f);
+		StartCoroutine(this.WaitForQuarterDisable());
+		//this.CollectItem(15);
 
 		//this.speedrunTimer.allowTime = true;
 
@@ -153,17 +156,6 @@ public class GameControllerScript : MonoBehaviour
 				Time.timeScale = 0f;
 			}
 		}
-
-		/*
-		if (this.player.stamina < 0f & !this.warning.activeSelf)
-		{
-			this.warning.SetActive(true); //Set the warning text to be visible
-		}
-		else if (this.player.stamina > 0f & this.warning.activeSelf)
-		{
-			this.warning.SetActive(false); //Set the warning text to be invisible
-		}
-		*/
 
 		if (this.player.stamina > 0f)
 		{
@@ -267,12 +259,10 @@ public class GameControllerScript : MonoBehaviour
 
 		if (Physics.Raycast(ray, out raycastHit) && raycastHit.collider.name == "_DoorOut" && !(raycastHit.collider.tag == "SwingingDoor"))
 			distance = 15f;
-
 		else if (Physics.Raycast(ray, out raycastHit) && this.item[this.itemSelected] == 12
 				&& (raycastHit.collider.name == "Playtime" || raycastHit.collider.name == "Gotta Sweep" || raycastHit.collider.name == "1st Prize"))
 				distance = 20f;
 		else distance = 10f;
-		
 
 		try
 		{
@@ -287,11 +277,16 @@ public class GameControllerScript : MonoBehaviour
 			else if (Vector3.Distance(this.playerTransform.position, raycastHit.transform.position) <= distance)
 			{
 				if (raycastHit.collider.name == "1st Prize" && this.item[this.itemSelected] == 9)
+				{
 					handIconScript.ChangeIcon(8);
+				}
 				else if (raycastHit.collider.tag == "Notebook")
 				{
-					if (raycastHit.collider.name == "PayPhone" && this.item[this.itemSelected] == 5)
+					if (raycastHit.collider.name == "PayPhone")
+					{
+						StartCoroutine(this.WaitForQuarterDisable());
 						handIconScript.ChangeIcon(3);
+					}
 					else if (raycastHit.collider.name == "TapePlayer" && this.item[this.itemSelected] == 6)
 						handIconScript.ChangeIcon(5);
 					else if (!(raycastHit.collider.name == "PayPhone" || raycastHit.collider.name == "TapePlayer"))
@@ -308,24 +303,49 @@ public class GameControllerScript : MonoBehaviour
 					else if (!(raycastHit.collider.tag == "SwingingDoor"))
 						handIconScript.ChangeIcon(1);
 				}
-				else if ((raycastHit.collider.name == "BSODAMachine" || raycastHit.collider.name == "ZestyMachine" ||
-				raycastHit.collider.name == "VendingMachine")
-				&& this.item[this.itemSelected] == 5)
+				else if (raycastHit.collider.name.StartsWith("VendingMachine"))
+				{
+					StartCoroutine(this.WaitForQuarterDisable());
 					handIconScript.ChangeIcon(3);
+				}
 				else if ((raycastHit.collider.name == "Playtime" || raycastHit.collider.name == "Gotta Sweep" || raycastHit.collider.name == "1st Prize")
 					&& this.item[this.itemSelected] == 12)
+				{
 					handIconScript.ChangeIcon(9);
+				}
 				else if (raycastHit.collider.tag == "Item")
+				{
 					handIconScript.ChangeIcon(1);
-				else handIconScript.ChangeIcon(0);
+				}
+				else
+				{
+					handIconScript.ChangeIcon(0);
+				}
 			}
-			else handIconScript.ChangeIcon(0);
+			else
+			{
+				handIconScript.ChangeIcon(0);
+			}
 		}
 		catch
 		{
 			handIconScript.ChangeIcon(0);
 			return;
 		}
+	}
+
+	private IEnumerator WaitForQuarterDisable()
+	{
+		this.forceQuarter = true;
+		this.dollarTextCenter.gameObject.SetActive(true);
+		this.dollarTextTop.gameObject.SetActive(false);
+
+		while (handIconScript.icon.sprite == handIconScript.quarter)
+			yield return null;
+
+		this.forceQuarter = false;
+		this.dollarTextCenter.gameObject.SetActive(false);
+		this.dollarTextTop.gameObject.SetActive(true);
 	}
 
 	public void UpdatePrinceyTrigger(int type, bool triggerSetting)
@@ -595,6 +615,18 @@ public class GameControllerScript : MonoBehaviour
 
 	public void CollectItem(int item_ID)
 	{
+		if (item_ID == 5)
+		{
+			this.UpdateDollarAmount(0.25f);
+			return;
+		}
+		if (item_ID == 15)
+		{
+			this.item[4] = 15;
+			this.itemSlot[4].texture = this.itemTextures[15];
+			return;
+		}
+
 		if (this.item[0] == 0)
 		{
 			this.item[0] = item_ID; //Set the item slot to the Item_ID provided
@@ -630,159 +662,203 @@ public class GameControllerScript : MonoBehaviour
 
 	private void UseItem()
 	{
-		if (this.item[this.itemSelected] != 0)
+		if (this.item[this.itemSelected] != 0 && !this.forceQuarter)
 		{
-			if (this.item[this.itemSelected] == 1)
+			switch(this.item[this.itemSelected])
 			{
-				if (this.player.stamina < 100f)
-					this.player.stamina = this.player.maxStamina * 2f;
-				else this.player.stamina += 100f;
-				this.ResetItem();
-			}
-			else if (this.item[this.itemSelected] == 2)
-			{
-				Ray ray = Camera.main.ScreenPointToRay(new Vector3((float)(Screen.width / 2), (float)(Screen.height / 2), 0f));
-				RaycastHit raycastHit;
-				if (Physics.Raycast(ray, out raycastHit) && (raycastHit.collider.tag == "SwingingDoor" & Vector3.Distance(this.playerTransform.position, raycastHit.transform.position) <= 10f))
-				{
-					raycastHit.collider.gameObject.GetComponent<SwingingDoorScript>().LockDoor(15f);
-					this.ResetItem();
-				}
-			}
-			else if (this.item[this.itemSelected] == 3)
-			{
-				Ray ray2 = Camera.main.ScreenPointToRay(new Vector3((float)(Screen.width / 2), (float)(Screen.height / 2), 0f));
-				RaycastHit raycastHit2;
-				if (Physics.Raycast(ray2, out raycastHit2) && (raycastHit2.collider.tag == "Door" & Vector3.Distance(this.playerTransform.position, raycastHit2.transform.position) <= 10f))
-				{
-					DoorScript component = raycastHit2.collider.gameObject.GetComponent<DoorScript>();
-					if (component.DoorLocked)
+				case 1: // Zesty Bar
+					if (this.player.stamina < 100f)
+						this.player.stamina = this.player.maxStamina * 2f;
+					else this.player.stamina += 100f;
+						this.ResetItem();
+					break;
+				case 2: // Yellow Door Lock
+					Ray ray = Camera.main.ScreenPointToRay(new Vector3((float)(Screen.width / 2), (float)(Screen.height / 2), 0f));
+					RaycastHit raycastHit;
+					if (Physics.Raycast(ray, out raycastHit) && (raycastHit.collider.tag == "SwingingDoor" & Vector3.Distance(this.playerTransform.position, raycastHit.transform.position) <= 10f))
 					{
-						component.UnlockDoor();
-						component.OpenDoor();
+						raycastHit.collider.gameObject.GetComponent<SwingingDoorScript>().LockDoor(15f);
 						this.ResetItem();
 					}
-				}
-			}
-			else if (this.item[this.itemSelected] == 4)
-			{
-				UnityEngine.Object.Instantiate<GameObject>(this.bsodaSpray, this.playerTransform.position, this.cameraTransform.rotation);
-				this.ResetItem();
-				this.player.ResetGuilt("drink", 1f);
-				this.audioDevice.PlayOneShot(this.aud_Soda);
-			}
-			else if (this.item[this.itemSelected] == 5)
-			{
-				Ray ray3 = Camera.main.ScreenPointToRay(new Vector3((float)(Screen.width / 2), (float)(Screen.height / 2), 0f));
-				RaycastHit raycastHit3;
-				if (Physics.Raycast(ray3, out raycastHit3))
-				{
-					if (raycastHit3.collider.name == "BSODAMachine" & Vector3.Distance(this.playerTransform.position, raycastHit3.transform.position) <= 10f)
+					break;
+				case 3: // Principal's Keys
+					Ray ray2 = Camera.main.ScreenPointToRay(new Vector3((float)(Screen.width / 2), (float)(Screen.height / 2), 0f));
+					RaycastHit raycastHit2;
+					if (Physics.Raycast(ray2, out raycastHit2) && (raycastHit2.collider.tag == "Door" & Vector3.Distance(this.playerTransform.position, raycastHit2.transform.position) <= 10f))
 					{
-						this.ResetItem();
-						this.CollectItem(4);
-					}
-					else if (raycastHit3.collider.name == "ZestyMachine" & Vector3.Distance(this.playerTransform.position, raycastHit3.transform.position) <= 10f)
-					{
-						this.ResetItem();
-						this.CollectItem(1);
-					}
-					else if (raycastHit3.collider.name == "VendingMachine" && Vector3.Distance(this.playerTransform.position, raycastHit3.transform.position) <= 10f)
-					{
-						VendingMachineScript curVendingMachine = raycastHit3.collider.gameObject.GetComponent<VendingMachineScript>();
-
-						this.ResetItem();
-						curVendingMachine.UseQuarter();
-
-						if (curVendingMachine.curQuarterCount == 0)
+						DoorScript component = raycastHit2.collider.gameObject.GetComponent<DoorScript>();
+						if (component.DoorLocked)
 						{
-							this.CollectItem(curVendingMachine.DispensedItem());
-							curVendingMachine.ResetQuarterCount();
+							component.UnlockDoor();
+							component.OpenDoor();
+							this.ResetItem();
 						}
 					}
-					else if (raycastHit3.collider.name == "PayPhone" & Vector3.Distance(this.playerTransform.position, raycastHit3.transform.position) <= 10f)
+					break;
+				case 4: // BSODA
+					Instantiate(this.bsodaSpray, this.playerTransform.position, this.cameraTransform.rotation);
+					this.ResetItem();
+					this.player.ResetGuilt("drink", 1f);
+					this.audioDevice.PlayOneShot(this.aud_Soda);
+					break;
+				case 6: // Tape
+					Ray ray4 = Camera.main.ScreenPointToRay(new Vector3((float)(Screen.width / 2), (float)(Screen.height / 2), 0f));
+					RaycastHit raycastHit4;
+					if (Physics.Raycast(ray4, out raycastHit4) && (raycastHit4.collider.name == "TapePlayer" & Vector3.Distance(this.playerTransform.position, raycastHit4.transform.position) <= 10f))
 					{
-						raycastHit3.collider.gameObject.GetComponent<TapePlayerScript>().Play();
+						raycastHit4.collider.gameObject.GetComponent<TapePlayerScript>().Play();
 						this.ResetItem();
 					}
-				}
-			}
-			else if (this.item[this.itemSelected] == 6)
-			{
-				Ray ray4 = Camera.main.ScreenPointToRay(new Vector3((float)(Screen.width / 2), (float)(Screen.height / 2), 0f));
-				RaycastHit raycastHit4;
-				if (Physics.Raycast(ray4, out raycastHit4) && (raycastHit4.collider.name == "TapePlayer" & Vector3.Distance(this.playerTransform.position, raycastHit4.transform.position) <= 10f))
-				{
-					raycastHit4.collider.gameObject.GetComponent<TapePlayerScript>().Play();
+					break;
+				case 7: // Alarm Clock
+					GameObject gameObject = UnityEngine.Object.Instantiate<GameObject>(this.alarmClock, this.playerTransform.position, this.cameraTransform.rotation);
+					gameObject.GetComponent<AlarmClockScript>().baldi = this.baldiScrpt;
 					this.ResetItem();
-				}
-			}
-			else if (this.item[this.itemSelected] == 7)
-			{
-				GameObject gameObject = UnityEngine.Object.Instantiate<GameObject>(this.alarmClock, this.playerTransform.position, this.cameraTransform.rotation);
-				gameObject.GetComponent<AlarmClockScript>().baldi = this.baldiScrpt;
-				this.ResetItem();
-			}
-			else if (this.item[this.itemSelected] == 8)
-			{
-				Ray ray5 = Camera.main.ScreenPointToRay(new Vector3((float)(Screen.width / 2), (float)(Screen.height / 2), 0f));
-				RaycastHit raycastHit5;
-				if (Physics.Raycast(ray5, out raycastHit5) && (raycastHit5.collider.tag == "Door" & Vector3.Distance(this.playerTransform.position, raycastHit5.transform.position) <= 10f))
-				{
-					raycastHit5.collider.gameObject.GetComponent<DoorScript>().SilenceDoor();
+					break;
+				case 8: // NoSquee
+					Ray ray5 = Camera.main.ScreenPointToRay(new Vector3((float)(Screen.width / 2), (float)(Screen.height / 2), 0f));
+					RaycastHit raycastHit5;
+					if (Physics.Raycast(ray5, out raycastHit5) && (raycastHit5.collider.tag == "Door" & Vector3.Distance(this.playerTransform.position, raycastHit5.transform.position) <= 10f))
+					{
+						raycastHit5.collider.gameObject.GetComponent<DoorScript>().SilenceDoor();
+						this.ResetItem();
+						this.audioDevice.PlayOneShot(this.aud_Spray);
+					}
+					break;
+				case 9: // Safety Scissors
+					Ray ray6 = Camera.main.ScreenPointToRay(new Vector3((float)(Screen.width / 2), (float)(Screen.height / 2), 0f));
+					RaycastHit raycastHit6;
+					if (this.player.jumpRope)
+					{
+						this.player.DeactivateJumpRope();
+						this.playtimeScript.Disappoint();
+						this.ResetItem();
+					}
+					else if (Physics.Raycast(ray6, out raycastHit6) && raycastHit6.collider.name == "1st Prize")
+					{
+						this.firstPrizeScript.GoCrazy();
+						this.ResetItem();
+					}
+					break;
+				case 10: // Bigass boots
+					this.player.ActivateBoots();
+					base.StartCoroutine(this.BootAnimation());
 					this.ResetItem();
-					this.audioDevice.PlayOneShot(this.aud_Spray);
-				}
-			}
-			else if (this.item[this.itemSelected] == 9)
-			{
-				Ray ray6 = Camera.main.ScreenPointToRay(new Vector3((float)(Screen.width / 2), (float)(Screen.height / 2), 0f));
-				RaycastHit raycastHit6;
-				if (this.player.jumpRope)
-				{
-					this.player.DeactivateJumpRope();
-					this.playtimeScript.Disappoint();
+					break;
+				case 11: // Speedy Sneakers
+					this.player.ActivateSpeedShoes();
 					this.ResetItem();
-				}
-				else if (Physics.Raycast(ray6, out raycastHit6) && raycastHit6.collider.name == "1st Prize")
-				{
-					this.firstPrizeScript.GoCrazy();
+					break;
+				case 12: // Attendance Slip
+					Ray ray7 = Camera.main.ScreenPointToRay(new Vector3((float)(Screen.width / 2), (float)(Screen.height / 2), 0f));
+					RaycastHit raycastHit7;
+					if (Physics.Raycast(ray7, out raycastHit7))
+					{
+						this.SendCharacterHome(raycastHit7.collider.name);
+					}
+					break;
+				case 13: // Diet BSODA
+					Instantiate(this.dietBsodaSpray, this.playerTransform.position, this.cameraTransform.rotation);
 					this.ResetItem();
-				}
-			}
-			else if (this.item[this.itemSelected] == 10)
-			{
-				this.player.ActivateBoots();
-				base.StartCoroutine(this.BootAnimation());
-				this.ResetItem();
-			}
-			else if (this.item[this.itemSelected] == 11)
-			{
-				this.player.ActivateSpeedShoes();
-				this.ResetItem();
-			}
-			else if (this.item[this.itemSelected] == 12)
-			{
-				Ray ray7 = Camera.main.ScreenPointToRay(new Vector3((float)(Screen.width / 2), (float)(Screen.height / 2), 0f));
-				RaycastHit raycastHit7;
-				if (Physics.Raycast(ray7, out raycastHit7))
-				{
-					this.SendCharacterHome(raycastHit7.collider.name);
-				}
-			}
-			else if (this.item[this.itemSelected] == 13)
-			{
-				Instantiate(this.dietBsodaSpray, this.playerTransform.position, this.cameraTransform.rotation);
-				this.ResetItem();
-				this.player.ResetGuilt("drink", 1f);
-				this.audioDevice.PlayOneShot(this.aud_Soda);
-			}
-			else if (this.item[this.itemSelected] == 14)
-			{
-				this.player.stamina += 60f;
-				this.ResetItem();
+					this.player.ResetGuilt("drink", 1f);
+					this.audioDevice.PlayOneShot(this.aud_Soda);
+					break;
+				case 14: // Crystal Zest
+					this.player.stamina += 70f;
+					this.ResetItem();
+					break;
 			}
 		}
+		else if (this.forceQuarter)
+		{
+			Ray ray3 = Camera.main.ScreenPointToRay(new Vector3((float)(Screen.width / 2), (float)(Screen.height / 2), 0f));
+			RaycastHit raycastHit3;
+			if (Physics.Raycast(ray3, out raycastHit3) && Vector3.Distance(this.playerTransform.position, raycastHit3.transform.position) <= 10f)
+			{
+				if (raycastHit3.collider.name.StartsWith("VendingMachine"))
+				{
+					VendingMachineScript curVendingMachine = raycastHit3.collider.gameObject.GetComponent<VendingMachineScript>();
+
+					if (this.dollarAmount <= 0f)
+					{
+						this.audioDevice.PlayOneShot(this.aud_Error);
+						StopCoroutine(this.MoneyWarning());
+						StartCoroutine(this.MoneyWarning());
+						return;
+					}
+
+					this.UpdateDollarAmount(-0.25f);
+					curVendingMachine.UseQuarter();
+
+					if (curVendingMachine.curQuarterCount == 0)
+					{
+						this.CollectItem(curVendingMachine.DispensedItem());
+						curVendingMachine.ResetQuarterCount();
+					}
+				}
+				else if (raycastHit3.collider.name == "PayPhone" & Vector3.Distance(this.playerTransform.position, raycastHit3.transform.position) <= 10f)
+				{
+					raycastHit3.collider.gameObject.GetComponent<TapePlayerScript>().Play();
+
+					if (this.dollarAmount <= 0f)
+					{
+						this.audioDevice.PlayOneShot(this.aud_Error);
+						StopCoroutine(this.MoneyWarning());
+						StartCoroutine(this.MoneyWarning());
+						return;
+					}
+					
+					this.UpdateDollarAmount(-0.25f);
+				}
+			}
+		}
+	}
+
+	private void UpdateDollarAmount(float amount)
+	{
+		if (this.dollarAmount == 0f && amount < 0f)
+		{
+			StartCoroutine(this.MoneyWarning());
+			return;
+		}
+			
+		this.dollarAmount += amount;
+		this.PrintDollarAmount();
+	}
+
+	private void PrintDollarAmount()
+	{
+		if (this.dollarAmount % 1 == 0f)
+		{
+			this.dollarTextCenter.text = "$" + this.dollarAmount + ".00";
+			this.dollarTextTop.text = "$" + this.dollarAmount + ".00";
+		}
+		else if (this.dollarAmount % 1 == 0.5f)
+		{
+			this.dollarTextCenter.text = "$" + this.dollarAmount + "0";
+			this.dollarTextTop.text = "$" + this.dollarAmount + "0";
+		}
+		else
+		{
+			this.dollarTextCenter.text = "$" + this.dollarAmount;
+			this.dollarTextTop.text = "$" + this.dollarAmount;
+		}
+	}
+
+	private IEnumerator MoneyWarning()
+	{
+		float remTime = 1.5f;
+		this.dollarTextCenter.text = "Not enough money!";
+		this.dollarTextCenter.color = Color.red;
+
+		while (remTime > 0f && this.dollarAmount == 0f)
+		{
+			remTime -= Time.unscaledDeltaTime;
+			yield return null;
+		}
+
+		this.dollarTextCenter.color = Color.black;
+		this.PrintDollarAmount();
 	}
 
 	private void SendCharacterHome(string character)
@@ -1098,6 +1174,8 @@ public class GameControllerScript : MonoBehaviour
 	public bool isSafeMode;
 	public bool isDifficultMath;
 	[SerializeField] private string charInAttendance;
+	[SerializeField] private float dollarAmount;
+	[SerializeField] private bool forceQuarter;
 
 
 	[Header("UI")]
@@ -1110,6 +1188,8 @@ public class GameControllerScript : MonoBehaviour
 	public RectTransform itemSelect;
 	private int[] itemSelectOffset;
 	[SerializeField] private GameObject pointer;
+	[SerializeField] private TMP_Text dollarTextCenter;
+	[SerializeField] private TMP_Text dollarTextTop;
 
 
 	[Header("Noteboos")]
@@ -1164,7 +1244,8 @@ public class GameControllerScript : MonoBehaviour
 		"Speedy Sneakers",
 		"Attendance Slip",
 		"Diet BSODA",
-		"Crystal flavored Zesty Bar"
+		"Crystal flavored Zesty Bar",
+		"Wallet"
 	};
 	public GameObject quarter;
 	public GameObject bsodaSpray;
@@ -1191,10 +1272,7 @@ public class GameControllerScript : MonoBehaviour
 	public AudioClip aud_Spray;
 	public AudioClip aud_buzz;
 	public AudioClip aud_Hang;
-	public AudioClip aud_MachineQuiet;
-	public AudioClip aud_MachineStart;
-	public AudioClip aud_MachineRev;
-	public AudioClip aud_MachineLoop;
+	[SerializeField] private AudioClip aud_Error;
 	public AudioClip aud_Switch;
 	public AudioClip[] baldiJumpscareSounds;
 	public AudioClip chaosEarly;

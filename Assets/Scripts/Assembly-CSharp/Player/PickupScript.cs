@@ -2,7 +2,6 @@
 //using Rewired;
 using UnityEngine;
 
-// Token: 0x020000CF RID: 207
 public class PickupScript : MonoBehaviour
 {
 	private void Start()
@@ -16,67 +15,67 @@ public class PickupScript : MonoBehaviour
 		{
 			Ray ray = Camera.main.ScreenPointToRay(new Vector3((float)(Screen.width / 2), (float)(Screen.height / 2), 0f));
 			RaycastHit raycastHit;
-			if (Physics.Raycast(ray, out raycastHit))
+			if (Physics.Raycast(ray, out raycastHit) && Vector3.Distance(this.player.position, base.transform.position) < 10f && raycastHit.transform.name.StartsWith("Pickup_"))
 			{
-				if (raycastHit.transform.name == "Pickup_EnergyFlavoredZestyBar" & Vector3.Distance(this.player.position, base.transform.position) < 10f)
+				GameObject curObject = raycastHit.transform.gameObject;
+				switch(this.itemPickup)
 				{
-					raycastHit.transform.gameObject.SetActive(false);
-					this.gc.CollectItem(1);
-				}
-				else if (raycastHit.transform.name == "Pickup_YellowDoorLock" & Vector3.Distance(this.player.position, base.transform.position) < 10f)
-				{
-					raycastHit.transform.gameObject.SetActive(false);
-					this.gc.CollectItem(2);
-				}
-				else if (raycastHit.transform.name == "Pickup_Key" & Vector3.Distance(this.player.position, base.transform.position) < 10f)
-				{
-					raycastHit.transform.gameObject.SetActive(false);
-					this.gc.CollectItem(3);
-				}
-				else if (raycastHit.transform.name == "Pickup_BSODA" & Vector3.Distance(this.player.position, base.transform.position) < 10f)
-				{
-					raycastHit.transform.gameObject.SetActive(false);
-					this.gc.CollectItem(4);
-				}
-				else if (raycastHit.transform.name == "Pickup_Quarter" & Vector3.Distance(this.player.position, base.transform.position) < 10f)
-				{
-					raycastHit.transform.gameObject.SetActive(false);
-					this.gc.CollectItem(5);
-				}
-				else if (raycastHit.transform.name == "Pickup_Tape" & Vector3.Distance(this.player.position, base.transform.position) < 10f)
-				{
-					raycastHit.transform.gameObject.SetActive(false);
-					this.gc.CollectItem(6);
-				}
-				else if (raycastHit.transform.name == "Pickup_AlarmClock" & Vector3.Distance(this.player.position, base.transform.position) < 10f)
-				{
-					raycastHit.transform.gameObject.SetActive(false);
-					this.gc.CollectItem(7);
-				}
-				else if (raycastHit.transform.name == "Pickup_WD-3D" & Vector3.Distance(this.player.position, base.transform.position) < 10f)
-				{
-					raycastHit.transform.gameObject.SetActive(false);
-					this.gc.CollectItem(8);
-				}
-				else if (raycastHit.transform.name == "Pickup_SafetyScissors" & Vector3.Distance(this.player.position, base.transform.position) < 10f)
-				{
-					raycastHit.transform.gameObject.SetActive(false);
-					this.gc.CollectItem(9);
-				}
-				else if (raycastHit.transform.name == "Pickup_BigBoots" & Vector3.Distance(this.player.position, base.transform.position) < 10f)
-				{
-					raycastHit.transform.gameObject.SetActive(false);
-					this.gc.CollectItem(10);
-				}
-				else if (raycastHit.transform.name == "Pickup_SpeedySneakers" & Vector3.Distance(this.player.position, base.transform.position) < 10f)
-				{
-					raycastHit.transform.gameObject.SetActive(false);
-					this.gc.CollectItem(11);
-				}
-				else if (raycastHit.transform.name == "Pickup_AttendanceSlip" & Vector3.Distance(this.player.position, base.transform.position) < 10f)
-				{
-					raycastHit.transform.gameObject.SetActive(false);
-					this.gc.CollectItem(12);
+					case pickup.ZestyBar:
+						curObject.SetActive(false);
+						this.gc.CollectItem(1);
+						break;
+					case pickup.DoorLock:
+						curObject.SetActive(false);
+						this.gc.CollectItem(2);
+						break;
+					case pickup.PrincipalKeys:
+						curObject.SetActive(false);
+						this.gc.CollectItem(3);
+						break;
+					case pickup.BSODA:
+						curObject.SetActive(false);
+						this.gc.CollectItem(4);
+						break;
+					case pickup.Quarter:
+						curObject.SetActive(false);
+						this.gc.CollectItem(5);
+						break;
+					case pickup.Tape:
+						curObject.SetActive(false);
+						this.gc.CollectItem(6);
+						break;
+					case pickup.AlarmClock:
+						curObject.SetActive(false);
+						this.gc.CollectItem(7);
+						break;
+					case pickup.NoSquee:
+						curObject.SetActive(false);
+						this.gc.CollectItem(8);
+						break;
+					case pickup.SafetyScissors:
+						curObject.SetActive(false);
+						this.gc.CollectItem(9);
+						break;
+					case pickup.Boots:
+						curObject.SetActive(false);
+						this.gc.CollectItem(10);
+						break;
+					case pickup.SpeedySneakers:
+						curObject.SetActive(false);
+						this.gc.CollectItem(11);
+						break;
+					case pickup.AttendanceSlip:
+						curObject.SetActive(false);
+						this.gc.CollectItem(12);
+						break;
+					case pickup.DietBSODA:
+						curObject.SetActive(false);
+						this.gc.CollectItem(13);
+						break;
+					case pickup.CrystalZesty:
+						curObject.SetActive(false);
+						this.gc.CollectItem(14);
+						break;
 				}
 			}
 		}
@@ -84,5 +83,12 @@ public class PickupScript : MonoBehaviour
 
 	public GameControllerScript gc;
 	public Transform player;
+	[SerializeField] pickup itemPickup;
+	[SerializeField] private enum pickup
+	{
+		ZestyBar, DoorLock, PrincipalKeys, BSODA, Quarter, Tape, AlarmClock,
+		NoSquee, SafetyScissors, Boots, SpeedySneakers, AttendanceSlip, DietBSODA,
+		CrystalZesty
+	}
 	//private Player playerInput;
 }

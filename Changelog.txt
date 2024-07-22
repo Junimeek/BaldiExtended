@@ -3,6 +3,7 @@ Gameplay Changes:
 - Two new items: Diet BSODA and Crystal flavored Zesty Bar! They're healthier versions of BSODA and Energy flavored Zesty Bar
 - As a result of these items being added, there is now a significant change to the vending machines: They will now cost varying amounts of quarters depending on what item they give you. Diet BSODA and Crystal Zesty Bars will cost 1 quarter, and regular BSODA and Energy Bars will cost 2 quarters. Note that these changes do not apply to the Classic map, all items will continue to cost just 1 quarter on that map.
 - The effects of the Zesty Bar can now be stacked
+- You can now carry an infinite amount of quarters! To use a quarter, simply look at a vending machine and right click, and it will use any quarters you have collected. If your inventory is full, select the item you want to replace with whatever the vending machine will dispense, and it'll replace that item with the new item.
 
 Bug Fixes:
 - Fixed a bug where the player would not look at the Principal when sent to detention, or at Baldi when Arts and Crafters teleports you. This is actually a bug that has existed in the original game since version 1.4.0, I just never found a fix for it until now.
