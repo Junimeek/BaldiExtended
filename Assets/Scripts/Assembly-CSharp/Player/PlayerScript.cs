@@ -57,15 +57,29 @@ public class PlayerScript : MonoBehaviour
 			this.sweeping = false;
 			this.hugging = false;
 		}
+	}
 
-		/*
-		if (Input.GetKeyDown(KeyCode.J))
+	public void LookAtCharacter(string character)
+	{
+		Vector3 relativePos = new Vector3(0f, 0f, 0f);
+
+		switch(character)
 		{
-			Ray ray = new Ray(Vector3.Down, this.gameObject.transform.position);
-			RaycastHit raycastHit;
-			Debug.Log(this.cc.Raycast(ray, out raycastHit, 5f));
+			case "baldi":
+				relativePos = this.baldi.transform.position - this.gameObject.transform.position;
+			break;
+			case "playtime":
+				relativePos = this.playtime.transform.position - this.gameObject.transform.position;
+			break;
+			case "princey":
+				relativePos = this.princeyPos.position - this.gameObject.transform.position;
+			break;
 		}
-		*/
+		
+		Quaternion rotation = Quaternion.LookRotation(relativePos, Vector3.up);
+		rotation.x = 0f;
+		rotation.z = 0f;
+		this.playerRotation = rotation;
 	}
 
 	private void MouseMove()
@@ -275,6 +289,7 @@ public class PlayerScript : MonoBehaviour
 
 	public void ActivateJumpRope()
 	{
+		this.LookAtCharacter("playtime");
 		this.jumpRopeScreen.SetActive(true);
 		this.jumpRope = true;
 		this.frozenPosition = base.transform.position;
@@ -322,9 +337,10 @@ public class PlayerScript : MonoBehaviour
 	public bool hugging;
 	public bool bootsActive;
 	public int principalBugFixer;
+	[SerializeField] private Transform princeyPos;
 	public float sweepingFailsave;
-	public float fliparoo;
-	public float flipaturn;
+	[SerializeField] public float fliparoo;
+	[SerializeField] public float flipaturn;
 	public Quaternion playerRotation;
 	public Vector3 frozenPosition;
 	private bool sensitivityActive;

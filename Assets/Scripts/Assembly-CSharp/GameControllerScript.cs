@@ -109,11 +109,11 @@ public class GameControllerScript : MonoBehaviour
 			{
 				this.UseItem();
 			}
-			if ((Input.GetAxis("Mouse ScrollWheel") > 0f && Time.timeScale != 0f))
+			if (Input.GetAxis("Mouse ScrollWheel") > 0f && Time.timeScale != 0f)
 			{
 				this.DecreaseItemSelection();
 			}
-			else if ((Input.GetAxis("Mouse ScrollWheel") < 0f && Time.timeScale != 0f))
+			else if (Input.GetAxis("Mouse ScrollWheel") < 0f && Time.timeScale != 0f)
 			{
 				this.IncreaseItemSelection();
 			}
@@ -221,15 +221,6 @@ public class GameControllerScript : MonoBehaviour
 			}
 		}
 
-		/*
-		if (this.finaleMode && !this.audioDevice.isPlaying && this.exitsReached == 3)
-		{
-			this.audioDevice.clip = this.aud_MachineLoop;
-			this.audioDevice.loop = true;
-			this.audioDevice.Play();
-		}
-		*/
-
 		if (this.finaleMode && !this.audioDevice.isPlaying && this.exitsReached == 2)
 		{
 			this.audioDevice.clip = this.chaosEarlyLoop;
@@ -317,7 +308,9 @@ public class GameControllerScript : MonoBehaviour
 					else if (!(raycastHit.collider.tag == "SwingingDoor"))
 						handIconScript.ChangeIcon(1);
 				}
-				else if ((raycastHit.collider.name == "BSODAMachine" || raycastHit.collider.name == "ZestyMachine") && this.item[this.itemSelected] == 5)
+				else if ((raycastHit.collider.name == "BSODAMachine" || raycastHit.collider.name == "ZestyMachine" ||
+				raycastHit.collider.name == "VendingMachine")
+				&& this.item[this.itemSelected] == 5)
 					handIconScript.ChangeIcon(3);
 				else if ((raycastHit.collider.name == "Playtime" || raycastHit.collider.name == "Gotta Sweep" || raycastHit.collider.name == "1st Prize")
 					&& this.item[this.itemSelected] == 12)
@@ -641,7 +634,9 @@ public class GameControllerScript : MonoBehaviour
 		{
 			if (this.item[this.itemSelected] == 1)
 			{
-				this.player.stamina = this.player.maxStamina * 2f;
+				if (this.player.stamina < 100f)
+					this.player.stamina = this.player.maxStamina * 2f;
+				else this.player.stamina += 100f;
 				this.ResetItem();
 			}
 			else if (this.item[this.itemSelected] == 2)
@@ -691,6 +686,19 @@ public class GameControllerScript : MonoBehaviour
 					{
 						this.ResetItem();
 						this.CollectItem(1);
+					}
+					else if (raycastHit3.collider.name == "VendingMachine" && Vector3.Distance(this.playerTransform.position, raycastHit3.transform.position) <= 10f)
+					{
+						VendingMachineScript curVendingMachine = raycastHit3.collider.gameObject.GetComponent<VendingMachineScript>();
+
+						this.ResetItem();
+						curVendingMachine.UseQuarter();
+
+						if (curVendingMachine.curQuarterCount == 0)
+						{
+							this.CollectItem(curVendingMachine.DispensedItem());
+							curVendingMachine.ResetQuarterCount();
+						}
 					}
 					else if (raycastHit3.collider.name == "PayPhone" & Vector3.Distance(this.playerTransform.position, raycastHit3.transform.position) <= 10f)
 					{
@@ -761,6 +769,18 @@ public class GameControllerScript : MonoBehaviour
 				{
 					this.SendCharacterHome(raycastHit7.collider.name);
 				}
+			}
+			else if (this.item[this.itemSelected] == 13)
+			{
+				Instantiate(this.dietBsodaSpray, this.playerTransform.position, this.cameraTransform.rotation);
+				this.ResetItem();
+				this.player.ResetGuilt("drink", 1f);
+				this.audioDevice.PlayOneShot(this.aud_Soda);
+			}
+			else if (this.item[this.itemSelected] == 14)
+			{
+				this.player.stamina += 60f;
+				this.ResetItem();
 			}
 		}
 	}
@@ -867,18 +887,6 @@ public class GameControllerScript : MonoBehaviour
 		this.exitsReached++;
 		AngrySchoolColors(this.exitsReached);
 
-		/*
-		if (this.exitsReached == 1)
-		{
-			//RenderSettings.ambientLight = Color.red; //Make everything red and start player the weird sound
-			//RenderSettings.fog = true;
-			
-			//this.audioDevice.clip = this.aud_MachineQuiet;
-			//this.audioDevice.loop = true;
-			//this.audioDevice.Play();
-		}
-		*/
-
 		if (this.exitsReached != 2) this.audioDevice.PlayOneShot(this.aud_Switch, 0.8f);
 
 		if (this.exitsReached == 2) //Play a sound
@@ -896,22 +904,6 @@ public class GameControllerScript : MonoBehaviour
 			this.audioDevice.loop = false;
 			this.audioDevice.Play();
 		}
-
-		/*
-		if (this.exitsReached == 12) //Play a sound
-		{
-			this.audioDevice.volume = 0.8f;
-			this.audioDevice.clip = this.aud_MachineStart;
-			this.audioDevice.loop = true;
-			this.audioDevice.Play();
-		}
-		if (this.exitsReached == 13) //Play a even louder sound
-		{
-			this.audioDevice.clip = this.aud_MachineRev;
-			this.audioDevice.loop = false;
-			this.audioDevice.Play();
-		}
-		*/
 	}
 
 	public void DespawnCrafters()
@@ -1170,10 +1162,13 @@ public class GameControllerScript : MonoBehaviour
 		"Safety Scissors",
 		"Big Ol' Boots",
 		"Speedy Sneakers",
-		"Attendance Slip"
+		"Attendance Slip",
+		"Diet BSODA",
+		"Crystal flavored Zesty Bar"
 	};
 	public GameObject quarter;
 	public GameObject bsodaSpray;
+	public GameObject dietBsodaSpray;
 	public RectTransform boots;
 	public GameObject alarmClock;
 

@@ -94,7 +94,7 @@ public class CraftersScript : MonoBehaviour
 			this.cc.enabled = false;
 			this.player.position = new Vector3(this.playerTeleLocation.x, this.player.position.y, this.playerTeleLocation.z); // Teleport the player to X: 5, their current Y position, Z: 80
 			this.baldiAgent.Warp(new Vector3(this.baldiTeleLocation.x, this.baldi.position.y, this.baldiTeleLocation.z)); // Teleport Baldi to X: 5, baldi's Y, Z: 125
-			this.player.LookAt(new Vector3(this.baldi.position.x, this.player.position.y, this.baldi.position.z)); // Make the player look at baldi
+			this.playerScript.LookAtCharacter("baldi"); // Make the player look at baldi
 			this.cc.enabled = true;
 			this.gc.DespawnCrafters(); // Despawn Arts And Crafters
 		}

@@ -148,7 +148,7 @@ public class PrincipalScript : MonoBehaviour
 			this.agent.isStopped = true; //Stop the principal from moving
 			this.cc.enabled = false;
 			other.transform.position = this.gc.detentionPlayerPos; // Teleport the player to the office
-			other.transform.LookAt(new Vector3(base.transform.position.x, other.transform.position.y, base.transform.position.z)); // Get the plaer to look at the principal
+			this.playerScript.LookAtCharacter("princey"); // Get the plaer to look at the principal
 			this.cc.enabled = true;
 			this.audioQueue.QueueAudio(this.aud_Delay);
 			this.audioQueue.QueueAudio(this.audTimes[this.detentions]); //Play the detention time sound
