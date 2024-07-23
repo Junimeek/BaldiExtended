@@ -15,7 +15,7 @@ public class PickupScript : MonoBehaviour
 		{
 			Ray ray = Camera.main.ScreenPointToRay(new Vector3((float)(Screen.width / 2), (float)(Screen.height / 2), 0f));
 			RaycastHit raycastHit;
-			if (Physics.Raycast(ray, out raycastHit) && Vector3.Distance(this.player.position, base.transform.position) < 10f && raycastHit.transform.name.StartsWith("Pickup_"))
+			if (Physics.Raycast(ray, out raycastHit) && Vector3.Distance(this.player.position, base.transform.position) < 10f && raycastHit.transform.name.StartsWith("Pickup"))
 			{
 				GameObject curObject = raycastHit.transform.gameObject;
 				switch(this.itemPickup)

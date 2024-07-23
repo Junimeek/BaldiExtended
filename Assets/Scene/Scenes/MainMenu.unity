@@ -20038,7 +20038,9 @@ MonoBehaviour:
   itemText: QUARTER
   hintText: 'A shiny quarter!
 
-    Useful for buying a BSODA or Zesty Bar. Yummy!'
+    Quarters are hidden in your inventory. To use
+    one, simply right click on any vending machine and it''ll automatically use any
+    quarters you have stocked up.'
 --- !u!114 &156000786
 MonoBehaviour:
   m_ObjectHideFlags: 0

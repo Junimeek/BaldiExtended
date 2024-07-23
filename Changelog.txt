@@ -1,5 +1,6 @@
 ### v0.4.3 ###
 Gameplay Changes:
+- There's now a map! It can be toggled on and off by simply pressing Tab.
 - Two new items: Diet BSODA and Crystal flavored Zesty Bar! They're healthier versions of BSODA and Energy flavored Zesty Bar
 - As a result of these items being added, there is now a significant change to the vending machines: They will now cost varying amounts of quarters depending on what item they give you. Diet BSODA and Crystal Zesty Bars will cost 1 quarter, and regular BSODA and Energy Bars will cost 2 quarters. Note that these changes do not apply to the Classic map, all items will continue to cost just 1 quarter on that map.
 - The effects of the Zesty Bar can now be stacked

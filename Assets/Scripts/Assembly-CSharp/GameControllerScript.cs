@@ -226,11 +226,6 @@ public class GameControllerScript : MonoBehaviour
 			this.audioDevice.Play();
 		}
 
-		if (Input.GetKeyDown(KeyCode.Tab))
-		{
-			DebugStuff();
-		}
-
 		if (Input.GetKeyDown(KeyCode.J))
 		{
 			return; // debug function. might use for a potential new item later
@@ -1143,18 +1138,6 @@ public class GameControllerScript : MonoBehaviour
 				}
 				RenderSettings.fogDensity = 0.01f;
 			break;
-		}
-	}
-
-	private void DebugStuff()
-	{
-		if (debugScreen.isDebugMenuActive == true)
-		{
-			PauseGame();
-		}
-		else if (debugScreen.isDebugMenuActive == false)
-		{
-			UnpauseGame();
 		}
 	}
 
