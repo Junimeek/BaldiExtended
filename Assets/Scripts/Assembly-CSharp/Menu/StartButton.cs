@@ -24,28 +24,49 @@ public class StartButton : MonoBehaviour
 
 	public void SetGamePref()
 	{
-		if (this.currentMode == StartButton.Mode.Story)
+		switch(this.currentMode)
 		{
-			PlayerPrefs.SetString("CurrentMode", "story");
+			case Mode.Endless:
+				PlayerPrefs.SetString("CurrentMode", "endless");
+				this.EnableMenu(1);
+				break;
+			case Mode.Challenge:
+				PlayerPrefs.SetString("CurrentMode", "challenge");
+				this.EnableMenu(2);
+				break;
+			default:
+				PlayerPrefs.SetString("CurrentMode", "story");
+				this.EnableMenu(1);
+				break;
 		}
-		else
-		{
-			PlayerPrefs.SetString("CurrentMode", "endless");
-		}
-		this.mapMenu.SetActive(true);
-		this.storyMenu.SetActive(false);
+		
 	}
 
-	public StartButton.Mode currentMode;
+	private void EnableMenu(int menuID)
+	{
+		switch(menuID)
+		{
+			case 2:
+				this.storyMenu.SetActive(false);
+				this.challengeMenu.SetActive(true);
+				break;
+			default:
+				this.mapMenu.SetActive(true);
+				this.storyMenu.SetActive(false);
+				break;
+		}
+	}
+
+	public Mode currentMode;
 	[SerializeField] private DebugSceneLoader sceneLoader;
 	[SerializeField] private SettingsContainer container;
 	[SerializeField] private GameObject baldiLoadScreen;
 	[SerializeField] private GameObject storyMenu;
 	[SerializeField] private GameObject gpMenu;
 	[SerializeField] private GameObject mapMenu;
+	[SerializeField] private GameObject challengeMenu;
 	public enum Mode
 	{
-		Story,
-		Endless
+		Story, Endless, Challenge
 	}
 }
