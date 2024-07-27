@@ -36,7 +36,7 @@ public class NotebookScript : MonoBehaviour
 			RaycastHit raycastHit;
 			if (Physics.Raycast(ray, out raycastHit) && (raycastHit.transform.tag == "Notebook" & Vector3.Distance(this.player.position, base.transform.position) < this.openingDistance))
 			{
-				base.transform.position = new Vector3(base.transform.position.x, 70f, base.transform.position.z);
+				base.transform.position = new Vector3(base.transform.position.x, 200f, base.transform.position.z);
 				this.up = false;
 				this.respawnTime = 120f;
 				this.gc.CollectNotebook();

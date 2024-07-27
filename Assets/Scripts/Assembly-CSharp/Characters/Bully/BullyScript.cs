@@ -1,7 +1,5 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
-// Token: 0x02000007 RID: 7
 public class BullyScript : MonoBehaviour
 {
 	private void Start()
@@ -63,25 +61,32 @@ public class BullyScript : MonoBehaviour
 
 	private void OnTriggerEnter(Collider other)
 	{
-		if (other.transform.tag == "Player") // If touching the player
+		if (other.transform.tag == "Player")
 		{
-			if (this.gc.item[0] == 0 & this.gc.item[1] == 0 & this.gc.item[2] == 0) // If the player has no items
+			for (int i = 0; i < this.gc.totalSlotCount; i++)
 			{
-				this.audioDevice.PlayOneShot(this.aud_Denied); // "What, no items? No Items? No passsssss"
-			}
-			else
-			{
-				int num = Mathf.RoundToInt(UnityEngine.Random.Range(0f, 2f)); //Get a random item slot
-				while (this.gc.item[num] == 0) //If the selected slot is empty
+				if (!(this.gc.item[i] == 0))
 				{
-					num = Mathf.RoundToInt(UnityEngine.Random.Range(0f, 2f)); // Choose another slot
+					this.TakeItem();
+					break;
 				}
-				this.gc.LoseItem(num); // Remove the item selected
-				int num2 = Mathf.RoundToInt(UnityEngine.Random.Range(0f, 1f));
-				this.audioDevice.PlayOneShot(this.aud_Thanks[num2]);
-				this.Reset();
+				else if (this.gc.item[i] == 0 && i == this.gc.totalSlotCount - 1)
+					this.audioDevice.PlayOneShot(this.aud_Denied);
 			}
 		}
+	}
+
+	private void TakeItem()
+	{
+		int num = Mathf.RoundToInt(UnityEngine.Random.Range(0f, this.gc.totalSlotCount - 1)); //Get a random item slot
+		while (this.gc.item[num] == 0) //If the selected slot is empty
+		{
+			num = Mathf.RoundToInt(UnityEngine.Random.Range(0f, this.gc.totalSlotCount - 1)); // Choose another slot
+		}
+		this.gc.LoseItem(num); // Remove the item selected
+		int num2 = Mathf.RoundToInt(UnityEngine.Random.Range(0f, 1f));
+		this.audioDevice.PlayOneShot(this.aud_Thanks[num2]);
+		this.Reset();
 	}
 
 	private void OnTriggerStay(Collider other)
@@ -108,6 +113,7 @@ public class BullyScript : MonoBehaviour
 	public float waitTime;
 	public float activeTime;
 	public float guilt;
+	private int detectedItems;
 	public bool active;
 	public bool spoken;
 	private AudioSource audioDevice;
@@ -115,6 +121,5 @@ public class BullyScript : MonoBehaviour
 	public AudioClip[] aud_Thanks = new AudioClip[2];
 	public AudioClip aud_Denied;
 	public AudioClip aud_Bored;
-	[SerializeField] private float spawnCount;
-	private int id;
+	[SerializeField] private bool itemDetected;
 }

@@ -4,7 +4,7 @@ public class NearExitTriggerScript : MonoBehaviour
 {
 	private void OnTriggerEnter(Collider other)
 	{
-		if (this.gc.exitsReached < 3 & this.gc.finaleMode & other.tag == "Player")
+		if (this.gc.exitsReached < this.gc.entranceList.Length - 1 & this.gc.finaleMode & other.tag == "Player")
 		{
 			this.gc.ExitReached();
 			this.es.Lower();

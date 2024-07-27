@@ -13,15 +13,16 @@ public class GameControllerScript : MonoBehaviour
 {
 	public GameControllerScript()
 	{
-		int[] array = new int[5];
-		array[0] = 109;
-		array[1] = 149;
-		array[2] = 189;
-		array[3] = 229;
-		array[4] = 268;
+		float[] array = new float[5];
+		array[0] = 107.5f;
+		array[1] = 147.5f;
+		array[2] = 187.5f;
+		array[3] = 227.5f;
+		array[4] = 267.5f;
 		this.itemSelectOffset = array;
 		//base..ctor();
 	}
+	
 
 	private void Awake()
 	{
@@ -36,6 +37,8 @@ public class GameControllerScript : MonoBehaviour
 		Debug.Log("Loaded " + PlayerPrefs.GetString("CurrentMap"));
 		Debug.Log("Safe Mode: " + PlayerPrefs.GetInt("gps_safemode"));
 		Debug.Log("Difficult Math: " + PlayerPrefs.GetInt("gps_difficultmath"));
+
+		//this.InitializeItemSlots();
 
 		if (PlayerPrefs.GetInt("gps_safemode") == 1) this.isSafeMode = true;
 		else this.isSafeMode = false;
@@ -81,45 +84,67 @@ public class GameControllerScript : MonoBehaviour
 		//debugScreen.DebugCloseMenu();
 	}
 
+	private void InitializeItemSlots() // investigate why this shit wont work
+	{
+		this.itemSlotOffset = 10 - this.totalSlotCount;
+
+		float[] slotList = new float[10];
+		slotList[0] = -92.5f;
+		slotList[1] = -52.5f;
+		slotList[2] = -12.5f;
+		slotList[3] = 27.5f;
+		slotList[4] = 67.5f;
+		slotList[5] = 107.5f;
+		slotList[6] = 147.5f;
+		slotList[7] = 187.5f;
+		slotList[8] = 227.5f;
+		slotList[9] = 267.5f;
+
+		this.itemSelect.anchoredPosition = new Vector3(slotList[10 - this.totalSlotCount], 128.5f, 0f);
+
+		float[] array = new float[this.totalSlotCount];
+		for (int i = 9; i < this.totalSlotCount; i--)
+		{
+			array[9 - i] = slotList[i];
+		}
+		this.itemSelectOffset = array;
+
+		float[] bgList = new float[10];
+		bgList[0] = 392.5f;
+		bgList[1] = 352.5f;
+		bgList[2] = 312.5f;
+		bgList[3] = 272.5f;
+		bgList[4] = 232.5f;
+		bgList[5] = 192.5f;
+		bgList[6] = 152.5f;
+		bgList[7] = 112.5f;
+		bgList[8] = 72.5f;
+		bgList[9] = 32.5f;
+
+		this.itemBG.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, bgList[10 - this.totalSlotCount]);
+		this.itemSelected = 9 - this.totalSlotCount;
+	}
+
 	private void Update()
 	{
 		if (!this.learningActive)
 		{
 			if (Input.GetButtonDown("Pause"))
 			{
-				if (!this.gamePaused)
-				{
-					this.PauseGame();
-				}
-				else
-				{
-					this.UnpauseGame();
-				}
+				if (!this.gamePaused) this.PauseGame();
+				else this.UnpauseGame();
 			}
-			if (Input.GetKeyDown(KeyCode.Y) & this.gamePaused)
-			{
-				this.ExitGame();
-			}
-			else if (Input.GetKeyDown(KeyCode.N) & this.gamePaused)
-			{
-				this.UnpauseGame();
-			}
-			if (!this.gamePaused & Time.timeScale != 1f && !this.isSlowmo)
-			{
-				Time.timeScale = 1f;
-			}
-			if (Input.GetMouseButtonDown(1) && Time.timeScale != 0f)
-			{
-				this.UseItem();
-			}
-			if (Input.GetAxis("Mouse ScrollWheel") > 0f && Time.timeScale != 0f)
-			{
-				this.DecreaseItemSelection();
-			}
-			else if (Input.GetAxis("Mouse ScrollWheel") < 0f && Time.timeScale != 0f)
-			{
-				this.IncreaseItemSelection();
-			}
+
+			if (Input.GetKeyDown(KeyCode.Y) & this.gamePaused) this.ExitGame();
+			else if (Input.GetKeyDown(KeyCode.N) & this.gamePaused) this.UnpauseGame();
+
+			if (!this.gamePaused & Time.timeScale != 1f && !this.isSlowmo) Time.timeScale = 1f;
+
+			if (Input.GetMouseButtonDown(1) && Time.timeScale != 0f) this.UseItem();
+
+			if (Input.GetAxis("Mouse ScrollWheel") > 0f && Time.timeScale != 0f) this.DecreaseItemSelection();
+			else if (Input.GetAxis("Mouse ScrollWheel") < 0f && Time.timeScale != 0f) this.IncreaseItemSelection();
+
 			if (Time.timeScale != 0f)
 			{
 				if (Input.GetKeyDown(KeyCode.Alpha1))
@@ -151,10 +176,7 @@ public class GameControllerScript : MonoBehaviour
 		}
 		else
 		{
-			if (Time.timeScale != 0f)
-			{
-				Time.timeScale = 0f;
-			}
+			if (Time.timeScale != 0f) Time.timeScale = 0f;
 		}
 
 		if (this.player.stamina > 0f)
@@ -410,10 +432,7 @@ public class GameControllerScript : MonoBehaviour
 	public void ActivateSpoopMode()
 	{
 		this.spoopMode = true; //Tells the game its time for spooky
-		this.entrance_0.Lower(); //Lowers all the exits
-		this.entrance_1.Lower();
-		this.entrance_2.Lower();
-		this.entrance_3.Lower();
+		this.ModifyExits("lower"); //Lowers all the exits
 		this.baldiTutor.SetActive(false); //Turns off Baldi(The one that you see at the start of the game)
 		this.baldi.SetActive(true); //Turns on Baldi
         this.principal.SetActive(true); //Turns on Principal
@@ -441,10 +460,22 @@ public class GameControllerScript : MonoBehaviour
 	private void ActivateFinaleMode()
 	{
 		this.finaleMode = true;
-		this.entrance_0.Raise(); //Raise all the enterances(make them appear)
-		this.entrance_1.Raise();
-		this.entrance_2.Raise();
-		this.entrance_3.Raise();
+		ModifyExits("raise");
+	}
+
+	private void ModifyExits(string mode)
+	{
+		switch(mode)
+		{
+			case "lower":
+				foreach(EntranceScript i in entranceList)
+					i.Lower();
+				break;
+			case "raise":
+				foreach(EntranceScript i in entranceList)
+					i.Raise();
+				break;
+		}
 	}
 
 	public void GetAngry(float value) //Make Baldi get angry
@@ -587,7 +618,7 @@ public class GameControllerScript : MonoBehaviour
 		{
 			this.itemSelected = 0;
 		}
-		this.itemSelect.anchoredPosition = new Vector3((float)this.itemSelectOffset[this.itemSelected], 128f, 0f); //Moves the item selector background(the red rectangle)
+		this.itemSelect.anchoredPosition = new Vector3(this.itemSelectOffset[this.itemSelected], 128.5f, 0f); //Moves the item selector background(the red rectangle)
 		this.UpdateItemName();
 	}
 
@@ -598,13 +629,13 @@ public class GameControllerScript : MonoBehaviour
 		{
 			this.itemSelected = 4;
 		}
-		this.itemSelect.anchoredPosition = new Vector3((float)this.itemSelectOffset[this.itemSelected], 128f, 0f); //Moves the item selector background(the red rectangle)
+		this.itemSelect.anchoredPosition = new Vector3(this.itemSelectOffset[this.itemSelected], 128.5f, 0f); //Moves the item selector background(the red rectangle)
 		this.UpdateItemName();
 	}
 
 	private void UpdateItemSelection()
 	{
-		this.itemSelect.anchoredPosition = new Vector3((float)this.itemSelectOffset[this.itemSelected], 128f, 0f); //Moves the item selector background(the red rectangle)
+		this.itemSelect.anchoredPosition = new Vector3(this.itemSelectOffset[this.itemSelected], 128.5f, 0f); //Moves the item selector background(the red rectangle)
 		this.UpdateItemName();
 	}
 
@@ -1145,6 +1176,7 @@ public class GameControllerScript : MonoBehaviour
 	[Header("Game State")]
 	[SerializeField] private string curMap;
 	public string mode;
+	public EntranceScript[] entranceList;
 	public bool spoopMode;
 	public bool finaleMode;
 	public bool debugMode;
@@ -1169,7 +1201,7 @@ public class GameControllerScript : MonoBehaviour
 	public TMP_Text staminaPercentText;
 	public GameObject reticle;
 	public RectTransform itemSelect;
-	private int[] itemSelectOffset;
+	private float[] itemSelectOffset;
 	[SerializeField] private GameObject pointer;
 	[SerializeField] private TMP_Text dollarTextCenter;
 	[SerializeField] private TMP_Text dollarTextTop;
@@ -1204,12 +1236,16 @@ public class GameControllerScript : MonoBehaviour
 	public Transform attendanceOffice;
 
 
+	[Header("Item Slots")]
+	public int totalSlotCount;
+	[SerializeField] private RectTransform itemBG;
+	[SerializeField] private int itemSlotOffset;
+	public int itemSelected;
+
 	[Header("Items")]
 	public int[] item = new int[5];
 	public RawImage[] itemSlot = new RawImage[5];
-	public UnityEngine.Object[] items = new UnityEngine.Object[10];
 	public Texture[] itemTextures = new Texture[10];
-	public int itemSelected;
 	public TMP_Text itemText;
 	private string[] itemNames = new string[]
 	{
@@ -1291,10 +1327,6 @@ public class GameControllerScript : MonoBehaviour
 	[Header("Scripts")]
 	public CursorControllerScript cursorController;
 	public PlayerScript player;
-	public EntranceScript entrance_0;
-	public EntranceScript entrance_1;
-	public EntranceScript entrance_2;
-	public EntranceScript entrance_3;
 	public BaldiScript baldiScrpt;
 	public PlaytimeScript playtimeScript;
 	public FirstPrizeScript firstPrizeScript;

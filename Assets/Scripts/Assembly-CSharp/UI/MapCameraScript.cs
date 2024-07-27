@@ -20,13 +20,13 @@ public class MapCameraScript : MonoBehaviour
         if (this.isMapOn)
         {
             this.isMapOn = false;
-            this.offset = this.initialOffset - new Vector3(0f, 5f, 0f);
+            this.offset = this.initialOffset - new Vector3(0f, 40f, 0f);
             this.playerIcon.transform.position = new Vector3(player.transform.position.x, this.iconOffset.y, player.transform.position.z);
         }
         else
         {
             this.isMapOn = true;
-            this.offset = this.initialOffset;
+            this.offset = this.initialOffset - new Vector3(0f, 30f, 0);
             this.playerIcon.transform.position = new Vector3(player.transform.position.x, this.iconOffset.y, player.transform.position.z);
         }
     }

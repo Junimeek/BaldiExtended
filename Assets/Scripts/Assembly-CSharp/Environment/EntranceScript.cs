@@ -25,9 +25,7 @@ public class EntranceScript : MonoBehaviour
 
 	[SerializeField] private bool allowMap;
 	public GameControllerScript gc;
-
 	public Material map;
-
 	public MeshRenderer wall;
 	[SerializeField] private GameObject exitSign;
 	[SerializeField] private Sprite greenExit;
