@@ -7,10 +7,13 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using UnityEngine.AI;
+using System.Threading;
+using System.Runtime.CompilerServices;
 //using UnityEditor.UIElements;
 
 public class GameControllerScript : MonoBehaviour
 {
+	/*
 	public GameControllerScript()
 	{
 		float[] array = new float[5];
@@ -22,6 +25,7 @@ public class GameControllerScript : MonoBehaviour
 		this.itemSelectOffset = array;
 		//base..ctor();
 	}
+	*/
 	
 
 	private void Awake()
@@ -38,7 +42,7 @@ public class GameControllerScript : MonoBehaviour
 		Debug.Log("Safe Mode: " + PlayerPrefs.GetInt("gps_safemode"));
 		Debug.Log("Difficult Math: " + PlayerPrefs.GetInt("gps_difficultmath"));
 
-		//this.InitializeItemSlots();
+		this.InitializeItemSlots();
 
 		if (PlayerPrefs.GetInt("gps_safemode") == 1) this.isSafeMode = true;
 		else this.isSafeMode = false;
@@ -76,7 +80,7 @@ public class GameControllerScript : MonoBehaviour
 		this.itemSelected = 0; //Set selection to item slot 0(the first item slot)
 		this.gameOverDelay = 0.5f;
 		this.UpdateDollarAmount(0f);
-		StartCoroutine(this.WaitForQuarterDisable());
+		StartCoroutine(this.WaitForQuarterDisable(true));
 		//this.CollectItem(15);
 
 		//this.speedrunTimer.allowTime = true;
@@ -86,7 +90,10 @@ public class GameControllerScript : MonoBehaviour
 
 	private void InitializeItemSlots() // investigate why this shit wont work
 	{
-		this.itemSlotOffset = 10 - this.totalSlotCount;
+		//this.itemSlotOffset = 10 - this.totalSlotCount;
+
+		this.item = new int[this.totalSlotCount];
+		this.slotForeground.texture = this.slotForegroundList[this.totalSlotCount - 1];
 
 		float[] slotList = new float[10];
 		slotList[0] = -92.5f;
@@ -98,16 +105,22 @@ public class GameControllerScript : MonoBehaviour
 		slotList[6] = 147.5f;
 		slotList[7] = 187.5f;
 		slotList[8] = 227.5f;
-		slotList[9] = 267.5f;
+		slotList[9] = 267f;
 
 		this.itemSelect.anchoredPosition = new Vector3(slotList[10 - this.totalSlotCount], 128.5f, 0f);
+		this.trashOverlay.anchoredPosition = new Vector3(slotList[10 - this.totalSlotCount], 128.5f, 0f);
 
-		float[] array = new float[this.totalSlotCount];
-		for (int i = 9; i < this.totalSlotCount; i--)
+		this.slotOffsetArray = new float[this.totalSlotCount];
+		RawImage[] slotImages = new RawImage[this.totalSlotCount];
+
+		for (int i = 10 - this.totalSlotCount; i < 10; i++)
 		{
-			array[9 - i] = slotList[i];
+			this.slotOffsetArray[i - (10 - this.totalSlotCount)] = slotList[i];
+			slotImages[i - (10 - this.totalSlotCount)] = this.itemSlot[i];
 		}
-		this.itemSelectOffset = array;
+
+		this.itemSelectOffset = this.slotOffsetArray;
+		this.itemSlot = slotImages;
 
 		float[] bgList = new float[10];
 		bgList[0] = 392.5f;
@@ -119,7 +132,7 @@ public class GameControllerScript : MonoBehaviour
 		bgList[6] = 152.5f;
 		bgList[7] = 112.5f;
 		bgList[8] = 72.5f;
-		bgList[9] = 32.5f;
+		bgList[9] = 33f;
 
 		this.itemBG.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, bgList[10 - this.totalSlotCount]);
 		this.itemSelected = 9 - this.totalSlotCount;
@@ -301,7 +314,7 @@ public class GameControllerScript : MonoBehaviour
 				{
 					if (raycastHit.collider.name == "PayPhone")
 					{
-						StartCoroutine(this.WaitForQuarterDisable());
+						StartCoroutine(this.WaitForQuarterDisable(false));
 						handIconScript.ChangeIcon(3);
 					}
 					else if (raycastHit.collider.name == "TapePlayer" && this.item[this.itemSelected] == 6)
@@ -322,7 +335,7 @@ public class GameControllerScript : MonoBehaviour
 				}
 				else if (raycastHit.collider.name.StartsWith("VendingMachine"))
 				{
-					StartCoroutine(this.WaitForQuarterDisable());
+					StartCoroutine(this.WaitForQuarterDisable(true));
 					handIconScript.ChangeIcon(3);
 				}
 				else if ((raycastHit.collider.name == "Playtime" || raycastHit.collider.name == "Gotta Sweep" || raycastHit.collider.name == "1st Prize")
@@ -351,18 +364,29 @@ public class GameControllerScript : MonoBehaviour
 		}
 	}
 
-	private IEnumerator WaitForQuarterDisable()
+	private IEnumerator WaitForQuarterDisable(bool isVendingMachine)
 	{
 		this.forceQuarter = true;
+		this.itemSelect.gameObject.GetComponent<Image>().color = new Color(1f, 1f, 1f, 0f);
+
+		if (isVendingMachine && !this.IsNoItems())
+			this.trashOverlay.gameObject.GetComponent<Image>().color = new Color(1f, 1f, 1f, 1f);
+
+		this.walletOverlay.SetActive(true);
 		this.dollarTextCenter.gameObject.SetActive(true);
-		this.dollarTextTop.gameObject.SetActive(false);
 
 		while (handIconScript.icon.sprite == handIconScript.quarter)
+		{
+			this.UpdateItemName(true);
 			yield return null;
+		}
 
 		this.forceQuarter = false;
+		this.itemSelect.gameObject.GetComponent<Image>().color = new Color(1f, 1f, 1f, 1f);
+		this.trashOverlay.gameObject.GetComponent<Image>().color = new Color(1f, 1f, 1f, 0f);
+		this.walletOverlay.SetActive(false);
 		this.dollarTextCenter.gameObject.SetActive(false);
-		this.dollarTextTop.gameObject.SetActive(true);
+		this.UpdateItemName(false);
 	}
 
 	public void UpdatePrinceyTrigger(int type, bool triggerSetting)
@@ -614,12 +638,13 @@ public class GameControllerScript : MonoBehaviour
 	private void IncreaseItemSelection()
 	{
 		this.itemSelected++;
-		if (this.itemSelected > 4)
+		if (this.itemSelected > this.totalSlotCount - 1)
 		{
 			this.itemSelected = 0;
 		}
 		this.itemSelect.anchoredPosition = new Vector3(this.itemSelectOffset[this.itemSelected], 128.5f, 0f); //Moves the item selector background(the red rectangle)
-		this.UpdateItemName();
+		this.trashOverlay.anchoredPosition = new Vector3(this.itemSelectOffset[this.itemSelected], 128.5f, 0f);
+		this.UpdateItemName(false);
 	}
 
 	private void DecreaseItemSelection()
@@ -627,16 +652,18 @@ public class GameControllerScript : MonoBehaviour
 		this.itemSelected--;
 		if (this.itemSelected < 0)
 		{
-			this.itemSelected = 4;
+			this.itemSelected = this.totalSlotCount - 1;
 		}
 		this.itemSelect.anchoredPosition = new Vector3(this.itemSelectOffset[this.itemSelected], 128.5f, 0f); //Moves the item selector background(the red rectangle)
-		this.UpdateItemName();
+		this.trashOverlay.anchoredPosition = new Vector3(this.itemSelectOffset[this.itemSelected], 128.5f, 0f);
+		this.UpdateItemName(false);
 	}
 
 	private void UpdateItemSelection()
 	{
 		this.itemSelect.anchoredPosition = new Vector3(this.itemSelectOffset[this.itemSelected], 128.5f, 0f); //Moves the item selector background(the red rectangle)
-		this.UpdateItemName();
+		this.trashOverlay.anchoredPosition = new Vector3(this.itemSelectOffset[this.itemSelected], 128.5f, 0f);
+		this.UpdateItemName(false);
 	}
 
 	public void CollectItem(int item_ID)
@@ -653,37 +680,21 @@ public class GameControllerScript : MonoBehaviour
 			return;
 		}
 
-		if (this.item[0] == 0)
+		for (int i = 0; i < this.totalSlotCount; i++)
 		{
-			this.item[0] = item_ID; //Set the item slot to the Item_ID provided
-			this.itemSlot[0].texture = this.itemTextures[item_ID]; //Set the item slot's texture to a texture in a list of textures based on the Item_ID
+			if (this.item[i] == 0)
+			{
+				this.item[i] = item_ID;
+				this.itemSlot[i].texture = this.itemTextures[item_ID];
+				break;
+			}
+			else if (!(this.item[i] == 0) && i == this.totalSlotCount - 1)
+			{
+				this.item[this.itemSelected] = item_ID;
+				this.itemSlot[this.itemSelected].texture = this.itemTextures[item_ID];
+			}
 		}
-		else if (this.item[1] == 0)
-		{
-			this.item[1] = item_ID; //Set the item slot to the Item_ID provided
-            this.itemSlot[1].texture = this.itemTextures[item_ID]; //Set the item slot's texture to a texture in a list of textures based on the Item_ID
-        }
-		else if (this.item[2] == 0)
-		{
-			this.item[2] = item_ID; //Set the item slot to the Item_ID provided
-            this.itemSlot[2].texture = this.itemTextures[item_ID]; //Set the item slot's texture to a texture in a list of textures based on the Item_ID
-        }
-		else if (this.item[3] == 0)
-		{
-			this.item[3] = item_ID;
-            this.itemSlot[3].texture = this.itemTextures[item_ID];
-        }
-		else if (this.item[4] == 0)
-		{
-			this.item[4] = item_ID;
-            this.itemSlot[4].texture = this.itemTextures[item_ID];
-        }
-		else //This one overwrites the currently selected slot when your inventory is full
-		{
-			this.item[this.itemSelected] = item_ID;
-			this.itemSlot[this.itemSelected].texture = this.itemTextures[item_ID];
-		}
-		this.UpdateItemName();
+		this.UpdateItemName(false);
 	}
 
 	private void UseItem()
@@ -850,6 +861,9 @@ public class GameControllerScript : MonoBehaviour
 			
 		this.dollarAmount += amount;
 		this.PrintDollarAmount();
+
+		if (this.dollarAmount == 0f) this.walletSlot.SetActive(false);
+		else this.walletSlot.SetActive(true);
 	}
 
 	private void PrintDollarAmount()
@@ -969,19 +983,20 @@ public class GameControllerScript : MonoBehaviour
 	{
 		this.item[this.itemSelected] = 0;
 		this.itemSlot[this.itemSelected].texture = this.itemTextures[0];
-		this.UpdateItemName();
+		this.UpdateItemName(false);
 	}
 
 	public void LoseItem(int id)
 	{
 		this.item[id] = 0;
 		this.itemSlot[id].texture = this.itemTextures[0];
-		this.UpdateItemName();
+		this.UpdateItemName(false);
 	}
 
-	private void UpdateItemName()
+	private void UpdateItemName(bool isWallet)
 	{
-		this.itemText.text = this.itemNames[this.item[this.itemSelected]];
+		if (isWallet) this.itemText.text = "Wallet";
+		else this.itemText.text = this.itemNames[this.item[this.itemSelected]];
 	}
 
 	public void ExitReached()
@@ -1201,7 +1216,7 @@ public class GameControllerScript : MonoBehaviour
 	public TMP_Text staminaPercentText;
 	public GameObject reticle;
 	public RectTransform itemSelect;
-	private float[] itemSelectOffset;
+	[SerializeField] private float[] itemSelectOffset;
 	[SerializeField] private GameObject pointer;
 	[SerializeField] private TMP_Text dollarTextCenter;
 	[SerializeField] private TMP_Text dollarTextTop;
@@ -1239,8 +1254,22 @@ public class GameControllerScript : MonoBehaviour
 	[Header("Item Slots")]
 	public int totalSlotCount;
 	[SerializeField] private RectTransform itemBG;
-	[SerializeField] private int itemSlotOffset;
+	[SerializeField] private float[] slotOffsetArray;
+	[SerializeField] private RawImage slotForeground;
+	[SerializeField] private Texture[] slotForegroundList;
 	public int itemSelected;
+	[SerializeField] private GameObject walletSlot;
+	[SerializeField] private GameObject walletOverlay;
+	[SerializeField] private RectTransform trashOverlay;
+	[SerializeField] private bool IsNoItems()
+	{
+		for (int i = 0; i < this.totalSlotCount; i++)
+		{
+			if (this.item[i] == 0)
+				return true;
+		}
+		return false;
+	}
 
 	[Header("Items")]
 	public int[] item = new int[5];
