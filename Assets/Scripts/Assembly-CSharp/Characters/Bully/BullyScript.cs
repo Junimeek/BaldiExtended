@@ -99,7 +99,7 @@ public class BullyScript : MonoBehaviour
 
 	private void Reset()
 	{
-		base.transform.position = base.transform.position - new Vector3(0f, 20f, 0f); // Go to X: 0, Y: 20, Z: 20
+		base.transform.position = base.transform.position - new Vector3(0f, 150f, 0f); // Go to X: 0, Y: 20, Z: 20
 		this.waitTime = UnityEngine.Random.Range(60f, 120f); //Set the amount of time before the bully appears again
 		this.active = false; //Set active to false
 		this.activeTime = 0f; //Reset active time

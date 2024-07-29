@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class MapCameraScript : MonoBehaviour
@@ -7,12 +8,30 @@ public class MapCameraScript : MonoBehaviour
 		this.initialOffset = base.transform.position - this.player.transform.position;
         this.isMapOn = true;
         this.ToggleMap();
+
+        PickupScript[] fetchedItems = itemParent.GetComponentsInChildren<PickupScript>();
+        Array.Resize(ref this.itemList, fetchedItems.Length);
+
+        for (int i = 0; i < this.itemList.Length; i++)
+        {
+            this.itemList[i] = fetchedItems[i];
+        }
+
+        this.baldiSprite.color = new Color(1f, 1f, 1f, 0f);
+        this.playtimeSprite.color = new Color(1f, 1f, 1f, 0f);
+        this.craftersSprite.color = new Color(1f, 1f, 1f, 0f);
+        this.sweepSprite.color = new Color(1f, 1f, 1f, 0f);
+        this.princeySprite.color = new Color(1f, 1f, 1f, 0f);
+        this.princeySprite.color = new Color(1f, 1f, 1f, 0f);
+        this.bullySprite.color = new Color(1f, 1f, 1f, 0f);
 	}
 
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Tab)) this.ToggleMap();
         this.playerIcon.transform.position = this.player.transform.position + this.iconOffset;
+
+        if (Input.GetKeyDown(KeyCode.M)) this.ToggleExpandedMap();
     }
 
     private void ToggleMap()
@@ -31,6 +50,22 @@ public class MapCameraScript : MonoBehaviour
         }
     }
 
+    private void ToggleExpandedMap()
+    {
+        this.gameObject.GetComponent<Camera>().orthographicSize = 100f;
+
+        this.baldiSprite.color = new Color(1f, 1f, 1f, 1f);
+        this.playtimeSprite.color = new Color(1f, 1f, 1f, 1f);
+        this.craftersSprite.color = new Color(1f, 1f, 1f, 1f);
+        this.sweepSprite.color = new Color(1f, 1f, 1f, 1f);
+        this.princeySprite.color = new Color(1f, 1f, 1f, 1f);
+        this.princeySprite.color = new Color(1f, 1f, 1f, 1f);
+        this.bullySprite.color = new Color(1f, 1f, 1f, 1f);
+
+        for (int i = 0; i < this.itemList.Length; i++)
+            this.itemList[i].mapIcon.sprite = itemList[i].mapSprite;
+    }
+
     private void LateUpdate()
     {
         base.transform.position = this.player.transform.position + this.offset;
@@ -41,5 +76,14 @@ public class MapCameraScript : MonoBehaviour
     [SerializeField] private Vector3 offset;
     [SerializeField] private Vector3 initialOffset;
     [SerializeField] private Vector3 iconOffset;
+    [SerializeField] private GameObject itemParent;
+    [SerializeField] private PickupScript[] itemList;
+    [SerializeField] private SpriteRenderer baldiSprite;
+    [SerializeField] private SpriteRenderer playtimeSprite;
+    [SerializeField] private SpriteRenderer craftersSprite;
+    [SerializeField] private SpriteRenderer sweepSprite;
+    [SerializeField] private SpriteRenderer princeySprite;
+    [SerializeField] private SpriteRenderer prizeSprite;
+    [SerializeField] private SpriteRenderer bullySprite;
     private bool isMapOn;
 }

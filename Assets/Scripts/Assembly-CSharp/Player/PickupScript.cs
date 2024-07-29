@@ -83,8 +83,10 @@ public class PickupScript : MonoBehaviour
 
 	public GameControllerScript gc;
 	public Transform player;
-	[SerializeField] pickup itemPickup;
-	[SerializeField] private enum pickup
+	public SpriteRenderer mapIcon;
+	public Sprite mapSprite;
+	public pickup itemPickup;
+	public enum pickup
 	{
 		ZestyBar, DoorLock, PrincipalKeys, BSODA, Quarter, Tape, AlarmClock,
 		NoSquee, SafetyScissors, Boots, SpeedySneakers, AttendanceSlip, DietBSODA,

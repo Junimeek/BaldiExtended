@@ -673,12 +673,6 @@ public class GameControllerScript : MonoBehaviour
 			this.UpdateDollarAmount(0.25f);
 			return;
 		}
-		if (item_ID == 15)
-		{
-			this.item[4] = 15;
-			this.itemSlot[4].texture = this.itemTextures[15];
-			return;
-		}
 
 		for (int i = 0; i < this.totalSlotCount; i++)
 		{
@@ -1188,10 +1182,19 @@ public class GameControllerScript : MonoBehaviour
 	}
 
 
+	[Header("Game Configuration")]
+	public int daFinalBookCount;
+	public int totalSlotCount;
+	public EntranceScript[] entranceList;
+	public Transform attendanceOffice;
+	public Vector3 detentionPlayerPos;
+	public Vector3 detentionPrincipalPos;
+	[SerializeField] private bool disableSongInterruption;
+
+
 	[Header("Game State")]
 	[SerializeField] private string curMap;
 	public string mode;
-	public EntranceScript[] entranceList;
 	public bool spoopMode;
 	public bool finaleMode;
 	public bool debugMode;
@@ -1224,7 +1227,6 @@ public class GameControllerScript : MonoBehaviour
 
 	[Header("Noteboos")]
 	public int notebooks;
-	public int daFinalBookCount;
 	public GameObject[] notebookPickups;
 	public int failedNotebooks;
 	public int notebookCharReturn;
@@ -1248,11 +1250,9 @@ public class GameControllerScript : MonoBehaviour
 	public GameObject bully;
 	public GameObject firstPrize;
 	public GameObject TestEnemy;
-	public Transform attendanceOffice;
 
 
 	[Header("Item Slots")]
-	public int totalSlotCount;
 	[SerializeField] private RectTransform itemBG;
 	[SerializeField] private float[] slotOffsetArray;
 	[SerializeField] private RawImage slotForeground;
@@ -1270,6 +1270,7 @@ public class GameControllerScript : MonoBehaviour
 		}
 		return false;
 	}
+
 
 	[Header("Items")]
 	public int[] item = new int[5];
@@ -1305,8 +1306,6 @@ public class GameControllerScript : MonoBehaviour
 	[Header("Detention")]
 	public bool isPrinceyTriggerShared;
 	public bool isPrinceyIgnore;
-	public Vector3 detentionPlayerPos;
-	public Vector3 detentionPrincipalPos;
 	
 	
 	[Header("SFX and Voices")]
@@ -1330,7 +1329,6 @@ public class GameControllerScript : MonoBehaviour
 
 
 	[Header("Music")]
-	[SerializeField] private bool disableSongInterruption;
 	[SerializeField] private bool isEndlessSong;
 	public AudioSource schoolMusic;
 	public AudioSource escapeMusic;
