@@ -19,6 +19,7 @@ public class EntranceScript : MonoBehaviour
 		
 		if (this.gc.finaleMode && gc.exitsReached >= 1)
 		{
+			this.gc.UpdateExitCount();
 			if (allowMap) this.wall.material = this.map;
 			if (this.exitSign != null)
 			{

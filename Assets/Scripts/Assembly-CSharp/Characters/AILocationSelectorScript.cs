@@ -1,9 +1,13 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
+using UnityEngine.XR.WSA;
 
 public class AILocationSelectorScript : MonoBehaviour
 {
 	public Vector3 NewTarget(string type)
 	{
+		//if (!this.LocationCheck()) this.InitializeWanderPoints();
+
 		int randomID;
 		int randomID2;
 		Vector3 newLocation;
@@ -45,7 +49,56 @@ public class AILocationSelectorScript : MonoBehaviour
 		this.ambience.PlayAudio();
 		return newLocation;
 	}
+
+	private bool LocationCheck()
+	{
+		if (!(this.bullyPoints.Length > 0 /*&& this.quarterPoints.Length > 0 && this.hallwayPoints.Length > 0
+		&& this.roomPoints.Length > 0 && this.attendancePoints.Length > 0*/))
+			return true;
+		else
+		{
+			Debug.Log(false);
+			return false;
+		}
+			
+	}
+
+	private void InitializeWanderPoints()
+	{
+		Transform[] fetchedPoints = bullyParent.GetComponentsInChildren<Transform>();
+		Array.Resize(ref this.bullyPoints, fetchedPoints.Length);
+		for (int i = 0; i < this.bullyPoints.Length; i++)
+			this.bullyPoints[i] = fetchedPoints[i];
+
+		/*
+		fetchedPoints = quarterParent.GetComponentsInChildren<Transform>();
+		Array.Resize(ref this.quarterPoints, fetchedPoints.Length);
+		for (int i = 0; i < this.quarterPoints.Length; i++)
+			this.quarterPoints[i] = fetchedPoints[i];
+		*/
+
+		fetchedPoints = hallwayParent.GetComponentsInChildren<Transform>();
+		Array.Resize(ref this.hallwayPoints, fetchedPoints.Length);
+		for (int i = 0; i < this.hallwayPoints.Length; i++)
+			this.hallwayPoints[i] = fetchedPoints[i];
+
+		fetchedPoints = roomParent.GetComponentsInChildren<Transform>();
+		Array.Resize(ref this.roomPoints, fetchedPoints.Length);
+		for (int i = 0; i < this.roomPoints.Length; i++)
+			this.roomPoints[i] = fetchedPoints[i];
+
+		fetchedPoints = attendanceParent.GetComponentsInChildren<Transform>();
+		Array.Resize(ref this.attendancePoints, fetchedPoints.Length);
+		for (int i = 0; i < this.attendancePoints.Length; i++)
+			this.attendancePoints[i] = fetchedPoints[i];
+	}
+
 	public AmbienceScript ambience;
+	[SerializeField] private GameObject bullyParent;
+	[SerializeField] private GameObject quarterParent;
+	[SerializeField] private GameObject hallwayParent;
+	[SerializeField] private GameObject roomParent;
+	[SerializeField] private GameObject attendanceParent;
 	public Transform[] bullyPoints;
 	public Transform[] quarterPoints;
 	public Transform[] hallwayPoints;

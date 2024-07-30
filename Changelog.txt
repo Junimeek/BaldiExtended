@@ -4,6 +4,7 @@ Gameplay Changes:
 - Three new items: Diet BSODA, Crystal flavored Zesty Bar, and the Wallet! The former two are healthier versions of BSODA and Energy flavored Zesty Bar, and the Wallet is an item that is permanently attached to your inventory.
 - As a result of these items being added, there is now a significant change to the vending machines: They will now cost varying amounts of quarters depending on what item they give you. Diet BSODA and Crystal Zesty Bars will cost 1 quarter, and regular BSODA and Energy Bars will cost 2 quarters. Note that these changes do not apply to the Classic map, all items will continue to cost just 1 quarter on that map.
 - The effects of the Zesty Bar can now be stacked
+- The Attendance Slip has been buffed slightly: the character you send to attendance will now stay there for the entire game, instead of for just 3 notebooks.
 - You can now carry an infinite amount of quarters! All quarters will automatically be added to your wallet. To use a quarter, simply look at a vending machine and right click, and it will use any quarters you have collected. If your inventory is full, select the item you want to replace with whatever the vending machine will dispense, and it'll replace that item with the new item.
 - Added two faculty rooms to Juniper Hills
 - Added a 5th exit to Juniper Hills in the courtyard

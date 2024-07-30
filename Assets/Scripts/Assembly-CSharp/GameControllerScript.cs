@@ -43,6 +43,8 @@ public class GameControllerScript : MonoBehaviour
 		Debug.Log("Difficult Math: " + PlayerPrefs.GetInt("gps_difficultmath"));
 
 		this.InitializeItemSlots();
+		this.exitCountText.text = "0/" + this.entranceList.Length;
+		this.exitCountGroup.SetActive(false);
 
 		if (PlayerPrefs.GetInt("gps_safemode") == 1) this.isSafeMode = true;
 		else this.isSafeMode = false;
@@ -403,7 +405,11 @@ public class GameControllerScript : MonoBehaviour
 			this.notebookCount.text = this.notebooks.ToString() + " Notebooks";
 
 		if (this.notebooks == daFinalBookCount & this.mode == "story")
+		{
+			this.exitCountGroup.SetActive(true);
+			this.notebookCount.text = string.Empty;
 			this.ActivateFinaleMode();
+		}
 	}
 
 	public void CollectNotebook()
@@ -485,6 +491,11 @@ public class GameControllerScript : MonoBehaviour
 	{
 		this.finaleMode = true;
 		ModifyExits("raise");
+	}
+
+	public void UpdateExitCount()
+	{
+		this.exitCountText.text = this.exitsReached + "/" + this.entranceList.Length;
 	}
 
 	private void ModifyExits(string mode)
@@ -1223,6 +1234,8 @@ public class GameControllerScript : MonoBehaviour
 	[SerializeField] private GameObject pointer;
 	[SerializeField] private TMP_Text dollarTextCenter;
 	[SerializeField] private TMP_Text dollarTextTop;
+	[SerializeField] private GameObject exitCountGroup;
+	[SerializeField] private TMP_Text exitCountText;
 
 
 	[Header("Noteboos")]
