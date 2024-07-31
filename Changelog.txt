@@ -1,6 +1,7 @@
 ### v0.4.3 ###
 Gameplay Changes:
 - There's now a map! It can be toggled on and off by simply pressing Tab.
+- Upgrades for the map can be purchased in the Principal's office. There is a poster next to the map upgrade vending machine that will explain in further detail.
 - Three new items: Diet BSODA, Crystal flavored Zesty Bar, and the Wallet! The former two are healthier versions of BSODA and Energy flavored Zesty Bar, and the Wallet is an item that is permanently attached to your inventory.
 - As a result of these items being added, there is now a significant change to the vending machines: They will now cost varying amounts of quarters depending on what item they give you. Diet BSODA and Crystal Zesty Bars will cost 1 quarter, and regular BSODA and Energy Bars will cost 2 quarters. Note that these changes do not apply to the Classic map, all items will continue to cost just 1 quarter on that map.
 - The effects of the Zesty Bar can now be stacked

@@ -22,7 +22,7 @@ public class MapCameraScript : MonoBehaviour
         this.craftersSprite.color = new Color(1f, 1f, 1f, 0f);
         this.sweepSprite.color = new Color(1f, 1f, 1f, 0f);
         this.princeySprite.color = new Color(1f, 1f, 1f, 0f);
-        this.princeySprite.color = new Color(1f, 1f, 1f, 0f);
+        this.prizeSprite.color = new Color(1f, 1f, 1f, 0f);
         this.bullySprite.color = new Color(1f, 1f, 1f, 0f);
 	}
 
@@ -30,8 +30,6 @@ public class MapCameraScript : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Tab)) this.ToggleMap();
         this.playerIcon.transform.position = this.player.transform.position + this.iconOffset;
-
-        if (Input.GetKeyDown(KeyCode.M)) this.ToggleExpandedMap();
     }
 
     private void ToggleMap()
@@ -50,20 +48,27 @@ public class MapCameraScript : MonoBehaviour
         }
     }
 
-    private void ToggleExpandedMap()
+    public void UpgradeMap(int upgrade)
     {
-        this.gameObject.GetComponent<Camera>().orthographicSize = 100f;
-
-        this.baldiSprite.color = new Color(1f, 1f, 1f, 1f);
-        this.playtimeSprite.color = new Color(1f, 1f, 1f, 1f);
-        this.craftersSprite.color = new Color(1f, 1f, 1f, 1f);
-        this.sweepSprite.color = new Color(1f, 1f, 1f, 1f);
-        this.princeySprite.color = new Color(1f, 1f, 1f, 1f);
-        this.princeySprite.color = new Color(1f, 1f, 1f, 1f);
-        this.bullySprite.color = new Color(1f, 1f, 1f, 1f);
-
-        for (int i = 0; i < this.itemList.Length; i++)
-            this.itemList[i].mapIcon.sprite = itemList[i].mapSprite;
+        switch(upgrade)
+        {
+            case 1:
+                this.gameObject.GetComponent<Camera>().orthographicSize = 100f;
+                break;
+            case 2:
+                for (int i = 0; i < this.itemList.Length; i++)
+                    this.itemList[i].mapIcon.sprite = itemList[i].mapSprite;
+                break;
+            case 3:
+                this.baldiSprite.color = new Color(1f, 1f, 1f, 1f);
+                this.playtimeSprite.color = new Color(1f, 1f, 1f, 1f);
+                this.craftersSprite.color = new Color(1f, 1f, 1f, 1f);
+                this.sweepSprite.color = new Color(1f, 1f, 1f, 1f);
+                this.princeySprite.color = new Color(1f, 1f, 1f, 1f);
+                this.prizeSprite.color = new Color(1f, 1f, 1f, 1f);
+                this.bullySprite.color = new Color(1f, 1f, 1f, 1f);
+                break;
+        }
     }
 
     private void LateUpdate()

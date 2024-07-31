@@ -9,6 +9,7 @@ using UnityEngine.UI;
 using UnityEngine.AI;
 using System.Threading;
 using System.Runtime.CompilerServices;
+using UnityEditor.UIElements;
 //using UnityEditor.UIElements;
 
 public class GameControllerScript : MonoBehaviour
@@ -821,18 +822,25 @@ public class GameControllerScript : MonoBehaviour
 				{
 					VendingMachineScript curVendingMachine = raycastHit3.collider.gameObject.GetComponent<VendingMachineScript>();
 
-					if (this.dollarAmount <= 0f)
+					if (curVendingMachine.vendingMachineType == VendingMachineScript.machineType.Map_Upgrade && curVendingMachine.curQuarterCount == 0)
 					{
 						this.audioDevice.PlayOneShot(this.aud_Error);
-						StopCoroutine(this.MoneyWarning());
-						StartCoroutine(this.MoneyWarning());
+						StopCoroutine(this.MoneyWarning(2));
+						StartCoroutine(this.MoneyWarning(2));
+						return;
+					}
+					else if (this.dollarAmount <= 0f)
+					{
+						this.audioDevice.PlayOneShot(this.aud_Error);
+						StopCoroutine(this.MoneyWarning(1));
+						StartCoroutine(this.MoneyWarning(1));
 						return;
 					}
 
 					this.UpdateDollarAmount(-0.25f);
 					curVendingMachine.UseQuarter();
 
-					if (curVendingMachine.curQuarterCount == 0)
+					if (curVendingMachine.curQuarterCount == 0 && !(curVendingMachine.vendingMachineType == VendingMachineScript.machineType.Map_Upgrade))
 					{
 						this.CollectItem(curVendingMachine.DispensedItem());
 						curVendingMachine.ResetQuarterCount();
@@ -845,8 +853,8 @@ public class GameControllerScript : MonoBehaviour
 					if (this.dollarAmount <= 0f)
 					{
 						this.audioDevice.PlayOneShot(this.aud_Error);
-						StopCoroutine(this.MoneyWarning());
-						StartCoroutine(this.MoneyWarning());
+						StopCoroutine(this.MoneyWarning(1));
+						StartCoroutine(this.MoneyWarning(1));
 						return;
 					}
 					
@@ -860,7 +868,7 @@ public class GameControllerScript : MonoBehaviour
 	{
 		if (this.dollarAmount == 0f && amount < 0f)
 		{
-			StartCoroutine(this.MoneyWarning());
+			StartCoroutine(this.MoneyWarning(1));
 			return;
 		}
 			
@@ -890,10 +898,20 @@ public class GameControllerScript : MonoBehaviour
 		}
 	}
 
-	private IEnumerator MoneyWarning()
+	private IEnumerator MoneyWarning(int warning)
 	{
 		float remTime = 1.5f;
-		this.dollarTextCenter.text = "Not enough money!";
+
+		switch(warning)
+		{
+			case 1:
+				this.dollarTextCenter.text = "Not enough money!";
+				break;
+			case 2:
+				this.dollarTextCenter.text = "All upgrades reached!";
+				break;
+		}
+		
 		this.dollarTextCenter.color = Color.red;
 
 		while (remTime > 0f && this.dollarAmount == 0f)
@@ -904,6 +922,26 @@ public class GameControllerScript : MonoBehaviour
 
 		this.dollarTextCenter.color = Color.black;
 		this.PrintDollarAmount();
+	}
+
+	public void UpgradeMap(int upgrade)
+	{
+		switch(upgrade)
+		{
+			case 2: // 2 quarters inserted
+				this.mapScript.UpgradeMap(1);
+				break;
+			case 1: // 3 quarters inserted
+				this.mapScript.UpgradeMap(2);
+				break;
+			case 0: // 4 quarters inserted
+				this.mapScript.UpgradeMap(3);
+				break;
+			case 99:
+				this.audioDevice.PlayOneShot(this.aud_Error);
+				this.StartCoroutine(this.MoneyWarning(2));
+				break;
+		}
 	}
 
 	private void SendCharacterHome(string character)
@@ -1236,6 +1274,7 @@ public class GameControllerScript : MonoBehaviour
 	[SerializeField] private TMP_Text dollarTextTop;
 	[SerializeField] private GameObject exitCountGroup;
 	[SerializeField] private TMP_Text exitCountText;
+	[SerializeField] private MapCameraScript mapScript;
 
 
 	[Header("Noteboos")]
