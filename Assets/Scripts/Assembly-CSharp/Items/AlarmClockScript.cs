@@ -18,13 +18,17 @@ public class AlarmClockScript : MonoBehaviour
 		if (this.lifeSpan >= 0f) //If the time left in the lifespan is greater then 0
 			this.lifeSpan -= Time.deltaTime; //Decrease the time variable
 		else
-			UnityEngine.Object.Destroy(base.gameObject, 0f); //Otherwise, if time is less then 0, destroy the alarm clock
+			Destroy(base.gameObject, 0f); //Otherwise, if time is less then 0, destroy the alarm clock
 	}
 
 	private void Alarm()
 	{
 		this.rang = true;
-		if (this.baldi.isActiveAndEnabled) this.baldi.AddNewSound(base.transform.position, 3); //Baldi is told to go to this location, with a priority of 10(above most sounds)
+		if (this.baldi.isActiveAndEnabled)
+		{
+			this.baldi.isAlarmClock = true;
+			this.baldi.AddNewSound(base.transform.position, 5); //Baldi is told to go to this location, with a priority of 5 (above most sounds)
+		}
 		this.audioDevice.clip = this.ring;
 		this.audioDevice.loop = false; // Tells the audio not to loop
 		this.audioDevice.Play(); //Play the audio

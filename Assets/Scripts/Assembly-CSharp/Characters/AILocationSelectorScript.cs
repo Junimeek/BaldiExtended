@@ -18,6 +18,10 @@ public class AILocationSelectorScript : MonoBehaviour
 				randomID = Mathf.RoundToInt(UnityEngine.Random.Range(0f, quarterPoints.Length-1));
 				newLocation = this.quarterPoints[randomID].position;
 				break;
+			case "RoomQuarter":
+				randomID = Mathf.RoundToInt(UnityEngine.Random.Range(0f, roomQuarterPoints.Length-1));
+				newLocation = this.roomQuarterPoints[randomID].position;
+				break;
 			case "Bully":
 				randomID = Mathf.RoundToInt(UnityEngine.Random.Range(0f, bullyPoints.Length-1));
 				newLocation = this.bullyPoints[randomID].position;
@@ -105,6 +109,7 @@ public class AILocationSelectorScript : MonoBehaviour
 	[SerializeField] private GameObject attendanceParent;
 	public Transform[] bullyPoints;
 	public Transform[] quarterPoints;
+	public Transform[] roomQuarterPoints;
 	public Transform[] hallwayPoints;
 	public Transform[] roomPoints;
 	public Transform[] attendancePoints;

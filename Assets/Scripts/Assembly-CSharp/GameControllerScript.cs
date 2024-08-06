@@ -696,6 +696,11 @@ public class GameControllerScript : MonoBehaviour
 			this.UpdateDollarAmount(0.25f);
 			return;
 		}
+		if (item_ID == 16)
+		{
+			this.UpdateDollarAmount(1f);
+			return;
+		}
 
 		for (int i = 0; i < this.totalSlotCount; i++)
 		{
@@ -952,7 +957,7 @@ public class GameControllerScript : MonoBehaviour
 	{
 		switch(upgrade)
 		{
-			case 2: // 2 quarters inserted
+			case 3: // 1 quarter inserted
 				this.mapScript.UpgradeMap(1);
 				break;
 			case 1: // 3 quarters inserted
@@ -972,6 +977,8 @@ public class GameControllerScript : MonoBehaviour
 	{
 		this.principal.GetComponent<PrincipalScript>().GoToParty();
 
+		if (this.baldiScrpt.isActiveAndEnabled)
+			this.baldiScrpt.GoToParty();
 		if (this.playtimeScript.isActiveAndEnabled)
 			this.playtimeScript.GoToParty();
 		if (this.sweepScript.isActiveAndEnabled)
@@ -982,6 +989,8 @@ public class GameControllerScript : MonoBehaviour
 	{
 		this.principal.GetComponent<PrincipalScript>().LeaveParty();
 
+		if (this.baldiScrpt.isActiveAndEnabled)
+			this.baldiScrpt.isParty = false;
 		if (this.playtimeScript.isActiveAndEnabled)
 			this.playtimeScript.LeaveParty();
 		if (this.sweepScript.isActiveAndEnabled)

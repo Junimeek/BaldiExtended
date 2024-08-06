@@ -67,9 +67,9 @@ public class VendingMachineScript : MonoBehaviour
         switch(this.vendingMachineType)
         {
             case machineType.BSODA:
-                return 2;
+                return 3;
             case machineType.Zesty:
-                return 2;
+                return 3;
             case machineType.Diet_BSODA:
                  return 1;
             case machineType.Crystal_Zesty:

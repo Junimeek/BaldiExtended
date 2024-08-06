@@ -449,7 +449,7 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -470,7 +470,7 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -478,6 +478,48 @@ TextureImporter:
       bones: []
       spriteID: 48cd09b77d5d6154d902da1e3d6d8174
       internalID: -82946943
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MapIcon_PartyPopper
+      rect:
+        serializedVersion: 2
+        x: 35
+        y: 77
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9ce894033010bc44ab4ca82a3c444674
+      internalID: -1155616137
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MapIcon_DollarBill
+      rect:
+        serializedVersion: 2
+        x: 52
+        y: 77
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: de3d2b4ca3744bd4ca35cb54c40953f8
+      internalID: 727214131
       vertices: []
       indices: 
       edges: []
@@ -505,9 +547,11 @@ TextureImporter:
       MapIcon_Quarter: 1184519317
       MapIcon_Scissors: 1923063948
       MapIcon_DietBSODA: 700835328
+      MapIcon_PartyPopper: -1155616137
       MapIcon_BSODA: 176436702
       MapIcon_AttendanceSlip: 1574488590
       MapIcon_Notebook: -618380293
+      MapIcon_DollarBill: 727214131
       MapIcon_AlarmClock: 301745885
       MapIcon_MysteryItem: -179417408
       MapIcon_Zesty: 977156281

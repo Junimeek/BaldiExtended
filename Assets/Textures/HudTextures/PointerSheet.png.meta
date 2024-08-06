@@ -302,7 +302,7 @@ TextureImporter:
         width: 128
         height: 128
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -310,6 +310,27 @@ TextureImporter:
       bones: []
       spriteID: f9767ef33c9371c4a88234cb6d5a73fb
       internalID: 247820036
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Pointer_PartyPopper
+      rect:
+        serializedVersion: 2
+        x: 388
+        y: 142
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1f6e14f0241b6d74896cfd143f8a2479
+      internalID: 1168976796
       vertices: []
       indices: 
       edges: []
@@ -335,6 +356,7 @@ TextureImporter:
       Pointer_Scissors: -446585466
       Pointer_Quarter: -162654061
       Pointer_Tape: 1850640970
+      Pointer_PartyPopper: 1168976796
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

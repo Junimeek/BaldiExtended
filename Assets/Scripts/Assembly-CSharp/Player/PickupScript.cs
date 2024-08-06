@@ -80,6 +80,10 @@ public class PickupScript : MonoBehaviour
 						curObject.SetActive(false);
 						this.gc.CollectItem(15);
 						break;
+					case pickup.DollarBill:
+						curObject.SetActive(false);
+						this.gc.CollectItem(16);
+						break;
 				}
 			}
 		}
@@ -94,7 +98,7 @@ public class PickupScript : MonoBehaviour
 	{
 		ZestyBar, DoorLock, PrincipalKeys, BSODA, Quarter, Tape, AlarmClock,
 		NoSquee, SafetyScissors, Boots, SpeedySneakers, AttendanceSlip, DietBSODA,
-		CrystalZesty, PartyPopper
+		CrystalZesty, PartyPopper, DollarBill
 	}
 	//private Player playerInput;
 }

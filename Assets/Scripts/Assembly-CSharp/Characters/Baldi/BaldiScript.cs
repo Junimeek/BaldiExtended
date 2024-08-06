@@ -68,8 +68,8 @@ public class BaldiScript : MonoBehaviour
 			}
 		}
 
-		if (this.db) this.sightCooldown = 1f;
-		else if (!this.db)this.sightCooldown -= Time.deltaTime;
+		if (this.db) this.sightCooldown = 0.75f;
+		else if (!this.db) this.sightCooldown -= Time.deltaTime;
 	}
 
 	private void FixedUpdate()
@@ -94,13 +94,16 @@ public class BaldiScript : MonoBehaviour
 
 	private void Wander()
 	{
-		this.agent.SetDestination(this.wanderer.NewTarget("Baldi")); //Head towards the position of the wanderTarget object
+		if (this.isParty)
+			this.agent.SetDestination(this.wanderer.NewTarget("Party"));
+		else
+			this.agent.SetDestination(this.wanderer.NewTarget("Baldi")); //Head towards the position of the wanderTarget object
 		this.coolDown = 1f; //Set the cooldown
 	}
 
 	public void TargetPlayer()
 	{
-		this.AddNewSound(this.player.position, 5); //Target the player
+		this.AddNewSound(this.player.position, 6); //Target the player
 		this.coolDown = 1f;
 
 		if (sightCooldown <= 0f)
@@ -176,13 +179,28 @@ public class BaldiScript : MonoBehaviour
 	/*
 	1 = Door
 	2 = Bad Math
-	3 = Detention, Alarm clock
+	3 = Detention
 	4 = Exit
-	5 = Sight
+	5 = Alarm Clock, Party
+	6 = Sight
 	*/
 	{
 		if (this.db) this.StartCoroutine(FollowPlayer());
 		if (this.antiHearing) return;
+
+		if (priority == 5 && !this.db && this.isAlarmClock)
+		{
+			this.ClearSoundList();
+			this.soundList[priority - 1] = location;
+			this.currentPriority = priority;
+			this.baldicator.ChangeBaldicatorState("Pursuit");
+			this.agent.SetDestination(this.soundList[this.currentPriority - 1]);
+			this.isAlarmClock = false;
+			this.isParty = false;
+			return;
+		}
+
+		this.isAlarmClock = false;
 
 		if (priority >= this.currentPriority)
 		{
@@ -204,17 +222,22 @@ public class BaldiScript : MonoBehaviour
 
 	private void ClearSoundList()
 	{
-		this.soundList[0] = new Vector3(99.9f, -99.9f, 39f);
-		this.soundList[1] = new Vector3(99.9f, -99.9f, 39f);
-		this.soundList[2] = new Vector3(99.9f, -99.9f, 39f);
-		this.soundList[3] = new Vector3(99.9f, -99.9f, 39f);
-		this.soundList[4] = new Vector3(99.9f, -99.9f, 39f);
+		for (int i = 0; i < 6; i++)
+		{
+			this.soundList[i] = new Vector3(99.9f, -99.9f, 39f);
+		}
 	}
 
 	private void DecreasePriority()
 	{
-		if (this.currentPriority <= 0)
+		if (this.currentPriority <= 0 || this.isParty)
 		{
+			if (this.currentPriority == 6 && this.isParty)
+			{
+				this.soundList[5] = new Vector3(99.9f, -99.9f, 39f);
+				this.currentPriority = 5;
+			}
+
 			this.Wander();
 			return;
 		}
@@ -249,12 +272,28 @@ public class BaldiScript : MonoBehaviour
 	{
 		while (this.db)
 		{
-			this.currentPriority = 5;
+			this.currentPriority = 6;
 			this.ClearSoundList();
 			this.soundList[this.currentPriority - 1] = this.player.position;
 			this.agent.SetDestination(this.soundList[this.currentPriority - 1]);
 			yield return null;
 		}
+	}
+
+	public void GoToParty()
+	{
+		this.StartCoroutine(this.WaitForPartyEnd());
+	}
+
+	private IEnumerator WaitForPartyEnd()
+	{
+		this.AddNewSound(this.gc.partyLocation.position, 5);
+		this.isParty = true;
+
+		while (!this.db && this.isParty)
+			yield return null;
+
+		this.isParty = false;
 	}
 
 	[Header("Priority System")]
@@ -263,6 +302,9 @@ public class BaldiScript : MonoBehaviour
 	public Baldicator baldicator;
 	[SerializeField] private float sightCooldown;
 	[SerializeField] private Vector3 theNewLocation;
+	public bool isAlarmClock;
+	public bool isParty;
+
 	[Space(20f)]
 	public bool db;
 	public float baseTime;
