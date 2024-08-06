@@ -70,16 +70,32 @@ public class PrincipalScript : MonoBehaviour
 	private void Wander()
 	{
 		this.playerScript.principalBugFixer = 1;
-		this.agent.SetDestination(this.wanderer.NewTarget("Princey"));
+		if (!this.isParty)
+			this.agent.SetDestination(this.wanderer.NewTarget("Princey"));
+		else
+			this.agent.SetDestination(this.wanderer.NewTarget("Party"));
+
 		if (this.agent.isStopped)
 		{
 			this.agent.isStopped = false;
 		}
 		this.coolDown = 1f;
-		if (UnityEngine.Random.Range(0f, 10f) <= 1f)
+		if (UnityEngine.Random.Range(0f, 10f) <= 1f && !this.isParty)
 		{
 			this.quietAudioDevice.PlayOneShot(this.aud_Whistle);
 		}
+	}
+
+	public void GoToParty()
+	{
+		this.isParty = true;
+		this.agent.SetDestination(this.gc.partyLocation.position);
+	}
+
+	public void LeaveParty()
+	{
+		this.isParty = false;
+		this.Wander();
 	}
 
 	private void TargetPlayer()
@@ -193,6 +209,7 @@ public class PrincipalScript : MonoBehaviour
 	public float timeSeenRuleBreak;
 	public bool angry;
 	public bool inOffice;
+	public bool isParty;
 	private int detentions;
 	private int[] lockTime = new int[]
 	{

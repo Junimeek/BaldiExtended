@@ -39,7 +39,9 @@ public class PlaytimeScript : MonoBehaviour
 		{
 			Vector3 direction = this.player.position - base.transform.position;
 			RaycastHit raycastHit;
-			if (Physics.Raycast(base.transform.position, direction, out raycastHit, float.PositiveInfinity, 769, QueryTriggerInteraction.Ignore) & raycastHit.transform.tag == "Player" & (base.transform.position - this.player.position).magnitude <= 80f & this.playCool <= 0f)
+			if (Physics.Raycast(base.transform.position, direction, out raycastHit, float.PositiveInfinity, 769, QueryTriggerInteraction.Ignore)
+			& raycastHit.transform.tag == "Player" & (base.transform.position - this.player.position).magnitude <= 80f & this.playCool <= 0f
+			&& !this.isParty)
 			{
 				this.playerSeen = true; //If playtime sees the player, she chases after them
 				this.TargetPlayer();
@@ -70,15 +72,35 @@ public class PlaytimeScript : MonoBehaviour
 	private void Wander()
 	{
 		if (this.isDisabled) return;
-		this.agent.SetDestination(this.wanderer.NewTarget("Hallway"));
+		if (this.isParty)
+			this.agent.SetDestination(this.wanderer.NewTarget("Party"));
+		else
+			this.agent.SetDestination(this.wanderer.NewTarget("Hallway"));
 		this.agent.speed = 15f;
 		this.playerSpotted = false;
 		this.audVal = Mathf.RoundToInt(UnityEngine.Random.Range(0f, 1f));
-		if (!this.audioDevice.isPlaying)
+		if (!this.audioDevice.isPlaying && !this.isParty)
 		{
 			this.audioDevice.PlayOneShot(this.aud_Random[this.audVal]);
 		}
 		this.coolDown = 1f;
+	}
+
+	public void GoToParty()
+	{
+		this.isParty = true;
+		this.music.loop = false;
+		this.music.Stop();
+		this.agent.SetDestination(this.gc.partyLocation.position);
+	}
+
+	public void LeaveParty()
+	{
+		this.playCool = 15f;
+		this.isParty = false;
+		this.music.loop = true;
+		this.music.Play();
+		this.Wander();
 	}
 
 	private void TargetPlayer()
@@ -134,4 +156,6 @@ public class PlaytimeScript : MonoBehaviour
 	public AudioClip aud_Sad;
 	public AudioSource audioDevice;
 	public bool isDisabled;
+	public bool isParty;
+	[SerializeField] private AudioSource music;
 }

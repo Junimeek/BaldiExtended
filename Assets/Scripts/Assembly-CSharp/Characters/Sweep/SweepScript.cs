@@ -1,6 +1,7 @@
 ﻿using System;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Rendering.PostProcessing;
 
 public class SweepScript : MonoBehaviour
 {
@@ -49,7 +50,11 @@ public class SweepScript : MonoBehaviour
 
 	private void Wander()
 	{
-		this.agent.SetDestination(this.wanderer.NewTarget("Hallway"));
+		this.isEarlyActivation = true;
+		if (this.isParty)
+			this.agent.SetDestination(this.wanderer.NewTarget("Party"));
+		else
+			this.agent.SetDestination(this.wanderer.NewTarget("Hallway"));
 		this.coolDown = 1f;
 		this.wanders++;
 	}
@@ -68,9 +73,24 @@ public class SweepScript : MonoBehaviour
 		this.agent.SetDestination(gc.attendanceOffice.position);
 	}
 
+	public void GoToParty()
+	{
+		this.isParty = true;
+		this.active = true;
+		this.waitTime = 199f;
+		this.wanders = -99;
+		this.agent.SetDestination(this.gc.partyLocation.position);
+	}
+
+	public void LeaveParty()
+	{
+		this.isParty = false;
+		this.GoHome();
+	}
+
 	private void OnTriggerEnter(Collider other)
 	{
-		if (other.tag == "NPC" || other.tag == "Player")
+		if ((other.tag == "NPC" || other.tag == "Player") && !this.isParty)
 		{
 			this.audioDevice.PlayOneShot(this.aud_Sweep);
 		}
@@ -89,6 +109,7 @@ public class SweepScript : MonoBehaviour
 	public int wanders;
 	public bool active;
 	public bool isEarlyActivation;
+	[SerializeField] private bool isParty;
 	private Vector3 origin;
 	public AudioClip aud_Sweep;
 	public AudioClip aud_Intro;

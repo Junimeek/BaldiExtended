@@ -212,7 +212,7 @@ public class PlayerScript : MonoBehaviour
 			base.StartCoroutine(this.KeepTheHudOff()); //Hides the Hud
 		}
 		else if (other.transform.name == "Playtime" && !this.jumpRope
-			&& this.playtime.playCool <= 0f && !this.playtime.isDisabled)
+			&& this.playtime.playCool <= 0f && !this.playtime.isDisabled && !this.playtime.isParty)
 		{
 			this.ActivateJumpRope();
 		}

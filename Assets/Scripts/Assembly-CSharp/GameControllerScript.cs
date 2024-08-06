@@ -47,6 +47,8 @@ public class GameControllerScript : MonoBehaviour
 		this.exitCountText.text = "0/" + this.entranceList.Length;
 		this.exitCountGroup.SetActive(false);
 
+		this.isParty = false;
+
 		if (PlayerPrefs.GetInt("gps_safemode") == 1) this.isSafeMode = true;
 		else this.isSafeMode = false;
 
@@ -583,7 +585,9 @@ public class GameControllerScript : MonoBehaviour
 		if (!this.spoopMode) //If it isn't spoop mode, play the school music
 		{
 			MusicPlayer(0,0);
-			MusicPlayer(1,1);
+
+			if (!this.isParty) MusicPlayer(1,1);
+			else MusicPlayer(4,0);
 		}
 
 		if (this.isSafeMode && this.notebooks == 2) ActivateSafeMode();
@@ -601,6 +605,12 @@ public class GameControllerScript : MonoBehaviour
 			
 			if (this.notebooks < this.daFinalBookCount)
 			{
+				if (this.isParty)
+					MusicPlayer(4,0);
+				else
+					MusicPlayer(1, this.notebooks);
+
+				/*
 				if (this.notebooks == 2) MusicPlayer(1,2);
 				else if (this.notebooks == 3) MusicPlayer(1,3);
 				else if (this.notebooks == 4) MusicPlayer(1,4);
@@ -612,6 +622,7 @@ public class GameControllerScript : MonoBehaviour
 				else if (this.notebooks == 10) MusicPlayer(1,10);
 				else if (this.notebooks == 11) MusicPlayer(1,11);
 				else if (this.notebooks == 12) MusicPlayer(1,12);
+				*/
 			}
 			else if (this.notebooks >= this.daFinalBookCount)
 			{
@@ -810,6 +821,19 @@ public class GameControllerScript : MonoBehaviour
 					this.player.stamina += 70f;
 					this.ResetItem();
 					break;
+				case 15: // Party Popper
+					if (!(this.partyLocation == null))
+					{
+						this.MusicPlayer(0,0);
+						Instantiate(this.party, this.partyLocation.position, this.cameraTransform.rotation);
+						this.audioDevice.PlayOneShot(this.aud_BalloonPop);
+						this.ResetItem();
+						this.MusicPlayer(4,0);
+						this.StartCoroutine(PlayPartyMusic());
+					}
+					else
+						this.audioDevice.PlayOneShot(this.aud_Error);
+					break;
 			}
 		}
 		else if (this.forceQuarter)
@@ -942,6 +966,26 @@ public class GameControllerScript : MonoBehaviour
 				this.StartCoroutine(this.MoneyWarning(2));
 				break;
 		}
+	}
+
+	public void ActivateParty()
+	{
+		this.principal.GetComponent<PrincipalScript>().GoToParty();
+
+		if (this.playtimeScript.isActiveAndEnabled)
+			this.playtimeScript.GoToParty();
+		if (this.sweepScript.isActiveAndEnabled)
+			this.sweepScript.GoToParty();
+	}
+
+	public void DeactivateParty()
+	{
+		this.principal.GetComponent<PrincipalScript>().LeaveParty();
+
+		if (this.playtimeScript.isActiveAndEnabled)
+			this.playtimeScript.LeaveParty();
+		if (this.sweepScript.isActiveAndEnabled)
+			this.sweepScript.LeaveParty();
 	}
 
 	private void SendCharacterHome(string character)
@@ -1079,7 +1123,7 @@ public class GameControllerScript : MonoBehaviour
 		Camera.main.GetComponent<CameraScript>().offset = new Vector3(0f, -1f, 0f);
 	}
 
-	// 0 = Stop All, 1 = school, 2 = learn, 3 = uninterrupted school
+	// 0 = Stop All, 1 = school, 2 = learn, 3 = uninterrupted school, 4 = party
 	public void MusicPlayer(int songType, int SongId)
 	{
 		if (songType == 0) // stop all
@@ -1088,6 +1132,7 @@ public class GameControllerScript : MonoBehaviour
 			this.learnMusic.Stop();
 			this.spoopLearn.Stop();
 			this.endlessMusic.Stop();
+			this.partyMusic.Stop();
 			this.notebook2.Stop();
 			this.notebook3.Stop();
 			this.notebook4.Stop();
@@ -1105,6 +1150,8 @@ public class GameControllerScript : MonoBehaviour
 			if (SongId == 1) this.schoolMusic.Play();
 			else if (SongId >= 2 && PlayerPrefs.GetInt("AdditionalMusic") == 1)
 			{
+				this.schoolhouseTroublePlaylist[SongId - 2].Play();
+				/*
 				if (SongId == 2) this.notebook2.Play();
 				else if (SongId == 3) this.notebook3.Play();
 				else if (SongId == 4) this.notebook4.Play();
@@ -1116,6 +1163,7 @@ public class GameControllerScript : MonoBehaviour
 				else if (SongId == 10) this.notebook10.Play();
 				else if (SongId == 11) this.notebook11.Play();
 				else if (SongId == 12) this.notebook12.Play();
+				*/
 			}
 		}
 		else if (songType == 2) // math game
@@ -1127,8 +1175,37 @@ public class GameControllerScript : MonoBehaviour
 			}
 		}
 		else if (songType == 3)
-			if (!this.notebook2.isPlaying && !this.notebook3.isPlaying) StartCoroutine(UninterruptedMusic());
-			
+		{
+			if (!this.notebook2.isPlaying && !this.notebook3.isPlaying)
+				StartCoroutine(UninterruptedMusic());
+		}
+		else if (songType == 4)
+		{
+			this.partyMusic.Play();
+		}
+	}
+
+	private IEnumerator PlayPartyMusic()
+	{
+		this.isParty = true;
+		this.ActivateParty();
+		float remTime = 59.1f;
+		MusicPlayer(4,0);
+
+		while (remTime > 0f)
+		{
+			remTime -= Time.deltaTime;
+			yield return null;
+		}
+
+		this.MusicPlayer(0,0);
+		this.isParty = false;
+		this.DeactivateParty();
+		
+		if (this.spoopMode)
+			this.MusicPlayer(1,this.notebooks);
+		else if (this.isSafeMode)
+			this.MusicPlayer(1,1);
 	}
 
 	private IEnumerator UninterruptedMusic()
@@ -1258,6 +1335,8 @@ public class GameControllerScript : MonoBehaviour
 	[SerializeField] private string charInAttendance;
 	[SerializeField] private float dollarAmount;
 	[SerializeField] private bool forceQuarter;
+	public Transform partyLocation;
+	public bool isParty;
 
 
 	[Header("UI")]
@@ -1346,13 +1425,14 @@ public class GameControllerScript : MonoBehaviour
 		"Attendance Slip",
 		"Diet BSODA",
 		"Crystal flavored Zesty Bar",
-		"Wallet"
+		"Party Popper"
 	};
 	public GameObject quarter;
 	public GameObject bsodaSpray;
 	public GameObject dietBsodaSpray;
 	public RectTransform boots;
 	public GameObject alarmClock;
+	[SerializeField] private GameObject party;
 
 
 	[Header("Detention")]
@@ -1378,6 +1458,7 @@ public class GameControllerScript : MonoBehaviour
 	public AudioClip chaosEarlyLoop;
 	public AudioClip chaosBuildup;
 	public AudioClip chaosFinalLoop;
+	[SerializeField] private AudioClip aud_BalloonPop;
 
 
 	[Header("Music")]
@@ -1401,6 +1482,8 @@ public class GameControllerScript : MonoBehaviour
 	public AudioClip LearnQ1;
 	public AudioClip LearnQ2;
 	public AudioClip LearnQ3;
+	[SerializeField] private AudioSource partyMusic;
+	public AudioSource[] schoolhouseTroublePlaylist;
 
 
 	[Header("Scripts")]

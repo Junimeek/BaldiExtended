@@ -17,15 +17,15 @@ public class AILocationSelectorScript : MonoBehaviour
 			case "Quarter":
 				randomID = Mathf.RoundToInt(UnityEngine.Random.Range(0f, quarterPoints.Length-1));
 				newLocation = this.quarterPoints[randomID].position;
-			break;
+				break;
 			case "Bully":
 				randomID = Mathf.RoundToInt(UnityEngine.Random.Range(0f, bullyPoints.Length-1));
 				newLocation = this.bullyPoints[randomID].position;
-			break;
+				break;
 			case "Hallway":
 				randomID = Mathf.RoundToInt(UnityEngine.Random.Range(0f, hallwayPoints.Length-1));
 				newLocation = this.hallwayPoints[randomID].position;
-			break;
+				break;
 			default:
 				randomID2 = Mathf.RoundToInt(UnityEngine.Random.Range(1f, 2f));
 				switch(randomID2)
@@ -33,17 +33,21 @@ public class AILocationSelectorScript : MonoBehaviour
 					case 1:
 						randomID = Mathf.RoundToInt(UnityEngine.Random.Range(0f, hallwayPoints.Length-1));
 						newLocation = this.hallwayPoints[randomID].position;
-					break;
+						break;
 					default:
 						randomID = Mathf.RoundToInt(UnityEngine.Random.Range(0f, roomPoints.Length-1));
 						newLocation = this.roomPoints[randomID].position;
-					break;
+						break;
 				}
-			break;
+				break;
 			case "Attendance":
 				randomID = Mathf.RoundToInt(UnityEngine.Random.Range(0f, attendancePoints.Length-1));
 				newLocation = this.attendancePoints[randomID].position;
-			break;
+				break;
+			case "Party":
+				randomID = Mathf.RoundToInt(UnityEngine.Random.Range(0f, partyPoints.Length-1));
+				newLocation = this.partyPoints[randomID].position;
+				break;
 		}
 
 		this.ambience.PlayAudio();
@@ -104,4 +108,5 @@ public class AILocationSelectorScript : MonoBehaviour
 	public Transform[] hallwayPoints;
 	public Transform[] roomPoints;
 	public Transform[] attendancePoints;
+	public Transform[] partyPoints;
 }
