@@ -19,7 +19,7 @@ public class StartButton : MonoBehaviour
 		container = FindObjectOfType<SettingsContainer>();
 		this.baldiLoadScreen.SetActive(true);
 		this.gpMenu.SetActive(false);
-		this.sceneLoader.LoadTheScene(container.curMap, 1);
+		//this.sceneLoader.LoadTheScene(container.curMap, 1);
 	}
 
 	public void SetGamePref()
