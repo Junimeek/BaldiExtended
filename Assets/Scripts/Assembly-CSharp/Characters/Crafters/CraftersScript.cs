@@ -13,10 +13,11 @@ public class CraftersScript : MonoBehaviour
 
 	private void Update()
 	{
-		if (this.forceShowTime > 0f)
-		{
+		if (this.forceShowTime > 0f && !this.isParty)
 			this.forceShowTime -= Time.deltaTime;
-		}
+		else if (this.isParty)
+			this.forceShowTime = 1f;
+
 		if (this.gettingAngry) //If arts is getting agry
 		{
 			this.anger += Time.deltaTime; // Increase anger
@@ -59,7 +60,8 @@ public class CraftersScript : MonoBehaviour
 		{
 			Vector3 direction = this.player.position - base.transform.position;
 			RaycastHit raycastHit;
-			if (Physics.Raycast(base.transform.position + Vector3.up * 2f, direction, out raycastHit, float.PositiveInfinity, 769, QueryTriggerInteraction.Ignore) & raycastHit.transform.tag == "Player" & this.craftersRenderer.isVisible & this.sprite.activeSelf) // If Arts is Visible, and active and sees the player
+			if (Physics.Raycast(base.transform.position + Vector3.up * 2f, direction, out raycastHit, float.PositiveInfinity, 769, QueryTriggerInteraction.Ignore)
+			&& raycastHit.transform.tag == "Player" && this.craftersRenderer.isVisible && this.sprite.activeSelf && !this.isParty) // If Arts is Visible, and active and sees the player
 			{
 				this.gettingAngry = true; // Start to get angry
 			}
@@ -72,13 +74,17 @@ public class CraftersScript : MonoBehaviour
 
 	public void GiveLocation(Vector3 location, bool flee)
 	{
-		if (!this.angry && this.agent.isActiveAndEnabled)
+		if (!this.angry && this.agent.isActiveAndEnabled && !this.isParty)
 		{
 			this.agent.SetDestination(location);
 			if (flee)
 			{
 				this.forceShowTime = 3f; // Make arts appear in 3 seconds
 			}
+		}
+		else if (this.isParty && this.agent.isActiveAndEnabled)
+		{
+			this.agent.SetDestination(this.wanderer.NewTarget("Party"));
 		}
 	}
 
@@ -122,4 +128,6 @@ public class CraftersScript : MonoBehaviour
 	public AudioClip aud_Loop;
 	[SerializeField] private Vector3 playerTeleLocation;
 	[SerializeField] private Vector3 baldiTeleLocation;
+	[SerializeField] private AILocationSelectorScript wanderer;
+	public bool isParty;
 }

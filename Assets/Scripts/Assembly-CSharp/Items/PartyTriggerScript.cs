@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PartyTriggerScript : MonoBehaviour
@@ -8,15 +6,15 @@ public class PartyTriggerScript : MonoBehaviour
     {
         if (other.transform.name == "Player")
         {
-            this.gc.partyLocation = this.partySpawnerLocaion;
-            this.wanderer.partyPoints = this.wanderPoints;
+            this.gc.movingPartyLocation = this.partySpawnerLocaion;
+            this.wanderer.movingPartyPoints = this.wanderPoints;
         }
     }
 
     private void OnTriggerExit(Collider other)
     {
         if (other.transform.name == "Player")
-            this.gc.partyLocation = null;
+            this.gc.movingPartyLocation = null;
     }
 
     [SerializeField] private GameControllerScript gc;

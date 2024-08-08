@@ -2,14 +2,21 @@
 Gameplay Changes:
 - There's now a map! It can be toggled on and off by simply pressing Tab.
 - Upgrades for the map can be purchased in the Principal's office. There is a poster next to the map upgrade vending machine that will explain in further detail.
-- FOUR new items: Diet BSODA, Crystal flavored Zesty Bar, the Party Popper, and the Wallet! The former two are healthier versions of BSODA and Energy flavored Zesty Bar, the Party Popper will start a party and attract all characters to any classroom of your choosing, and the Wallet is an item that is permanently attached to your inventory and holds coins.
-- As a result of these items being added, there is now a significant change to the vending machines: They will now cost varying amounts of quarters depending on what item they give you. Diet BSODA and Crystal Zesty Bars will cost 1 quarter, and regular BSODA and Energy Bars will cost 2 quarters. Note that these changes do not apply to the Classic map: all items will continue to cost just 1 quarter on that map.
+- You can now carry an infinite amount of quarters! All quarters will automatically be added to your wallet. To use a quarter, simply look at a vending machine and right click, and it will use any quarters you have collected. If your inventory is full, select the item you want to replace with whatever the vending machine will dispense, and it'll replace that item with the new item.
+- As a result of several new items being added (explained further below), there is now a significant change to the vending machines: They will now cost varying amounts of quarters depending on what item they give you. Diet BSODA and Crystal Zesty Bars will cost 1 quarter, regular BSODA and Energy Bars will cost 3 quarters, and Map Upgrades will cost anywhere from 1-4 quarters depending on how many you want to buy. Note that these changes do not apply to the Classic map; all items will continue to cost just 1 quarter on that map.
+- Added two faculty rooms to Juniper Hills
+- Increased the number of exits in Classic Extended to 6
+- Increased the number of exits in Juniper Hills to 5
+
+Item Changes:
+- The map you play will now determine the number of inventory slots you have to work with: Classic has 3 slots, Classic Extended has 5 slots, and Juniper Hills has 4 slots.
+- FOUR new items: Diet BSODA, Crystal flavored Zesty Bar, the Party Popper, and the Wallet!
+- Diet BSODA and the Crystal Flavored Zesty bar are "healthier" versions of BSODA and Energy flavored Zesty Bar
+- The Party Popper will start a party and attract all characters to the Principal's Office, the Gym, the Cafeteria, or to any classroom of your choosing! The item can be found in the Principal's office.
+- The Wallet is an item that is permanently attached to your inventory and holds coins.
 - The effects of the Zesty Bar can now be stacked
 - The Attendance Slip has been buffed slightly: the character you send to attendance will now stay there for the entire game, instead of for just 3 notebooks.
-- You can now carry an infinite amount of quarters! All quarters will automatically be added to your wallet. To use a quarter, simply look at a vending machine and right click, and it will use any quarters you have collected. If your inventory is full, select the item you want to replace with whatever the vending machine will dispense, and it'll replace that item with the new item.
-- Added two faculty rooms to Juniper Hills
-- Added a 5th exit to Juniper Hills in the courtyard
-- The map you play will now determine the number of inventory slots you have to work with: Classic has 3 slots, Classic Extended has 5 slots, and Juniper Hills has 4 slots.
+- The Alarm Clock has been changed to act like it does in BBCR: you can set the time after dropping it somewhere, and it'll make Baldi ignore ALL sounds with the exception of the Party Popper.
 
 Other Changes:
 - Added a few extra posters to the halls

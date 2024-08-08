@@ -69,7 +69,7 @@ public class BaldiScript : MonoBehaviour
 		}
 
 		if (this.db) this.sightCooldown = 0.75f;
-		else if (!this.db) this.sightCooldown -= Time.deltaTime;
+		else this.sightCooldown -= Time.deltaTime;
 	}
 
 	private void FixedUpdate()
@@ -87,6 +87,10 @@ public class BaldiScript : MonoBehaviour
 		if (Physics.Raycast(base.transform.position + Vector3.up * 2f, direction, out raycastHit, float.PositiveInfinity, 769, QueryTriggerInteraction.Ignore) & raycastHit.transform.tag == "Player") //Create a raycast, if the raycast hits the player, Baldi can see the player
 		{
 			this.db = true;
+
+			if (this.alarmClock != null)
+				Destroy(this.alarmClock);
+
 			this.TargetPlayer(); //Start attacking the player
 		}
 		else this.db = false;
@@ -191,10 +195,10 @@ public class BaldiScript : MonoBehaviour
 		if (priority == 5 && !this.db && this.isAlarmClock)
 		{
 			this.ClearSoundList();
-			this.soundList[priority - 1] = location;
+			this.soundList[priority - 1] = this.alarmClock.transform.position;
 			this.currentPriority = priority;
 			this.baldicator.ChangeBaldicatorState("Pursuit");
-			this.agent.SetDestination(this.soundList[this.currentPriority - 1]);
+			this.agent.SetDestination(this.alarmClock.transform.position);
 			this.isAlarmClock = false;
 			this.isParty = false;
 			return;
@@ -230,6 +234,9 @@ public class BaldiScript : MonoBehaviour
 
 	private void DecreasePriority()
 	{
+		if (this.alarmClock != null)
+				Destroy(this.alarmClock);
+		
 		if (this.currentPriority <= 0 || this.isParty)
 		{
 			if (this.currentPriority == 6 && this.isParty)
@@ -282,6 +289,9 @@ public class BaldiScript : MonoBehaviour
 
 	public void GoToParty()
 	{
+		if (this.alarmClock != null)
+			Destroy(this.alarmClock);
+		
 		this.StartCoroutine(this.WaitForPartyEnd());
 	}
 
@@ -337,4 +347,5 @@ public class BaldiScript : MonoBehaviour
 	private bool rumble;
 	private NavMeshAgent agent;
 	private GameControllerScript gc;
+	public GameObject alarmClock;
 }

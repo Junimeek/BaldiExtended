@@ -13,6 +13,8 @@ public class PlaytimeScript : MonoBehaviour
 		this.agent.speed = 15f;
 		this.coolDown = 0f;
 		this.audioDevice = base.GetComponent<AudioSource>();
+		this.music.loop = true;
+		this.music.Play();
 		this.Wander(); //Start wandering
 	}
 

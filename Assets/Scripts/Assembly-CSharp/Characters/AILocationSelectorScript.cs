@@ -114,4 +114,5 @@ public class AILocationSelectorScript : MonoBehaviour
 	public Transform[] roomPoints;
 	public Transform[] attendancePoints;
 	public Transform[] partyPoints;
+	public Transform[] movingPartyPoints;
 }

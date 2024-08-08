@@ -238,7 +238,8 @@ public class PlayerScript : MonoBehaviour
 			this.sweeping = true;
 			this.sweepingFailsave = 1f;
 		}
-		else if (other.transform.name == "1st Prize" && this.firstPrize.velocity.magnitude > 5f && !firstPrize.GetComponent<FirstPrizeScript>().isDisabled)
+		else if (other.transform.name == "1st Prize" && this.firstPrize.velocity.magnitude > 5f &&
+		!firstPrize.GetComponent<FirstPrizeScript>().isDisabled && !firstPrize.GetComponent<FirstPrizeScript>().isParty)
 		{
 			this.hugging = true;
 			this.sweepingFailsave = 0.2f;
@@ -252,7 +253,11 @@ public class PlayerScript : MonoBehaviour
 
 	private void OnTriggerExit(Collider other)
 	{
-		if (other.transform.name == "Office Trigger")
+		if (other.transform.name == "Stamina Trigger")
+		{
+			this.isInfiniteStamina = false;
+		}
+		else if (other.transform.name == "Office Trigger")
 		{
 			this.ResetGuilt("escape", this.door.lockTime);
 		}
@@ -263,10 +268,6 @@ public class PlayerScript : MonoBehaviour
 		else if (other.transform.name == "1st Prize")
 		{
 			this.hugging = false;
-		}
-		else if (other.transform.name == "Stamina Trigger")
-		{
-			this.isInfiniteStamina = false;
 		}
 	}
 
@@ -289,7 +290,7 @@ public class PlayerScript : MonoBehaviour
 
 	public void ActivateJumpRope()
 	{
-		this.LookAtCharacter("playtime");
+		//this.LookAtCharacter("playtime");
 		this.jumpRopeScreen.SetActive(true);
 		this.jumpRope = true;
 		this.frozenPosition = base.transform.position;

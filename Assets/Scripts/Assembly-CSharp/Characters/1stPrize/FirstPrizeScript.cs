@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Linq.Expressions;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Rendering.PostProcessing;
 
 public class FirstPrizeScript : MonoBehaviour
 {
@@ -58,7 +60,8 @@ public class FirstPrizeScript : MonoBehaviour
 
 	private void FixedUpdate()
 	{
-		if (this.isDisabled) return;
+		if (this.isDisabled || this.isParty)
+			return;
 
 		Vector3 direction = this.player.position - base.transform.position;
 		RaycastHit raycastHit;
@@ -95,7 +98,11 @@ public class FirstPrizeScript : MonoBehaviour
 
 	private void Wander()
 	{
-		this.agent.SetDestination(this.wanderer.NewTarget("Hallway"));
+		if (!this.isParty)
+			this.agent.SetDestination(this.wanderer.NewTarget("Hallway"));
+		else
+			this.agent.SetDestination(this.wanderer.NewTarget("Party"));
+			
 		this.hugAnnounced = false;
 		int num = Mathf.RoundToInt(UnityEngine.Random.Range(0f, 9f));
 		if (!this.audioDevice.isPlaying & num == 0 & this.coolDown <= 0f)
@@ -112,9 +119,15 @@ public class FirstPrizeScript : MonoBehaviour
 		this.coolDown = 0.5f;
 	}
 
+	public void GoToParty()
+	{
+		this.isParty = true;
+		this.agent.SetDestination(this.gc.partyLocation.position);
+	}
+
 	private void OnTriggerEnter(Collider other)
 	{
-		if (other.tag == "Player" && !this.isDisabled)
+		if (other.tag == "Player" && (!this.isDisabled || !this.isParty))
 		{
 			if (!this.audioDevice.isPlaying & !this.hugAnnounced)
 			{
@@ -173,5 +186,6 @@ public class FirstPrizeScript : MonoBehaviour
 	public AudioSource motorAudio;
 	private NavMeshAgent agent;
 	public bool isDisabled;
+	public bool isParty;
 	private GameControllerScript gc;
 }

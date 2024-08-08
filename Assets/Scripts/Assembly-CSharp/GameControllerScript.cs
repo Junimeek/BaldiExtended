@@ -311,7 +311,9 @@ public class GameControllerScript : MonoBehaviour
 				
 			else if (Vector3.Distance(this.playerTransform.position, raycastHit.transform.position) <= distance)
 			{
-				if (raycastHit.collider.name == "1st Prize" && this.item[this.itemSelected] == 9)
+				if (this.itemSelected == 15 && this.partyLocation != null)
+					handIconScript.ChangeIcon(10);
+				else if (raycastHit.collider.name == "1st Prize" && this.item[this.itemSelected] == 9)
 				{
 					handIconScript.ChangeIcon(8);
 				}
@@ -327,6 +329,8 @@ public class GameControllerScript : MonoBehaviour
 					else if (!(raycastHit.collider.name == "PayPhone" || raycastHit.collider.name == "TapePlayer"))
 						handIconScript.ChangeIcon(2);
 				}
+				else if (raycastHit.collider.name.StartsWith("AlarmClock"))
+					handIconScript.ChangeIcon(1);
 				else if (raycastHit.collider.name == "_DoorOut")
 				{
 					if (raycastHit.collider.tag == "SwingingDoor"  && this.item[this.itemSelected] == 2)
@@ -644,16 +648,22 @@ public class GameControllerScript : MonoBehaviour
 			if (this.mode == "story")
 			{
 				this.spoopLearn.Stop();
-				if(!this.isSafeMode) this.audioDevice.PlayOneShot(this.aud_AllNotebooks, 0.8f);
-				this.escapeMusic.Play();
+				if (!this.isSafeMode)
+					this.audioDevice.PlayOneShot(this.aud_AllNotebooks, 0.8f);
+				if (!this.partyMusic.isPlaying)
+					this.escapeMusic.Play();
 			}
 			else if (this.mode == "endless")
 			{
 				if (this.spoopLearn.isPlaying)
 					this.spoopLearn.Stop();
+
 				if (PlayerPrefs.GetInt("AdditionalMusic") == 1 && !this.isEndlessSong)
-					this.endlessMusic.Play();
+				{
+					if (!this.partyMusic.isPlaying)
+						this.endlessMusic.Play();
 					this.isEndlessSong = true;
+				}
 			}
 		}
 	}
@@ -770,8 +780,9 @@ public class GameControllerScript : MonoBehaviour
 					}
 					break;
 				case 7: // Alarm Clock
-					GameObject gameObject = UnityEngine.Object.Instantiate<GameObject>(this.alarmClock, this.playerTransform.position, this.cameraTransform.rotation);
+					GameObject gameObject = Instantiate(this.alarmClock, this.playerTransform.position, this.cameraTransform.rotation);
 					gameObject.GetComponent<AlarmClockScript>().baldi = this.baldiScrpt;
+					gameObject.GetComponent<AlarmClockScript>().player = this.player.GetComponent<PlayerScript>();
 					this.ResetItem();
 					break;
 				case 8: // NoSquee
@@ -827,8 +838,10 @@ public class GameControllerScript : MonoBehaviour
 					this.ResetItem();
 					break;
 				case 15: // Party Popper
-					if (!(this.partyLocation == null))
+					if (!(this.movingPartyLocation == null))
 					{
+						this.partyLocation = this.movingPartyLocation;
+						this.wanderer.partyPoints = this.wanderer.movingPartyPoints;
 						this.MusicPlayer(0,0);
 						Instantiate(this.party, this.partyLocation.position, this.cameraTransform.rotation);
 						this.audioDevice.PlayOneShot(this.aud_BalloonPop);
@@ -976,6 +989,7 @@ public class GameControllerScript : MonoBehaviour
 	public void ActivateParty()
 	{
 		this.principal.GetComponent<PrincipalScript>().GoToParty();
+		this.firstPrizeScript.GoToParty();
 
 		if (this.baldiScrpt.isActiveAndEnabled)
 			this.baldiScrpt.GoToParty();
@@ -983,11 +997,19 @@ public class GameControllerScript : MonoBehaviour
 			this.playtimeScript.GoToParty();
 		if (this.sweepScript.isActiveAndEnabled)
 			this.sweepScript.GoToParty();
+		if (this.crafters.GetComponent<CraftersScript>().isActiveAndEnabled)
+			this.crafters.GetComponent<CraftersScript>().isParty = true;
 	}
 
 	public void DeactivateParty()
 	{
+		if (this.finaleMode)
+			this.escapeMusic.Play();
+		if (this.mode == "endless" && this.notebooks >= this.daFinalBookCount && PlayerPrefs.GetInt("AdditionalMusic") == 1)
+			this.endlessMusic.Play();
+
 		this.principal.GetComponent<PrincipalScript>().LeaveParty();
+		this.firstPrizeScript.isParty = false;
 
 		if (this.baldiScrpt.isActiveAndEnabled)
 			this.baldiScrpt.isParty = false;
@@ -995,6 +1017,8 @@ public class GameControllerScript : MonoBehaviour
 			this.playtimeScript.LeaveParty();
 		if (this.sweepScript.isActiveAndEnabled)
 			this.sweepScript.LeaveParty();
+		if (this.crafters.GetComponent<CraftersScript>().isActiveAndEnabled)
+			this.crafters.GetComponent<CraftersScript>().isParty = false;
 	}
 
 	private void SendCharacterHome(string character)
@@ -1142,6 +1166,7 @@ public class GameControllerScript : MonoBehaviour
 			this.spoopLearn.Stop();
 			this.endlessMusic.Stop();
 			this.partyMusic.Stop();
+			this.escapeMusic.Stop();
 			this.notebook2.Stop();
 			this.notebook3.Stop();
 			this.notebook4.Stop();
@@ -1198,7 +1223,7 @@ public class GameControllerScript : MonoBehaviour
 	{
 		this.isParty = true;
 		this.ActivateParty();
-		float remTime = 59.1f;
+		float remTime = 84.65f;
 		MusicPlayer(4,0);
 
 		while (remTime > 0f)
@@ -1330,6 +1355,7 @@ public class GameControllerScript : MonoBehaviour
 	[Header("Game State")]
 	[SerializeField] private string curMap;
 	public string mode;
+	public int notebooks;
 	public bool spoopMode;
 	public bool finaleMode;
 	public bool debugMode;
@@ -1345,6 +1371,7 @@ public class GameControllerScript : MonoBehaviour
 	[SerializeField] private float dollarAmount;
 	[SerializeField] private bool forceQuarter;
 	public Transform partyLocation;
+	public Transform movingPartyLocation;
 	public bool isParty;
 
 
@@ -1366,7 +1393,6 @@ public class GameControllerScript : MonoBehaviour
 
 
 	[Header("Noteboos")]
-	public int notebooks;
 	public GameObject[] notebookPickups;
 	public int failedNotebooks;
 	public int notebookCharReturn;
@@ -1501,7 +1527,8 @@ public class GameControllerScript : MonoBehaviour
 	public BaldiScript baldiScrpt;
 	public PlaytimeScript playtimeScript;
 	public FirstPrizeScript firstPrizeScript;
-	[SerializeField] private SweepScript sweepScript;
+	[SerializeField] private AILocationSelectorScript wanderer;
+ 	[SerializeField] private SweepScript sweepScript;
 	[SerializeField] private DebugMenuActions debugActions;
 	[SerializeField] private DebugScreenSwitch debugScreen;
 	[SerializeField] private AudioManager audioManager;
