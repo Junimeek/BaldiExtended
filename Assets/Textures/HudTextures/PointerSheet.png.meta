@@ -168,7 +168,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Pointer_Quarter
+      name: Pointer_Dollar
       rect:
         serializedVersion: 2
         x: 1
@@ -323,7 +323,7 @@ TextureImporter:
         width: 128
         height: 128
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -331,6 +331,27 @@ TextureImporter:
       bones: []
       spriteID: 1f6e14f0241b6d74896cfd143f8a2479
       internalID: 1168976796
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Pointer_Quarter
+      rect:
+        serializedVersion: 2
+        x: 388
+        y: 13
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 37fdaa95e2942f74ba6abefeef7f253e
+      internalID: -1843894968
       vertices: []
       indices: 
       edges: []
@@ -348,13 +369,14 @@ TextureImporter:
     nameFileIdTable:
       Pointer_Doorlock: 339174705
       Pointer_Hand: 262442673
+      Pointer_Dollar: -162654061
       Pointer_Keys: -1436285676
       Pointer_NoSquee: -1350866996
       Pointer_Thinkpad: -316986412
       Pointer_AttendanceSlip: -1058313254
       Pointer_Recticle: -847949278
       Pointer_Scissors: -446585466
-      Pointer_Quarter: -162654061
+      Pointer_Quarter: -1843894968
       Pointer_Tape: 1850640970
       Pointer_PartyPopper: 1168976796
   spritePackingTag: 

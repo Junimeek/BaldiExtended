@@ -2,7 +2,6 @@
 using System.Collections;
 using TMPro;
 using UnityEngine;
-using UnityEngine.AI;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -60,7 +59,8 @@ public class MathGameScript : MonoBehaviour
 
     private void NewProblem()
     {
-        if (!this.gc.spoopMode) this.mathMusicScript.PlaySong();
+        if (!this.gc.spoopMode)
+            this.mathMusicScript.PlaySong();
 
         this.playerAnswer.text = string.Empty;
         this.problem++;
@@ -73,27 +73,28 @@ public class MathGameScript : MonoBehaviour
             int questionType;
             if (PlayerPrefs.GetInt("gps_difficultmath") == 1)
                 questionType = Mathf.RoundToInt(UnityEngine.Random.Range(1f,4f));
-            else questionType = Mathf.RoundToInt(UnityEngine.Random.Range(1f,2f));
+            else
+                questionType = Mathf.RoundToInt(UnityEngine.Random.Range(1f,2f));
             
             int digit1 = Mathf.RoundToInt(UnityEngine.Random.Range(0f,9f));
             int digit2 = Mathf.RoundToInt(UnityEngine.Random.Range(0f,9f));
 
-            if ((this.gc.mode == "story" && (this.problem <= 2 || this.gc.notebooks <= 1)) || (this.gc.mode == "endless" && (this.problem <= 2 || this.gc.notebooks != 2)) || gc.isSafeMode)
+            if ((this.gc.mode == "story" && (this.problem <= 2 || this.gc.notebooks <= 1)) || (this.gc.mode == "endless" && (this.problem <= 2 || this.gc.notebooks != 2))/* || gc.isSafeMode*/)
             {
                 switch(questionType)
                 {
                     case 2:
                         NewSubtractionProblem(digit1, digit2);
-                    break;
+                        break;
                     case 3:
                         NewMultiplicationProblem(digit1, digit2);
-                    break;
+                        break;
                     case 4:
                         NewDivisionProblem(digit1, digit2);
-                    break;
+                        break;
                     default:
                         NewAdditionProblem(digit1, digit2);
-                    break;
+                        break;
                 }
             }
             else
@@ -106,15 +107,32 @@ public class MathGameScript : MonoBehaviour
         }
         else
         {
+            this.questionText2.text = string.Empty;
+            this.questionText3.text = string.Empty;
             this.endDelay = 5f;
-            if (!this.gc.spoopMode)
+            if (!this.gc.spoopMode && this.gc.notebooks == 1)
             {
-                if (randompraise == 0) this.endDelay = 3.4f;
-                else if (randompraise == 1) this.endDelay = 1.5f;
-                else if (randompraise == 2) this.endDelay = 2.4f;
-                else if (randompraise == 3) this.endDelay = 3.5f;
-                else if (randompraise == 4) this.endDelay = 3.7f;
-                else if (randompraise == 5) this.endDelay = 4.6f;
+                switch(randompraise)
+                {
+                    case 0:
+                        this.endDelay = 3.4f;
+                        break;
+                    case 1:
+                        this.endDelay = 1.5f;
+                        break;
+                    case 2:
+                        this.endDelay = 2.4f;
+                        break;
+                    case 3:
+                        this.endDelay = 3.5f;
+                        break;
+                    case 4:
+                        this.endDelay = 3.7f;
+                        break;
+                    case 5:
+                        this.endDelay = 4.6f;
+                        break;
+                }
 
                 this.questionText.text = "WOW! YOU EXIST!";
 
@@ -124,13 +142,6 @@ public class MathGameScript : MonoBehaviour
                     {
                         this.endDelay = 1.5f;
                         this.gc.failedNotebooks++;
-                        int num2 = Mathf.RoundToInt(UnityEngine.Random.Range(0f, 1f));
-                        this.questionText.text = this.safeText[num2];
-                    }
-                    else if ((this.problemsWrong == 1 || this.problemsWrong == 2) && (this.results[2].texture == this.incorrect))
-                    {
-                        this.endDelay = 1.5f;
-                        this.questionText.text = "It's ok, everyone makes mistakes.";
                     }
                 }
             }
@@ -140,8 +151,6 @@ public class MathGameScript : MonoBehaviour
                 this.endDelay = 3.75f;
                 this.questionText.color = new Color(0f, 0f, 0f, 1f);
                 this.questionText.text = "THAT LAST ONE\nWAS NOT VERY\nSIGHTREADABLE";
-                this.questionText2.text = string.Empty;
-                this.questionText3.text = string.Empty;
                 this.baldiAudio.PlayOneShot(this.dash);
             }
             else if (this.gc.mode == "endless" & this.problemsWrong <= 0)
@@ -152,24 +161,39 @@ public class MathGameScript : MonoBehaviour
             }
             else if (this.gc.mode == "story" & this.problemsWrong >= 3)
             {
-                this.questionText.text = "I HEAR MATH THAT BAD";
-                this.questionText2.text = string.Empty;
-                this.questionText3.text = string.Empty;
-                if (this.baldiScript.isActiveAndEnabled) this.baldiScript.AddNewSound(this.playerPosition, 2);
+                if (this.gc.isSafeMode)
+                {
+                    int num2 = Mathf.RoundToInt(UnityEngine.Random.Range(0f, 2f));
+                    this.questionText.text = this.safeText[num2];
+                }
+                else
+                    this.questionText.text = "I HEAR MATH THAT BAD";
+
+                if (this.baldiScript.isActiveAndEnabled)
+                    this.baldiScript.AddNewSound(this.playerPosition, 2);
                 this.gc.failedNotebooks++;
 
-                if (gc.notebooks < 3) this.endDelay = 3f;
-                else if (gc.notebooks > 2) this.endDelay = 1.5f;
+                if (gc.notebooks < 3)
+                    this.endDelay = 3f;
+                else if (gc.notebooks > 2)
+                    this.endDelay = 1.5f;
             }
             else
             {
-                if (gc.notebooks < 3) this.endDelay = 3f;
-                else if (gc.notebooks > 2) this.endDelay = 1.5f;
+                if (gc.notebooks < 3)
+                    this.endDelay = 3f;
+                else if (gc.notebooks > 2)
+                    this.endDelay = 1.5f;
 
                 int num2 = Mathf.RoundToInt(UnityEngine.Random.Range(0f, 2f));
-                this.questionText.text = this.hintText[num2];
-                this.questionText2.text = string.Empty;
-                this.questionText3.text = string.Empty;
+
+                if (this.gc.isSafeMode)
+                {
+                    this.endDelay = 1.5f;
+                    this.questionText.text = "It's ok, everyone makes mistakes.";
+                }
+                else
+                    this.questionText.text = this.hintText[num2];
             }
         }
     }
@@ -377,17 +401,25 @@ public class MathGameScript : MonoBehaviour
 
         this.QueueAudio(this.bal_screech);
 
-        if (digit1 < 3) this.QueueAudio(this.bal_plus);
-        else if (digit1 == 3 || digit1 == 4) this.QueueAudio(this.bal_minus);
-        else if (digit1 == 5 || digit1 == 6) this.QueueAudio(this.bal_times);
-        else this.QueueAudio(this.bal_divided);
+        if (digit1 < 3)
+            this.QueueAudio(this.bal_plus);
+        else if (digit1 == 3 || digit1 == 4)
+            this.QueueAudio(this.bal_minus);
+        else if (digit1 == 5 || digit1 == 6)
+            this.QueueAudio(this.bal_times);
+        else
+            this.QueueAudio(this.bal_divided);
 
         this.QueueAudio(this.bal_screech);
 
-        if (digit2 < 3) this.QueueAudio(this.bal_plus);
-        else if (digit2 == 3 || digit2 == 4) this.QueueAudio(this.bal_minus);
-        else if (digit2 == 5 || digit2 == 6) this.QueueAudio(this.bal_times);
-        else this.QueueAudio(this.bal_divided);
+        if (digit2 < 3)
+            this.QueueAudio(this.bal_plus);
+        else if (digit2 == 3 || digit2 == 4)
+            this.QueueAudio(this.bal_minus);
+        else if (digit2 == 5 || digit2 == 6)
+            this.QueueAudio(this.bal_times);
+        else
+            this.QueueAudio(this.bal_divided);
 
         this.QueueAudio(this.bal_screech);
         this.QueueAudio(this.bal_equals);
@@ -414,7 +446,7 @@ public class MathGameScript : MonoBehaviour
 
         if (this.problem <= 3)
         {
-            if (this.playerAnswer.text == this.solution.ToString() & !this.impossibleMode)
+            if (this.playerAnswer.text == this.solution.ToString() && !this.impossibleMode)
             {
                 this.results[this.problem - 1].texture = this.correct;
                 this.baldiAudio.Stop();
@@ -432,24 +464,24 @@ public class MathGameScript : MonoBehaviour
                 if (this.gc.isSafeMode)
                 {
                     this.baldiAudio.Stop();
-                    this.ClearAudioQueue();
-                    this.NewProblem();
-                    return;
+                    this.gc.ActivateSafeMode();
                 }
-                else
+                else if (!this.gc.spoopMode)
                 {
                     this.baldiFeed.SetTrigger("angry");
-                    if(!gc.spoopMode) this.gc.ActivateSpoopMode();
+                    this.gc.ActivateSpoopMode();
                 }
 
-                if (this.gc.mode == "story" && !gc.isSafeMode)
+                if (this.gc.mode == "story")
                 {
-                    if (this.problem == 3 && this.impossibleMode) this.baldiScript.GetAngry(1f);
-                    else this.baldiScript.GetTempAngry(0.25f);
+                    if (this.problem == 3 && this.impossibleMode)
+                        this.baldiScript.GetAngry(1f);
+                    else
+                        this.baldiScript.GetTempAngry(0.25f);
                 }
                 else
                 {
-                    if (!gc.isSafeMode) this.baldiScript.GetAngry(1f);
+                    this.baldiScript.GetAngry(1f);
                 }
 
                 this.ClearAudioQueue();
@@ -553,10 +585,6 @@ public class MathGameScript : MonoBehaviour
     private float endDelay;
     public int problem;
     private int audioInQueue;
-    private float num1;
-    private float num2;
-    private float num3;
-    private int sign;
     private float solution;
     private string[] hintText = new string[]
     {
@@ -578,7 +606,7 @@ public class MathGameScript : MonoBehaviour
     };
 
     private bool questionInProgress;
-    private bool impossibleMode;
+    [SerializeField] private bool impossibleMode;
     private bool joystickEnabled;
     private int problemsWrong;
     [SerializeField] private AudioClip[] audioQueue = new AudioClip[20];

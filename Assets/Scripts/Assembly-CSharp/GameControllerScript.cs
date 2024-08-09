@@ -86,7 +86,6 @@ public class GameControllerScript : MonoBehaviour
 		this.gameOverDelay = 0.5f;
 		this.UpdateDollarAmount(0f);
 		StartCoroutine(this.WaitForQuarterDisable(true));
-		//this.CollectItem(15);
 
 		//this.speedrunTimer.allowTime = true;
 
@@ -141,6 +140,17 @@ public class GameControllerScript : MonoBehaviour
 
 		this.itemBG.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, bgList[10 - this.totalSlotCount]);
 		this.itemSelected = 9 - this.totalSlotCount;
+
+		if (this.forceQuarterPickup)
+		{
+			this.trashOverlay.gameObject.GetComponent<Image>().color = new Color(1f, 1f, 1f, 0f);
+			this.walletUnderlay.GetComponent<Image>().color = new Color(1f, 1f, 1f, 0f);
+			this.walletForeground.SetActive(false);
+			this.walletBackground.SetActive(false);
+			this.dollarTextCenter.text = string.Empty;
+			this.dollarTextTop.text = string.Empty;
+			this.itemText.gameObject.GetComponent<RectTransform>().anchoredPosition = new Vector3(267f, 97f, 0f);
+		}
 	}
 
 	private void Update()
@@ -283,7 +293,8 @@ public class GameControllerScript : MonoBehaviour
 			}
 		}
 
-		if (this.handIconScript != null) CheckRaycast();
+		if (this.handIconScript != null)
+			CheckRaycast();
 	}
 
 	private void CheckRaycast()
@@ -314,20 +325,23 @@ public class GameControllerScript : MonoBehaviour
 				if (this.itemSelected == 15 && this.partyLocation != null)
 					handIconScript.ChangeIcon(10);
 				else if (raycastHit.collider.name == "1st Prize" && this.item[this.itemSelected] == 9)
-				{
 					handIconScript.ChangeIcon(8);
-				}
-				else if (raycastHit.collider.tag == "Notebook")
+				else if (raycastHit.collider.name.Contains("Notebook") && raycastHit.collider.name != "Notebooks")
+					handIconScript.ChangeIcon(2);
+				else if (raycastHit.collider.name == "Payphone")
 				{
-					if (raycastHit.collider.name == "PayPhone")
+					if (this.forceQuarterPickup)
+						handIconScript.ChangeIcon(11);
+					else
 					{
 						StartCoroutine(this.WaitForQuarterDisable(false));
 						handIconScript.ChangeIcon(3);
 					}
-					else if (raycastHit.collider.name == "TapePlayer" && this.item[this.itemSelected] == 6)
+				}
+				else if (raycastHit.collider.name == "TapePlayer")
+				{
+					if (this.item[this.itemSelected] == 6)
 						handIconScript.ChangeIcon(5);
-					else if (!(raycastHit.collider.name == "PayPhone" || raycastHit.collider.name == "TapePlayer"))
-						handIconScript.ChangeIcon(2);
 				}
 				else if (raycastHit.collider.name.StartsWith("AlarmClock"))
 					handIconScript.ChangeIcon(1);
@@ -344,27 +358,24 @@ public class GameControllerScript : MonoBehaviour
 				}
 				else if (raycastHit.collider.name.StartsWith("VendingMachine"))
 				{
-					StartCoroutine(this.WaitForQuarterDisable(true));
-					handIconScript.ChangeIcon(3);
+					if (this.forceQuarterPickup)
+						handIconScript.ChangeIcon(11);
+					else
+					{
+						StartCoroutine(this.WaitForQuarterDisable(true));
+						handIconScript.ChangeIcon(3);
+					}
 				}
 				else if ((raycastHit.collider.name == "Playtime" || raycastHit.collider.name == "Gotta Sweep" || raycastHit.collider.name == "1st Prize")
-					&& this.item[this.itemSelected] == 12)
-				{
+				&& this.item[this.itemSelected] == 12)
 					handIconScript.ChangeIcon(9);
-				}
 				else if (raycastHit.collider.tag == "Item")
-				{
 					handIconScript.ChangeIcon(1);
-				}
 				else
-				{
 					handIconScript.ChangeIcon(0);
-				}
 			}
 			else
-			{
 				handIconScript.ChangeIcon(0);
-			}
 		}
 		catch
 		{
@@ -375,16 +386,19 @@ public class GameControllerScript : MonoBehaviour
 
 	private IEnumerator WaitForQuarterDisable(bool isVendingMachine)
 	{
+		if (this.forceQuarterPickup)
+			yield break;
+
 		this.forceQuarter = true;
 		this.itemSelect.gameObject.GetComponent<Image>().color = new Color(1f, 1f, 1f, 0f);
 
 		if (isVendingMachine && !this.IsNoItems())
 			this.trashOverlay.gameObject.GetComponent<Image>().color = new Color(1f, 1f, 1f, 1f);
 
-		this.walletOverlay.SetActive(true);
+		this.walletUnderlay.SetActive(true);
 		this.dollarTextCenter.gameObject.SetActive(true);
 
-		while (handIconScript.icon.sprite == handIconScript.quarter)
+		while (handIconScript.icon.sprite == handIconScript.dollar)
 		{
 			this.UpdateItemName(true);
 			yield return null;
@@ -393,7 +407,7 @@ public class GameControllerScript : MonoBehaviour
 		this.forceQuarter = false;
 		this.itemSelect.gameObject.GetComponent<Image>().color = new Color(1f, 1f, 1f, 1f);
 		this.trashOverlay.gameObject.GetComponent<Image>().color = new Color(1f, 1f, 1f, 0f);
-		this.walletOverlay.SetActive(false);
+		this.walletUnderlay.SetActive(false);
 		this.dollarTextCenter.gameObject.SetActive(false);
 		this.UpdateItemName(false);
 	}
@@ -484,8 +498,10 @@ public class GameControllerScript : MonoBehaviour
 		this.audioDevice.PlayOneShot(this.aud_Hang);
 	}
 
-	private void ActivateSafeMode()
+	public void ActivateSafeMode()
 	{
+		if (!this.isGameFail)
+			this.baldi.SetActive(true);
 		this.principal.SetActive(true); //Turns on Principal
         this.crafters.SetActive(true); //Turns on Crafters
         this.playtime.SetActive(true); //Turns on Playtime
@@ -498,6 +514,13 @@ public class GameControllerScript : MonoBehaviour
 	{
 		this.finaleMode = true;
 		ModifyExits("raise");
+	}
+
+	public void EndSafeGame()
+	{
+		this.isGameFail = true;
+		this.baldi.SetActive(false);
+		this.audioDevice.PlayOneShot(this.aud_Hang);
 	}
 
 	public void UpdateExitCount()
@@ -650,8 +673,10 @@ public class GameControllerScript : MonoBehaviour
 				this.spoopLearn.Stop();
 				if (!this.isSafeMode)
 					this.audioDevice.PlayOneShot(this.aud_AllNotebooks, 0.8f);
-				if (!this.partyMusic.isPlaying)
+				if (!this.isParty)
 					this.escapeMusic.Play();
+				else
+					this.partyMusic.Play();
 			}
 			else if (this.mode == "endless")
 			{
@@ -660,7 +685,7 @@ public class GameControllerScript : MonoBehaviour
 
 				if (PlayerPrefs.GetInt("AdditionalMusic") == 1 && !this.isEndlessSong)
 				{
-					if (!this.partyMusic.isPlaying)
+					if (!this.isParty)
 						this.endlessMusic.Play();
 					this.isEndlessSong = true;
 				}
@@ -701,7 +726,7 @@ public class GameControllerScript : MonoBehaviour
 
 	public void CollectItem(int item_ID)
 	{
-		if (item_ID == 5)
+		if (item_ID == 5 && !this.forceQuarterPickup)
 		{
 			this.UpdateDollarAmount(0.25f);
 			return;
@@ -769,6 +794,25 @@ public class GameControllerScript : MonoBehaviour
 					this.ResetItem();
 					this.player.ResetGuilt("drink", 1f);
 					this.audioDevice.PlayOneShot(this.aud_Soda);
+					break;
+				case 5: // Quarter
+					Ray ray3 = Camera.main.ScreenPointToRay(new Vector3((float)(Screen.width / 2), (float)(Screen.height / 2), 0f));
+					RaycastHit raycastHit3;
+					if (Physics.Raycast(ray3, out raycastHit3) && Vector3.Distance(this.playerTransform.position, raycastHit3.transform.position) <= 10f)
+					{
+						if (raycastHit3.collider.name.StartsWith("VendingMachine"))
+						{
+							this.ResetItem();
+							VendingMachineScript curVendingMachine = raycastHit3.collider.gameObject.GetComponent<VendingMachineScript>();
+							curVendingMachine.UseQuarter();
+							this.CollectItem(curVendingMachine.DispensedItem());
+						}
+						else if (raycastHit3.collider.name == "PayPhone" & Vector3.Distance(this.playerTransform.position, raycastHit3.transform.position) <= 10f)
+						{
+							this.ResetItem();
+							raycastHit3.collider.gameObject.GetComponent<TapePlayerScript>().Play();
+						}
+					}
 					break;
 				case 6: // Tape
 					Ray ray4 = Camera.main.ScreenPointToRay(new Vector3((float)(Screen.width / 2), (float)(Screen.height / 2), 0f));
@@ -890,8 +934,6 @@ public class GameControllerScript : MonoBehaviour
 				}
 				else if (raycastHit3.collider.name == "PayPhone" & Vector3.Distance(this.playerTransform.position, raycastHit3.transform.position) <= 10f)
 				{
-					raycastHit3.collider.gameObject.GetComponent<TapePlayerScript>().Play();
-
 					if (this.dollarAmount <= 0f)
 					{
 						this.audioDevice.PlayOneShot(this.aud_Error);
@@ -901,6 +943,7 @@ public class GameControllerScript : MonoBehaviour
 					}
 					
 					this.UpdateDollarAmount(-0.25f);
+					raycastHit3.collider.gameObject.GetComponent<TapePlayerScript>().Play();
 				}
 			}
 		}
@@ -923,6 +966,9 @@ public class GameControllerScript : MonoBehaviour
 
 	private void PrintDollarAmount()
 	{
+		if (this.forceQuarterPickup)
+			return;
+		
 		if (this.dollarAmount % 1 == 0f)
 		{
 			this.dollarTextCenter.text = "$" + this.dollarAmount + ".00";
@@ -956,7 +1002,7 @@ public class GameControllerScript : MonoBehaviour
 		
 		this.dollarTextCenter.color = Color.red;
 
-		while (remTime > 0f && this.dollarAmount == 0f)
+		while (remTime > 0f && (this.dollarAmount == 0f || warning == 2))
 		{
 			remTime -= Time.unscaledDeltaTime;
 			yield return null;
@@ -1004,7 +1050,12 @@ public class GameControllerScript : MonoBehaviour
 	public void DeactivateParty()
 	{
 		if (this.finaleMode)
+		{
 			this.escapeMusic.Play();
+
+			if (this.exitsReached >= 2)
+				this.escapeMusic.volume = 0.5f;
+		}
 		if (this.mode == "endless" && this.notebooks >= this.daFinalBookCount && PlayerPrefs.GetInt("AdditionalMusic") == 1)
 			this.endlessMusic.Play();
 
@@ -1132,7 +1183,7 @@ public class GameControllerScript : MonoBehaviour
 			this.audioDevice.clip = this.chaosEarly;
 			this.audioDevice.loop = false;
 			this.audioDevice.Play();
-			this.escapeMusic.volume = 0.32f;
+			this.escapeMusic.volume = 0.5f;
 		}
 		else if (this.exitsReached == 3) //Play a louder sound
 		{
@@ -1223,12 +1274,12 @@ public class GameControllerScript : MonoBehaviour
 	{
 		this.isParty = true;
 		this.ActivateParty();
-		float remTime = 84.65f;
+		this.remainingPartyTime = 84.65f;
 		MusicPlayer(4,0);
 
-		while (remTime > 0f)
+		while (this.remainingPartyTime > 0f)
 		{
-			remTime -= Time.deltaTime;
+			this.remainingPartyTime -= Time.deltaTime;
 			yield return null;
 		}
 
@@ -1350,6 +1401,7 @@ public class GameControllerScript : MonoBehaviour
 	public Vector3 detentionPlayerPos;
 	public Vector3 detentionPrincipalPos;
 	[SerializeField] private bool disableSongInterruption;
+	[SerializeField] private bool forceQuarterPickup;
 
 
 	[Header("Game State")]
@@ -1373,6 +1425,8 @@ public class GameControllerScript : MonoBehaviour
 	public Transform partyLocation;
 	public Transform movingPartyLocation;
 	public bool isParty;
+	[SerializeField] private float remainingPartyTime;
+	public bool isGameFail;
 
 
 	[Header("UI")]
@@ -1425,9 +1479,11 @@ public class GameControllerScript : MonoBehaviour
 	[SerializeField] private Texture[] slotForegroundList;
 	public int itemSelected;
 	[SerializeField] private GameObject walletSlot;
-	[SerializeField] private GameObject walletOverlay;
+	[SerializeField] private GameObject walletUnderlay;
+	[SerializeField] private GameObject walletForeground;
+	[SerializeField] private GameObject walletBackground;
 	[SerializeField] private RectTransform trashOverlay;
-	[SerializeField] private bool IsNoItems()
+	private bool IsNoItems()
 	{
 		for (int i = 0; i < this.totalSlotCount; i++)
 		{

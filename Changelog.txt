@@ -4,6 +4,7 @@ Gameplay Changes:
 - Upgrades for the map can be purchased in the Principal's office. There is a poster next to the map upgrade vending machine that will explain in further detail.
 - You can now carry an infinite amount of quarters! All quarters will automatically be added to your wallet. To use a quarter, simply look at a vending machine and right click, and it will use any quarters you have collected. If your inventory is full, select the item you want to replace with whatever the vending machine will dispense, and it'll replace that item with the new item.
 - As a result of several new items being added (explained further below), there is now a significant change to the vending machines: They will now cost varying amounts of quarters depending on what item they give you. Diet BSODA and Crystal Zesty Bars will cost 1 quarter, regular BSODA and Energy Bars will cost 3 quarters, and Map Upgrades will cost anywhere from 1-4 quarters depending on how many you want to buy. Note that these changes do not apply to the Classic map; all items will continue to cost just 1 quarter on that map.
+- Safe mode has been changed: Now it will spawn a Ghost Baldi once you get a question wrong. Ghost Baldi will chase you just like normal Baldi, he just can't end your game.
 - Added two faculty rooms to Juniper Hills
 - Increased the number of exits in Classic Extended to 6
 - Increased the number of exits in Juniper Hills to 5
@@ -17,10 +18,13 @@ Item Changes:
 - The effects of the Zesty Bar can now be stacked
 - The Attendance Slip has been buffed slightly: the character you send to attendance will now stay there for the entire game, instead of for just 3 notebooks.
 - The Alarm Clock has been changed to act like it does in BBCR: you can set the time after dropping it somewhere, and it'll make Baldi ignore ALL sounds with the exception of the Party Popper.
+- Added a new quarter that will spawn in a random room
+- Removed a few standing quarters from Juniper Hills due to there being an excessive amount on that map. You can now find a maximum of $2.50 in Classic Extended, and $2.25 in Juniper Hills.
 
 Other Changes:
 - Added a few extra posters to the halls
 - Added a new loading screen
+- The game will tell now you how many exits are remaining in the top left of the screen
 
 Bug Fixes:
 - Fixed a bug where the player would not look at the Principal when sent to detention, or at Baldi when Arts and Crafters teleports you. This is actually a bug that has existed in the original game since version 1.4.0, I just never found a fix for it until now.

@@ -22,7 +22,7 @@ public class HandIconScript : MonoBehaviour
                 this.icon.sprite = this.thinkpad;
                 break;
             case 3:
-                this.icon.sprite = this.quarter;
+                this.icon.sprite = this.dollar;
                 break;
             case 4:
                 this.icon.sprite = this.keys;
@@ -45,6 +45,9 @@ public class HandIconScript : MonoBehaviour
             case 10:
                 this.icon.sprite = this.partyPopper;
                 break;
+            case 11:
+                this.icon.sprite = this.quarter;
+                break;
             default:
                 this.icon.sprite = this.recticle;
                 break;
@@ -56,7 +59,7 @@ public class HandIconScript : MonoBehaviour
     [SerializeField] private Sprite recticle;
     [SerializeField] private Sprite hand;
     [SerializeField] private Sprite thinkpad;
-    public Sprite quarter;
+    public Sprite dollar;
     [SerializeField] private Sprite keys;
     [SerializeField] private Sprite tape;
     [SerializeField] private Sprite doorlock;
@@ -64,4 +67,5 @@ public class HandIconScript : MonoBehaviour
     [SerializeField] private Sprite scissors;
     [SerializeField] private Sprite attendanceSlip;
     [SerializeField] private Sprite partyPopper;
+    [SerializeField] private Sprite quarter;
 }

@@ -85,7 +85,7 @@ public class BullyScript : MonoBehaviour
 		}
 		this.gc.LoseItem(num); // Remove the item selected
 		int num2 = Mathf.RoundToInt(UnityEngine.Random.Range(0f, 1f));
-		this.audioDevice.PlayOneShot(this.aud_Thanks[num2]);
+		this.longAudioDevice.PlayOneShot(this.aud_Thanks[num2]);
 		this.Reset();
 	}
 
@@ -117,6 +117,7 @@ public class BullyScript : MonoBehaviour
 	public bool active;
 	public bool spoken;
 	private AudioSource audioDevice;
+	[SerializeField] private AudioSource longAudioDevice;
 	public AudioClip[] aud_Taunts = new AudioClip[2];
 	public AudioClip[] aud_Thanks = new AudioClip[2];
 	public AudioClip aud_Denied;

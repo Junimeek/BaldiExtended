@@ -36,7 +36,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 0, y: -4}
+  m_AnchoredPosition: {x: 4, y: -4}
   m_SizeDelta: {x: 160, y: 64}
   m_Pivot: {x: 0, y: 1}
 --- !u!222 &1322329399806742728
@@ -3153,13 +3153,15 @@ MonoBehaviour:
   recticle: {fileID: -847949278, guid: 1a8fd50782529154dbb539e613ddc078, type: 3}
   hand: {fileID: 262442673, guid: 1a8fd50782529154dbb539e613ddc078, type: 3}
   thinkpad: {fileID: -316986412, guid: 1a8fd50782529154dbb539e613ddc078, type: 3}
-  quarter: {fileID: -162654061, guid: 1a8fd50782529154dbb539e613ddc078, type: 3}
+  dollar: {fileID: -162654061, guid: 1a8fd50782529154dbb539e613ddc078, type: 3}
   keys: {fileID: -1436285676, guid: 1a8fd50782529154dbb539e613ddc078, type: 3}
   tape: {fileID: 1850640970, guid: 1a8fd50782529154dbb539e613ddc078, type: 3}
   doorlock: {fileID: 339174705, guid: 1a8fd50782529154dbb539e613ddc078, type: 3}
   nosquee: {fileID: -1350866996, guid: 1a8fd50782529154dbb539e613ddc078, type: 3}
   scissors: {fileID: -446585466, guid: 1a8fd50782529154dbb539e613ddc078, type: 3}
   attendanceSlip: {fileID: 247820036, guid: 1a8fd50782529154dbb539e613ddc078, type: 3}
+  partyPopper: {fileID: 1168976796, guid: 1a8fd50782529154dbb539e613ddc078, type: 3}
+  quarter: {fileID: -1843894968, guid: 1a8fd50782529154dbb539e613ddc078, type: 3}
 --- !u!1 &7390056078875830259
 GameObject:
   m_ObjectHideFlags: 0

@@ -127,7 +127,12 @@ public class BaldiScript : MonoBehaviour
 		this.moveFrames = 10f;
 		this.previous = base.transform.position; // Set previous to Baldi's current location
 		this.baldiAudio.PlayOneShot(this.slap); //Play the slap sound
-		this.baldiAnimator.SetTrigger("slap"); // Play the slap animation
+
+		if (this.gc.isSafeMode)
+			this.baldiAnimator.SetTrigger("ghostSlap");
+		else
+			this.baldiAnimator.SetTrigger("slap"); // Play the slap animation
+
 		if (this.rumble)
 		{
 			float num = Vector3.Distance(base.transform.position, this.player.position);
