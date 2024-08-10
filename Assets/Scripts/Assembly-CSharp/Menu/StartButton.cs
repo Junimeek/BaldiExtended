@@ -1,6 +1,6 @@
-﻿using System;
+﻿using System.Collections;
 using UnityEngine;
-using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 //using UnityEditor.MPE;
 
 public class StartButton : MonoBehaviour
@@ -17,9 +17,8 @@ public class StartButton : MonoBehaviour
 	public void StartGame()
 	{
 		container = FindObjectOfType<SettingsContainer>();
-		this.baldiLoadScreen.SetActive(true);
 		this.gpMenu.SetActive(false);
-		//this.sceneLoader.LoadTheScene(container.curMap, 1);
+		this.blankOverlay.SetActive(true);
 	}
 
 	public void SetGamePref()
@@ -58,13 +57,12 @@ public class StartButton : MonoBehaviour
 	}
 
 	public Mode currentMode;
-	[SerializeField] private DebugSceneLoader sceneLoader;
 	[SerializeField] private SettingsContainer container;
-	[SerializeField] private GameObject baldiLoadScreen;
 	[SerializeField] private GameObject storyMenu;
 	[SerializeField] private GameObject gpMenu;
 	[SerializeField] private GameObject mapMenu;
 	[SerializeField] private GameObject challengeMenu;
+	[SerializeField] private GameObject blankOverlay;
 	public enum Mode
 	{
 		Story, Endless, Challenge

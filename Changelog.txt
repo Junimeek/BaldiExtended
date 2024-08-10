@@ -25,6 +25,7 @@ Other Changes:
 - Added a few extra posters to the halls
 - Added a new loading screen
 - The game will tell now you how many exits are remaining in the top left of the screen
+- Added the rest of Baldi's jumpscare sounds introduced in BB+
 
 Bug Fixes:
 - Fixed a bug where the player would not look at the Principal when sent to detention, or at Baldi when Arts and Crafters teleports you. This is actually a bug that has existed in the original game since version 1.4.0, I just never found a fix for it until now.
