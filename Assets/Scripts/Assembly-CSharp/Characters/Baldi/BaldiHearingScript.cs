@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BaldiHearingScript : MonoBehaviour
+public class BaldiHearingScript : BaldiScript
 {
-    [SerializeField] private BaldiScript baldiScript;
+    
 }

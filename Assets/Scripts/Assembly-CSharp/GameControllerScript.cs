@@ -181,19 +181,27 @@ public class GameControllerScript : MonoBehaviour
 		{
 			if (Input.GetButtonDown("Pause"))
 			{
-				if (!this.gamePaused) this.PauseGame();
-				else this.UnpauseGame();
+				if (!this.gamePaused)
+					this.PauseGame();
+				else
+					this.UnpauseGame();
 			}
 
-			if (Input.GetKeyDown(KeyCode.Y) & this.gamePaused) this.ExitGame();
-			else if (Input.GetKeyDown(KeyCode.N) & this.gamePaused) this.UnpauseGame();
+			if (Input.GetKeyDown(KeyCode.Y) && this.gamePaused)
+				this.ExitGame();
+			else if (Input.GetKeyDown(KeyCode.N) && this.gamePaused)
+				this.UnpauseGame();
 
-			if (!this.gamePaused & Time.timeScale != 1f && !this.isSlowmo) Time.timeScale = 1f;
+			if (!this.gamePaused & Time.timeScale != 1f && !this.isSlowmo)
+				Time.timeScale = 1f;
 
-			if (Input.GetMouseButtonDown(1) && Time.timeScale != 0f) this.UseItem();
+			if (Input.GetMouseButtonDown(1) && Time.timeScale != 0f)
+				this.UseItem();
 
-			if (Input.GetAxis("Mouse ScrollWheel") > 0f && Time.timeScale != 0f) this.DecreaseItemSelection();
-			else if (Input.GetAxis("Mouse ScrollWheel") < 0f && Time.timeScale != 0f) this.IncreaseItemSelection();
+			if (Input.GetAxis("Mouse ScrollWheel") > 0f && Time.timeScale != 0f)
+				this.DecreaseItemSelection();
+			else if (Input.GetAxis("Mouse ScrollWheel") < 0f && Time.timeScale != 0f)
+				this.IncreaseItemSelection();
 
 			if (Time.timeScale != 0f)
 			{
@@ -331,9 +339,10 @@ public class GameControllerScript : MonoBehaviour
 		if (Physics.Raycast(ray, out raycastHit) && raycastHit.collider.name == "_DoorOut" && !(raycastHit.collider.tag == "SwingingDoor"))
 			distance = 15f;
 		else if (Physics.Raycast(ray, out raycastHit) && this.item[this.itemSelected] == 12
-				&& (raycastHit.collider.name == "Playtime" || raycastHit.collider.name == "Gotta Sweep" || raycastHit.collider.name == "1st Prize"))
-				distance = 20f;
-		else distance = 10f;
+		&& (raycastHit.collider.name == "Playtime" || raycastHit.collider.name == "Gotta Sweep" || raycastHit.collider.name == "1st Prize"))
+			distance = 20f;
+		else
+			distance = 10f;
 
 		try
 		{
@@ -355,7 +364,7 @@ public class GameControllerScript : MonoBehaviour
 					handIconScript.ChangeIcon(2);
 				else if (raycastHit.collider.name == "Payphone")
 				{
-					if (this.forceQuarterPickup)
+					if (this.forceQuarterPickup && this.item[itemSelected] == 5)
 						handIconScript.ChangeIcon(11);
 					else
 					{
@@ -363,27 +372,26 @@ public class GameControllerScript : MonoBehaviour
 						handIconScript.ChangeIcon(3);
 					}
 				}
-				else if (raycastHit.collider.name == "TapePlayer")
+				else if (raycastHit.collider.name == "TapePlayer" && this.item[this.itemSelected] == 6)
 				{
-					if (this.item[this.itemSelected] == 6)
-						handIconScript.ChangeIcon(5);
+					handIconScript.ChangeIcon(5);
 				}
 				else if (raycastHit.collider.name.StartsWith("AlarmClock"))
 					handIconScript.ChangeIcon(1);
-				else if (raycastHit.collider.name == "_DoorOut")
+				else if (raycastHit.collider.tag == "SwingingDoor" && this.item[this.itemSelected] == 2)
+					handIconScript.ChangeIcon(6);
+				else if (raycastHit.collider.name == "_DoorOut" && !(raycastHit.collider.tag == "SwingingDoor"))
 				{
-					if (raycastHit.collider.tag == "SwingingDoor"  && this.item[this.itemSelected] == 2)
-						handIconScript.ChangeIcon(6);
-					else if (raycastHit.collider.tag == "PrincipalDoor" && this.item[this.itemSelected] == 3)
+					if (raycastHit.collider.tag == "PrincipalDoor" && this.item[this.itemSelected] == 3)
 						handIconScript.ChangeIcon(4);
 					else if (this.item[this.itemSelected] == 8)
 						handIconScript.ChangeIcon(7);
-					else if (!(raycastHit.collider.tag == "SwingingDoor"))
+					else
 						handIconScript.ChangeIcon(1);
 				}
 				else if (raycastHit.collider.name.StartsWith("VendingMachine"))
 				{
-					if (this.forceQuarterPickup)
+					if (this.forceQuarterPickup && this.item[this.itemSelected] == 5)
 						handIconScript.ChangeIcon(11);
 					else
 					{

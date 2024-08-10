@@ -55,7 +55,7 @@ public class Baldicator : MonoBehaviour
 
         ChangeAnimState(attention);
 
-        attentionRem = 1f;
+        attentionRem = 0.9f;
 
         while (attentionRem > 0f)
         {
@@ -69,7 +69,7 @@ public class Baldicator : MonoBehaviour
 
     private IEnumerator Decide(string state)
     {
-        decideRem = 1.5f;
+        decideRem = 1.2f;
         
         if (state == "Pursuit") ChangeAnimState(pursuit);
         else if (state == "Ignore") ChangeAnimState(ignore);
@@ -87,7 +87,7 @@ public class Baldicator : MonoBehaviour
 
     private IEnumerator Sight(string state)
     {
-        sightRem = 1.5f;
+        sightRem = 1.3f;
 
         switch(state)
         {

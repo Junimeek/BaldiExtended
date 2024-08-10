@@ -11,13 +11,10 @@ public class BullyScript : MonoBehaviour
 	private void Update()
 	{
 		if (this.waitTime > 0f) //Decrease the waittime
-		{
 			this.waitTime -= Time.deltaTime;
-		}
 		else if (!this.active)
-		{
 			this.Activate(); //Activate the Bully
-		}
+
 		if (this.active) //If the Bully is on the map
 		{
 			this.activeTime += Time.deltaTime; //Increase active time
@@ -28,9 +25,7 @@ public class BullyScript : MonoBehaviour
 			}
 		}
 		if (this.guilt > 0f)
-		{
 			this.guilt -= Time.deltaTime; //Decrease Bully's guilt
-		}
 	}
 
 	private void FixedUpdate()
@@ -81,7 +76,7 @@ public class BullyScript : MonoBehaviour
 		int num = Mathf.RoundToInt(UnityEngine.Random.Range(0f, this.gc.totalSlotCount - 1)); //Get a random item slot
 		while (this.gc.item[num] == 0) //If the selected slot is empty
 		{
-			num = Mathf.RoundToInt(UnityEngine.Random.Range(0f, this.gc.totalSlotCount - 1)); // Choose another slot
+			num = Mathf.RoundToInt(Random.Range(0f, this.gc.totalSlotCount - 1)); // Choose another slot
 		}
 		this.gc.LoseItem(num); // Remove the item selected
 		int num2 = Mathf.RoundToInt(UnityEngine.Random.Range(0f, 1f));
@@ -92,14 +87,12 @@ public class BullyScript : MonoBehaviour
 	private void OnTriggerStay(Collider other)
 	{
 		if (other.transform.name == "Principal of the Thing" & this.guilt > 0f) //If touching the principal and the bully is guilty
-		{
 			this.Reset(); //Reset the bully
-		}
 	}
 
 	private void Reset()
 	{
-		base.transform.position = base.transform.position - new Vector3(0f, 150f, 0f); // Go to X: 0, Y: 20, Z: 20
+		base.transform.position = base.transform.position + new Vector3(0f, 150f, 0f); // Go to X: 0, Y: 20, Z: 20
 		this.waitTime = UnityEngine.Random.Range(60f, 120f); //Set the amount of time before the bully appears again
 		this.active = false; //Set active to false
 		this.activeTime = 0f; //Reset active time
@@ -113,7 +106,6 @@ public class BullyScript : MonoBehaviour
 	public float waitTime;
 	public float activeTime;
 	public float guilt;
-	private int detectedItems;
 	public bool active;
 	public bool spoken;
 	private AudioSource audioDevice;
@@ -122,5 +114,4 @@ public class BullyScript : MonoBehaviour
 	public AudioClip[] aud_Thanks = new AudioClip[2];
 	public AudioClip aud_Denied;
 	public AudioClip aud_Bored;
-	[SerializeField] private bool itemDetected;
 }

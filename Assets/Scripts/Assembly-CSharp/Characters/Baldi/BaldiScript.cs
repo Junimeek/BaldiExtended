@@ -22,12 +22,16 @@ public class BaldiScript : MonoBehaviour
 
 		if (speedFactorOverride == 0f)
 		{
-			float speedFactor = (this.gc.daFinalBookCount + 0.5f);
-			float bookSquare = (speedFactor * speedFactor);
+			float speedFactor = this.gc.daFinalBookCount + 0.5f;
+			float bookSquare = speedFactor * speedFactor;
 			Debug.Log("Baldi Speed Factor: " + bookSquare);
-			baldiSpeedScale = MathF.Sqrt(15.2f / (bookSquare));
+			baldiSpeedScale = MathF.Sqrt(15.2f / bookSquare);
 		}
-		else baldiSpeedScale = speedFactorOverride;
+		else
+			this.baldiSpeedScale = this.speedFactorOverride;
+
+		if (this.gc.isSafeMode)
+			this.baldiAnimator.SetTrigger("ghostSlap");
 	}
 
 	private void Update()
@@ -68,8 +72,10 @@ public class BaldiScript : MonoBehaviour
 			}
 		}
 
-		if (this.db) this.sightCooldown = 0.75f;
-		else this.sightCooldown -= Time.deltaTime;
+		if (this.db)
+			this.sightCooldown = 0.3f;
+		else
+			this.sightCooldown -= Time.deltaTime;
 	}
 
 	private void FixedUpdate()
@@ -119,11 +125,12 @@ public class BaldiScript : MonoBehaviour
 
 	private void Move()
 	{
-		if (base.transform.position == this.previous & this.coolDown < 0f) // If Baldi reached his destination, start wandering
-		{
-			Debug.LogWarning("Destination with priortity " + this.currentPriority + " reached.");
+		Vector3 offset = this.agent.destination - base.transform.position;
+		float sqrLen = offset.sqrMagnitude;
+
+		if (sqrLen < 4f && this.coolDown < 0f)
 			this.DecreasePriority();
-		}
+
 		this.moveFrames = 10f;
 		this.previous = base.transform.position; // Set previous to Baldi's current location
 		this.baldiAudio.PlayOneShot(this.slap); //Play the slap sound
