@@ -26,6 +26,9 @@ Other Changes:
 - Added a new loading screen
 - The game will tell now you how many exits are remaining in the top left of the screen
 - Added the rest of Baldi's jumpscare sounds introduced in BB+
+- Baldi's AI has been slightly improved to keep him moving instead of constantly getting stuck in place for a few seconds
+- The Baldicator's animation times are slightly quicker now
+- Its a Bully will now actually go to detention if the Principal catches him. Don't worry, he won't steal anything from you while he's in there.
 
 Bug Fixes:
 - Fixed a bug where the player would not look at the Principal when sent to detention, or at Baldi when Arts and Crafters teleports you. This is actually a bug that has existed in the original game since version 1.4.0, I just never found a fix for it until now.

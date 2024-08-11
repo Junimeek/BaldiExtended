@@ -148,10 +148,11 @@ public class MathGameScript : MonoBehaviour
             else if (this.isKitsune)
             {
                 this.spider.SetActive(false);
-                this.endDelay = 3.75f;
+                //this.endDelay = 3.75f;
+                this.endDelay = 1.5f;
                 this.questionText.color = new Color(0f, 0f, 0f, 1f);
                 this.questionText.text = "THAT LAST ONE\nWAS NOT VERY\nSIGHTREADABLE";
-                this.baldiAudio.PlayOneShot(this.dash);
+                //this.baldiAudio.PlayOneShot(this.dash);
             }
             else if (this.gc.mode == "endless" & this.problemsWrong <= 0)
             {
@@ -161,9 +162,11 @@ public class MathGameScript : MonoBehaviour
             }
             else if (this.gc.mode == "story" & this.problemsWrong >= 3)
             {
+                this.gc.failedNotebooks++;
+
                 if (this.gc.isSafeMode)
                 {
-                    int num2 = Mathf.RoundToInt(UnityEngine.Random.Range(0f, 2f));
+                    int num2 = Mathf.RoundToInt(UnityEngine.Random.Range(0f, 1f));
                     this.questionText.text = this.safeText[num2];
                 }
                 else
@@ -171,7 +174,6 @@ public class MathGameScript : MonoBehaviour
 
                 if (this.baldiScript.isActiveAndEnabled)
                     this.baldiScript.AddNewSound(this.playerPosition, 2);
-                this.gc.failedNotebooks++;
 
                 if (gc.notebooks < 3)
                     this.endDelay = 3f;

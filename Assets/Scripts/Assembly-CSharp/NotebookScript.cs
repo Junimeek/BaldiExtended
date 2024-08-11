@@ -15,13 +15,8 @@ public class NotebookScript : MonoBehaviour
 	{
 		if (this.gc.mode == "endless")
 		{
-			if (this.respawnTime > 0f)
-			{
-				if ((base.transform.position - this.player.position).magnitude > 60f)
-				{
-					this.respawnTime -= Time.deltaTime;
-				}
-			}
+			if (this.respawnTime > 0f && (base.transform.position - this.player.position).magnitude > 60f)
+				this.respawnTime -= Time.deltaTime;
 			else if (!this.up)
 			{
 				base.transform.position = new Vector3(base.transform.position.x, 4f, base.transform.position.z);

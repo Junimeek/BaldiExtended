@@ -24,7 +24,8 @@ public class KillScreenTrigger : MonoBehaviour
 
     private IEnumerator WaitForAudio()
     {
-        while (badSum.isPlaying) yield return null;
+        while (badSum.isPlaying)
+            yield return null;
         StartCoroutine(FinalCountdown());
         StopCoroutine(WaitForAudio());
     }
@@ -42,6 +43,7 @@ public class KillScreenTrigger : MonoBehaviour
             yield return null;
         }
 
+        this.gc.UnlockMouse();
         Debug.LogWarning("Game Quit");
         Application.Quit();
     }
@@ -52,4 +54,5 @@ public class KillScreenTrigger : MonoBehaviour
     [SerializeField] private AudioSource badSum;
     [SerializeField] private AudioSource baldloon;
     [SerializeField] private bool hasStarted;
+    [SerializeField] private GameControllerScript gc;
 }

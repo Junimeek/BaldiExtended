@@ -37,24 +37,35 @@ public class GameControllerScript : MonoBehaviour
 
 	private void Start()
 	{
+		Scene curScene = SceneManager.GetActiveScene();
+		string curSceneName = curScene.name;
+
 		Debug.Log("Loaded " + PlayerPrefs.GetString("CurrentMap"));
 		Debug.Log("Safe Mode: " + PlayerPrefs.GetInt("gps_safemode"));
 		Debug.Log("Difficult Math: " + PlayerPrefs.GetInt("gps_difficultmath"));
 
-		this.InitializeItemSlots();
-		this.exitCountText.text = "0/" + this.entranceList.Length;
-		this.exitCountGroup.SetActive(false);
+		this.LockMouse(); //Prevent the mouse from moving
 
 		this.isParty = false;
 
-		if (PlayerPrefs.GetInt("gps_safemode") == 1) this.isSafeMode = true;
-		else this.isSafeMode = false;
+		if (PlayerPrefs.GetInt("gps_safemode") == 1)
+			this.isSafeMode = true;
+		else
+			this.isSafeMode = false;
 
-		if (PlayerPrefs.GetInt("gps_difficultmath") == 1) this.isDifficultMath = true;
-		else this.isDifficultMath = false;
+		if (PlayerPrefs.GetInt("gps_difficultmath") == 1)
+			this.isDifficultMath = true;
+		else
+			this.isDifficultMath = false;
 
-		Scene curScene = SceneManager.GetActiveScene();
-		string curSceneName = curScene.name;
+		this.cullingMask = this.camera.cullingMask; // Changes cullingMask in the Camera
+		this.audioDevice = base.GetComponent<AudioSource>(); //Get the Audio Source
+		this.mode = PlayerPrefs.GetString("CurrentMode"); //Get the current mode
+		if (this.mode == "endless") //If it is endless mode
+		{
+			this.baldiScrpt.endless = true; //Set Baldi use his slightly changed endless anger system
+		}
+		this.curMap = PlayerPrefs.GetString("CurrentMap");
 
 		if (curSceneName == "SecretMap" && !this.isSafeMode)
 		{
@@ -69,16 +80,11 @@ public class GameControllerScript : MonoBehaviour
 			RenderSettings.ambientLight = new Color(1f, 1f, 1f);
 		}
 
-		this.cullingMask = this.camera.cullingMask; // Changes cullingMask in the Camera
-		this.audioDevice = base.GetComponent<AudioSource>(); //Get the Audio Source
-		this.mode = PlayerPrefs.GetString("CurrentMode"); //Get the current mode
-		if (this.mode == "endless") //If it is endless mode
-		{
-			this.baldiScrpt.endless = true; //Set Baldi use his slightly changed endless anger system
-		}
-		this.curMap = PlayerPrefs.GetString("CurrentMap");
+		this.InitializeItemSlots();
+		this.exitCountText.text = "0/" + this.entranceList.Length;
+		this.exitCountGroup.SetActive(false);
+		
 		MusicPlayer(1,1); //Play the school music
-		this.LockMouse(); //Prevent the mouse from moving
 		this.UpdateNotebookCount(); //Update the notebook count
 		this.itemSelected = 0; //Set selection to item slot 0(the first item slot)
 		this.gameOverDelay = 0.5f;
@@ -258,8 +264,13 @@ public class GameControllerScript : MonoBehaviour
 			Time.timeScale = 0f;
 			this.gameOverDelay -= Time.unscaledDeltaTime * 0.5f;
 			this.camera.farClipPlane = this.gameOverDelay * 400f; //Set camera farClip
-			this.MusicPlayer(0,0);
-			this.endlessMusic.Stop();
+
+			if (!this.player.isSecret)
+			{
+				this.MusicPlayer(0,0);
+				this.endlessMusic.Stop();
+			}
+
 			if (!this.player.isSecret && !this.isScareStarted)
 			{
 				//this.audioDevice.PlayOneShot(this.aud_buzz);
@@ -268,10 +279,6 @@ public class GameControllerScript : MonoBehaviour
 				this.audioDevice.PlayOneShot(this.baldiJumpscareSounds[randomScare]);
 			}
 
-			if (PlayerPrefs.GetInt("Rumble") == 1)
-			{
-
-			}
 			if (this.gameOverDelay <= 0f)
 			{
 				if (this.mode == "endless" && !this.isSafeMode)
@@ -282,12 +289,12 @@ public class GameControllerScript : MonoBehaviour
 					PlayerPrefs.SetInt("CurrentBooks", this.notebooks);
 				}
 
-				if (!player.isSecret)
+				if (!this.player.isSecret)
 				{
 					Time.timeScale = 1f;
 					SceneManager.LoadScene("GameOver");
 				}
-				else if (player.isSecret)
+				else
 				{
 					Debug.Log("Game Quit");
 					this.cursorController.UnlockCursor();
@@ -393,7 +400,7 @@ public class GameControllerScript : MonoBehaviour
 				{
 					if (this.forceQuarterPickup && this.item[this.itemSelected] == 5)
 						handIconScript.ChangeIcon(11);
-					else
+					else if (!this.forceQuarterPickup)
 					{
 						StartCoroutine(this.WaitForQuarterDisable(true));
 						handIconScript.ChangeIcon(3);
