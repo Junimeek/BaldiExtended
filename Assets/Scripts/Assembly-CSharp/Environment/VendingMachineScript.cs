@@ -6,6 +6,7 @@ public class VendingMachineScript : MonoBehaviour
     {
         this.curQuarterCount = this.InitialQuarterCount();
         this.audioDevice = GetComponent<AudioSource>();
+        
         if (!this.disableQuarterRequirement)
             this.display.sprite = this.numbers[this.curQuarterCount];
     }
@@ -27,7 +28,8 @@ public class VendingMachineScript : MonoBehaviour
         }
         else
         {
-            if (this.disableQuarterRequirement) this.curQuarterCount = 0;
+            if (this.disableQuarterRequirement)
+                this.curQuarterCount = 0;
             else
             {
                 this.curQuarterCount--;

@@ -1,6 +1,7 @@
 ﻿using System;
 //using Rewired;
 using UnityEngine;
+using UnityEngine.Rendering.PostProcessing;
 
 public class PickupScript : MonoBehaviour
 {
@@ -9,83 +10,102 @@ public class PickupScript : MonoBehaviour
 		//this.playerInput = ReInput.players.GetPlayer(0);
 	}
 
-	private void Update()
+	public void ChangeItem(int newItem)
 	{
-		if (Input.GetMouseButtonDown(0) && Time.timeScale != 0f)
+		switch(newItem)
 		{
-			Ray ray = Camera.main.ScreenPointToRay(new Vector3((float)(Screen.width / 2), (float)(Screen.height / 2), 0f));
-			RaycastHit raycastHit;
-			if (Physics.Raycast(ray, out raycastHit) && Vector3.Distance(this.player.position, base.transform.position) < 10f && raycastHit.transform.name.StartsWith("Pickup"))
-			{
-				GameObject curObject = raycastHit.transform.gameObject;
-				switch(this.itemPickup)
-				{
-					case pickup.ZestyBar:
-						curObject.SetActive(false);
-						this.gc.CollectItem(1);
-						break;
-					case pickup.DoorLock:
-						curObject.SetActive(false);
-						this.gc.CollectItem(2);
-						break;
-					case pickup.PrincipalKeys:
-						curObject.SetActive(false);
-						this.gc.CollectItem(3);
-						break;
-					case pickup.BSODA:
-						curObject.SetActive(false);
-						this.gc.CollectItem(4);
-						break;
-					case pickup.Quarter:
-						curObject.SetActive(false);
-						this.gc.CollectItem(5);
-						break;
-					case pickup.Tape:
-						curObject.SetActive(false);
-						this.gc.CollectItem(6);
-						break;
-					case pickup.AlarmClock:
-						curObject.SetActive(false);
-						this.gc.CollectItem(7);
-						break;
-					case pickup.NoSquee:
-						curObject.SetActive(false);
-						this.gc.CollectItem(8);
-						break;
-					case pickup.SafetyScissors:
-						curObject.SetActive(false);
-						this.gc.CollectItem(9);
-						break;
-					case pickup.Boots:
-						curObject.SetActive(false);
-						this.gc.CollectItem(10);
-						break;
-					case pickup.SpeedySneakers:
-						curObject.SetActive(false);
-						this.gc.CollectItem(11);
-						break;
-					case pickup.AttendanceSlip:
-						curObject.SetActive(false);
-						this.gc.CollectItem(12);
-						break;
-					case pickup.DietBSODA:
-						curObject.SetActive(false);
-						this.gc.CollectItem(13);
-						break;
-					case pickup.CrystalZesty:
-						curObject.SetActive(false);
-						this.gc.CollectItem(14);
-						break;
-					case pickup.PartyPopper:
-						curObject.SetActive(false);
-						this.gc.CollectItem(15);
-						break;
-					case pickup.DollarBill:
-						curObject.SetActive(false);
-						this.gc.CollectItem(16);
-						break;
-				}
-			}
+			case 0:
+				this.gameObject.SetActive(false);
+				break;
+			case 1:
+				this.itemPickup = pickup.ZestyBar;
+				break;
+			case 2:
+				this.itemPickup = pickup.DoorLock;
+				break;
+			case 3:
+				this.itemPickup = pickup.PrincipalKeys;
+				break;
+			case 4:
+				this.itemPickup = pickup.BSODA;
+				break;
+			case 5:
+				this.itemPickup = pickup.Quarter;
+				break;
+			case 6:
+				this.itemPickup = pickup.Tape;
+				break;
+			case 7:
+				this.itemPickup = pickup.AlarmClock;
+				break;
+			case 8:
+				this.itemPickup = pickup.NoSquee;
+				break;
+			case 9:
+				this.itemPickup = pickup.SafetyScissors;
+				break;
+			case 10:
+				this.itemPickup = pickup.Boots;
+				break;
+			case 11:
+				this.itemPickup = pickup.SpeedySneakers;
+				break;
+			case 12:
+				this.itemPickup = pickup.AttendanceSlip;
+				break;
+			case 13:
+				this.itemPickup = pickup.DietBSODA;
+				break;
+			case 14:
+				this.itemPickup = pickup.CrystalZesty;
+				break;
+			case 15:
+				this.itemPickup = pickup.PartyPopper;
+				break;
+		}
+
+		this.itemSprite.sprite = this.gc.pickup_itemSprites[newItem];
+		this.mapSprite = this.gc.pickup_itemMapSprites[newItem];
+	}
+
+	public int ItemID()
+	{
+		switch(this.itemPickup)
+		{
+			case pickup.ZestyBar:
+				return 1;
+			case pickup.DoorLock:
+				return 2;
+			case pickup.PrincipalKeys:
+				return 3;
+			case pickup.BSODA:
+				return 4;
+			case pickup.Quarter:
+				return 5;
+			case pickup.Tape:
+				return 6;
+			case pickup.AlarmClock:
+				return 7;
+			case pickup.NoSquee:
+				return 8;
+			case pickup.SafetyScissors:
+				return 9;
+			case pickup.Boots:
+				return 10;
+			case pickup.SpeedySneakers:
+				return 11;
+			case pickup.AttendanceSlip:
+				return 12;
+			case pickup.DietBSODA:
+				return 13;
+			case pickup.CrystalZesty:
+				return 14;
+			case pickup.PartyPopper:
+				return 15;
+			case pickup.DollarBill:
+				return 16;
+			default:
+				return 5;
 		}
 	}
 
@@ -93,6 +113,7 @@ public class PickupScript : MonoBehaviour
 	public Transform player;
 	public SpriteRenderer mapIcon;
 	public Sprite mapSprite;
+	[SerializeField] private SpriteRenderer itemSprite;
 	public pickup itemPickup;
 	public enum pickup
 	{

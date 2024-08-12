@@ -10,6 +10,7 @@ Gameplay Changes:
 - Increased the number of exits in Juniper Hills to 5
 
 Item Changes:
+- Collecting an item while your inventory is full will no longer completely discard an item; instead, it will place the item where you collected the new item, just like in BBCR.
 - The map you play will now determine the number of inventory slots you have to work with: Classic has 3 slots, Classic Extended has 5 slots, and Juniper Hills has 4 slots.
 - FOUR new items: Diet BSODA, Crystal flavored Zesty Bar, the Party Popper, and the Wallet!
 - Diet BSODA and the Crystal Flavored Zesty bar are "healthier" versions of BSODA and Energy flavored Zesty Bar
@@ -19,7 +20,7 @@ Item Changes:
 - The Attendance Slip has been buffed slightly: the character you send to attendance will now stay there for the entire game, instead of for just 3 notebooks.
 - The Alarm Clock has been changed to act like it does in BBCR: you can set the time after dropping it somewhere, and it'll make Baldi ignore ALL sounds with the exception of the Party Popper.
 - Added a new quarter that will spawn in a random room
-- Removed a few standing quarters from Juniper Hills due to there being an excessive amount on that map. You can now find a maximum of $2.50 in Classic Extended, and $2.25 in Juniper Hills.
+- Removed a few standing quarters from Juniper Hills due to there being an excessive amount of money on that map. You can now only find a maximum of $2.50 in Classic Extended, and $2.25 in Juniper Hills.
 
 Other Changes:
 - Added a few extra posters to the halls
@@ -31,12 +32,15 @@ Other Changes:
 - Its a Bully will now actually go to detention if the Principal catches him. Don't worry, he won't steal anything from you while he's in there.
 
 Bug Fixes:
-- Fixed a bug where the player would not look at the Principal when sent to detention, or at Baldi when Arts and Crafters teleports you. This is actually a bug that has existed in the original game since version 1.4.0, I just never found a fix for it until now.
+- Fixed a bug where the player would not look at the Principal when sent to detention, or at Baldi when Arts and Crafters teleports you. This is actually a bug that has existed in the original game for forever, I just never found a fix for it until now.
 - Fixed a bug where Arts and crafters would softlock the player in Classic Extended and Juniper Hills
 - Fixed a bug where the characters would phase through a wall in Juniper Hills
+- Fixed a bug where picking up an item would sometimes result in you collecting the wrong item
+- Fixed a few bugs with the center item display
+- Fixed an issue that would allow you to use vending machines on the opposite side of a wall
 
 Known bugs:
-I'm aware that Raycasting is still an issue. For those who have no idea what that means, all you need to know is that it makes it so sometimes the game doesn't let you pick up an item or collect a notebook despite it being right in front of you, unless you happen to be at just the right angle. This also means that sometimes the game gives you the wrong item too. I'm not exactly sure how to fix this yet, so for now some items that used to be placed right next to eachother have been moved apart.
+Baldi's AI in regards to detention is still a little weird. To put it short, it bugs out when you get sent there while you're still in his sights. This results in him either heading straight there, or completely giving up on chasing you.
 
 ### v0.4.2 ###
 Bug Fixes:

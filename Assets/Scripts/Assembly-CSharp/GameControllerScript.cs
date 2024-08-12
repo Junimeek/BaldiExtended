@@ -89,7 +89,7 @@ public class GameControllerScript : MonoBehaviour
 		this.itemSelected = 0; //Set selection to item slot 0(the first item slot)
 		this.gameOverDelay = 0.5f;
 		this.UpdateDollarAmount(0f);
-		StartCoroutine(this.WaitForQuarterDisable(true));
+		StartCoroutine(this.WaitForQuarterDisable(true, false));
 
 		this.InitializeScores();
 
@@ -333,8 +333,43 @@ public class GameControllerScript : MonoBehaviour
 			}
 		}
 
+		this.CheckItemRaycast();
+
 		if (this.handIconScript != null)
-			CheckRaycast();
+			this.CheckRaycast();
+	}
+
+	private void CheckItemRaycast()
+	{
+		Ray ray = Camera.main.ScreenPointToRay(new Vector3((float)(Screen.width / 2), (float)(Screen.height / 2), 0f));
+		RaycastHit raycastHit;
+
+		if (Physics.Raycast(ray, out raycastHit))
+		{
+			Debug.DrawLine(this.playerTransform.position, raycastHit.transform.position, Color.red);
+			if (raycastHit.collider.tag == "Item")
+			{
+				this.curItem = raycastHit.collider.gameObject;
+				this.isLookingAtVendingMachine = false;
+			}
+			else if (raycastHit.collider.name.StartsWith("VendingMachine"))
+			{
+				this.curItem = null;
+				this.isLookingAtVendingMachine = true;
+			}
+			else
+			{
+				this.curItem = null;
+				this.isLookingAtVendingMachine = false;
+			}
+		}
+
+		if (Input.GetMouseButtonDown(0) && Time.timeScale != 0f && this.curItem != null
+		&& Vector3.Distance(this.playerTransform.position, raycastHit.transform.position) <= 10f
+		&& !this.isLookingAtVendingMachine)
+		{
+			this.CollectItem(this.curItem.GetComponent<PickupScript>().ItemID());
+		}
 	}
 
 	private void CheckRaycast()
@@ -369,13 +404,13 @@ public class GameControllerScript : MonoBehaviour
 					handIconScript.ChangeIcon(8);
 				else if (raycastHit.collider.name.Contains("Notebook") && raycastHit.collider.name != "Notebooks")
 					handIconScript.ChangeIcon(2);
-				else if (raycastHit.collider.name == "Payphone")
+				else if (raycastHit.collider.name == "PayPhone")
 				{
 					if (this.forceQuarterPickup && this.item[itemSelected] == 5)
 						handIconScript.ChangeIcon(11);
-					else
+					else if (!this.forceQuarterPickup)
 					{
-						StartCoroutine(this.WaitForQuarterDisable(false));
+						StartCoroutine(this.WaitForQuarterDisable(false, true));
 						handIconScript.ChangeIcon(3);
 					}
 				}
@@ -402,7 +437,10 @@ public class GameControllerScript : MonoBehaviour
 						handIconScript.ChangeIcon(11);
 					else if (!this.forceQuarterPickup)
 					{
-						StartCoroutine(this.WaitForQuarterDisable(true));
+						if (raycastHit.collider.name == "VendingMachine_MapUpgrade")
+							StartCoroutine(this.WaitForQuarterDisable(true, true));
+						else
+							StartCoroutine(this.WaitForQuarterDisable(true, false));
 						handIconScript.ChangeIcon(3);
 					}
 				}
@@ -410,7 +448,10 @@ public class GameControllerScript : MonoBehaviour
 				&& this.item[this.itemSelected] == 12)
 					handIconScript.ChangeIcon(9);
 				else if (raycastHit.collider.tag == "Item")
+				{
+					this.curItem = raycastHit.collider.gameObject;
 					handIconScript.ChangeIcon(1);
+				}
 				else
 					handIconScript.ChangeIcon(0);
 			}
@@ -424,7 +465,7 @@ public class GameControllerScript : MonoBehaviour
 		}
 	}
 
-	private IEnumerator WaitForQuarterDisable(bool isVendingMachine)
+	private IEnumerator WaitForQuarterDisable(bool isVendingMachine, bool isUpgrade)
 	{
 		if (this.forceQuarterPickup)
 			yield break;
@@ -432,7 +473,7 @@ public class GameControllerScript : MonoBehaviour
 		this.forceQuarter = true;
 		this.itemSelect.gameObject.GetComponent<Image>().color = new Color(1f, 1f, 1f, 0f);
 
-		if (isVendingMachine && !this.IsNoItems())
+		if (isVendingMachine && !this.IsNoItems() && !isUpgrade)
 			this.trashOverlay.gameObject.GetComponent<Image>().color = new Color(1f, 1f, 1f, 1f);
 
 		this.walletUnderlay.SetActive(true);
@@ -542,12 +583,17 @@ public class GameControllerScript : MonoBehaviour
 	{
 		if (!this.isGameFail)
 			this.baldi.SetActive(true);
-		this.principal.SetActive(true); //Turns on Principal
-        this.crafters.SetActive(true); //Turns on Crafters
-        this.playtime.SetActive(true); //Turns on Playtime
-        this.gottaSweep.SetActive(true); //Turns on Gotta Sweep
-        this.bully.SetActive(true); //Turns on Bully
-        this.firstPrize.SetActive(true); //Turns on First-Prize
+
+		this.principal.SetActive(true);
+        this.crafters.SetActive(true);
+        this.bully.SetActive(true);
+
+		if (this.charInAttendance != "Playtime")
+			this.playtime.SetActive(true);
+		if (this.charInAttendance != "Gotta Sweep")
+        	this.gottaSweep.SetActive(true);
+		if (this.charInAttendance != "1st Prize")
+			this.firstPrize.SetActive(true);
 	}
 
 	private void ActivateFinaleMode()
@@ -747,11 +793,13 @@ public class GameControllerScript : MonoBehaviour
 	{
 		if (item_ID == 5 && !this.forceQuarterPickup)
 		{
+			this.curItem.GetComponent<PickupScript>().ChangeItem(0);
 			this.UpdateDollarAmount(0.25f);
 			return;
 		}
 		if (item_ID == 16)
 		{
+			this.curItem.GetComponent<PickupScript>().ChangeItem(0);
 			this.UpdateDollarAmount(1f);
 			return;
 		}
@@ -760,12 +808,20 @@ public class GameControllerScript : MonoBehaviour
 		{
 			if (this.item[i] == 0)
 			{
+				if (!this.isLookingAtVendingMachine)
+					this.curItem.GetComponent<PickupScript>().ChangeItem(0);
 				this.item[i] = item_ID;
 				this.itemSlot[i].texture = this.itemTextures[item_ID];
 				break;
 			}
 			else if (!(this.item[i] == 0) && i == this.totalSlotCount - 1)
 			{
+				if (!this.isLookingAtVendingMachine)
+				{
+					this.curItem.GetComponent<PickupScript>().ChangeItem(this.item[this.itemSelected]);
+					if (this.isItemUpgrade)
+						this.UpgradeMap(1);
+				}
 				this.item[this.itemSelected] = item_ID;
 				this.itemSlot[this.itemSelected].texture = this.itemTextures[item_ID];
 			}
@@ -822,13 +878,15 @@ public class GameControllerScript : MonoBehaviour
 						if (raycastHit3.collider.name.StartsWith("VendingMachine"))
 						{
 							this.ResetItem();
+							this.handIconScript.ChangeIcon(0);
 							VendingMachineScript curVendingMachine = raycastHit3.collider.gameObject.GetComponent<VendingMachineScript>();
 							curVendingMachine.UseQuarter();
 							this.CollectItem(curVendingMachine.DispensedItem());
 						}
-						else if (raycastHit3.collider.name == "PayPhone" & Vector3.Distance(this.playerTransform.position, raycastHit3.transform.position) <= 10f)
+						else if (raycastHit3.collider.name == "PayPhone" && Vector3.Distance(this.playerTransform.position, raycastHit3.transform.position) <= 10f)
 						{
 							this.ResetItem();
+							this.handIconScript.ChangeIcon(0);
 							raycastHit3.collider.gameObject.GetComponent<TapePlayerScript>().Play();
 						}
 					}
@@ -840,6 +898,7 @@ public class GameControllerScript : MonoBehaviour
 					{
 						raycastHit4.collider.gameObject.GetComponent<TapePlayerScript>().Play();
 						this.ResetItem();
+						this.handIconScript.ChangeIcon(0);
 					}
 					break;
 				case 7: // Alarm Clock
@@ -951,7 +1010,7 @@ public class GameControllerScript : MonoBehaviour
 						curVendingMachine.ResetQuarterCount();
 					}
 				}
-				else if (raycastHit3.collider.name == "PayPhone" & Vector3.Distance(this.playerTransform.position, raycastHit3.transform.position) <= 10f)
+				else if (raycastHit3.collider.name == "PayPhone" && Vector3.Distance(this.playerTransform.position, raycastHit3.transform.position) <= 10f)
 				{
 					if (this.dollarAmount <= 0f)
 					{
@@ -1039,6 +1098,7 @@ public class GameControllerScript : MonoBehaviour
 				this.mapScript.UpgradeMap(1);
 				break;
 			case 1: // 3 quarters inserted
+				this.isItemUpgrade = true;
 				this.mapScript.UpgradeMap(2);
 				break;
 			case 0: // 4 quarters inserted
@@ -1427,6 +1487,9 @@ public class GameControllerScript : MonoBehaviour
 	[SerializeField] private string highBooksDirectory;
 	[SerializeField] private int highBooksScore;
 	[SerializeField] private bool isScareStarted;
+	[SerializeField] private GameObject curItem;
+	[SerializeField] private bool isLookingAtVendingMachine;
+	[SerializeField] private bool isItemUpgrade;
 
 
 	[Header("UI")]
@@ -1495,10 +1558,12 @@ public class GameControllerScript : MonoBehaviour
 
 
 	[Header("Items")]
-	public int[] item = new int[5];
-	public RawImage[] itemSlot = new RawImage[5];
-	public Texture[] itemTextures = new Texture[10];
+	public int[] item;
+	public RawImage[] itemSlot;
+	public Texture[] itemTextures;
 	public TMP_Text itemText;
+	public Sprite[] pickup_itemSprites;
+	public Sprite[] pickup_itemMapSprites;
 	private string[] itemNames = new string[]
 	{
 		"Nothing",
