@@ -17856,7 +17856,7 @@ MonoBehaviour:
     m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
-    m_FadeDuration: 0.1
+    m_FadeDuration: 0
   m_SpriteState:
     m_HighlightedSprite: {fileID: 0}
     m_PressedSprite: {fileID: 0}
@@ -33853,8 +33853,8 @@ MonoBehaviour:
   itemTextObject: {fileID: 867372542}
   hintTextObject: {fileID: 1825575533}
   itemText: ALARM CLOCK
-  hintText: Set this clock up and when it goes off in 30 seconds, Baldi will want
-    to check it out! Unless he sees you of course, he's not *that* stupid.
+  hintText: Set this clock up and when it goes off, Baldi will want to check it out!
+    Unless he sees you of course, he's not *that* stupid.
   endlessScript: {fileID: 0}
 --- !u!114 &934231684
 MonoBehaviour:
@@ -37127,7 +37127,7 @@ MonoBehaviour:
     m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
-    m_FadeDuration: 0.1
+    m_FadeDuration: 0
   m_SpriteState:
     m_HighlightedSprite: {fileID: 0}
     m_PressedSprite: {fileID: 0}
@@ -47897,8 +47897,10 @@ MonoBehaviour:
   itemTextObject: {fileID: 867372542}
   hintTextObject: {fileID: 1825575533}
   itemText: WD-NoSQUEE (Door Type)
-  hintText: Once applied to a door, Baldi won't be able to hear it open. Wears off
-    after the door is opened 4 times.
+  hintText: 'Once applied to a door, Baldi won''t be able to hear it open.
+
+    Wears
+    off after the door is opened 4 times.'
   endlessScript: {fileID: 0}
 --- !u!114 &1602255154
 MonoBehaviour:
@@ -49831,8 +49833,7 @@ MonoBehaviour:
   hintTextObject: {fileID: 1825575533}
   itemText: ATTENDANCE SLIP
   hintText: Send Playtime, 1st Prize, or Gotta Sweep home! At least, until the principal
-    has something to say about it. He WILL find out, so use this wisely! They will
-    also return after collecting 3 more notebooks.
+    has something to say about it. He WILL find out, so use this wisely!
   endlessScript: {fileID: 0}
 --- !u!114 &1780334844
 MonoBehaviour:
@@ -53120,10 +53121,11 @@ MonoBehaviour:
   itemTextObject: {fileID: 867372542}
   hintTextObject: {fileID: 1825575533}
   itemText: PARTY POPPER
-  hintText: 'It''s party time!
+  hintText: 'It''s party time! Start a party in any classroom, in the cafeteria,
+    or in the Principal''s office. Everybody is invited to party!
 
-    Start a party in any classroom, in the cafeteria,
-    or in the Principal''s office. Everybody is invited to party!'
+    However, the
+    angrier Baldi is, the less effective this will be.'
   endlessScript: {fileID: 0}
 --- !u!114 &2006154098
 MonoBehaviour:

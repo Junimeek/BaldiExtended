@@ -41,6 +41,9 @@ public class SettingsContainer : MonoBehaviour
             PlayerPrefs.SetString("CurrentMap", "Classic");
             PlayerPrefs.SetInt("gps_safemode", 0);
             PlayerPrefs.SetInt("gps_difficultmath", 0);
+            PlayerPrefs.SetInt("highbooks_Classic", 0);
+            PlayerPrefs.SetInt("highbooks_ClassicExtended", 0);
+            PlayerPrefs.SetInt("highbooks_JuniperHills", 0);
             SaveToRegistry("settings");
             SaveToSettingsFile();
             Debug.LogWarning("Settings binary file not found. Settings reset to defaults.");
@@ -52,14 +55,20 @@ public class SettingsContainer : MonoBehaviour
             this.volumeBGM = PlayerPrefs.GetFloat("VolumeBGM");
             this.volumeSFX = PlayerPrefs.GetFloat("VolumeSFX");
 
-            if (PlayerPrefs.GetInt("InstantReset") == 1) this.instantReset = true;
-            else this.instantReset = false;
+            if (PlayerPrefs.GetInt("InstantReset") == 1)
+                this.instantReset = true;
+            else
+                this.instantReset = false;
 
-            if (PlayerPrefs.GetInt("AdditionalMusic") == 1) this.additionalMusic = true;
-            else this.additionalMusic = false;
+            if (PlayerPrefs.GetInt("AdditionalMusic") == 1)
+                this.additionalMusic = true;
+            else
+                this.additionalMusic = false;
 
-            if (PlayerPrefs.GetInt("NotifBoard") == 1) this.notifBoard = true;
-            else this.notifBoard = false;
+            if (PlayerPrefs.GetInt("NotifBoard") == 1)
+                this.notifBoard = true;
+            else
+                this.notifBoard = false;
 
             this.safeMode = PlayerPrefs.GetInt("gps_safemode");
             this.difficultMath = PlayerPrefs.GetInt("gps_difficultmath");
@@ -79,14 +88,20 @@ public class SettingsContainer : MonoBehaviour
                 PlayerPrefs.SetFloat("VolumeBGM", this.volumeBGM);
                 PlayerPrefs.SetFloat("VolumeSFX", this.volumeSFX);
 
-                if (this.instantReset) PlayerPrefs.SetInt("InstantReset", 1);
-                else PlayerPrefs.SetInt("InstantReset", 0);
+                if (this.instantReset)
+                    PlayerPrefs.SetInt("InstantReset", 1);
+                else
+                    PlayerPrefs.SetInt("InstantReset", 0);
 
-                if (this.additionalMusic) PlayerPrefs.SetInt("AdditionalMusic", 1);
-                else PlayerPrefs.SetInt("AdditionalMusic", 0);
+                if (this.additionalMusic)
+                    PlayerPrefs.SetInt("AdditionalMusic", 1);
+                else
+                    PlayerPrefs.SetInt("AdditionalMusic", 0);
 
-                if (this.notifBoard) PlayerPrefs.SetInt("NotifBoard", 1);
-                else PlayerPrefs.SetInt("NotifBoard", 0);
+                if (this.notifBoard)
+                    PlayerPrefs.SetInt("NotifBoard", 1);
+                else
+                    PlayerPrefs.SetInt("NotifBoard", 0);
             break;
             case "map":
                 PlayerPrefs.SetString("CurrentMap", this.curMap);

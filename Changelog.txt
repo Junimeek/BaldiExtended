@@ -14,7 +14,7 @@ Item Changes:
 - The map you play will now determine the number of inventory slots you have to work with: Classic has 3 slots, Classic Extended has 5 slots, and Juniper Hills has 4 slots.
 - FOUR new items: Diet BSODA, Crystal flavored Zesty Bar, the Party Popper, and the Wallet!
 - Diet BSODA and the Crystal Flavored Zesty bar are "healthier" versions of BSODA and Energy flavored Zesty Bar
-- The Party Popper will start a party and attract all characters to the Principal's Office, the Gym, the Cafeteria, or to any classroom of your choosing! The item can be found in the Principal's office.
+- The Party Popper will start a party and attract all characters to the Principal's Office, the Gym, the Cafeteria, or to any classroom of your choosing! The item can be found in the Principal's office. It will also be less effective the more notebooks you have.
 - The Wallet is an item that is permanently attached to your inventory and holds coins.
 - The effects of the Zesty Bar can now be stacked
 - The Attendance Slip has been buffed slightly: the character you send to attendance will now stay there for the entire game, instead of for just 3 notebooks.
@@ -40,7 +40,8 @@ Bug Fixes:
 - Fixed an issue that would allow you to use vending machines on the opposite side of a wall
 
 Known bugs:
-Baldi's AI in regards to detention is still a little weird. To put it short, it bugs out when you get sent there while you're still in his sights. This results in him either heading straight there, or completely giving up on chasing you.
+- Baldi's AI in regards to detention is still a little weird. To put it short, it bugs out when you get sent there while you're still in his sights. This results in him either heading straight there, or completely giving up on chasing you.
+- Playing in Endless Mode with Safe Mode turned on causes Baldi's audio to get cut off after answering the third question correctly
 
 ### v0.4.2 ###
 Bug Fixes:

@@ -24,17 +24,17 @@ public class DataResetScript : MonoBehaviour
         {
             case 1:
                 promptText.text = "This will reset all Endless Mode scores.\n\nReset all High Scores?";
-            break;
+                break;
             case 3:
                 promptText.text = "This will reset all achievements.\n\nReset achievements?";
-            break;
+                break;
             case 99:
                 promptText.text = "This will reset ALL DATA.\n\nAre you sure?";
-            break;
+                break;
             default:
                 this.curAction = 0;
                 this.HidePrompt();
-            break;
+                break;
         }
     }
 
@@ -44,8 +44,10 @@ public class DataResetScript : MonoBehaviour
         switch(curAction)
         {
             case 1:
-                PlayerPrefs.SetInt("HighBooks", 0);
-            break;
+                PlayerPrefs.SetInt("highbooks_Classic", 0);
+                PlayerPrefs.SetInt("highbooks_ClassicExtended", 0);
+                PlayerPrefs.SetInt("highbooks_JuniperHills", 0);
+                break;
             case 3:
                 try
                 {
@@ -55,11 +57,11 @@ public class DataResetScript : MonoBehaviour
                     ResetPrompt(0);
                 }
                 catch { Debug.LogError("Failed to clear achievements."); }
-            break;
+                break;
             case 99:
                 File.Delete(Application.persistentDataPath + "/settings.sav");
                 SceneManager.LoadSceneAsync("Launcher");
-            break;
+                break;
         }
     }
 

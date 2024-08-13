@@ -750,7 +750,7 @@ public class GameControllerScript : MonoBehaviour
 
 			if (PlayerPrefs.GetInt("AdditionalMusic") == 1 && !this.isEndlessSong)
 			{
-				if (!this.isParty)
+				if (!this.isParty && !this.isSafeMode)
 					this.endlessMusic.Play();
 				
 				this.isEndlessSong = true;
@@ -1321,7 +1321,7 @@ public class GameControllerScript : MonoBehaviour
 			if (!this.schoolhouseTroublePlaylist[0].isPlaying && !this.schoolhouseTroublePlaylist[1].isPlaying)
 				StartCoroutine(UninterruptedMusic());
 		}
-		else if (songType == 4)
+		else if (songType == 4 && !this.partyMusic.isPlaying)
 		{
 			this.partyMusic.Play();
 		}
@@ -1331,7 +1331,10 @@ public class GameControllerScript : MonoBehaviour
 	{
 		this.isParty = true;
 		this.ActivateParty();
-		this.remainingPartyTime = 84.65f;
+		if (this.mode == "endless")
+			this.remainingPartyTime = 84.65f;
+		else
+			this.remainingPartyTime = (-1.5f / this.daFinalBookCount * this.notebooks + 2f) * 60f;
 		MusicPlayer(4,0);
 
 		while (this.remainingPartyTime > 0f)
