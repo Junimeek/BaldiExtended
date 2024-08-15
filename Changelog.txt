@@ -1,3 +1,5 @@
+### v0.4.4 ###
+
 ### v0.4.3 ###
 Gameplay Changes:
 - There's now a map! It can be toggled on and off by simply pressing Tab.

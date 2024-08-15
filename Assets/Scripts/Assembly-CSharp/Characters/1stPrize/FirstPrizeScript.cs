@@ -51,6 +51,8 @@ public class FirstPrizeScript : MonoBehaviour
 			this.crazyTime -= Time.deltaTime;
 		}
 		this.motorAudio.pitch = (this.agent.velocity.magnitude + 1f) * Time.timeScale;
+
+		this.prizeSpeed = this.agent.speed;
 		//if (this.prevSpeed - this.agent.velocity.magnitude > 15f)
 		//{
 		//	this.audioDevice.PlayOneShot(this.audBang);
@@ -188,4 +190,5 @@ public class FirstPrizeScript : MonoBehaviour
 	public bool isDisabled;
 	public bool isParty;
 	private GameControllerScript gc;
+	public float prizeSpeed;
 }

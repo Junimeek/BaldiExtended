@@ -17,15 +17,13 @@ public class BaldiScript : MonoBehaviour
 		this.timeToMove = this.baseTime; //Sets timeToMove to baseTime
 		this.Wander(); //Start wandering
 
-		if (PlayerPrefs.GetInt("Rumble") == 1)
-			this.rumble = true;
+		this.ClearSoundList();
 
 		if (speedFactorOverride == 0f)
 		{
 			float speedFactor = this.gc.daFinalBookCount + 0.5f;
 			float bookSquare = speedFactor * speedFactor;
-			Debug.Log("Baldi Speed Factor: " + bookSquare);
-			baldiSpeedScale = MathF.Sqrt(15.2f / bookSquare);
+			this.baldiSpeedScale = MathF.Sqrt(15.2f / bookSquare);
 		}
 		else
 			this.baldiSpeedScale = this.speedFactorOverride;
@@ -74,7 +72,7 @@ public class BaldiScript : MonoBehaviour
 
 		if (this.db)
 			this.sightCooldown = 0.3f;
-		else
+		else if (this.sightCooldown > 0f)
 			this.sightCooldown -= Time.deltaTime;
 	}
 
@@ -85,7 +83,8 @@ public class BaldiScript : MonoBehaviour
 			this.moveFrames -= 1f;
 			this.agent.speed = this.speed;
 		}
-		else this.agent.speed = 0f;
+		else
+			this.agent.speed = 0f;
 
 		Vector3 direction = this.player.position - base.transform.position; 
 		RaycastHit raycastHit;
@@ -99,7 +98,8 @@ public class BaldiScript : MonoBehaviour
 
 			this.TargetPlayer(); //Start attacking the player
 		}
-		else this.db = false;
+		else
+			this.db = false;
 	}
 
 	private void Wander()
@@ -132,34 +132,25 @@ public class BaldiScript : MonoBehaviour
 			this.DecreasePriority();
 
 		this.moveFrames = 10f;
-		this.previous = base.transform.position; // Set previous to Baldi's current location
 		this.baldiAudio.PlayOneShot(this.slap); //Play the slap sound
 
 		if (this.gc.isSafeMode)
 			this.baldiAnimator.SetTrigger("ghostSlap");
 		else
 			this.baldiAnimator.SetTrigger("slap"); // Play the slap animation
-
-		if (this.rumble)
-		{
-			float num = Vector3.Distance(base.transform.position, this.player.position);
-			if (num < this.vibrationDistance)
-			{
-				float motorLevel = 1f - num / this.vibrationDistance;
-			}
-		}
 	}
 
 	public void GetAngry(float value)
 	{
 		this.baldiAnger += value; // Increase Baldi's anger by the value provided
+
 		if (this.baldiAnger < 0.5f) //Cap Baldi anger at a minimum of 0.5
-		{
 			this.baldiAnger = 0.5f;
-		}
-		//this.baldiWait = 3f;
+		
 		this.baldiWait = -3f * this.baldiAnger / (this.baldiAnger + 2f / this.baldiSpeedScale) + 3f; // Some formula I don't understand.
-		if (this.baldiWait <= 0f) this.baldiWait = 3f;
+		
+		if (this.baldiWait <= 0f)
+			this.baldiWait = 3f;
 	}
 
 	public void GetTempAngry(float value)
@@ -167,25 +158,10 @@ public class BaldiScript : MonoBehaviour
 		this.baldiTempAnger += value; //Increase Baldi's Temporary Anger
 	}
 
-	/*
-	public void Hear(Vector3 soundLocation, int priority)
-	{
-		if (!this.antiHearing && priority >= this.currentPriority) //If anti-hearing is not active and the priority is greater then the priority of the current sound
-		{
-			this.agent.SetDestination(soundLocation); //Go to that sound
-			//this.currentPriority = priority; //Set the current priority to the priority
-			
-		}
-		else if (!this.antiHearing && priority < this.currentPriority)
-		{
-			
-		}
-	}
-	*/
-
 	public void ActivateAntiHearing(float t)
 	{
 		this.ClearSoundList();
+		this.DecreasePriority();
 		this.Wander(); //Start wandering
 		this.antiHearing = true; //Set the antihearing variable to true for other scripts
 		this.antiHearingTime = t; //Set the time the tape's effect on baldi will last
@@ -201,8 +177,10 @@ public class BaldiScript : MonoBehaviour
 	6 = Sight
 	*/
 	{
-		if (this.db) this.StartCoroutine(FollowPlayer());
-		if (this.antiHearing) return;
+		if (this.db)
+			this.StartCoroutine(FollowPlayer());
+		if (this.antiHearing)
+			return;
 
 		if (priority == 5 && !this.db && this.isAlarmClock)
 		{
@@ -239,15 +217,13 @@ public class BaldiScript : MonoBehaviour
 	private void ClearSoundList()
 	{
 		for (int i = 0; i < 6; i++)
-		{
 			this.soundList[i] = new Vector3(99.9f, -99.9f, 39f);
-		}
 	}
 
 	private void DecreasePriority()
 	{
 		if (this.alarmClock != null)
-				Destroy(this.alarmClock);
+			Destroy(this.alarmClock);
 		
 		if (this.currentPriority <= 0 || this.isParty)
 		{
@@ -267,12 +243,10 @@ public class BaldiScript : MonoBehaviour
 		if (this.currentPriority <= 0)
 		{
 			this.currentPriority = 0;
-			baldicator.ChangeBaldicatorState("End");
-			Wander();
+			this.baldicator.ChangeBaldicatorState("End");
+			this.Wander();
 			return;
 		}
-
-		Debug.LogWarning("Heading to destination with priortity " + this.currentPriority);
 
 		if (this.soundList[this.currentPriority - 1].x == 99.9f && this.soundList[this.currentPriority - 1].y == -99.9f && this.soundList[this.currentPriority - 1].z == 39f)
 		{
@@ -283,7 +257,7 @@ public class BaldiScript : MonoBehaviour
 		{
 			this.agent.SetDestination(this.soundList[this.currentPriority - 1]);
 			this.theNewLocation = agent.destination;
-			baldicator.ChangeBaldicatorState("Next");
+			this.baldicator.ChangeBaldicatorState("Next");
 		}
 	}
 

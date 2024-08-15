@@ -10,7 +10,8 @@ public class MathGameScript : MonoBehaviour
     private void Start()
     {   
         this.spider.SetActive(false);
-        if (mathMusicScript == null) mathMusicScript = FindObjectOfType<MathMusicScript>();
+        if (mathMusicScript == null)
+            mathMusicScript = FindObjectOfType<MathMusicScript>();
 
         this.gc.ActivateLearningGame();
         this.problem = 0;
@@ -21,10 +22,9 @@ public class MathGameScript : MonoBehaviour
             this.QueueAudio(this.bal_howto);
         }
         this.NewProblem();
+
         if (this.gc.spoopMode)
-        {
             this.baldiFeedTransform.position = new Vector3(-1000f, -1000f, 0f);
-        }
     }
 
     private void Update()
@@ -32,15 +32,13 @@ public class MathGameScript : MonoBehaviour
         if (!this.baldiAudio.isPlaying)
         {
             if (this.audioInQueue > 0 & (!this.gc.spoopMode))
-            {
                 this.PlayQueue();
-            }
+                
             this.baldiFeed.SetBool("talking", false);
         }
         else
-        {
             this.baldiFeed.SetBool("talking", true);
-        }
+        
         if ((Input.GetKeyDown("return") || Input.GetKeyDown("enter")) & this.questionInProgress)
         {
             this.questionInProgress = false;
@@ -55,6 +53,11 @@ public class MathGameScript : MonoBehaviour
                 this.ExitGame();
             }
         }
+
+        if (this.gc.showTimer)
+            this.speedrunText.text = this.gc.speedrunText.text;
+        else
+            this.speedrunText.text = string.Empty;
     }
 
     private void NewProblem()
@@ -618,5 +621,6 @@ public class MathGameScript : MonoBehaviour
     [SerializeField] private AudioClip colonge;
     [SerializeField] private AudioClip dash;
     [SerializeField] private GameObject spider;
+    [SerializeField] private TMP_Text speedrunText;
     public bool isKitsune;
 }

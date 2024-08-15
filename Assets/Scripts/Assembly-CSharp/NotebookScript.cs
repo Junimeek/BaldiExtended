@@ -35,10 +35,12 @@ public class NotebookScript : MonoBehaviour
 				this.up = false;
 				this.respawnTime = 120f;
 				this.gc.CollectNotebook();
+				/*
 				GameObject gameObject = UnityEngine.Object.Instantiate<GameObject>(this.learningGame);
 				gameObject.GetComponent<MathGameScript>().gc = this.gc;
 				gameObject.GetComponent<MathGameScript>().baldiScript = this.bsc;
 				gameObject.GetComponent<MathGameScript>().playerPosition = this.player.position;
+				*/
 			}
 		}
 	}

@@ -1,38 +1,20 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq.Expressions;
+﻿using System.Collections;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Rendering.PostProcessing;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using UnityEngine.AI;
-using System.Threading;
-using System.Runtime.CompilerServices;
 
 public class GameControllerScript : MonoBehaviour
 {
-	/*
-	public GameControllerScript()
-	{
-		float[] array = new float[5];
-		array[0] = 107.5f;
-		array[1] = 147.5f;
-		array[2] = 187.5f;
-		array[3] = 227.5f;
-		array[4] = 267.5f;
-		this.itemSelectOffset = array;
-		//base..ctor();
-	}
-	*/
-	
-
 	private void Awake()
 	{
 		debugActions = FindObjectOfType<DebugMenuActions>();
 		debugScreen = FindObjectOfType<DebugScreenSwitch>();
 		audioManager = FindObjectOfType<AudioManager>();
 		handIconScript = FindObjectOfType<HandIconScript>();
+
+		//this.musicScript = this.childScripts[0].GetComponent<WorldMusicScript>();
 	}
 
 	private void Start()
@@ -48,30 +30,58 @@ public class GameControllerScript : MonoBehaviour
 
 		this.isParty = false;
 
-		if (PlayerPrefs.GetInt("gps_safemode") == 1)
-			this.isSafeMode = true;
-		else
-			this.isSafeMode = false;
+		switch(curSceneName)
+		{
+			case "ClassicDark":
+				this.masterTextColor = Color.white;
+				this.ignoreInitializationChecks = true;
+				this.modeType = "nullStyle";
+				this.isSafeMode = false;
+				this.isDifficultMath = false;
+				break;
+			default:
+				this.ignoreInitializationChecks = false;
+				this.masterTextColor = Color.black;
 
-		if (PlayerPrefs.GetInt("gps_difficultmath") == 1)
-			this.isDifficultMath = true;
-		else
-			this.isDifficultMath = false;
+				if (PlayerPrefs.GetInt("gps_safemode") == 1)
+					this.isSafeMode = true;
+				else
+					this.isSafeMode = false;
+
+				if (PlayerPrefs.GetInt("gps_difficultmath") == 1)
+					this.isDifficultMath = true;
+				else
+					this.isDifficultMath = false;
+
+				if (this.mode == "endless")
+					this.baldiScrpt.endless = true;
+
+				if (PlayerPrefs.GetInt("AdditionalMusic") == 1)
+					this.isAdditionalMusic = true;
+				break;
+		}
 
 		this.cullingMask = this.camera.cullingMask; // Changes cullingMask in the Camera
 		this.audioDevice = base.GetComponent<AudioSource>(); //Get the Audio Source
 		this.mode = PlayerPrefs.GetString("CurrentMode"); //Get the current mode
-		if (this.mode == "endless") //If it is endless mode
-		{
-			this.baldiScrpt.endless = true; //Set Baldi use his slightly changed endless anger system
-		}
+
 		this.curMap = PlayerPrefs.GetString("CurrentMap");
+
+		this.dollarTextTop.color = this.masterTextColor;
+		this.speedrunText.color = this.masterTextColor;
+		this.itemText.color = this.masterTextColor;
+		this.notebookCount.color = this.masterTextColor;
 
 		if (curSceneName == "SecretMap" && !this.isSafeMode)
 		{
 			RenderSettings.fog = true;
 			RenderSettings.fogColor = new Color(0.79f, 0.79f, 0.79f);
 			RenderSettings.ambientLight = new Color(0.86f, 0.86f, 0.86f);
+		}
+		else if (curSceneName == "ClassicDark")
+		{
+			RenderSettings.fog = false;
+			RenderSettings.ambientLight = new Color(0.1f, 0.1f, 0.1f);
 		}
 		else
 		{
@@ -83,17 +93,22 @@ public class GameControllerScript : MonoBehaviour
 		this.InitializeItemSlots();
 		this.exitCountText.text = "0/" + this.entranceList.Length;
 		this.exitCountGroup.SetActive(false);
+
+		if (PlayerPrefs.GetInt("op_showtimer") == 1)
+			this.showTimer = true;
+
+		this.speedrunSeconds = 0f;
 		
-		MusicPlayer(1,1); //Play the school music
+		if (this.modeType != "nullStyle")
+			this.MusicPlayer(1,1); //Play the school music
+
 		this.UpdateNotebookCount(); //Update the notebook count
 		this.itemSelected = 0; //Set selection to item slot 0(the first item slot)
 		this.gameOverDelay = 0.5f;
 		this.UpdateDollarAmount(0f);
-		StartCoroutine(this.WaitForQuarterDisable(true, false));
+		this.StartCoroutine(this.WaitForQuarterDisable(true, false));
 
 		this.InitializeScores();
-
-		//this.speedrunTimer.allowTime = true;
 
 		//debugScreen.DebugCloseMenu();
 	}
@@ -163,6 +178,8 @@ public class GameControllerScript : MonoBehaviour
 	{
 		switch(this.mode)
 		{
+			case "challenge":
+				break;
 			default:
 				switch(this.curMap)
 				{
@@ -246,7 +263,7 @@ public class GameControllerScript : MonoBehaviour
 		if (this.player.stamina > 0f)
 		{
 			this.staminaPercentText.text = this.player.stamina.ToString("0") + "%";
-			this.staminaPercentText.color = Color.black;
+			this.staminaPercentText.color = this.masterTextColor;
 		}
 		else if (this.player.stamina <= 0f)
 		{
@@ -303,13 +320,13 @@ public class GameControllerScript : MonoBehaviour
 			}
 		}
 
-		if (this.finaleMode && !this.audioDevice.isPlaying && this.exitsReached == 2)
+		if (this.finaleMode && !this.audioDevice.isPlaying && this.exitsReached == 2 && this.modeType != "nullStyle")
 		{
 			this.audioDevice.clip = this.chaosEarlyLoop;
 			this.audioDevice.loop = true;
 			this.audioDevice.Play();
 		}
-		else if (this.finaleMode && !this.audioDevice.isPlaying && this.exitsReached == 3)
+		else if (this.finaleMode && !this.audioDevice.isPlaying && this.exitsReached == 3 && this.modeType != "nullStyle")
 		{
 			this.audioDevice.clip = this.chaosFinalLoop;
 			this.audioDevice.loop = true;
@@ -332,6 +349,37 @@ public class GameControllerScript : MonoBehaviour
 				Debug.Log("time is now " + Time.timeScale.ToString());
 			}
 		}
+
+		if (Input.GetKeyDown(KeyCode.R))
+		{
+			switch(this.showTimer)
+			{
+				case false:
+					this.showTimer = true;
+					break;
+				case true:
+					this.showTimer = false;
+					break;
+			}
+		}
+
+		this.speedrunSeconds += Time.unscaledDeltaTime;
+		
+		if (this.speedrunSeconds >= 60f)
+		{
+			this.speedrunMinutes++;
+			this.speedrunSeconds -= 60f;
+		}
+		if (this.speedrunMinutes >= 60)
+		{
+			this.speedrunHours++;
+			this.speedrunMinutes = 0;
+		}
+
+		if (this.showTimer)
+			this.speedrunText.text = this.speedrunHours + ":" + this.speedrunMinutes.ToString("00") + ":" + this.speedrunSeconds.ToString("00.00");
+		else
+			this.speedrunText.text = string.Empty;
 
 		this.CheckItemRaycast();
 
@@ -516,8 +564,34 @@ public class GameControllerScript : MonoBehaviour
 
 	public void CollectNotebook()
 	{
+		if (this.player.stamina < 100f)
+			this.player.stamina = 100f;
+
 		this.notebooks++;
 		this.UpdateNotebookCount();
+
+		switch(this.modeType)
+		{
+			case "nullStyle":
+				if (this.notebooks == 2)
+				{
+					this.baldi.SetActive(true);
+					this.ModifyExits("lower");
+				}
+
+				if (this.notebooks >= 2)
+				{
+					this.baldiScrpt.GetAngry(1f);
+					this.baldiScrpt.AddNewSound(this.player.transform.position, 2);
+				}
+				break;
+			default:
+				GameObject gameObject = Instantiate(this.mathGameUI);
+				gameObject.GetComponent<MathGameScript>().gc = this;
+				gameObject.GetComponent<MathGameScript>().baldiScript = this.baldiScrpt;
+				gameObject.GetComponent<MathGameScript>().playerPosition = this.player.GetComponent<Transform>().position;
+				break;
+		}
 	}
 
 	public void LockMouse()
@@ -599,7 +673,7 @@ public class GameControllerScript : MonoBehaviour
 	private void ActivateFinaleMode()
 	{
 		this.finaleMode = true;
-		ModifyExits("raise");
+		this.ModifyExits("raise");
 	}
 
 	public void EndSafeGame()
@@ -649,11 +723,12 @@ public class GameControllerScript : MonoBehaviour
 		}
 		else if (this.spoopMode)
 		{
-			if (PlayerPrefs.GetInt("AdditionalMusic") == 1)
+			if (this.isAdditionalMusic)
 			{
 				if (notebooks > 2)
 				{
-					if (audioManager != null) audioManager.SetVolume(1);
+					if (audioManager != null)
+						audioManager.SetVolume(1);
 					
 					if (!this.disableSongInterruption)
 					{
@@ -669,13 +744,11 @@ public class GameControllerScript : MonoBehaviour
 						}
 					}
 				}
-				else if (notebooks == 1)
-					if (audioManager != null) audioManager.SetVolume(0);
+				else if (this.notebooks == 1 && this.audioManager != null)
+					audioManager.SetVolume(0);
 			}
-			else
-			{
-				if (audioManager != null)  audioManager.SetVolume(0);
-			}
+			else if (this.audioManager != null)
+				this.audioManager.SetVolume(0);
 		}
 	}
 
@@ -687,8 +760,6 @@ public class GameControllerScript : MonoBehaviour
 		this.learningActive = false;
 		Destroy(subject);
 		this.LockMouse(); //Prevent the mouse from moving
-		if (this.player.stamina < 100f) //Reset Stamina
-			this.player.stamina = 100f;
 
 		if (!this.spoopMode) //If it isn't spoop mode, play the school music
 		{
@@ -748,7 +819,7 @@ public class GameControllerScript : MonoBehaviour
 			if (this.spoopLearn.isPlaying)
 				this.spoopLearn.Stop();
 
-			if (PlayerPrefs.GetInt("AdditionalMusic") == 1 && !this.isEndlessSong)
+			if (this.isAdditionalMusic && !this.isEndlessSong)
 			{
 				if (!this.isParty && !this.isSafeMode)
 					this.endlessMusic.Play();
@@ -1086,7 +1157,7 @@ public class GameControllerScript : MonoBehaviour
 			yield return null;
 		}
 
-		this.dollarTextCenter.color = Color.black;
+		this.dollarTextCenter.color = this.masterTextColor;
 		this.PrintDollarAmount();
 	}
 
@@ -1135,7 +1206,7 @@ public class GameControllerScript : MonoBehaviour
 			if (this.exitsReached >= 2)
 				this.escapeMusic.volume = 0.5f;
 		}
-		if (this.mode == "endless" && PlayerPrefs.GetInt("AdditionalMusic") == 1)
+		if (this.mode == "endless" && this.isAdditionalMusic)
 			this.endlessMusic.Play();
 
 		this.principal.GetComponent<PrincipalScript>().LeaveParty();
@@ -1160,15 +1231,15 @@ public class GameControllerScript : MonoBehaviour
 				this.playtimeScript.GoToAttendance();
 				this.player.DeactivateJumpRope();
 				this.ResetItem();
-			break;
+				break;
 			case "Gotta Sweep":
 				this.sweepScript.GoToAttendance();
 				this.ResetItem();
-			break;
+				break;
 			case "1st Prize":
 				this.firstPrizeScript.GoToAttendance();
 				this.ResetItem();
-			break;
+				break;
 		}
 	}
 
@@ -1178,14 +1249,14 @@ public class GameControllerScript : MonoBehaviour
 		{
 			case "Playtime":
 				this.playtime.SetActive(true);
-			break;
+				break;
 			case "Gotta Sweep":
 				this.gottaSweep.SetActive(true);
 				this.sweepScript.GoHome();
-			break;
+				break;
 			case "1st Prize":
 				this.firstPrize.SetActive(true);
-			break;
+				break;
 		}
 	}
 
@@ -1195,6 +1266,7 @@ public class GameControllerScript : MonoBehaviour
 		float height = 375f;
 		Vector3 position = default(Vector3);
 		this.boots.gameObject.SetActive(true);
+
 		while (height > -375f)
 		{
 			height -= 375f * Time.deltaTime;
@@ -1204,16 +1276,20 @@ public class GameControllerScript : MonoBehaviour
 			this.boots.localPosition = position;
 			yield return null;
 		}
+
 		position = this.boots.localPosition;
 		position.y = -375f;
 		this.boots.localPosition = position;
 		this.boots.gameObject.SetActive(false);
+
 		while (time > 0f)
 		{
 			time -= Time.deltaTime;
 			yield return null;
 		}
+
 		this.boots.gameObject.SetActive(true);
+
 		while (height < 375f)
 		{
 			height += 375f * Time.deltaTime;
@@ -1222,6 +1298,7 @@ public class GameControllerScript : MonoBehaviour
 			this.boots.localPosition = position;
 			yield return null;
 		}
+
 		position = this.boots.localPosition;
 		position.y = 375f;
 		this.boots.localPosition = position;
@@ -1245,18 +1322,21 @@ public class GameControllerScript : MonoBehaviour
 
 	private void UpdateItemName(bool isWallet)
 	{
-		if (isWallet) this.itemText.text = "Wallet";
-		else this.itemText.text = this.itemNames[this.item[this.itemSelected]];
+		if (isWallet)
+			this.itemText.text = "Wallet";
+		else
+			this.itemText.text = this.itemNames[this.item[this.itemSelected]];
 	}
 
 	public void ExitReached()
 	{
 		this.exitsReached++;
-		AngrySchoolColors(this.exitsReached);
+		this.AngrySchoolColors(this.exitsReached);
 
-		if (this.exitsReached != 2) this.audioDevice.PlayOneShot(this.aud_Switch, 0.8f);
+		if (this.exitsReached != 2)
+			this.audioDevice.PlayOneShot(this.aud_Switch, 0.8f);
 
-		if (this.exitsReached == 2) //Play a sound
+		if (this.exitsReached == 2 && this.modeType != "nullStyle") //Play a sound
 		{
 			this.audioDevice.volume = 0.8f;
 			this.audioDevice.clip = this.chaosEarly;
@@ -1264,7 +1344,7 @@ public class GameControllerScript : MonoBehaviour
 			this.audioDevice.Play();
 			this.escapeMusic.volume = 0.5f;
 		}
-		else if (this.exitsReached == 3) //Play a louder sound
+		else if (this.exitsReached == 3 && this.modeType != "nullSyle") //Play a louder sound
 		{
 			this.audioDevice.volume = 0.8f;
 			this.audioDevice.clip = this.chaosBuildup;
@@ -1302,7 +1382,7 @@ public class GameControllerScript : MonoBehaviour
 		else if (songType == 1 && !this.finaleMode) // schoolhouse
 		{
 			if (SongId == 1) this.schoolMusic.Play();
-			else if (SongId >= 2 && PlayerPrefs.GetInt("AdditionalMusic") == 1 && !(this.mode == "endless"))
+			else if (SongId >= 2 && this.isAdditionalMusic && this.mode != "endless")
 			{
 				if (this.notebooks < this.daFinalBookCount)
 					this.schoolhouseTroublePlaylist[SongId - 2].Play();
@@ -1311,7 +1391,7 @@ public class GameControllerScript : MonoBehaviour
 		else if (songType == 2) // math game
 		{
 			if (SongId == 1) this.learnMusic.Play();
-			else if (SongId == 2 && !this.disableSongInterruption && PlayerPrefs.GetInt("AdditionalMusic") == 1)
+			else if (SongId == 2 && !this.disableSongInterruption && this.isAdditionalMusic)
 			{
 				this.spoopLearn.Play();
 			}
@@ -1322,9 +1402,7 @@ public class GameControllerScript : MonoBehaviour
 				StartCoroutine(UninterruptedMusic());
 		}
 		else if (songType == 4 && !this.partyMusic.isPlaying)
-		{
 			this.partyMusic.Play();
-		}
 	}
 
 	private IEnumerator PlayPartyMusic()
@@ -1357,14 +1435,15 @@ public class GameControllerScript : MonoBehaviour
 	{
 		this.schoolhouseTroublePlaylist[0].Play();
 
-		while (this.schoolhouseTroublePlaylist[0].isPlaying) yield return null;
+		while (this.schoolhouseTroublePlaylist[0].isPlaying)
+			yield return null;
 
 		this.schoolhouseTroublePlaylist[1].Play();
 	}
 
 	private void AngrySchoolColors(int phase)
 	{
-		if (!this.isSafeMode)
+		if (!this.isSafeMode && this.modeType != "nullStyle")
 		{
 			StartCoroutine(ChangeSchoolColor(phase));
 			StartCoroutine(ChangeFogColor(phase));
@@ -1386,7 +1465,7 @@ public class GameControllerScript : MonoBehaviour
 					RenderSettings.ambientLight = new Color(1f, curValue, curValue);
 					yield return null;
 				}
-			break;
+				break;
 			case 3:
 				curValue = 1f;
 				while (curValue > 0.388f)
@@ -1395,7 +1474,7 @@ public class GameControllerScript : MonoBehaviour
 					RenderSettings.ambientLight = new Color(curValue, 0f, 0f);
 					yield return null;
 				}
-			break;
+				break;
 		}
 	}
 
@@ -1422,7 +1501,7 @@ public class GameControllerScript : MonoBehaviour
 					RenderSettings.fogColor = new Color(1f, curValue, curValue);
 					yield return null;
 				}
-			break;
+				break;
 			case 2:
 				curValue = 2f;
 				while (curValue > 0f)
@@ -1437,7 +1516,7 @@ public class GameControllerScript : MonoBehaviour
 					RenderSettings.fogDensity = curValue;
 					yield return null;
 				}
-			break;
+				break;
 			case 3:
 				curValue = 0f;
 				RenderSettings.fogColor = new Color(1f, 0f, 0f);
@@ -1448,7 +1527,7 @@ public class GameControllerScript : MonoBehaviour
 					yield return null;
 				}
 				RenderSettings.fogDensity = 0.01f;
-			break;
+				break;
 		}
 	}
 
@@ -1465,34 +1544,42 @@ public class GameControllerScript : MonoBehaviour
 
 
 	[Header("Game State")]
-	[SerializeField] private string curMap;
-	public string mode;
-	public int notebooks;
 	public bool spoopMode;
 	public bool finaleMode;
-	public bool debugMode;
-	public bool mouseLocked;
-	public int exitsReached;
-	private bool gamePaused;
 	public bool learningActive;
-	public float gameOverDelay;
 	public bool isSlowmo;
+	public bool isAdditionalMusic;
 	public bool isSafeMode;
 	public bool isDifficultMath;
-	[SerializeField] private string charInAttendance;
-	[SerializeField] private float dollarAmount;
+	public bool debugMode;
+	public bool mouseLocked;
+	private bool gamePaused;
+	public bool showTimer;
 	[SerializeField] private bool forceQuarter;
-	public Transform partyLocation;
-	public Transform movingPartyLocation;
-	public bool isParty;
-	[SerializeField] private float remainingPartyTime;
-	public bool isGameFail;
-	[SerializeField] private string highBooksDirectory;
-	[SerializeField] private int highBooksScore;
-	[SerializeField] private bool isScareStarted;
-	[SerializeField] private GameObject curItem;
 	[SerializeField] private bool isLookingAtVendingMachine;
 	[SerializeField] private bool isItemUpgrade;
+	public bool isParty;
+	public bool isGameFail;
+	[SerializeField] private bool isScareStarted;
+	public bool ignoreInitializationChecks;
+	public int notebooks;
+	[SerializeField] private int highBooksScore;
+	[SerializeField] private float speedrunSeconds;
+	[SerializeField] private int speedrunMinutes;
+	[SerializeField] private int speedrunHours;
+	public int exitsReached;
+	[SerializeField] private float dollarAmount;
+	[SerializeField] private float remainingPartyTime;
+	public float gameOverDelay;
+	public string mode;
+	public string modeType;
+	[SerializeField] private string curMap;
+	[SerializeField] private string highBooksDirectory;
+	[SerializeField] private string charInAttendance;
+	public Transform partyLocation;
+	public Transform movingPartyLocation;
+	[SerializeField] private GameObject curItem;
+	private Color masterTextColor;
 
 
 	[Header("UI")]
@@ -1510,6 +1597,7 @@ public class GameControllerScript : MonoBehaviour
 	[SerializeField] private GameObject exitCountGroup;
 	[SerializeField] private TMP_Text exitCountText;
 	[SerializeField] private MapCameraScript mapScript;
+	public TMP_Text speedrunText;
 
 
 	[Header("Noteboos")]
@@ -1589,6 +1677,7 @@ public class GameControllerScript : MonoBehaviour
 	public GameObject quarter;
 	public GameObject bsodaSpray;
 	public GameObject dietBsodaSpray;
+	[SerializeField] private GameObject mathGameUI;
 	public RectTransform boots;
 	public GameObject alarmClock;
 	[SerializeField] private GameObject party;
@@ -1630,11 +1719,13 @@ public class GameControllerScript : MonoBehaviour
 	public AudioClip LearnQ1;
 	public AudioClip LearnQ2;
 	public AudioClip LearnQ3;
-	[SerializeField] private AudioSource partyMusic;
+	public AudioSource partyMusic;
 	public AudioSource[] schoolhouseTroublePlaylist;
 
 
 	[Header("Scripts")]
+	public GameObject[] childScripts;
+	[SerializeField] private WorldMusicScript musicScript;
 	public CursorControllerScript cursorController;
 	public PlayerScript player;
 	public BaldiScript baldiScrpt;
@@ -1645,7 +1736,6 @@ public class GameControllerScript : MonoBehaviour
 	[SerializeField] private DebugMenuActions debugActions;
 	[SerializeField] private DebugScreenSwitch debugScreen;
 	[SerializeField] private AudioManager audioManager;
-	[SerializeField] private SpeedrunTimer speedrunTimer;
 	[SerializeField] private MathMusicScript mathMusicScript;
 	[SerializeField] private DebugSceneLoader sceneLoader;
 	[SerializeField] private HandIconScript handIconScript;
