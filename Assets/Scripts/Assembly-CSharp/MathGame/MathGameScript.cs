@@ -10,8 +10,8 @@ public class MathGameScript : MonoBehaviour
     private void Start()
     {   
         this.spider.SetActive(false);
-        if (mathMusicScript == null)
-            mathMusicScript = FindObjectOfType<MathMusicScript>();
+        
+        this.mathMusicScript = FindObjectOfType<MathMusicScript>();
 
         this.gc.ActivateLearningGame();
         this.problem = 0;

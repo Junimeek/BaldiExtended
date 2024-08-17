@@ -30,6 +30,9 @@ public class BaldiScript : MonoBehaviour
 
 		if (this.gc.isSafeMode)
 			this.baldiAnimator.SetTrigger("ghostSlap");
+		
+		if (this.gc.modeType == "nullStyle")
+			this.speechTimer = 30f;
 	}
 
 	private void Update()
@@ -74,6 +77,49 @@ public class BaldiScript : MonoBehaviour
 			this.sightCooldown = 0.3f;
 		else if (this.sightCooldown > 0f)
 			this.sightCooldown -= Time.deltaTime;
+		
+		if (this.gc.modeType == "nullStyle")
+			this.speechTimer -= Time.deltaTime;
+
+		if (this.gc.modeType == "nullStyle" && this.db && this.playerScript.stamina <= 0f && this.gc.IsNoItems()
+		&& this.baldiAnger >= 5 && this.speechTimer < 61f && !this.longAudioDevice.isPlaying)
+		{
+			this.StartCoroutine(this.NullSight());
+			this.longAudioDevice.PlayOneShot(this.nullSpeech[5]);
+		}
+
+		if (this.gc.modeType == "nullStyle" && this.speechTimer < 0f)
+		{
+			if (!this.db && this.currentPriority == 0)
+			{
+				this.ResetSpeechTimer();
+				this.longAudioDevice.PlayOneShot(this.nullSpeech[6]);
+			}
+			else
+			{
+				this.ResetSpeechTimer();
+				this.baldiAudio.PlayOneShot(this.nullSpeech[this.RandomSpeech()]);
+			}
+		}
+	}
+
+	private void ResetSpeechTimer()
+	{
+		this.speechTimer = UnityEngine.Random.Range(20f, 60f);
+	}
+
+	private int RandomSpeech()
+	{
+		return Mathf.RoundToInt(UnityEngine.Random.Range(0f, 4f));
+	}
+
+	private IEnumerator NullSight()
+	{
+		while (this.db)
+		{
+			this.speechTimer = 69f;
+			yield return null;
+		}
 	}
 
 	private void FixedUpdate()
@@ -134,10 +180,13 @@ public class BaldiScript : MonoBehaviour
 		this.moveFrames = 10f;
 		this.baldiAudio.PlayOneShot(this.slap); //Play the slap sound
 
-		if (this.gc.isSafeMode)
-			this.baldiAnimator.SetTrigger("ghostSlap");
-		else
-			this.baldiAnimator.SetTrigger("slap"); // Play the slap animation
+		if (this.gc.modeType != "nullStyle")
+		{
+			if (this.gc.isSafeMode)
+				this.baldiAnimator.SetTrigger("ghostSlap");
+			else
+				this.baldiAnimator.SetTrigger("slap");
+		}
 	}
 
 	public void GetAngry(float value)
@@ -301,6 +350,11 @@ public class BaldiScript : MonoBehaviour
 	public bool isAlarmClock;
 	public bool isParty;
 
+	[Header("Null Modifications")]
+	[SerializeField] private AudioClip[] nullSpeech;
+	[SerializeField] private AudioSource longAudioDevice;
+	[SerializeField] private float speechTimer;
+
 	[Space(20f)]
 	public bool db;
 	public float baseTime;
@@ -323,10 +377,10 @@ public class BaldiScript : MonoBehaviour
 	public float timeToAnger;
 	public bool endless;
 	public Transform player;
+	[SerializeField] private PlayerScript playerScript;
 	public AILocationSelectorScript wanderer;
 	private AudioSource baldiAudio;
 	public AudioClip slap;
-	public AudioClip[] speech = new AudioClip[3];
 	public Animator baldiAnimator;
 	public float coolDown;
 	[SerializeField] private Vector3 previous;

@@ -13,13 +13,16 @@ public class MenuLoadingScreen : MonoBehaviour
         switch(this.map)
         {
             case "Classic":
-                this.image.sprite = this.backgrounds[0];
-                break;
-            case "ClassicExtended":
                 this.image.sprite = this.backgrounds[1];
                 break;
-            case "JuniperHills":
+            case "ClassicExtended":
                 this.image.sprite = this.backgrounds[2];
+                break;
+            case "JuniperHills":
+                this.image.sprite = this.backgrounds[3];
+                break;
+            default:
+                this.image.sprite = this.backgrounds[0];
                 break;
         }
 
@@ -55,13 +58,17 @@ public class MenuLoadingScreen : MonoBehaviour
                 return "Loading map: CLASSIC EXTENDED";
             case "JuniperHills":
                 return "Loading map: JUNIPER HILLS";
+            case "ClassicDark":
+                return "Loading challenge: DARK MODE";
             default:
                 return "Failed to load map. The game must be closed.";
         }
     }
     private string SelectedSettings()
     {
-        if (container.safeMode == 1 && container.difficultMath == 1)
+        if (container.curMap == "ClassicDark")
+            return "HARD MODE\nNO CHARACTERS\nN\n\n       ULL";
+        else if (container.safeMode == 1 && container.difficultMath == 1)
             return "SAFE MODE\nDIFFICULT MATH";
         else if (container.safeMode == 1)
             return "SAFE MODE";

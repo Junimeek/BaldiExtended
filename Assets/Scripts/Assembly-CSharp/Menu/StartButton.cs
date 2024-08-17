@@ -14,6 +14,15 @@ public class StartButton : MonoBehaviour
 		this.mapMenu.SetActive(false);
 	}
 
+	public void SelectChallengeMap(string themap)
+	{
+		container = FindObjectOfType<SettingsContainer>();
+		container.curMap = themap;
+		container.SaveToRegistry("map");
+		this.mapMenu.SetActive(false);
+		this.blankOverlay.SetActive(true);
+	}
+
 	public void StartGame()
 	{
 		container = FindObjectOfType<SettingsContainer>();

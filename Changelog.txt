@@ -1,4 +1,6 @@
 ### v0.4.4 ###
+Gameplay Changes:
+- New Mode: Challenge mode!
 
 ### v0.4.3 ###
 Gameplay Changes:
