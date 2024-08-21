@@ -2,6 +2,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Rendering.PostProcessing;
 using UnityEngine.UI;
 
 public class PlayerScript : MonoBehaviour
@@ -10,9 +11,8 @@ public class PlayerScript : MonoBehaviour
 	{
 		//Yeah your on your own for this one
 		if (PlayerPrefs.GetInt("AnalogMove") == 1)
-		{
 			this.sensitivityActive = true;
-		}
+		
 		this.mouseSensitivity = PlayerPrefs.GetFloat("MouseSensitivity");
 		
 		this.height = base.transform.position.y;
@@ -22,18 +22,22 @@ public class PlayerScript : MonoBehaviour
 		this.flipaturn = 1f;
 		this.isInfiniteStamina = false;
 		this.isSpeedShoes = false;
-		speedSlider.gameObject.SetActive(false);
-		speedText.SetActive(false);
-		isSecret = false;
+		this.speedSlider.gameObject.SetActive(false);
+		this.speedText.SetActive(false);
+		this.isSecret = false;
 	}
 
 	private void Update()
 	{
-		if (gc.isSlowmo) playerDeltaTimeScale = Time.deltaTime * 2;
-		else playerDeltaTimeScale = Time.deltaTime;
+		if (gc.isSlowmo)
+			playerDeltaTimeScale = Time.deltaTime * 2;
+		else
+			playerDeltaTimeScale = Time.deltaTime;
 
-		if (gc.isSlowmo) playerTimeScale = Time.timeScale * 2;
-		else playerTimeScale = Time.timeScale;
+		if (gc.isSlowmo)
+			playerTimeScale = Time.timeScale * 2;
+		else
+			playerTimeScale = Time.timeScale;
 
 		//base.transform.position = new Vector3(base.transform.position.x, this.height, base.transform.position.z);
 		this.MouseMove();
@@ -41,17 +45,13 @@ public class PlayerScript : MonoBehaviour
 		this.StaminaCheck();
 		this.GuiltCheck();
 		if (this.cc.velocity.magnitude > 0f)
-		{
 			this.gc.LockMouse();
-		}
+		
 		if (this.jumpRope & (base.transform.position - this.frozenPosition).magnitude >= 1f) // If the player moves, deactivate the jumprope minigame
-		{
 			this.DeactivateJumpRope();
-		}
+		
 		if (this.sweepingFailsave > 0f)
-		{
 			this.sweepingFailsave -= Time.deltaTime;
-		}
 		else
 		{
 			this.sweeping = false;
@@ -67,13 +67,13 @@ public class PlayerScript : MonoBehaviour
 		{
 			case "baldi":
 				relativePos = this.baldi.transform.position - this.gameObject.transform.position;
-			break;
+				break;
 			case "playtime":
 				relativePos = this.playtime.transform.position - this.gameObject.transform.position;
-			break;
+				break;
 			case "princey":
 				relativePos = this.princeyPos.position - this.gameObject.transform.position;
-			break;
+				break;
 		}
 		
 		Quaternion rotation = Quaternion.LookRotation(relativePos, Vector3.up);
@@ -101,55 +101,47 @@ public class PlayerScript : MonoBehaviour
 			{
 				this.playerSpeed = this.runSpeed;
 				this.sensitivity = 1f;
+
 				if (this.cc.velocity.magnitude > 0.1f & !this.hugging & !this.sweeping)
-				{
 					this.ResetGuilt("running", 0.1f);
-				}
 			}
 			else
 			{
 				this.playerSpeed = this.walkSpeed;
+
 				if (this.sensitivityActive)
-				{
 					this.sensitivity = Mathf.Clamp((vector2 + vector).magnitude, 0f, 1f);
-				}
 				else
-				{
 					this.sensitivity = 1f;
-				}
 			}
 		}
 		else
 		{
 			this.playerSpeed = this.walkSpeed;
+
 			if (this.sensitivityActive)
-			{
 				this.sensitivity = Mathf.Clamp((vector2 + vector).magnitude, 0f, 1f);
-			}
 			else
-			{
 				this.sensitivity = 1f;
-			}
 		}
-		if (gc.isSlowmo) this.playerSpeed *= this.playerDeltaTimeScale;
-		else this.playerSpeed *= this.playerDeltaTimeScale;
+
+		if (gc.isSlowmo)
+			this.playerSpeed *= this.playerDeltaTimeScale;
+		else
+			this.playerSpeed *= this.playerDeltaTimeScale;
 
 		this.moveDirection = (vector + vector2).normalized * this.playerSpeed * this.sensitivity;
+
 		if (!(!this.jumpRope & !this.sweeping & !this.hugging))
 		{
 			if (this.sweeping && !this.bootsActive)
-			{
 				this.moveDirection = this.gottaSweep.velocity * Time.deltaTime + this.moveDirection * 0.3f;
-			}
 			else if (this.hugging && !this.bootsActive)
-			{
 				this.moveDirection = (this.firstPrize.velocity * 1.2f * Time.deltaTime + (new Vector3(this.firstPrizeTransform.position.x, this.height, this.firstPrizeTransform.position.z) + new Vector3((float)Mathf.RoundToInt(this.firstPrizeTransform.forward.x), 0f, (float)Mathf.RoundToInt(this.firstPrizeTransform.forward.z)) * 3f - base.transform.position)) * (float)this.principalBugFixer;
-			}
 			else if (this.jumpRope)
-			{
 				this.moveDirection = new Vector3(0f, 0f, 0f);
-			}
 		}
+
 		this.cc.Move(this.moveDirection);
 	}
 
@@ -164,13 +156,9 @@ public class PlayerScript : MonoBehaviour
 				this.slowSpeed = speedOverrides.x * 2;
 
 				if (!Input.GetButton("Run"))
-				{
 					speedSlider.value -= this.shoeRate * 2.5f * playerDeltaTimeScale;
-				}
 				else if (Input.GetButton("Run"))
-				{
 					speedSlider.value -= this.shoeRate * 5 * playerDeltaTimeScale;
-				}
 
 				if (speedSlider.value <= 0f && this.isSpeedShoes)
 				{
@@ -188,18 +176,18 @@ public class PlayerScript : MonoBehaviour
 			}
 
 			if (Input.GetButton("Run") & this.stamina > 0f && !this.isInfiniteStamina)
-			{
 				this.stamina -= this.staminaRate * playerDeltaTimeScale;
-			}
 			if (this.stamina < 0f & this.stamina > -5f)
-			{
 				this.stamina = -5f;
-			}
 		}
 		else if ((this.stamina < this.maxStamina) || (this.stamina < this.maxStamina && this.hugging))
 		{
-			this.stamina += (this.staminaRate*2) * playerDeltaTimeScale;
+			if (this.isInfiniteStamina)
+				this.stamina += this.staminaRate * 2f * playerDeltaTimeScale * 2f;
+			else
+				this.stamina += this.staminaRate* 2f * playerDeltaTimeScale;
 		}
+
 		this.staminaBar.value = this.stamina / this.maxStamina * 100f;
 	}
 
@@ -217,10 +205,8 @@ public class PlayerScript : MonoBehaviour
 				this.gc.EndSafeGame();
 		}
 		else if (other.transform.name == "Playtime" && !this.jumpRope
-			&& this.playtime.playCool <= 0f && !this.playtime.isDisabled && !this.playtime.isParty)
-		{
+		&& this.playtime.playCool <= 0f && !this.playtime.isDisabled && !this.playtime.isParty)
 			this.ActivateJumpRope();
-		}
 	}
 
 	public IEnumerator KeepTheHudOff()
@@ -243,36 +229,33 @@ public class PlayerScript : MonoBehaviour
 			this.sweeping = true;
 			this.sweepingFailsave = 1f;
 		}
-		else if (other.transform.name == "1st Prize" && this.firstPrize.velocity.magnitude > 5f &&
-		!firstPrize.GetComponent<FirstPrizeScript>().isDisabled && !firstPrize.GetComponent<FirstPrizeScript>().isParty)
+		else if (other.transform.name == "1st Prize" && this.firstPrize.velocity.magnitude > 5f
+		&& !firstPrize.GetComponent<FirstPrizeScript>().isDisabled && !firstPrize.GetComponent<FirstPrizeScript>().isParty)
 		{
 			this.hugging = true;
 			this.sweepingFailsave = 0.2f;
 		}
 
 		if (other.transform.name == "Stamina Trigger")
-		{
 			this.isInfiniteStamina = true;
-		}
 	}
 
 	private void OnTriggerExit(Collider other)
 	{
-		if (other.transform.name == "Stamina Trigger")
+		switch(other.transform.name)
 		{
-			this.isInfiniteStamina = false;
-		}
-		else if (other.transform.name == "Office Trigger")
-		{
-			this.ResetGuilt("escape", this.door.lockTime);
-		}
-		else if (other.transform.name == "Gotta Sweep")
-		{
-			this.sweeping = false;
-		}
-		else if (other.transform.name == "1st Prize")
-		{
-			this.hugging = false;
+			case "Stamina Trigger":
+				this.isInfiniteStamina = false;
+				break;
+			case "Office Trigger":
+				this.ResetGuilt("escape", this.door.lockTime);
+				break;
+			case "Gotta Sweep":
+				this.sweeping = false;
+				break;
+			case "1st Prize":
+				this.hugging = false;
+				break;
 		}
 	}
 
@@ -288,14 +271,11 @@ public class PlayerScript : MonoBehaviour
 	private void GuiltCheck()
 	{
 		if (this.guilt > 0f)
-		{
 			this.guilt -= playerDeltaTimeScale;
-		}
 	}
 
 	public void ActivateJumpRope()
 	{
-		//this.LookAtCharacter("playtime");
 		this.jumpRopeScreen.SetActive(true);
 		this.jumpRope = true;
 		this.frozenPosition = base.transform.position;

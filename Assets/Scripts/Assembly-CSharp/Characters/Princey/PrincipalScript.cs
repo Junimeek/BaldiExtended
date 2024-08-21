@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.AI;
 
 public class PrincipalScript : MonoBehaviour
@@ -28,13 +26,10 @@ public class PrincipalScript : MonoBehaviour
 			}
 		}
 		else
-		{
 			this.timeSeenRuleBreak = 0f;
-		}
+		
 		if (this.coolDown > 0f)
-		{
 			this.coolDown -= 1f * Time.deltaTime;
-		}
 	}
 
 	private void FixedUpdate()
@@ -42,48 +37,48 @@ public class PrincipalScript : MonoBehaviour
 		if (!this.angry) // If the principal isn't angry
 		{
 			this.aim = this.player.position - base.transform.position; // If he sees the player and the player has guilt
-			if (Physics.Raycast(base.transform.position, this.aim, out this.hit, float.PositiveInfinity, 769, QueryTriggerInteraction.Ignore)
-			& this.hit.transform.tag == "Player" & this.playerScript.guilt > 0f & !this.inOffice & !this.angry & gc.isPrinceyTriggerShared && !gc.isPrinceyIgnore)
+			if (Physics.Raycast(base.transform.position, this.aim, out this.hit, float.PositiveInfinity, 769, QueryTriggerInteraction.Ignore) && this.hit.transform.tag == "Player")
 			{
-				this.seesRuleBreak = true;
+				this.db = true;
+
+				if (this.playerScript.guilt > 0f && !this.inOffice && !this.angry && this.gc.isPrinceyTriggerShared && !this.gc.isPrinceyIgnore)
+					this.seesRuleBreak = true;
+				else
+					this.seesRuleBreak = false;
 			}
 			else
-			{
+				this.db = false;
+
+			if (this.db == false)
 				this.seesRuleBreak = false;
-				if (this.agent.velocity.magnitude <= 1f & this.coolDown <= 0f)
-				{
-					this.Wander(); // Start wandering again
-				}
-			}
+
 			this.aim = this.bully.position - base.transform.position;
 			if (Physics.Raycast(base.transform.position, this.aim, out this.hit, float.PositiveInfinity, 769) & this.hit.transform.name == "Its a Bully" & this.bullyScript.guilt > 0f & !this.inOffice & !this.angry)
-			{
 				this.TargetBully();
-			}
 		}
-		else
-		{
+		else if (this.db)
 			this.TargetPlayer(); // If the principal is angry, target the player
-		}
+
+		if (this.agent.velocity.magnitude <= 1f && this.coolDown <= 0f)
+			this.Wander();
 	}
 
 	private void Wander()
 	{
 		this.playerScript.principalBugFixer = 1;
+
 		if (!this.isParty)
 			this.agent.SetDestination(this.wanderer.NewTarget("Princey"));
 		else
 			this.agent.SetDestination(this.wanderer.NewTarget("Party"));
 
 		if (this.agent.isStopped)
-		{
 			this.agent.isStopped = false;
-		}
+		
 		this.coolDown = 1f;
+
 		if (UnityEngine.Random.Range(0f, 10f) <= 1f && !this.isParty)
-		{
 			this.quietAudioDevice.PlayOneShot(this.aud_Whistle);
-		}
 	}
 
 	public void GoToParty()
@@ -129,32 +124,31 @@ public class PrincipalScript : MonoBehaviour
 			case "faculty":
 				this.audioQueue.QueueAudio(this.audNoFaculty);
 				notif.RuleText(1);
-			break;
+				break;
 			case "running":
 				this.audioQueue.QueueAudio(this.audNoRunning);
 				notif.RuleText(2);
-			break;
+				break;
 			case "drink":
 				this.audioQueue.QueueAudio(this.audNoDrinking);
 				notif.RuleText(3);
-			break;
+				break;
 			case "escape":
 				this.audioQueue.QueueAudio(this.audNoEscaping);
 				notif.RuleText(4);
-			break;
+				break;
 			case "bully":
 				this.audioQueue.QueueAudio(this.audNoBullying);
 				notif.RuleText(5);
-			break;
+				break;
 		}
 	}
 
 	private void OnTriggerStay(Collider other)
 	{
 		if (other.name == "Office Trigger")
-		{
 			this.inOffice = true;
-		}
+
 		if (other.tag == "Player" & this.angry & !this.inOffice)
 		{
 			this.inOffice = true;
@@ -166,20 +160,22 @@ public class PrincipalScript : MonoBehaviour
 			other.transform.position = this.gc.detentionPlayerPos; // Teleport the player to the office
 			this.playerScript.LookAtCharacter("princey"); // Get the plaer to look at the principal
 			this.cc.enabled = true;
+
 			this.audioQueue.QueueAudio(this.aud_Delay);
 			this.audioQueue.QueueAudio(this.audTimes[this.detentions]); //Play the detention time sound
 			this.audioQueue.QueueAudio(this.audDetention);
 			int num = Mathf.RoundToInt(UnityEngine.Random.Range(0f, 3f));
 			this.audioQueue.QueueAudio(this.audScolds[num]); // Say one of the other lines
+
 			this.officeDoor.LockDoor((float)this.lockTime[this.detentions]); // Lock the door
 			if (this.baldiScript.isActiveAndEnabled) this.baldiScript.AddNewSound(base.transform.position, 3);
 			this.coolDown = 5f;
 			this.angry = false;
 			this.detentions++;
-			if (this.detentions > 10) // Prevent detention number from going above 10
-			{
+			this.gc.stats.detentions++;
+			if (this.detentions > 10)
 				this.detentions = 10;
-			}
+
 			notif.DetentionBoardRoutine();
 		}
 	}
@@ -187,16 +183,14 @@ public class PrincipalScript : MonoBehaviour
 	private void OnTriggerExit(Collider other)
 	{
 		if (other.name == "Office Trigger")
-		{
 			this.inOffice = false;
-		}
+
 		if (other.name == "Its a Bully")
-		{
 			this.bullySeen = false;
-		}
 	}
 
 	public bool seesRuleBreak;
+	[SerializeField] private bool db;
 	public Transform player;
 	public Transform bully;
 	public bool bullySeen;

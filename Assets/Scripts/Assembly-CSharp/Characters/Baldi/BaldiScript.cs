@@ -105,7 +105,7 @@ public class BaldiScript : MonoBehaviour
 
 	private void ResetSpeechTimer()
 	{
-		this.speechTimer = UnityEngine.Random.Range(20f, 60f);
+		this.speechTimer = UnityEngine.Random.Range(35f, 75f);
 	}
 
 	private int RandomSpeech()

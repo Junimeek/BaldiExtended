@@ -1398,7 +1398,6 @@ GameObject:
   - component: {fileID: 20532}
   - component: {fileID: 1386}
   - component: {fileID: 21229}
-  - component: {fileID: 21231}
   m_Layer: 9
   m_Name: Player
   m_TagString: Player
@@ -33233,6 +33232,7 @@ MonoBehaviour:
   - {fileID: 1718901680}
   - {fileID: 357956531}
   - {fileID: 302166145}
+  roomQuarterPoints: []
   hallwayPoints:
   - {fileID: 8768}
   - {fileID: 5811}
@@ -33284,6 +33284,8 @@ MonoBehaviour:
   - {fileID: 58929737}
   - {fileID: 248818081}
   attendancePoints: []
+  partyPoints: []
+  movingPartyPoints: []
 --- !u!114 &21192
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -33620,19 +33622,6 @@ MonoBehaviour:
   shoeRate: 5
   isSecret: 0
   speedOverrides: {x: 5, y: 10, z: 20}
---- !u!114 &21231
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1076}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9715b349360bb974a8e5513d59ffd747, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  loadingManager: {fileID: 0}
 --- !u!114 &21234
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -34071,6 +34060,7 @@ MonoBehaviour:
   player: {fileID: 6220}
   mapIcon: {fileID: 0}
   mapSprite: {fileID: 0}
+  itemSprite: {fileID: 0}
   itemPickup: 8
 --- !u!114 &21298
 MonoBehaviour:
@@ -34357,8 +34347,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gc: {fileID: 0}
-  sceneLoader: {fileID: 21231}
-  speedrunTimer: {fileID: 0}
 --- !u!114 &21340
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -34376,6 +34364,11 @@ MonoBehaviour:
   baldicator: {fileID: 974130982}
   sightCooldown: 0
   theNewLocation: {x: 0, y: 0, z: 0}
+  isAlarmClock: 0
+  isParty: 0
+  nullSpeech: []
+  longAudioDevice: {fileID: 0}
+  speechTimer: 0
   db: 0
   baseTime: 3
   speed: 75
@@ -34394,15 +34387,13 @@ MonoBehaviour:
   timeToAnger: 0
   endless: 0
   player: {fileID: 6220}
+  playerScript: {fileID: 0}
   wanderer: {fileID: 21190}
   slap: {fileID: 8300000, guid: affac2acfe66b954cada2dca22605fed, type: 3}
-  speech:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
   baldiAnimator: {fileID: 20520}
   coolDown: 0
   previous: {x: 0, y: 0, z: 0}
+  alarmClock: {fileID: 0}
 --- !u!114 &21341
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -34988,6 +34979,7 @@ MonoBehaviour:
   player: {fileID: 6220}
   mapIcon: {fileID: 0}
   mapSprite: {fileID: 0}
+  itemSprite: {fileID: 0}
   itemPickup: 0
 --- !u!114 &21468
 MonoBehaviour:
@@ -38698,12 +38690,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 88810782afa236043b95f9b8a17d36fa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  totalTime: 0
-  allowTime: 0
-  timeText: {fileID: 7390056078875833867}
-  curMinutes: 0
-  curSeconds: 0
-  curMiliseconds: 0
+  disableSaving: 0
+  finalSeconds: 0
+  itemsUsed: 
+  detentions: 0
 --- !u!4 &457497041
 Transform:
   m_ObjectHideFlags: 0
@@ -52520,18 +52510,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: be3543e853e47494e8a0eb980bad5b75, type: 3}
---- !u!114 &7390056078875833867 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 666058510858936919, guid: be3543e853e47494e8a0eb980bad5b75,
-    type: 3}
-  m_PrefabInstance: {fileID: 7390056078875833866}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &7390056078875833868 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 6141547344332366910, guid: be3543e853e47494e8a0eb980bad5b75,

@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Rendering.PostProcessing;
@@ -14,7 +15,8 @@ public class GameControllerScript : MonoBehaviour
 		audioManager = FindObjectOfType<AudioManager>();
 		handIconScript = FindObjectOfType<HandIconScript>();
 
-		//this.musicController = this.childScripts[0].GetComponent<MasterMusicController>();
+		this.sceneLoader = this.childScripts[0].GetComponent<DebugSceneLoader>();
+		this.stats = this.childScripts[1].GetComponent<StatisticsController>();
 	}
 
 	private void Start()
@@ -22,7 +24,7 @@ public class GameControllerScript : MonoBehaviour
 		Scene curScene = SceneManager.GetActiveScene();
 		string curSceneName = curScene.name;
 
-		Debug.Log("Loaded " + PlayerPrefs.GetString("CurrentMap"));
+		Debug.Log("Loaded " + curSceneName);
 		Debug.Log("Safe Mode: " + PlayerPrefs.GetInt("gps_safemode"));
 		Debug.Log("Difficult Math: " + PlayerPrefs.GetInt("gps_difficultmath"));
 
@@ -65,7 +67,8 @@ public class GameControllerScript : MonoBehaviour
 		this.audioDevice = base.GetComponent<AudioSource>(); //Get the Audio Source
 		this.mode = PlayerPrefs.GetString("CurrentMode"); //Get the current mode
 
-		this.curMap = PlayerPrefs.GetString("CurrentMap");
+		this.curMap = curSceneName;
+		PlayerPrefs.SetString("CurrentMap", this.curMap);
 
 		this.dollarTextTop.color = this.masterTextColor;
 		this.speedrunText.color = this.masterTextColor;
@@ -109,6 +112,11 @@ public class GameControllerScript : MonoBehaviour
 		this.StartCoroutine(this.WaitForQuarterDisable(true, false));
 
 		this.InitializeScores();
+
+		if (this.isSafeMode)
+			this.stats.disableSaving = true;
+		this.stats.itemsUsed = new int[0];
+		this.stats.detentions = 0;
 
 		//debugScreen.DebugCloseMenu();
 	}
@@ -181,18 +189,7 @@ public class GameControllerScript : MonoBehaviour
 			case "challenge":
 				break;
 			default:
-				switch(this.curMap)
-				{
-					case "ClassicExtended":
-						this.highBooksDirectory = "highbooks_ClassicExtended";
-						break;
-					case "JuniperHills":
-						this.highBooksDirectory = "highbooks_JuniperHills";
-						break;
-					default:
-						this.highBooksDirectory = "highbooks_Classic";
-						break;
-				}
+				this.highBooksDirectory = "highbooks_" + this.curMap;
 				this.highBooksScore = PlayerPrefs.GetInt(this.highBooksDirectory);
 				break;
 		}
@@ -356,9 +353,11 @@ public class GameControllerScript : MonoBehaviour
 			{
 				case false:
 					this.showTimer = true;
+					PlayerPrefs.SetInt("op_showtimer", 1);
 					break;
 				case true:
 					this.showTimer = false;
+					PlayerPrefs.SetInt("op_showtimer", 0);
 					break;
 			}
 		}
@@ -389,7 +388,7 @@ public class GameControllerScript : MonoBehaviour
 		}
 
 		if (this.showTimer)
-			this.speedrunText.text = this.speedrunHours + ":" + this.speedrunMinutes.ToString("00") + ":" + this.speedrunSeconds.ToString("00.00");
+			this.speedrunText.text = this.speedrunHours + ":" + this.speedrunMinutes.ToString("00") + ":" + this.speedrunSeconds.ToString("00.000");
 		else
 			this.speedrunText.text = string.Empty;
 
@@ -397,6 +396,23 @@ public class GameControllerScript : MonoBehaviour
 
 		if (this.handIconScript != null)
 			this.CheckRaycast();
+	}
+
+	public void CompleteGame()
+	{
+		DontDestroyOnLoad(this.stats.gameObject);
+		this.stats.finalSeconds = this.FinalTime();
+
+		if (this.failedNotebooks >= this.daFinalBookCount)
+			this.sceneLoader.LoadTheScene("SecretMap", 0);
+		else
+			this.sceneLoader.LoadTheScene("Results", 0);
+	}
+
+	private float FinalTime()
+	{
+		float roundedTime = MathF.Round(this.speedrunSeconds, 3);
+		return (this.speedrunHours * 3600f) + (this.speedrunMinutes * 60f) + roundedTime;
 	}
 
 	private void CheckItemRaycast()
@@ -922,7 +938,7 @@ public class GameControllerScript : MonoBehaviour
 					if (this.player.stamina < 100f)
 						this.player.stamina = this.player.maxStamina * 2f;
 					else this.player.stamina += 100f;
-						this.ResetItem();
+						this.ResetItem(1);
 					break;
 				case 2: // Yellow Door Lock
 					Ray ray = Camera.main.ScreenPointToRay(new Vector3((float)(Screen.width / 2), (float)(Screen.height / 2), 0f));
@@ -930,7 +946,7 @@ public class GameControllerScript : MonoBehaviour
 					if (Physics.Raycast(ray, out raycastHit) && (raycastHit.collider.tag == "SwingingDoor" & Vector3.Distance(this.playerTransform.position, raycastHit.transform.position) <= 10f))
 					{
 						raycastHit.collider.gameObject.GetComponent<SwingingDoorScript>().LockDoor(15f);
-						this.ResetItem();
+						this.ResetItem(2);
 					}
 					break;
 				case 3: // Principal's Keys
@@ -942,14 +958,14 @@ public class GameControllerScript : MonoBehaviour
 						if (component.DoorLocked)
 						{
 							component.UnlockDoor();
-							component.OpenDoor();
-							this.ResetItem();
+							component.OpenDoor(3f);
+							this.ResetItem(3);
 						}
 					}
 					break;
 				case 4: // BSODA
 					Instantiate(this.bsodaSpray, this.playerTransform.position, this.cameraTransform.rotation);
-					this.ResetItem();
+					this.ResetItem(4);
 					this.player.ResetGuilt("drink", 1f);
 					this.audioDevice.PlayOneShot(this.aud_Soda);
 					break;
@@ -960,7 +976,7 @@ public class GameControllerScript : MonoBehaviour
 					{
 						if (raycastHit3.collider.name.StartsWith("VendingMachine"))
 						{
-							this.ResetItem();
+							this.ResetItem(5);
 							this.handIconScript.ChangeIcon(0);
 							VendingMachineScript curVendingMachine = raycastHit3.collider.gameObject.GetComponent<VendingMachineScript>();
 							curVendingMachine.UseQuarter();
@@ -968,7 +984,7 @@ public class GameControllerScript : MonoBehaviour
 						}
 						else if (raycastHit3.collider.name == "PayPhone" && Vector3.Distance(this.playerTransform.position, raycastHit3.transform.position) <= 10f)
 						{
-							this.ResetItem();
+							this.ResetItem(5);
 							this.handIconScript.ChangeIcon(0);
 							raycastHit3.collider.gameObject.GetComponent<TapePlayerScript>().Play();
 						}
@@ -980,7 +996,7 @@ public class GameControllerScript : MonoBehaviour
 					if (Physics.Raycast(ray4, out raycastHit4) && (raycastHit4.collider.name == "TapePlayer" & Vector3.Distance(this.playerTransform.position, raycastHit4.transform.position) <= 10f))
 					{
 						raycastHit4.collider.gameObject.GetComponent<TapePlayerScript>().Play();
-						this.ResetItem();
+						this.ResetItem(6);
 						this.handIconScript.ChangeIcon(0);
 					}
 					break;
@@ -988,7 +1004,7 @@ public class GameControllerScript : MonoBehaviour
 					GameObject gameObject = Instantiate(this.alarmClock, this.playerTransform.position, this.cameraTransform.rotation);
 					gameObject.GetComponent<AlarmClockScript>().baldi = this.baldiScrpt;
 					gameObject.GetComponent<AlarmClockScript>().player = this.player.GetComponent<PlayerScript>();
-					this.ResetItem();
+					this.ResetItem(7);
 					break;
 				case 8: // NoSquee
 					Ray ray5 = Camera.main.ScreenPointToRay(new Vector3((float)(Screen.width / 2), (float)(Screen.height / 2), 0f));
@@ -996,7 +1012,7 @@ public class GameControllerScript : MonoBehaviour
 					if (Physics.Raycast(ray5, out raycastHit5) && (raycastHit5.collider.tag == "Door" & Vector3.Distance(this.playerTransform.position, raycastHit5.transform.position) <= 10f))
 					{
 						raycastHit5.collider.gameObject.GetComponent<DoorScript>().SilenceDoor();
-						this.ResetItem();
+						this.ResetItem(8);
 						this.audioDevice.PlayOneShot(this.aud_Spray);
 					}
 					break;
@@ -1007,22 +1023,22 @@ public class GameControllerScript : MonoBehaviour
 					{
 						this.player.DeactivateJumpRope();
 						this.playtimeScript.Disappoint();
-						this.ResetItem();
+						this.ResetItem(9);
 					}
 					else if (Physics.Raycast(ray6, out raycastHit6) && raycastHit6.collider.name == "1st Prize")
 					{
 						this.firstPrizeScript.GoCrazy();
-						this.ResetItem();
+						this.ResetItem(9);
 					}
 					break;
 				case 10: // Bigass boots
 					this.player.ActivateBoots();
 					base.StartCoroutine(this.BootAnimation());
-					this.ResetItem();
+					this.ResetItem(10);
 					break;
 				case 11: // Speedy Sneakers
 					this.player.ActivateSpeedShoes();
-					this.ResetItem();
+					this.ResetItem(11);
 					break;
 				case 12: // Attendance Slip
 					Ray ray7 = Camera.main.ScreenPointToRay(new Vector3((float)(Screen.width / 2), (float)(Screen.height / 2), 0f));
@@ -1034,13 +1050,13 @@ public class GameControllerScript : MonoBehaviour
 					break;
 				case 13: // Diet BSODA
 					Instantiate(this.dietBsodaSpray, this.playerTransform.position, this.cameraTransform.rotation);
-					this.ResetItem();
+					this.ResetItem(13);
 					this.player.ResetGuilt("drink", 1f);
 					this.audioDevice.PlayOneShot(this.aud_Soda);
 					break;
 				case 14: // Crystal Zest
 					this.player.stamina += 70f;
-					this.ResetItem();
+					this.ResetItem(14);
 					break;
 				case 15: // Party Popper
 					if (!(this.movingPartyLocation == null))
@@ -1050,7 +1066,7 @@ public class GameControllerScript : MonoBehaviour
 						this.MusicPlayer(0,0);
 						Instantiate(this.party, this.partyLocation.position, this.cameraTransform.rotation);
 						this.audioDevice.PlayOneShot(this.aud_BalloonPop);
-						this.ResetItem();
+						this.ResetItem(15);
 						this.MusicPlayer(4,0);
 						this.StartCoroutine(PlayPartyMusic());
 					}
@@ -1092,6 +1108,9 @@ public class GameControllerScript : MonoBehaviour
 						this.CollectItem(curVendingMachine.DispensedItem());
 						curVendingMachine.ResetQuarterCount();
 					}
+
+					Array.Resize(ref this.stats.itemsUsed, this.stats.itemsUsed.Length + 1);
+					this.stats.itemsUsed[this.stats.itemsUsed.Length - 1] = 5;
 				}
 				else if (raycastHit3.collider.name == "PayPhone" && Vector3.Distance(this.playerTransform.position, raycastHit3.transform.position) <= 10f)
 				{
@@ -1105,6 +1124,9 @@ public class GameControllerScript : MonoBehaviour
 					
 					this.UpdateDollarAmount(-0.25f);
 					raycastHit3.collider.gameObject.GetComponent<TapePlayerScript>().Play();
+
+					Array.Resize(ref this.stats.itemsUsed, this.stats.itemsUsed.Length + 1);
+					this.stats.itemsUsed[this.stats.itemsUsed.Length - 1] = 5;
 				}
 			}
 		}
@@ -1121,14 +1143,20 @@ public class GameControllerScript : MonoBehaviour
 		this.dollarAmount += amount;
 		this.PrintDollarAmount();
 
-		if (this.dollarAmount == 0f) this.walletSlot.SetActive(false);
-		else this.walletSlot.SetActive(true);
+		if (this.dollarAmount == 0f)
+			this.walletSlot.SetActive(false);
+		else
+			this.walletSlot.SetActive(true);
 	}
 
 	private void PrintDollarAmount()
 	{
-		if (this.forceQuarterPickup)
-			return;
+		if (!this.forceQuarterPickup)
+		{
+			this.dollarTextCenter.text = "$" + this.dollarAmount.ToString("0.00");
+			this.dollarTextTop.text = "$" + this.dollarAmount.ToString("0.00");
+		}
+		return;
 		
 		if (this.dollarAmount % 1 == 0f)
 		{
@@ -1242,15 +1270,15 @@ public class GameControllerScript : MonoBehaviour
 			case "Playtime":
 				this.playtimeScript.GoToAttendance();
 				this.player.DeactivateJumpRope();
-				this.ResetItem();
+				this.ResetItem(12);
 				break;
 			case "Gotta Sweep":
 				this.sweepScript.GoToAttendance();
-				this.ResetItem();
+				this.ResetItem(12);
 				break;
 			case "1st Prize":
 				this.firstPrizeScript.GoToAttendance();
-				this.ResetItem();
+				this.ResetItem(12);
 				break;
 		}
 	}
@@ -1318,11 +1346,14 @@ public class GameControllerScript : MonoBehaviour
 		yield break;
 	}
 
-	private void ResetItem()
+	private void ResetItem(int item_ID)
 	{
 		this.item[this.itemSelected] = 0;
 		this.itemSlot[this.itemSelected].texture = this.itemTextures[0];
 		this.UpdateItemName(false);
+
+		Array.Resize(ref this.stats.itemsUsed, this.stats.itemsUsed.Length + 1);
+		this.stats.itemsUsed[this.stats.itemsUsed.Length - 1] = item_ID;
 	}
 
 	public void LoseItem(int id)
@@ -1755,6 +1786,8 @@ public class GameControllerScript : MonoBehaviour
 
 	[Header("Scripts")]
 	public GameObject[] childScripts;
+	[HideInInspector] public StatisticsController stats;
+	private DebugSceneLoader sceneLoader;
 	[SerializeField] private MathMusicScript mathMusicScript;
 	public CursorControllerScript cursorController;
 	public PlayerScript player;
@@ -1766,6 +1799,5 @@ public class GameControllerScript : MonoBehaviour
 	[SerializeField] private DebugMenuActions debugActions;
 	[SerializeField] private DebugScreenSwitch debugScreen;
 	[SerializeField] private AudioManager audioManager;
-	[SerializeField] private DebugSceneLoader sceneLoader;
 	[SerializeField] private HandIconScript handIconScript;
 }

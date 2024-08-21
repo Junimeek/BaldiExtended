@@ -33,7 +33,7 @@ public class SwingingDoorScript : MonoBehaviour
 
 	private void OnTriggerStay(Collider other)
 	{
-		if (!this.bDoorLocked)
+		if (!this.bDoorLocked && other.gameObject.name != "NullDoorCollider")
 		{
 			this.bDoorOpen = true;
 			this.inside.material = this.open;

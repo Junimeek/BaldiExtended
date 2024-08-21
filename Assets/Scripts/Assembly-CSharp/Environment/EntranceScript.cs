@@ -10,7 +10,8 @@ public class EntranceScript : MonoBehaviour
 
 	private void Update()
 	{
-		if (Input.GetKeyDown(KeyCode.Tab)) this.ToggleMapIcon();
+		if (Input.GetKeyDown(KeyCode.Tab))
+			this.ToggleMapIcon();
 	}
 
 	public void Lower()
@@ -20,7 +21,8 @@ public class EntranceScript : MonoBehaviour
 		if (this.gc.finaleMode && gc.exitsReached >= 1)
 		{
 			this.gc.UpdateExitCount();
-			if (allowMap) this.wall.material = this.map;
+			if (this.allowMap)
+				this.wall.material = this.map;
 			if (this.exitSign != null)
 			{
 				SpriteRenderer sprite = this.exitSign.GetComponent<SpriteRenderer>();
@@ -28,7 +30,8 @@ public class EntranceScript : MonoBehaviour
 			}
 		}
 
-		if (!this.gc.finaleMode) this.mapSprite.color = new Color(1f, 0f, 0f, this.mapSprite.color.a);
+		if (!this.gc.finaleMode)
+			this.mapSprite.color = new Color(1f, 0f, 0f, this.mapSprite.color.a);
 		else
 		{
 			this.mapSprite.color = new Color(1f, 0f, 0f, this.mapSprite.color.a);

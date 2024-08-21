@@ -2,19 +2,102 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 using TMPro;
 
-// Token: 0x020000D5 RID: 213
 public class YouWonScript : MonoBehaviour
 {
-	// Token: 0x060009E8 RID: 2536 RVA: 0x0002678A File Offset: 0x00024B8A
 	private void Start()
 	{
-		//StartCoroutine(waitUntilDelay());
 		Cursor.lockState = CursorLockMode.None;
 		Cursor.visible = true;
 
-		CalculateFinalTime();
+		this.stats = FindObjectOfType<StatisticsController>();
+
+		if (this.stats != null)
+			this.SetStatistics();
+		else
+			this.SetPlaceholderStatistics();
+	}
+
+	private void SetPlaceholderStatistics()
+	{
+		this.lastTime = 99.39f;
+		this.items = new int[]
+		{
+			5, 4, 9, 1, 11, 1, 1
+		};
+		this.detentions = 2;
+	}
+
+	private void SetStatistics()
+	{
+		this.lastTime = this.stats.finalSeconds;
+		this.items = this.stats.itemsUsed;
+		this.detentions = this.stats.detentions;
+
+		Destroy(this.stats.gameObject);
+	}
+
+	public void ChangeScreen(int newScreen)
+	{
+		switch(newScreen)
+		{
+			case 1:
+				this.mainCanvas.SetActive(false);
+				this.statsCanvas.SetActive(true);
+				this.GetStatistics();
+				break;
+			default:
+				this.mainCanvas.SetActive(true);
+				this.statsCanvas.SetActive(false);
+				break;
+		}
+	}
+
+	private void GetStatistics()
+	{
+		if (this.isFetched)
+			return;
+		else
+			this.isFetched = true;
+
+		this.timeText.text = this.FinalTime();
+
+		this.detentionsText.text = this.detentions.ToString();
+
+		int loops = -1;
+		for (int i = 0; i < this.items.Length; i++)
+		{
+			GameObject gameObject = Instantiate(new GameObject(this.items[i].ToString()), new Vector2(0f, 0f), Quaternion.identity, this.itemParent);
+			Image image = gameObject.AddComponent<Image>();
+			image.rectTransform.localScale = new Vector2(0.5f, 0.5f);
+			image.raycastTarget = false;
+
+			if (i % 6 == 0)
+				loops++;
+
+			image.rectTransform.anchoredPosition = new Vector2((i * 50f) - (loops * 300f), loops * -50f);
+
+			image.sprite = this.itemSprites[this.items[i]];
+		}
+		//this.itemParent.GetComponent<RectTransform>().anchoredPosition = new Vector2(-80, -10 + (loops * 25f));
+
+		switch (PlayerPrefs.GetString("CurrentMap"))
+		{
+			case "Classic":
+				this.mapIcon.sprite = this.mapSprites[1];
+				break;
+			case "ClassicExtended":
+				this.mapIcon.sprite = this.mapSprites[2];
+				break;
+			case "JuniperHills":
+				this.mapIcon.sprite = this.mapSprites[3];
+				break;
+			default:
+				this.mapIcon.sprite = this.mapSprites[0];
+				break;
+		}
 	}
 
 	public void WinReturn()
@@ -22,52 +105,35 @@ public class YouWonScript : MonoBehaviour
 		SceneManager.LoadSceneAsync("MainMenu");
 	}
 
-	private void CalculateFinalTime()
+	private string FinalTime()
 	{
-		lastTime = PlayerPrefs.GetFloat("LastTime");
-
-		daSeconds = (Mathf.FloorToInt(lastTime));
-		daMinutes = (Mathf.FloorToInt(daSeconds/60));
-		daMiliseconds = MathF.Round((daSeconds - lastTime), 2);
-
-		bestText.text = daMinutes + ":" + daSeconds + "." + daMiliseconds;
+		float seconds = this.lastTime % 60f;
+		int minutes =  Mathf.FloorToInt(this.lastTime / 60f);
+		int hours = Mathf.FloorToInt(minutes / 60f);
+		minutes -= hours * 60;
+		
+		return hours + ":" + minutes.ToString("00") + ":" + seconds.ToString("00.000");
 	}
 
-	// Token: 0x060009E9 RID: 2537 RVA: 0x00026797 File Offset: 0x00024B97
-	
-	/*
-	private void Update()
-	{
-		this.delay -= Time.deltaTime;
-		if (this.delay <= 0f)
-		{
-			Application.Quit();
-		}
-	}
-	*/
+	[SerializeField] private StatisticsController stats;
+	[SerializeField] private TMP_Text timeText;
+	[SerializeField] private TMP_Text detentionsText;
+	[SerializeField] private bool isFetched;
+	[SerializeField] private Transform itemParent;
 
-	// Token: 0x0400071A RID: 1818
-	private float delay;
-
-	[SerializeField] private TMP_Text bestText;
+	[Header("Statistics")]
 	[SerializeField] private float lastTime;
-	[SerializeField] private int daMinutes;
-	[SerializeField] private int daSeconds;
-	[SerializeField] private float daMiliseconds;
+	[SerializeField] private int[] items;
+	[SerializeField] private int detentions;
 
-	/*
-	private IEnumerator waitUntilDelay()
-	{
-		this.delay = 11f;
+	[Header("Screens")]
+	[SerializeField] private GameObject mainCanvas;
+	[SerializeField] private GameObject statsCanvas;
 
-		while (this.delay > 0f)
-		{
-			this.delay -= Time.deltaTime;
-			yield return null;
-		}
+	[Header("Sprites")]
+	[SerializeField] private Sprite[] itemSprites;
+	[SerializeField] private Sprite[] mapSprites;
 
-		SceneManager.LoadScene("MainMenu");
-		StopCoroutine(waitUntilDelay());
-	}
-	*/
+	[Header("Icons")]
+	[SerializeField] private Image mapIcon;
 }

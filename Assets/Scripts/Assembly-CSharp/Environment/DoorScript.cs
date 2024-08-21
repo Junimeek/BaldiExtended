@@ -25,11 +25,10 @@ public class DoorScript : MonoBehaviour
 			this.invisibleBarrier.enabled = true; //Enable the invisible barrier
 			this.bDoorOpen = false; //Set the door open status to false
 			this.inside.material = this.closed; // Change one side of the door to the closed material
+			
 			this.outside.material = this.closed; // Change the other side of the door to the closed material
             if (this.silentOpens <= 0) //If the door isn't silent
-			{
 				this.myAudio.PlayOneShot(this.doorClose, 1f); //Play the door close sound
-			}
 		}
 		if (Input.GetMouseButtonDown(0) && Time.timeScale != 0f) //If the door is left clicked and the game isn't paused
 		{
@@ -38,21 +37,20 @@ public class DoorScript : MonoBehaviour
 			if (Physics.Raycast(ray, out raycastHit) && (raycastHit.collider == this.trigger & Vector3.Distance(this.player.position, base.transform.position) < this.openingDistance & !this.bDoorLocked))
 			{
 				if (this.baldi.isActiveAndEnabled & this.silentOpens <= 0)
-				{
-					//this.baldi.Hear(base.transform.position, 1f); //If the door isn't silent, Baldi hears the door with a priority of 1.
 					this.baldi.AddNewSound(base.transform.position, 1);
-				}
-				if (this.sweepDoor) this.sweepScript.EarlyActivate();
-				this.OpenDoor();
+				
+				if (this.sweepDoor)
+					this.sweepScript.EarlyActivate();
+
+				this.OpenDoor(3f);
+
 				if (this.silentOpens > 0) //If the door is silent
-				{
 					this.silentOpens--; //Decrease the amount of opens the door will stay quite for.
-				}
 			}
 		}
 	}
 
-	public void OpenDoor()
+	public void OpenDoor(float time)
 	{
 		if (this.silentOpens <= 0 && !this.bDoorOpen) //Play the door sound if the door isn't silent
 		{
@@ -63,15 +61,15 @@ public class DoorScript : MonoBehaviour
 		this.bDoorOpen = true; //Set the door open status to false
 		this.inside.material = this.open; //Change one side of the door to the open material
 		this.outside.material = this.open; //Change the other side of the door to the open material
-        this.openTime = 3f; //Set the open time to 3 seconds
+        this.openTime = time; //Set the open time to 3 seconds
 	}
 
 	private void OnTriggerStay(Collider other)
 	{
-		if (!this.bDoorLocked & other.CompareTag("NPC")) //Open the door if it isn't locked and it is an NPC
-		{
-			this.OpenDoor();
-		}
+		if (!this.bDoorLocked && other.gameObject.name == "NullDoorCollider")
+			this.OpenDoor(0.5f);
+		else if (!this.bDoorLocked && other.CompareTag("NPC"))
+			this.OpenDoor(3f);
 	}
 
 	public void LockDoor(float time) //Lock the door for a specified amount of time
@@ -95,7 +93,7 @@ public class DoorScript : MonoBehaviour
 
 	public void SilenceDoor() //Set the amount of times the door can be open silently
 	{
-		this.silentOpens = 4;
+		this.silentOpens += 4;
 	}
 
 	public float openingDistance;

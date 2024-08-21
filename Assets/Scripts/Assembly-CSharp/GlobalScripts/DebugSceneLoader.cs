@@ -1,20 +1,26 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class DebugSceneLoader : MonoBehaviour
 {
-    [SerializeField] private LoadingManager loadingManager;
-
     private void Start()
     {
         this.loadingManager = FindObjectOfType<LoadingManager>();
+
+        if (this.loadingManager != null)
+            this.isSceneLoaderFound = true;
+        else
+            this.isSceneLoaderFound = false;
     }
 
     public void LoadTheScene(string newScene, int sceneType)
     {
-        if (loadingManager == null) SceneManager.LoadSceneAsync(newScene);
-        else loadingManager.LoadNewScene(newScene, sceneType);
+        if (!this.isSceneLoaderFound)
+            SceneManager.LoadSceneAsync(newScene);
+        else
+            this.loadingManager.LoadNewScene(newScene, sceneType);
     }
+
+    [SerializeField] private LoadingManager loadingManager;
+    [SerializeField] private bool isSceneLoaderFound;
 }

@@ -82,7 +82,7 @@ public class MathGameScript : MonoBehaviour
             int digit1 = Mathf.RoundToInt(UnityEngine.Random.Range(0f,9f));
             int digit2 = Mathf.RoundToInt(UnityEngine.Random.Range(0f,9f));
 
-            if ((this.gc.mode == "story" && (this.problem <= 2 || this.gc.notebooks <= 1)) || (this.gc.mode == "endless" && (this.problem <= 2 || this.gc.notebooks != 2))/* || gc.isSafeMode*/)
+            if ((this.gc.mode != "endless" && (this.problem <= 2 || this.gc.notebooks <= 1)) || (this.gc.mode == "endless" && (this.problem <= 2 || this.gc.notebooks != 2))/* || gc.isSafeMode*/)
             {
                 switch(questionType)
                 {
