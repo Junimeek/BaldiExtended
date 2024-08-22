@@ -378,6 +378,7 @@ public class PlayerScript : MonoBehaviour
 	public Canvas mobile2;
 
 	[SerializeField] private GameObject projectile;
+	public bool isProjectileGrabbed;
 
 	[SerializeField] bool isInfiniteStamina;
 	[SerializeField] bool isSpeedShoes;

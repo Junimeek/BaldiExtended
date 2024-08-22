@@ -9,8 +9,12 @@ public class PickupAnimationScript : MonoBehaviour
 
 	private void Update()
 	{
-		this.itemPosition.localPosition = new Vector3(0f, Mathf.Sin((float)Time.frameCount * 0.017453292f) / 2f + 1f, 0f);
+		if (this.isFast)
+			this.itemPosition.localPosition = new Vector3(0f, Mathf.Sin(Time.frameCount * 0.02f) / 2f + 0.5f, 0f);
+		else
+			this.itemPosition.localPosition = new Vector3(0f, Mathf.Sin((float)Time.frameCount * 0.017453292f) / 2f + 1f, 0f);
 	}
 
 	private Transform itemPosition;
+	[SerializeField] private bool isFast;
 }

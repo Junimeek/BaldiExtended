@@ -709,7 +709,6 @@ public class GameControllerScript : MonoBehaviour
 	{
 		this.speedrunText.color = Color.black;
 		this.audioDevice.Stop();
-		this.isDynamicColor = false;
 		this.nullBoss.SetActive(true);
 		this.audioDevice.PlayOneShot(this.aud_BigClose, 0.6f);
 		this.nullBoss.GetComponent<NullBoss>().WarpToExit(nullPos);
@@ -717,6 +716,12 @@ public class GameControllerScript : MonoBehaviour
 		this.playerFlashlight[0].intensity = 0f;
 		this.playerFlashlight[1].intensity = 0f;
 		this.mainHud.renderMode = RenderMode.WorldSpace;
+	}
+
+	public void CreateProjectile(int number)
+	{
+		for (int i = 0; i < number; i++)
+			Instantiate(this.projectile, this.wanderer.NewTarget("Projectile"), Quaternion.identity);
 	}
 
 	public void DeactivateBossFight()
@@ -1410,6 +1415,7 @@ public class GameControllerScript : MonoBehaviour
 		{
 			if (this.modeType == "nullStyle")
 			{
+				this.audioDevice.volume = 0.85f;
 				this.audioDevice.loop = true;
 				this.audioDevice.clip = this.glambience;
 				this.audioDevice.Play();
@@ -1431,7 +1437,10 @@ public class GameControllerScript : MonoBehaviour
 			this.audioDevice.Play();
 		}
 		else if (this.exitsReached == 3 && this.modeType == "nullStyle")
+		{
 			this.baldi.SetActive(false);
+			this.isDynamicColor = false;
+		}
 	}
 
 	public void DespawnCrafters()
@@ -1644,7 +1653,6 @@ public class GameControllerScript : MonoBehaviour
 	[SerializeField] private bool isScareStarted;
 	public bool ignoreInitializationChecks;
 	public bool isDynamicColor;
-	[SerializeField] private Light[] playerFlashlight;
 	public int notebooks;
 	[SerializeField] private int highBooksScore;
 	[SerializeField] private float speedrunSeconds;
@@ -1683,6 +1691,7 @@ public class GameControllerScript : MonoBehaviour
 	[SerializeField] private MapCameraScript mapScript;
 	public TMP_Text speedrunText;
 	[SerializeField] private Canvas mainHud;
+	[SerializeField] private Light[] playerFlashlight;
 
 
 	[Header("Noteboos")]
@@ -1763,6 +1772,7 @@ public class GameControllerScript : MonoBehaviour
 	public GameObject quarter;
 	public GameObject bsodaSpray;
 	public GameObject dietBsodaSpray;
+	[SerializeField] private GameObject projectile;
 	public RectTransform boots;
 	public GameObject alarmClock;
 	[SerializeField] private GameObject party;

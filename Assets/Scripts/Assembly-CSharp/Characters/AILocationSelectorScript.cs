@@ -52,6 +52,10 @@ public class AILocationSelectorScript : MonoBehaviour
 				randomID = Mathf.RoundToInt(UnityEngine.Random.Range(0f, partyPoints.Length-1));
 				newLocation = this.partyPoints[randomID].position;
 				break;
+			case "Projectile":
+				randomID = Mathf.RoundToInt(UnityEngine.Random.Range(0f, projectilePoints.Length-1));
+				newLocation = this.projectilePoints[randomID].position;
+				break;
 		}
 
 		this.ambience.PlayAudio();
@@ -115,4 +119,5 @@ public class AILocationSelectorScript : MonoBehaviour
 	public Transform[] attendancePoints;
 	public Transform[] partyPoints;
 	public Transform[] movingPartyPoints;
+	public Transform[] projectilePoints;
 }

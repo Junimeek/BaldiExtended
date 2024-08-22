@@ -12,6 +12,7 @@ public class NullBoss : MonoBehaviour
         this.audioDevice.clip = this.introClip_start;
         this.audioDevice.Play();
         this.playerScript.IncreaseFightSpeed(0);
+        this.sprite.sprite = this.normalSprite;
     }
 
     public void WarpToExit(Vector3 position)
@@ -67,7 +68,9 @@ public class NullBoss : MonoBehaviour
     private IEnumerator BeginFight()
     {  
         this.hits++;
+        this.gc.CreateProjectile(6);
         this.playerScript.IncreaseFightSpeed(1);
+        this.sprite.sprite = this.grayscaleSprite;
 
         while (this.audioDevice.isPlaying)
         {
@@ -75,6 +78,7 @@ public class NullBoss : MonoBehaviour
             yield return null;
         }
         
+        this.sprite.sprite = this.normalSprite;
         this.sprite.color = UnityEngine.Color.white;
         this.audioDevice.clip = this.bossClip_start;
         this.audioDevice.Play();
@@ -110,8 +114,7 @@ public class NullBoss : MonoBehaviour
         this.audioDevice.clip = this.pain;
         this.audioDevice.Play();
         this.allowMovement = false;
-
-        
+        this.sprite.sprite = this.grayscaleSprite;
 
         while (this.audioDevice.isPlaying)
         {
@@ -119,6 +122,7 @@ public class NullBoss : MonoBehaviour
             yield return null;
         }
         
+        this.sprite.sprite = this.normalSprite;
         this.sprite.color = UnityEngine.Color.white;
         this.allowMovement = true;
         this.isHit = false;
@@ -156,6 +160,7 @@ public class NullBoss : MonoBehaviour
         this.audioDevice.PlayOneShot(this.endClip_bg);
         this.remainingCrazyTime = 14.47f;
         this.goCrazy = true;
+        this.sprite.sprite = this.grayscaleSprite;
 
         while (this.remainingCrazyTime > 0f)
         {
@@ -190,8 +195,10 @@ public class NullBoss : MonoBehaviour
     [SerializeField] private GameControllerScript gc;
     [SerializeField] private NavMeshAgent agent;
     [SerializeField] private AudioSource audioDevice;
-    [SerializeField] private SpriteRenderer sprite;
     [SerializeField] private BossMusicController musicController;
+    [SerializeField] private SpriteRenderer sprite;
+    [SerializeField] private Sprite normalSprite;
+    [SerializeField] private Sprite grayscaleSprite;
 
     [Header("Null State")]
     [SerializeField] private bool allowMovement;
