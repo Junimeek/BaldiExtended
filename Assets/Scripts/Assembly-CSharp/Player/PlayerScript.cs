@@ -57,6 +57,11 @@ public class PlayerScript : MonoBehaviour
 			this.sweeping = false;
 			this.hugging = false;
 		}
+
+		if (Input.GetKeyDown(KeyCode.LeftControl) && this.gc.modeType == "nullStyle")
+		{
+			Instantiate(this.projectile, base.transform.position, this.gc.cameraTransform.rotation);
+		}
 	}
 
 	public void LookAtCharacter(string character)
@@ -189,6 +194,18 @@ public class PlayerScript : MonoBehaviour
 		}
 
 		this.staminaBar.value = this.stamina / this.maxStamina * 100f;
+	}
+
+	public void IncreaseFightSpeed(int speedPoints)
+	{
+		float speedValue;
+
+		if (speedPoints == 0)
+			speedValue = 10f;
+		else
+			speedValue = speedPoints * 5f + 15f;
+
+		this.speedOverrides = new Vector3(speedValue, speedValue, speedValue);
 	}
 
 	private void OnTriggerEnter(Collider other)
@@ -359,6 +376,8 @@ public class PlayerScript : MonoBehaviour
 	public Canvas hud;
 	public Canvas mobile1;
 	public Canvas mobile2;
+
+	[SerializeField] private GameObject projectile;
 
 	[SerializeField] bool isInfiniteStamina;
 	[SerializeField] bool isSpeedShoes;

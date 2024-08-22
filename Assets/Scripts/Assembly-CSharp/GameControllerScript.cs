@@ -83,6 +83,7 @@ public class GameControllerScript : MonoBehaviour
 		}
 		else if (curSceneName == "ClassicDark")
 		{
+			this.isDynamicColor = true;
 			RenderSettings.fog = false;
 			RenderSettings.ambientLight = new Color(0.1f, 0.1f, 0.1f);
 		}
@@ -362,7 +363,7 @@ public class GameControllerScript : MonoBehaviour
 			}
 		}
 
-		if (this.modeType == "nullStyle")
+		if (this.modeType == "nullStyle" && this.isDynamicColor)
 		{
 			Vector3 distance = this.baldi.transform.position - this.playerTransform.position;
 			float sqrLen = distance.sqrMagnitude;
@@ -396,6 +397,20 @@ public class GameControllerScript : MonoBehaviour
 
 		if (this.handIconScript != null)
 			this.CheckRaycast();
+
+		if (Input.GetKeyDown(KeyCode.V))
+			this.BeginNullFight();
+	}
+
+	public void BeginNullFight()
+	{
+		this.notebooks = 7;
+		this.isDynamicColor = false;
+		RenderSettings.ambientLight = new Color(1f, 1f, 1f);
+		this.playerFlashlight[0].intensity = 0f;
+		this.playerFlashlight[1].intensity = 0f;
+		this.nullBoss.SetActive(true);
+		this.mainHud.renderMode = RenderMode.WorldSpace;
 	}
 
 	public void CompleteGame()
@@ -1410,6 +1425,8 @@ public class GameControllerScript : MonoBehaviour
 			this.audioDevice.loop = false;
 			this.audioDevice.Play();
 		}
+		else if (this.exitsReached == 3 && this.modeType == "nullStyle")
+			this.baldi.SetActive(false);
 	}
 
 	public void DespawnCrafters()
@@ -1621,6 +1638,8 @@ public class GameControllerScript : MonoBehaviour
 	public bool isGameFail;
 	[SerializeField] private bool isScareStarted;
 	public bool ignoreInitializationChecks;
+	public bool isDynamicColor;
+	[SerializeField] private Light[] playerFlashlight;
 	public int notebooks;
 	[SerializeField] private int highBooksScore;
 	[SerializeField] private float speedrunSeconds;
@@ -1658,6 +1677,7 @@ public class GameControllerScript : MonoBehaviour
 	[SerializeField] private TMP_Text exitCountText;
 	[SerializeField] private MapCameraScript mapScript;
 	public TMP_Text speedrunText;
+	[SerializeField] private Canvas mainHud;
 
 
 	[Header("Noteboos")]
@@ -1677,6 +1697,7 @@ public class GameControllerScript : MonoBehaviour
 	[Header("Characters")]
 	public GameObject baldiTutor;
 	public GameObject baldi;
+	[SerializeField] private GameObject nullBoss;
 	public GameObject principal;
 	public GameObject crafters;
 	public GameObject playtime;

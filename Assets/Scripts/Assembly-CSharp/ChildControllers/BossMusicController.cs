@@ -40,7 +40,7 @@ public class BossMusicController : MonoBehaviour
             this.AdvanceQueue();
     }
 
-    private void QueueClips(AudioClip clip)
+    public void QueueClips(AudioClip clip)
     {
         Array.Resize(ref this.audioQueue, this.audioQueue.Length + 1);
         this.audioQueue[this.audioQueue.Length - 1] = clip;

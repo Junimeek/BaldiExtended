@@ -17,14 +17,22 @@ public class MapCameraScript : MonoBehaviour
             this.itemList[i] = fetchedItems[i];
         }
 
-        this.baldiSprite.color = new Color(1f, 1f, 1f, 0f);
-        this.playtimeSprite.color = new Color(1f, 1f, 1f, 0f);
-        this.craftersSprite.color = new Color(1f, 1f, 1f, 0f);
-        this.sweepSprite.color = new Color(1f, 1f, 1f, 0f);
-        this.princeySprite.color = new Color(1f, 1f, 1f, 0f);
-        this.prizeSprite.color = new Color(1f, 1f, 1f, 0f);
-        this.bullySprite.color = new Color(1f, 1f, 1f, 0f);
+        this.HideCharacters();
 	}
+
+    private void HideCharacters()
+    {
+        if (!FindObjectOfType<GameControllerScript>().ignoreInitializationChecks)
+        {
+            this.baldiSprite.color = new Color(1f, 1f, 1f, 0f);
+            this.playtimeSprite.color = new Color(1f, 1f, 1f, 0f);
+            this.craftersSprite.color = new Color(1f, 1f, 1f, 0f);
+            this.sweepSprite.color = new Color(1f, 1f, 1f, 0f);
+            this.princeySprite.color = new Color(1f, 1f, 1f, 0f);
+            this.prizeSprite.color = new Color(1f, 1f, 1f, 0f);
+            this.bullySprite.color = new Color(1f, 1f, 1f, 0f);
+        }
+    }
 
     private void Update()
     {
