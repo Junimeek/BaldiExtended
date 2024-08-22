@@ -397,20 +397,6 @@ public class GameControllerScript : MonoBehaviour
 
 		if (this.handIconScript != null)
 			this.CheckRaycast();
-
-		if (Input.GetKeyDown(KeyCode.V))
-			this.BeginNullFight();
-	}
-
-	public void BeginNullFight()
-	{
-		this.notebooks = 7;
-		this.isDynamicColor = false;
-		RenderSettings.ambientLight = new Color(1f, 1f, 1f);
-		this.playerFlashlight[0].intensity = 0f;
-		this.playerFlashlight[1].intensity = 0f;
-		this.nullBoss.SetActive(true);
-		this.mainHud.renderMode = RenderMode.WorldSpace;
 	}
 
 	public void CompleteGame()
@@ -716,6 +702,25 @@ public class GameControllerScript : MonoBehaviour
 	private void ActivateFinaleMode()
 	{
 		this.finaleMode = true;
+		this.ModifyExits("raise");
+	}
+
+	public void ActivateBossFight(Vector3 nullPos)
+	{
+		this.speedrunText.color = Color.black;
+		this.audioDevice.Stop();
+		this.isDynamicColor = false;
+		this.nullBoss.SetActive(true);
+		this.audioDevice.PlayOneShot(this.aud_BigClose, 0.6f);
+		this.nullBoss.GetComponent<NullBoss>().WarpToExit(nullPos);
+		RenderSettings.ambientLight = new Color(1f, 1f, 1f);
+		this.playerFlashlight[0].intensity = 0f;
+		this.playerFlashlight[1].intensity = 0f;
+		this.mainHud.renderMode = RenderMode.WorldSpace;
+	}
+
+	public void DeactivateBossFight()
+	{
 		this.ModifyExits("raise");
 	}
 
@@ -1781,6 +1786,7 @@ public class GameControllerScript : MonoBehaviour
 	public AudioClip aud_Hang;
 	[SerializeField] private AudioClip aud_Error;
 	public AudioClip aud_Switch;
+	[SerializeField] private AudioClip aud_BigClose;
 	public AudioClip[] baldiJumpscareSounds;
 	public AudioClip chaosEarly;
 	public AudioClip chaosEarlyLoop;

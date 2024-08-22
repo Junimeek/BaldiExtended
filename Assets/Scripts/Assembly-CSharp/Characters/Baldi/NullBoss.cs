@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Drawing;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -6,10 +7,20 @@ public class NullBoss : MonoBehaviour
 {
     private void Start()
     {
+        this.goCrazy = false;
         this.audioDevice = base.GetComponent<AudioSource>();
         this.audioDevice.clip = this.introClip_start;
         this.audioDevice.Play();
         this.playerScript.IncreaseFightSpeed(0);
+    }
+
+    public void WarpToExit(Vector3 position)
+    {
+        this.agent.Warp(position);
+
+        this.musicController.QueueClips(this.musicController.playlist[0]);
+        this.musicController.QueueClips(this.musicController.playlist[1]);
+        this.musicController.QueueClips(this.musicController.playlist[2]);
     }
 
     private void Update()
@@ -36,6 +47,8 @@ public class NullBoss : MonoBehaviour
 
             if (!this.allowMovement && !this.isHit)
             {
+                this.musicController.ForceQueue();
+
                 this.isHit = true;
                 this.audioDevice.loop = false;
                 this.audioDevice.Stop();
@@ -56,22 +69,13 @@ public class NullBoss : MonoBehaviour
         this.hits++;
         this.playerScript.IncreaseFightSpeed(1);
 
-        float color1;
-        float color2;
-        float color3;
-
         while (this.audioDevice.isPlaying)
         {
-            color1 = Random.Range(0f, 1f);
-            color2 = Random.Range(0f, 1f);
-            color3 = Random.Range(0f, 1f);
-
-            this.sprite.color = new Color(color1, color2, color3);
-
+            this.sprite.color = this.RandomColor();
             yield return null;
         }
         
-        this.sprite.color = Color.white;
+        this.sprite.color = UnityEngine.Color.white;
         this.audioDevice.clip = this.bossClip_start;
         this.audioDevice.Play();
 
@@ -97,31 +101,88 @@ public class NullBoss : MonoBehaviour
         this.hits++;
 
         if (this.hits == 10)
-            Destroy(base.gameObject);
+        {
+            this.StartCoroutine(this.End());
+            yield break;
+        }
 
         this.playerScript.IncreaseFightSpeed(this.hits);
         this.audioDevice.clip = this.pain;
         this.audioDevice.Play();
         this.allowMovement = false;
 
+        
+
+        while (this.audioDevice.isPlaying)
+        {
+            this.sprite.color = this.RandomColor();
+            yield return null;
+        }
+        
+        this.sprite.color = UnityEngine.Color.white;
+        this.allowMovement = true;
+        this.isHit = false;
+    }
+
+    private UnityEngine.Color RandomColor()
+    {
         float color1;
         float color2;
         float color3;
 
-        while (this.audioDevice.isPlaying)
+        color1 = Random.Range(0f, 1f);
+        color2 = Random.Range(0f, 1f);
+        color3 = Random.Range(0f, 1f);
+
+        return new UnityEngine.Color(color1, color2, color3);
+    }
+
+    private IEnumerator End()
+    {
+        this.musicController.ClearQueue();
+        this.audioDevice.clip = this.endClip_null;
+        this.audioDevice.Play();
+        this.playerScript.IncreaseFightSpeed(0);
+        this.allowMovement = false;
+
+        float remTime = 6.206f;
+
+        while (remTime > 0f)
         {
-            color1 = Random.Range(0f, 1f);
-            color2 = Random.Range(0f, 1f);
-            color3 = Random.Range(0f, 1f);
+            remTime -= Time.deltaTime;
+            yield return null;
+        }
 
-            this.sprite.color = new Color(color1, color2, color3);
+        this.audioDevice.PlayOneShot(this.endClip_bg);
+        this.remainingCrazyTime = 14.47f;
+        this.goCrazy = true;
 
+        while (this.remainingCrazyTime > 0f)
+        {
+            this.remainingCrazyTime -= Time.deltaTime;
+            this.sprite.color = this.RandomColor();
             yield return null;
         }
         
-        this.sprite.color = Color.white;
-        this.allowMovement = true;
-        this.isHit = false;
+        this.gc.DeactivateBossFight();
+        Destroy(base.gameObject);
+    }
+
+    private void FixedUpdate()
+    {
+        if (this.goCrazy)
+            this.sprite.transform.localPosition = this.RandomPosition(this.remainingCrazyTime);
+    }
+
+    private Vector3 RandomPosition(float intensity)
+    {
+        float newIntensity = 14.5f - intensity;
+
+        float posX = Random.Range(-1f * newIntensity, newIntensity);
+        float posY = Random.Range(-1f * newIntensity, newIntensity);
+        float posZ = Random.Range(-1f * newIntensity, newIntensity);
+
+        return new Vector3(posX, posY + 1.5f, posZ);
     }
 
     [SerializeField] private Transform player;
@@ -130,15 +191,20 @@ public class NullBoss : MonoBehaviour
     [SerializeField] private NavMeshAgent agent;
     [SerializeField] private AudioSource audioDevice;
     [SerializeField] private SpriteRenderer sprite;
+    [SerializeField] private BossMusicController musicController;
 
     [Header("Null State")]
     [SerializeField] private bool allowMovement;
     [SerializeField] private bool isHit;
     [SerializeField] private int hits;
+    [SerializeField] private bool goCrazy;
+    [SerializeField] private float remainingCrazyTime;
 
     [Header("Audio")]
     [SerializeField] private AudioClip introClip_start;
     [SerializeField] private AudioClip introClip_loop;
     [SerializeField] private AudioClip bossClip_start;
     [SerializeField] private AudioClip pain;
+    [SerializeField] private AudioClip endClip_null;
+    [SerializeField] private AudioClip endClip_bg;
 }

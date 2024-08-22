@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.XR.WSA;
 
 public class BossMusicController : MonoBehaviour
 {
@@ -14,14 +15,6 @@ public class BossMusicController : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.B))
-        {
-            this.QueueClips(this.playlist[this.curGameStage]);
-            this.audioDevice1.loop = false;
-            this.audioDevice2.loop = false;
-            this.curGameStage++;
-        }
-
         if (this.curAudioStage == this.curGameStage)
         {
             this.audioDevice1.loop = true;
@@ -42,8 +35,16 @@ public class BossMusicController : MonoBehaviour
 
     public void QueueClips(AudioClip clip)
     {
+        this.audioDevice1.loop = false;
+        this.audioDevice2.loop = false;
         Array.Resize(ref this.audioQueue, this.audioQueue.Length + 1);
         this.audioQueue[this.audioQueue.Length - 1] = clip;
+        this.curGameStage++;
+    }
+
+    public void ForceQueue()
+    {
+        this.audioDevice1.Stop();
     }
 
     private void AdvanceQueue()
@@ -72,9 +73,20 @@ public class BossMusicController : MonoBehaviour
         this.curAudioStage++;
     }
 
+    public void ClearQueue()
+    {
+        for (int i = 0; i < this.audioQueue.Length; i++)
+        {
+            this.audioQueue[i] = null;
+            Array.Resize(ref this.audioQueue, 0);
+        }
+        this.audioDevice1.Stop();
+        this.audioDevice2.Stop();
+    }
+
     [SerializeField] private AudioSource audioDevice1;
     [SerializeField] private AudioSource audioDevice2;
-    [SerializeField] private AudioClip[] playlist;
+    public AudioClip[] playlist;
     [SerializeField] private AudioClip[] audioQueue;
     [SerializeField] private int curGameStage;
     [SerializeField] private int curAudioStage;
