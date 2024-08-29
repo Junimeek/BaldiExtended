@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Drawing;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -20,8 +19,6 @@ public class NullBoss : MonoBehaviour
         this.agent.Warp(position);
 
         this.musicController.QueueClips(this.musicController.playlist[0]);
-        this.musicController.QueueClips(this.musicController.playlist[1]);
-        this.musicController.QueueClips(this.musicController.playlist[2]);
     }
 
     private void Update()
@@ -46,10 +43,13 @@ public class NullBoss : MonoBehaviour
         {
             Destroy(other.gameObject);
 
-            if (!this.allowMovement && !this.isHit)
+            if (!this.isFightStarted)
             {
+                this.musicController.QueueClips(this.musicController.playlist[1]);
+                this.musicController.QueueClips(this.musicController.playlist[2]);
                 this.musicController.ForceQueue();
 
+                this.isFightStarted = true;
                 this.isHit = true;
                 this.audioDevice.loop = false;
                 this.audioDevice.Stop();
@@ -57,7 +57,7 @@ public class NullBoss : MonoBehaviour
                 this.audioDevice.Play();
                 this.StartCoroutine(this.BeginFight());
             }
-            else if (!this.isHit)
+            else if (this.hits < 10)
             {
                 this.isHit = true;
                 this.StartCoroutine(this.GetHit());
@@ -68,7 +68,7 @@ public class NullBoss : MonoBehaviour
     private IEnumerator BeginFight()
     {  
         this.hits++;
-        this.gc.CreateProjectile(6);
+        this.gc.allowedProjectiles--;
         this.playerScript.IncreaseFightSpeed(1);
         this.sprite.sprite = this.grayscaleSprite;
 
@@ -90,6 +90,7 @@ public class NullBoss : MonoBehaviour
             yield return null;
         }
 
+        this.gc.CreateProjectile(3);
         this.allowMovement = true;
         this.isHit = false;
         
@@ -103,10 +104,12 @@ public class NullBoss : MonoBehaviour
     private IEnumerator GetHit()
     {
         this.hits++;
+        this.gc.allowedProjectiles--;
 
         if (this.hits == 10)
         {
             this.StartCoroutine(this.End());
+            this.gc.DeleteProjectiles();
             yield break;
         }
 
@@ -201,9 +204,10 @@ public class NullBoss : MonoBehaviour
     [SerializeField] private Sprite grayscaleSprite;
 
     [Header("Null State")]
+    [SerializeField] private bool isFightStarted;
     [SerializeField] private bool allowMovement;
     [SerializeField] private bool isHit;
-    [SerializeField] private int hits;
+    public int hits;
     [SerializeField] private bool goCrazy;
     [SerializeField] private float remainingCrazyTime;
 

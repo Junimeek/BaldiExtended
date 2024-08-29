@@ -491,7 +491,7 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -512,7 +512,7 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -520,6 +520,27 @@ TextureImporter:
       bones: []
       spriteID: de3d2b4ca3744bd4ca35cb54c40953f8
       internalID: 727214131
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MapIcon_Slingshot
+      rect:
+        serializedVersion: 2
+        x: 69
+        y: 9
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 80d134e18e8f3ee4cb5baa6f939bb083
+      internalID: -2027534795
       vertices: []
       indices: 
       edges: []
@@ -545,6 +566,7 @@ TextureImporter:
       MapIcon_Tape: -861546000
       MapIcon_ExitClosed: -82946943
       MapIcon_Quarter: 1184519317
+      MapIcon_Slingshot: -2027534795
       MapIcon_Scissors: 1923063948
       MapIcon_DietBSODA: 700835328
       MapIcon_PartyPopper: -1155616137

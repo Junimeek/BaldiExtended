@@ -35,8 +35,9 @@ public class GameControllerScript : MonoBehaviour
 		switch(curSceneName)
 		{
 			case "ClassicDark":
-				this.masterTextColor = Color.white;
 				this.ignoreInitializationChecks = true;
+				this.masterTextColor = Color.white;
+				this.gameOverDelay = 5f;
 				this.modeType = "nullStyle";
 				this.isSafeMode = false;
 				this.isDifficultMath = false;
@@ -44,6 +45,7 @@ public class GameControllerScript : MonoBehaviour
 			default:
 				this.ignoreInitializationChecks = false;
 				this.masterTextColor = Color.black;
+				this.gameOverDelay = 0.5f;
 
 				if (PlayerPrefs.GetInt("gps_safemode") == 1)
 					this.isSafeMode = true;
@@ -108,7 +110,6 @@ public class GameControllerScript : MonoBehaviour
 
 		this.UpdateNotebookCount(); //Update the notebook count
 		this.itemSelected = 0; //Set selection to item slot 0(the first item slot)
-		this.gameOverDelay = 0.5f;
 		this.UpdateDollarAmount(0f);
 		this.StartCoroutine(this.WaitForQuarterDisable(true, false));
 
@@ -288,7 +289,9 @@ public class GameControllerScript : MonoBehaviour
 
 			if (!this.player.isSecret && !this.isScareStarted)
 			{
-				//this.audioDevice.PlayOneShot(this.aud_buzz);
+				if (this.modeType == "nullStyle")
+					this.StartCoroutine(this.NullKill());
+
 				this.isScareStarted = true;
 				int randomScare = Mathf.RoundToInt(UnityEngine.Random.Range(0, this.baldiJumpscareSounds.Length - 1));
 				this.audioDevice.PlayOneShot(this.baldiJumpscareSounds[randomScare]);
@@ -397,6 +400,81 @@ public class GameControllerScript : MonoBehaviour
 
 		if (this.handIconScript != null)
 			this.CheckRaycast();
+	}
+
+	private IEnumerator NullKill()
+	{
+		this.isDynamicColor = false;
+		RenderSettings.ambientLight = Color.black;
+		RenderSettings.ambientIntensity = 0f;
+
+		float remTime = 10f;
+
+		while (remTime > 6f)
+		{
+			RenderSettings.ambientIntensity += Time.unscaledDeltaTime  / 7f;
+			RenderSettings.ambientLight += new Color(Time.unscaledDeltaTime / 8f, Time.unscaledDeltaTime  / 8f, Time.unscaledDeltaTime  / 8f);
+			remTime -= Time.unscaledDeltaTime;
+			yield return null;
+		}
+
+		RenderSettings.ambientLight = this.RandomColor();
+
+		while (remTime > 4f)
+		{
+			RenderSettings.ambientIntensity += Time.unscaledDeltaTime  / 7f;
+			RenderSettings.ambientLight += new Color(Time.unscaledDeltaTime / 4f, Time.unscaledDeltaTime  / 4f, Time.unscaledDeltaTime  / 3f);
+			remTime -= Time.unscaledDeltaTime;
+			yield return null;
+		}
+
+		RenderSettings.ambientLight = this.RandomColor();
+
+		while (remTime > 3f)
+		{
+			RenderSettings.ambientIntensity += Time.unscaledDeltaTime  / 7f;
+			RenderSettings.ambientLight += new Color(Time.unscaledDeltaTime / 4f, Time.unscaledDeltaTime  / 4f, Time.unscaledDeltaTime  / 3f);
+			remTime -= Time.unscaledDeltaTime;
+			yield return null;
+		}
+
+		RenderSettings.ambientLight = this.RandomColor();
+
+		while (remTime > 2f)
+		{
+			RenderSettings.ambientIntensity += Time.unscaledDeltaTime  / 7f;
+			RenderSettings.ambientLight += new Color(Time.unscaledDeltaTime / 4f, Time.unscaledDeltaTime  / 4f, Time.unscaledDeltaTime  / 3f);
+			remTime -= Time.unscaledDeltaTime;
+			yield return null;
+		}
+
+		RenderSettings.ambientLight = this.RandomColor();
+
+		while (remTime > 1f)
+		{
+			RenderSettings.ambientIntensity += Time.unscaledDeltaTime  / 7f;
+			RenderSettings.ambientLight += new Color(Time.unscaledDeltaTime / 4f, Time.unscaledDeltaTime  / 4f, Time.unscaledDeltaTime  / 3f);
+			remTime -= Time.unscaledDeltaTime;
+			yield return null;
+		}
+
+		RenderSettings.ambientLight = new Color(0.8f, 0f, 0f);
+
+		while (remTime > 0f)
+		{
+			RenderSettings.ambientIntensity += Time.unscaledDeltaTime  / 7f;
+			remTime -= Time.unscaledDeltaTime;
+			yield return null;
+		}
+	}
+
+	private UnityEngine.Color RandomColor()
+	{
+		float r = UnityEngine.Random.Range(0f, 1f);
+		float g = UnityEngine.Random.Range(0f, 1f);
+		float b = UnityEngine.Random.Range(0f, 1f);
+
+		return new Color(r, g, b);
 	}
 
 	public void CompleteGame()
@@ -611,7 +689,8 @@ public class GameControllerScript : MonoBehaviour
 				if (this.notebooks >= 2)
 				{
 					this.baldiScrpt.GetAngry(1f);
-					this.baldiScrpt.AddNewSound(this.player.transform.position, 2);
+					if (this.baldiScrpt.isActiveAndEnabled)
+						this.baldiScrpt.AddNewSound(this.player.transform.position, 2);
 				}
 				break;
 			default:
@@ -716,12 +795,55 @@ public class GameControllerScript : MonoBehaviour
 		this.playerFlashlight[0].intensity = 0f;
 		this.playerFlashlight[1].intensity = 0f;
 		this.mainHud.renderMode = RenderMode.WorldSpace;
+		this.mapScript.DisableAllItems();
+
+		this.createdProjectiles = 3;
+		this.allowedProjectiles = 10;
+
+		this.dollarAmount = 0f;
+		for (int i = 0; i < this.totalSlotCount; i++)
+			this.item[i] = 0;
 	}
 
 	public void CreateProjectile(int number)
 	{
-		for (int i = 0; i < number; i++)
-			Instantiate(this.projectile, this.wanderer.NewTarget("Projectile"), Quaternion.identity);
+		if (this.createdProjectiles == 0)
+		{
+			this.createdProjectiles = 3;
+			this.projectilesInPlay = new GameObject[3];
+			for (int i = 0; i < this.projectilesInPlay.Length; i++)
+				this.projectilesInPlay[i] = Instantiate(this.projectile, this.wanderer.NewTarget("Projectile"), Quaternion.identity);
+		}
+		else
+		{
+			this.createdProjectiles += number;
+			Array.Resize(ref this.projectilesInPlay, this.projectilesInPlay.Length + 1);
+			this.projectilesInPlay[this.projectilesInPlay.Length - 1] = Instantiate(this.projectile, this.wanderer.NewTarget("Projectile"), Quaternion.identity);
+		}
+	}
+
+	public IEnumerator WaitForProjectile()
+	{
+		NullBoss nullBoss = this.nullBoss.GetComponent<NullBoss>();
+		int curHit = nullBoss.hits;
+		float remTime = 5.1f;
+
+		while (remTime > 0f && !(nullBoss.hits == curHit))
+		{
+			remTime -= Time.deltaTime;
+			yield return null;
+		}
+
+		if (this.createdProjectiles <= this.allowedProjectiles)
+		{
+			this.CreateProjectile(1);
+		}
+	}
+
+	public void DeleteProjectiles()
+	{
+		foreach (GameObject i in this.projectilesInPlay)
+			Destroy(i);
 	}
 
 	public void DeactivateBossFight()
@@ -1663,6 +1785,8 @@ public class GameControllerScript : MonoBehaviour
 	[SerializeField] private float remainingPartyTime;
 	public float gameOverDelay;
 	[SerializeField] private float darkLevel;
+	public int createdProjectiles;
+	public int allowedProjectiles;
 	public string mode;
 	public string modeType;
 	[SerializeField] private string curMap;
@@ -1671,6 +1795,7 @@ public class GameControllerScript : MonoBehaviour
 	public Transform partyLocation;
 	public Transform movingPartyLocation;
 	[SerializeField] private GameObject curItem;
+	[SerializeField] private GameObject[] projectilesInPlay;
 	private Color masterTextColor;
 
 
@@ -1792,7 +1917,6 @@ public class GameControllerScript : MonoBehaviour
 	public AudioSource tutorBaldi;
 	public AudioClip aud_Soda;
 	public AudioClip aud_Spray;
-	public AudioClip aud_buzz;
 	public AudioClip aud_Hang;
 	[SerializeField] private AudioClip aud_Error;
 	public AudioClip aud_Switch;

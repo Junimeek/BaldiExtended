@@ -1,3 +1,4 @@
+using Microsoft.Unity.VisualStudio.Editor;
 using UnityEngine;
 
 public class ProjectilePickupScript : MonoBehaviour
@@ -35,7 +36,8 @@ public class ProjectilePickupScript : MonoBehaviour
             this.playerScript.isProjectileGrabbed = false;
             this.lifetime = 5f;
             base.gameObject.name = "Projectile";
-            this.gc.CreateProjectile(1);
+            this.gc.createdProjectiles--;
+            this.gc.StartCoroutine(this.gc.WaitForProjectile());
         }
         
         if (this.isThrown)
@@ -52,6 +54,7 @@ public class ProjectilePickupScript : MonoBehaviour
     {
         if (this.isPickedUp)
         {
+            this.mapIcon.color = new Color(0f, 0f, 0f, 0f);
             base.transform.rotation = this.gc.cameraTransform.rotation;
             base.transform.position = this.playerScript.gameObject.transform.position;
             base.transform.position += base.transform.forward * 5f;
@@ -65,4 +68,5 @@ public class ProjectilePickupScript : MonoBehaviour
     [SerializeField] private bool isThrown;
     [SerializeField] private float lifetime;
     [SerializeField] private Rigidbody rb;
+    [SerializeField] private SpriteRenderer mapIcon;
 }

@@ -84,6 +84,12 @@ public class MapCameraScript : MonoBehaviour
         base.transform.position = this.player.transform.position + this.offset;
     }
 
+    public void DisableAllItems()
+    {
+        foreach (PickupScript i in this.itemList)
+            i.gameObject.SetActive(false);
+    }
+
     [SerializeField] private PlayerScript player;
     [SerializeField] private GameObject playerIcon;
     [SerializeField] private Vector3 offset;

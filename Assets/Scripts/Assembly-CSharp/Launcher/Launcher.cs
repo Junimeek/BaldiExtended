@@ -1,9 +1,7 @@
+using System.IO;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UpgradeSystem;
-using UnityEngine.UI;
 using TMPro;
 
 public class Launcher : MonoBehaviour
@@ -13,11 +11,29 @@ public class Launcher : MonoBehaviour
         stopCanvas.SetActive(false);
         logoCanvas.SetActive(false);
         launcherCanvas.SetActive(false);
+        this.upgradeCanvas.SetActive(false);
         StartCoroutine(WaitForStart());
 
         if (updateScript.isNightly)
             this.versionText.text = "Build: " + updateScript.nightlyBuild;
-        else this.versionText.text = string.Empty;
+        else
+            this.versionText.text = string.Empty;
+        
+        this.FileChecks();
+    }
+
+    private void FileChecks()
+    {
+        this.upgradeFlag = "none";
+
+        if (!Directory.Exists(Application.persistentDataPath + "/BaldiData"))
+        {
+            Directory.CreateDirectory(Application.persistentDataPath + "/BaldiData");
+            this.upgradeFlag = "factory";
+        }
+        
+        if (!Directory.Exists(Application.persistentDataPath + "/BaldiData_Backup"))
+            Directory.CreateDirectory(Application.persistentDataPath + "/BaldiData_Backup");
     }
 
     private void Update()
@@ -54,6 +70,9 @@ public class Launcher : MonoBehaviour
         {
             launcherCanvas.SetActive(true);
             audioDevice.PlayOneShot(music);
+            
+            if (PlayerPrefs.HasKey("highbooks_Classic") || PlayerPrefs.HasKey("highbooks_ClassicExtended") || PlayerPrefs.HasKey("highbooks_JuniperHills"))
+                SaveDataController.UpgradeSaves("endless", this.saveFileVersion);
         }
     }
 
@@ -98,10 +117,27 @@ public class Launcher : MonoBehaviour
             yield return null;
         }
 
-        logoCanvas.SetActive(true);
-        launcherCanvas.SetActive(false);
-        audioDevice.volume = 0f;
-        StartCoroutine(WaitForLogo());
+        this.logoCanvas.SetActive(true);
+        this.launcherCanvas.SetActive(false);
+        this.audioDevice.volume = 0f;
+
+        if (this.upgradeFlag != "none")
+        {
+            this.basicallyLogo.SetActive(false);
+            this.save_init.SetActive(false);
+            this.save_upgrade.SetActive(false);
+
+            switch(this.upgradeFlag)
+            {
+                case "factory":
+                    this.StartCoroutine(this.WaitForFactoryFileCreation());
+                    break;
+            }
+        }
+        else
+        {
+            StartCoroutine(WaitForLogo());
+        }
     }
 
     private IEnumerator WaitForQuit()
@@ -124,6 +160,8 @@ public class Launcher : MonoBehaviour
         loadingManager = FindObjectOfType<LoadingManager>();
         basicallyLogo.SetActive(true);
         juniLogo.SetActive(false);
+        
+        SaveDataController.LoadEndlessData();
 
         float time1 = 2.5f;
 
@@ -147,6 +185,26 @@ public class Launcher : MonoBehaviour
         loadingManager.LoadNewScene("Warning", 1);
     }
 
+    private IEnumerator WaitForFactoryFileCreation()
+    {
+        this.upgradeCanvas.SetActive(true);
+        this.save_init.SetActive(true);
+        float remTime = 2f;
+
+        // Replace this with something else later
+        SaveDataController.UpgradeSaves("endless", 1);
+
+        while (remTime > 0f)
+        {
+            remTime -= Time.deltaTime;
+            yield return null;
+        }
+
+        this.upgradeCanvas.SetActive(false);
+        this.StartCoroutine(this.WaitForLogo());
+    }
+
+    [SerializeField] private readonly int saveFileVersion = 1;
     [SerializeField] private AudioSource audioDevice;
     [SerializeField] private AudioClip music;
     [SerializeField] private AudioClip splap;
@@ -160,7 +218,11 @@ public class Launcher : MonoBehaviour
     [SerializeField] private GameObject stopCanvas;
     [SerializeField] private GameObject basicallyLogo;
     [SerializeField] private GameObject juniLogo;
+    [SerializeField] private GameObject upgradeCanvas;
+    [SerializeField] private GameObject save_init;
+    [SerializeField] private GameObject save_upgrade;
     [SerializeField] private TMP_Text versionText;
     [SerializeField] private LoadingManager loadingManager;
     [SerializeField] private VersionCheck updateScript;
+    [SerializeField] private string upgradeFlag;
 }

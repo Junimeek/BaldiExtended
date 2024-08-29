@@ -32,7 +32,11 @@ public class BaldiScript : MonoBehaviour
 			this.baldiAnimator.SetTrigger("ghostSlap");
 		
 		if (this.gc.modeType == "nullStyle")
-			this.speechTimer = 30f;
+		{
+			this.agent.SetDestination(this.player.position);
+			this.baldicator.ChangeBaldicatorState("Pursuit");
+			this.ResetSpeechTimer();
+		}
 	}
 
 	private void Update()

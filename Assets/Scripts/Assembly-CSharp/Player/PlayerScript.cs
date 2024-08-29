@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.Rendering.PostProcessing;
 using UnityEngine.UI;
 
 public class PlayerScript : MonoBehaviour
@@ -56,11 +54,6 @@ public class PlayerScript : MonoBehaviour
 		{
 			this.sweeping = false;
 			this.hugging = false;
-		}
-
-		if (Input.GetKeyDown(KeyCode.LeftControl) && this.gc.modeType == "nullStyle")
-		{
-			Instantiate(this.projectile, base.transform.position, this.gc.cameraTransform.rotation);
 		}
 	}
 
@@ -173,7 +166,7 @@ public class PlayerScript : MonoBehaviour
 					this.isSpeedShoes = false;
 				}
 			}
-			else if (!this.isSpeedShoes)
+			else
 			{
 				this.runSpeed = speedOverrides.z;
 				this.walkSpeed = speedOverrides.y;
@@ -376,8 +369,6 @@ public class PlayerScript : MonoBehaviour
 	public Canvas hud;
 	public Canvas mobile1;
 	public Canvas mobile2;
-
-	[SerializeField] private GameObject projectile;
 	public bool isProjectileGrabbed;
 
 	[SerializeField] bool isInfiniteStamina;
