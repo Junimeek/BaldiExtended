@@ -33,13 +33,28 @@ public class SaveData_FileVersion
 [Serializable]
 public class SaveData_Story
 {
-    /*
-    MAPS:
-    0 = Classic
-    1 = Classic Extended
-    2 = Juniper Hills
-    */
-    public float[] bestTime;
+    public int fileVersion;
+    public float[] bestTime = new float[3];
+    public SaveData_Story(string map, int score)
+    {
+        switch(map)
+        {
+            case "defaults":
+                this.bestTime[0] = 0f;
+                this.bestTime[1] = 0f;
+                this.bestTime[2] = 0f;
+                break;
+            case "Classic":
+                this.bestTime[0] = score;
+                break;
+            case "ClassicExtended":
+                this.bestTime[1] = score;
+                break;
+            case "JuniperHills":
+                this.bestTime[2] = score;
+                break;
+        }
+    }
 }
 
 [Serializable]
@@ -51,6 +66,11 @@ public class SaveData_Endless
     {
         switch(map)
         {
+            case "defaults":
+                this.notebooks[0] = 0;
+                this.notebooks[1] = 0;
+                this.notebooks[2] = 0;
+                break;
             case "Classic":
                 this.notebooks[0] = score;
                 break;
@@ -67,9 +87,18 @@ public class SaveData_Endless
 [Serializable]
 public class SaveData_Challenge
 {
-    /*
-    CHALLENGES:
-    0 = Null Style
-    */
-    public float[] bestTime;
+    public int fileVersion;
+    public float[] bestTime = new float[1];
+    public SaveData_Challenge(string map, float score)
+    {
+        switch(map)
+        {
+            case "defaults":
+                this.bestTime[0] = 0f;
+                break;
+            case "NullStyle":
+                this.bestTime[0] = score;
+                break;
+        }
+    }
 }

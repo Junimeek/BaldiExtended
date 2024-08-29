@@ -191,8 +191,14 @@ public class GameControllerScript : MonoBehaviour
 			case "challenge":
 				break;
 			default:
-				this.highBooksDirectory = "highbooks_" + this.curMap;
-				this.highBooksScore = PlayerPrefs.GetInt(this.highBooksDirectory);
+				SaveData_Endless data = SaveDataController.LoadEndlessData();
+				//this.highBooksDirectory = "highbooks_" + this.curMap;
+				if (this.curMap == "Classic")
+					this.highBooksScore = data.notebooks[0];
+				else if (this.curMap == "ClassicExtended")
+					this.highBooksScore = data.notebooks[1];
+				else if (this.curMap == "JuniperHills")
+					this.highBooksScore = data.notebooks[2];
 				break;
 		}
 	}

@@ -39,6 +39,32 @@ public static class SaveDataController
     }
     */
 
+    public static bool CheckFileExist(string type)
+    {
+        switch(type)
+        {
+            case "story":
+                if (!File.Exists(Application.persistentDataPath + "/BaldiData/story.sav"))
+                {
+                    SaveStoryData("defaults", 0);
+                    return false;
+                }
+                else
+                    return true;
+            case "endless":
+                if (!File.Exists(Application.persistentDataPath + "/BaldiData/endless.sav"))
+                {
+                    SaveEndlessData("defaults", 0);
+                    return false;
+                }
+                else
+                    return true;
+            default:
+                return false;
+        }
+        
+    }
+
     public static void UpgradeSaves(string type, int fileVersion)
     {
         
@@ -61,86 +87,27 @@ public static class SaveDataController
         PlayerPrefs.DeleteKey("highbooks_JuniperHills");
     }
 
-    /*
-    private void SetScoreDefaults(string type)
-    {
-        switch(type)
-        {
-            case "version":
-                versionData.versionNumber = this.currentVersion;
-                this.SaveToFile("version");
-                break;
-            case "story":
-                storyData.bestTime = new float[3];
-                for (int i = 0; i < 3; i++)
-                    storyData.bestTime[i] = 0f;
-                this.SaveToFile("story");
-                break;
-            case "challenge":
-                challengeData.bestTime = new float[1];
-                this.SaveToFile("challenge");
-                break;
-        }
-    }
-
-    public void SaveToFile(string type)
+    public static void SaveStoryData(string map, int score)
     {
         BinaryFormatter bf = new BinaryFormatter();
-        FileStream file;
-        string saveType;
-
-        switch(type)
-        {
-            case "version":
-                file = File.Create(this.versionDataPath);
-                bf.Serialize(file, versionData);
-                saveType = "Current Version";
-                break;
-            case "story":
-                file = File.Create(this.storyDataPath);
-                bf.Serialize(file, storyData);
-                saveType = "Story Data";
-                break;
-            case "challenge":
-                file = File.Create(this.challengeDataPath);
-                bf.Serialize(file, challengeData);
-                saveType = "Challenge Data";
-                break;
-            default:
-                Debug.LogError("failed somehow");
-                return;
-        }
-
+        string path = Application.persistentDataPath + "/BaldiData/story.sav";
+        FileStream file = File.Create(path);
+        SaveData_Story data = new SaveData_Story(map, score);
+        data.fileVersion = 1;
+        bf.Serialize(file, data);
         file.Close();
-        Debug.Log("Saved file: " + saveType);
     }
 
-    public void LoadAllData()
+    public static SaveData_Story LoadStoryData()
     {
+        string path = Application.persistentDataPath + "/BaldiData/story.sav";
         BinaryFormatter bf = new BinaryFormatter();
-        FileStream file;
-
-        file = File.Open(this.versionDataPath, FileMode.Open);
-        SaveData_FileVersion fileData_version = (SaveData_FileVersion)bf.Deserialize(file);
+        FileStream file = File.Open(path, FileMode.Open);
+        SaveData_Story data = bf.Deserialize(file) as SaveData_Story;
         file.Close();
-        versionData.versionNumber = fileData_version.versionNumber;
-        Debug.Log("Loaded version number " + versionData.versionNumber);
 
-        file = File.Open(this.storyDataPath, FileMode.Open);
-        SaveData_Story fileData_story = (SaveData_Story)bf.Deserialize(file);
-        file.Close();
-        storyData.bestTime = fileData_story.bestTime;
-        Debug.Log("Loaded data: Story");
-
-        file = File.Open(this.challengeDataPath, FileMode.Open);
-        SaveData_Challenge fileData_challenge = (SaveData_Challenge)bf.Deserialize(file);
-        file.Close();
-        challengeData.bestTime = fileData_challenge.bestTime;
-        Debug.Log("Loaded data: Challenge");
-
-        this.UpgradeSaves();
+        return data;
     }
-    */
 
     public static void SaveEndlessData(string map, int score)
     {
@@ -159,6 +126,28 @@ public static class SaveDataController
         BinaryFormatter bf = new BinaryFormatter();
         FileStream file = File.Open(path, FileMode.Open);
         SaveData_Endless data = bf.Deserialize(file) as SaveData_Endless;
+        file.Close();
+
+        return data;
+    }
+
+    public static void SaveChallengeData(string map, int score)
+    {
+        BinaryFormatter bf = new BinaryFormatter();
+        string path = Application.persistentDataPath + "/BaldiData/challenge.sav";
+        FileStream file = File.Create(path);
+        SaveData_Challenge data = new SaveData_Challenge(map, score);
+        data.fileVersion = 1;
+        bf.Serialize(file, data);
+        file.Close();
+    }
+
+    public static SaveData_Challenge LoadChallengeData()
+    {
+        string path = Application.persistentDataPath + "/BaldiData/challenge.sav";
+        BinaryFormatter bf = new BinaryFormatter();
+        FileStream file = File.Open(path, FileMode.Open);
+        SaveData_Challenge data = bf.Deserialize(file) as SaveData_Challenge;
         file.Close();
 
         return data;

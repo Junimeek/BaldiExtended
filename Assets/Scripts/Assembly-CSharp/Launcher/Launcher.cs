@@ -3,22 +3,27 @@ using System.Collections;
 using UnityEngine;
 using UpgradeSystem;
 using TMPro;
+using UnityEngine.Rendering.PostProcessing;
 
 public class Launcher : MonoBehaviour
 {
     private void Start()
     {
-        stopCanvas.SetActive(false);
-        logoCanvas.SetActive(false);
-        launcherCanvas.SetActive(false);
-        this.upgradeCanvas.SetActive(false);
-        StartCoroutine(WaitForStart());
+        this.stopCanvas.SetActive(false);
+        this.logoCanvas.SetActive(false);
+        this.launcherCanvas.SetActive(false);
+        this.upgradeCanvas_Start.SetActive(false);
+        this.upgradeCanvas_Process.SetActive(false);
+        this.upgradeCanvas_End.SetActive(false);
+        this.errorCanvas.SetActive(false);
+        this.StartCoroutine(this.WaitForStart());
 
-        if (updateScript.isNightly)
+        if (this.updateScript.isNightly)
             this.versionText.text = "Build: " + updateScript.nightlyBuild;
         else
             this.versionText.text = string.Empty;
-        
+
+        this.savePath = Application.persistentDataPath + "/BaldiData/";
         this.FileChecks();
     }
 
@@ -26,11 +31,13 @@ public class Launcher : MonoBehaviour
     {
         this.upgradeFlag = "none";
 
-        if (!Directory.Exists(Application.persistentDataPath + "/BaldiData"))
+        if (!Directory.Exists(this.savePath))
         {
-            Directory.CreateDirectory(Application.persistentDataPath + "/BaldiData");
+            Directory.CreateDirectory(this.savePath);
             this.upgradeFlag = "factory";
         }
+        else if (!File.Exists(savePath + "story.sav") || !File.Exists(savePath + "endless.sav") || !File.Exists(savePath + "challenge.sav"))
+            this.upgradeFlag = "fileMissing";
         
         if (!Directory.Exists(Application.persistentDataPath + "/BaldiData_Backup"))
             Directory.CreateDirectory(Application.persistentDataPath + "/BaldiData_Backup");
@@ -39,23 +46,24 @@ public class Launcher : MonoBehaviour
     private void Update()
     {
         // This is only here because OBS doesn't pick up the game right away when launching
-        if (allowInterruption && Input.GetKeyDown(KeyCode.Alpha7))
+        if (this.allowInterruption && Input.GetKeyDown(KeyCode.Alpha7))
         {
-            isInterrupted = true;
-            stopCanvas.SetActive(true);
+            this.isInterrupted = true;
+            this.stopCanvas.SetActive(true);
         }
     }
 
     public void RestartBootup()
     {
-        stopCanvas.SetActive(false);
-        StartCoroutine(WaitForStart());
+        this.stopCanvas.SetActive(false);
+        this.StartCoroutine(this.WaitForStart());
     }
 
     private IEnumerator WaitForStart()
     {
-        isInterrupted = false;
-        allowInterruption = true;
+        this.isInterrupted = false;
+        this.allowInterruption = true;
+
         float time = 0.3f;
 
         while (time > 0f)
@@ -64,12 +72,12 @@ public class Launcher : MonoBehaviour
             yield return null;
         }
 
-        allowInterruption = false;
+        this.allowInterruption = false;
 
         if (!isInterrupted)
         {
-            launcherCanvas.SetActive(true);
-            audioDevice.PlayOneShot(music);
+            this.launcherCanvas.SetActive(true);
+            this.audioDevice.PlayOneShot(music);
             
             if (PlayerPrefs.HasKey("highbooks_Classic") || PlayerPrefs.HasKey("highbooks_ClassicExtended") || PlayerPrefs.HasKey("highbooks_JuniperHills"))
                 SaveDataController.UpgradeSaves("endless", this.saveFileVersion);
@@ -79,24 +87,25 @@ public class Launcher : MonoBehaviour
     public void DaClick(int id)
     {
         if (id == 1 && !isLaunching) // Generic
-            audioDevice.PlayOneShot(acceptSound);
-
+            this.audioDevice.PlayOneShot(acceptSound);
         else if (id == 2) // Github
         {
-            audioDevice.PlayOneShot(acceptSound);
+            this.audioDevice.PlayOneShot(acceptSound);
             Application.OpenURL("https://github.com/Junimeek/BaldiExtended");
         }
-
         else if (id == 3 && !isLaunching) // Quit Game
         {
-            audioDevice.PlayOneShot(quitSound);
-            StartCoroutine(WaitForQuit());
+            this.audioDevice.PlayOneShot(quitSound);
+            StartCoroutine(this.WaitForQuit(1.2f));
         }
-
+        else if (id == 4) // Upgrade prompts
+            this.AdvanceUpgradePrompt();
+        else if (id == 5) // Fast Quit
+            StartCoroutine(this.WaitForQuit(0.1f));
         else if (id == 99 && !isLaunching) // Launch Game
         {
-            audioDevice.volume = 0.5f;
-            audioDevice.PlayOneShot(splap);
+            this.audioDevice.volume = 0.5f;
+            this.audioDevice.PlayOneShot(splap);
             StartCoroutine(WaitForLaunch());
         }
     }
@@ -109,7 +118,7 @@ public class Launcher : MonoBehaviour
     private IEnumerator WaitForLaunch()
     {
         float time = 0.5f;
-        isLaunching = true;
+        this.isLaunching = true;
 
         while (time > 0f)
         {
@@ -117,33 +126,31 @@ public class Launcher : MonoBehaviour
             yield return null;
         }
 
-        this.logoCanvas.SetActive(true);
         this.launcherCanvas.SetActive(false);
         this.audioDevice.volume = 0f;
 
+        //if (!SaveDataController.CheckFileExist("endless"))
+
         if (this.upgradeFlag != "none")
         {
-            this.basicallyLogo.SetActive(false);
-            this.save_init.SetActive(false);
-            this.save_upgrade.SetActive(false);
-
             switch(this.upgradeFlag)
             {
                 case "factory":
                     this.StartCoroutine(this.WaitForFactoryFileCreation());
                     break;
+                case "fileMissing":
+                    this.SaveMenuPrompt();
+                    break;
             }
         }
         else
-        {
-            StartCoroutine(WaitForLogo());
-        }
+            this.StartCoroutine(this.WaitForLogo());
     }
 
-    private IEnumerator WaitForQuit()
+    private IEnumerator WaitForQuit(float delay)
     {
-        float time = 1.2f;
-        isLaunching = true;
+        float time = delay;
+        this.isLaunching = true;
 
         while (time > 0f)
         {
@@ -157,54 +164,189 @@ public class Launcher : MonoBehaviour
 
     private IEnumerator WaitForLogo()
     {
-        loadingManager = FindObjectOfType<LoadingManager>();
-        basicallyLogo.SetActive(true);
-        juniLogo.SetActive(false);
+        this.loadingManager = FindObjectOfType<LoadingManager>();
+        this.logoCanvas.SetActive(true);
+        this.basicallyLogo.SetActive(true);
+        this.juniLogo.SetActive(false);
         
         SaveDataController.LoadEndlessData();
 
-        float time1 = 2.5f;
+        float remTime = 2.5f;
 
-        while (time1 > 0f)
+        while (remTime > 0f)
         {
-            time1 -= Time.unscaledDeltaTime;
+            remTime -= Time.unscaledDeltaTime;
             yield return null;
         }
 
-        basicallyLogo.SetActive(false);
-        juniLogo.SetActive(true);
+        this.basicallyLogo.SetActive(false);
+        this.juniLogo.SetActive(true);
 
-        float time2 = 1f;
+        remTime = 1f;
 
-        while (time2 > 0f)
+        while (remTime > 0f)
         {
-            time2 -= Time.unscaledDeltaTime;
+            remTime -= Time.unscaledDeltaTime;
             yield return null;
         }
 
-        loadingManager.LoadNewScene("Warning", 1);
+        this.loadingManager.LoadNewScene("Warning", 1);
+    }
+
+    public void SaveMenuPrompt()
+    {
+        switch(this.upgradeFlag)
+        {
+            case "factory":
+                StartCoroutine(this.WaitForFactoryFileCreation());
+                break;
+            case "fileMissing":
+                StartCoroutine(this.WaitForFileChecks());
+                break;
+        }
+    }
+
+    private void AdvanceUpgradePrompt()
+    {
+        this.upgradeState++;
     }
 
     private IEnumerator WaitForFactoryFileCreation()
     {
-        this.upgradeCanvas.SetActive(true);
-        this.save_init.SetActive(true);
-        float remTime = 2f;
+        this.upgradeState = 0;
+        this.logoCanvas.SetActive(true);
+        this.upgradeCanvas_Start.SetActive(true);
+        this.upgradeText_start.text = "Welcome to Baldi's Extended Schoolhouse!\n\nNew save files will now be created.";
 
-        // Replace this with something else later
-        SaveDataController.UpgradeSaves("endless", 1);
+        while (this.upgradeState == 0)
+            yield return null;
 
+        this.upgradeCanvas_Process.SetActive(true);
+        this.upgradeCanvas_Start.SetActive(false);
+        this.upgradeText_process.text = "Creating story data...";
+        try {
+            SaveDataController.SaveStoryData("defaults", 0);
+        }
+        catch (System.Exception e) {
+            this.ThrowError(e.ToString());
+            yield break;
+        }
+
+        float remTime = 0.5f;
+        while (remTime > 0f)
+        {
+            remTime -= Time.unscaledDeltaTime;
+            yield return null;
+        }
+        
+        this.upgradeText_process.text = "Creating endless data...";
+        try {
+            SaveDataController.SaveEndlessData("defaults", 0);
+        }
+        catch (System.Exception e) {
+            this.ThrowError(e.ToString());
+            yield break;
+        }
+        
+        remTime = 0.5f;
         while (remTime > 0f)
         {
             remTime -= Time.deltaTime;
             yield return null;
         }
 
-        this.upgradeCanvas.SetActive(false);
+        this.AdvanceUpgradePrompt();
+        this.upgradeCanvas_End.SetActive(true);
+        this.upgradeCanvas_Process.SetActive(false);
+        this.upgradeText_End.text = "Save file creation complete.\n\n\nNew save files have been created at the following location:";
+        this.upgradeText_EndLocation.text = this.savePath;
+
+        while (this.upgradeState == 2)
+            yield return null;
+        
+        this.upgradeCanvas_End.SetActive(false);
         this.StartCoroutine(this.WaitForLogo());
     }
 
-    [SerializeField] private readonly int saveFileVersion = 1;
+    private void ThrowError(string error)
+    {
+        this.isLaunching = false;
+        this.upgradeCanvas_Start.SetActive(false);
+        this.upgradeCanvas_Process.SetActive(false);
+        this.upgradeCanvas_End.SetActive(false);
+        this.errorCanvas.SetActive(true);
+        this.upgradeState = 99;
+        this.errorText.text = error;
+    }
+
+    private IEnumerator WaitForFileChecks()
+    {
+        this.upgradeState = 0;
+        this.logoCanvas.SetActive(true);
+        this.upgradeCanvas_Start.SetActive(true);
+        this.upgradeText_start.text = "One or more save files were not found.\n\nNew save files will now be created.";
+
+        while (this.upgradeState == 0)
+            yield return null;
+
+        this.upgradeCanvas_Process.SetActive(true);
+        this.upgradeCanvas_Start.SetActive(false);
+        this.upgradeText_process.text = "Creating data...";
+
+        if (!File.Exists(this.savePath + "story.sav"))
+        {
+            try {
+                SaveDataController.SaveStoryData("defaults", 0);
+            }
+            catch (System.Exception e) {
+                this.ThrowError(e.ToString());
+                yield break;
+            }
+        }
+        if (!File.Exists(this.savePath + "endless.sav"))
+        {
+            try {
+                SaveDataController.SaveEndlessData("defaults", 0);
+            }
+            catch (System.Exception e) {
+                this.ThrowError(e.ToString());
+                yield break;
+            }
+        }
+        if (!File.Exists(this.savePath + "challenge.sav"))
+        {
+            try {
+                SaveDataController.SaveChallengeData("defaults", 0);
+            }
+            catch (System.Exception e) {
+                this.ThrowError(e.ToString());
+                yield break;
+            }
+        }
+
+        float remTime = 1.5f;
+
+        while (remTime > 0f)
+        {
+            remTime -= Time.unscaledDeltaTime;
+            yield return null;
+        }
+
+        this.AdvanceUpgradePrompt();
+        this.upgradeCanvas_End.SetActive(true);
+        this.upgradeCanvas_Process.SetActive(false);
+        this.upgradeText_End.text = "Save file creation complete.\n\n\nNew save files have been created at the following location:";
+        this.upgradeText_EndLocation.text = this.savePath;
+
+        while (this.upgradeState == 2)
+            yield return null;
+        
+        this.upgradeCanvas_End.SetActive(false);
+        this.StartCoroutine(this.WaitForLogo());
+    }
+
+    [SerializeField] private LoadingManager loadingManager;
+    [SerializeField] private VersionCheck updateScript;
     [SerializeField] private AudioSource audioDevice;
     [SerializeField] private AudioClip music;
     [SerializeField] private AudioClip splap;
@@ -213,16 +355,27 @@ public class Launcher : MonoBehaviour
     [SerializeField] private bool isLaunching;
     [SerializeField] private bool allowInterruption;
     [SerializeField] private bool isInterrupted;
+    [SerializeField] private int upgradeState;
+
+    [Header("Save File")]
+    [SerializeField] private string upgradeFlag;
+    private readonly int saveFileVersion = 1;
+    [SerializeField] private string savePath;
+
+    [Header("UI")]
     [SerializeField] private GameObject launcherCanvas;
     [SerializeField] private GameObject logoCanvas;
     [SerializeField] private GameObject stopCanvas;
     [SerializeField] private GameObject basicallyLogo;
     [SerializeField] private GameObject juniLogo;
-    [SerializeField] private GameObject upgradeCanvas;
-    [SerializeField] private GameObject save_init;
-    [SerializeField] private GameObject save_upgrade;
+    [SerializeField] private GameObject upgradeCanvas_Start;
+    [SerializeField] private TMP_Text upgradeText_start;
+    [SerializeField] private GameObject upgradeCanvas_Process;
+    [SerializeField] private TMP_Text upgradeText_process;
+    [SerializeField] private GameObject upgradeCanvas_End;
+    [SerializeField] private TMP_Text upgradeText_End;
+    [SerializeField] private TMP_Text upgradeText_EndLocation;
+    [SerializeField] private GameObject errorCanvas;
+    [SerializeField] private TMP_Text errorText;
     [SerializeField] private TMP_Text versionText;
-    [SerializeField] private LoadingManager loadingManager;
-    [SerializeField] private VersionCheck updateScript;
-    [SerializeField] private string upgradeFlag;
 }
