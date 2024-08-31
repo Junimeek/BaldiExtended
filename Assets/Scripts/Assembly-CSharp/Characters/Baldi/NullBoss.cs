@@ -11,13 +11,16 @@ public class NullBoss : MonoBehaviour
         this.audioDevice.clip = this.introClip_start;
         this.audioDevice.Play();
         this.playerScript.IncreaseFightSpeed(0);
+        this.playerScript.isInvincible = true;
         this.sprite.sprite = this.normalSprite;
+        FindObjectOfType<CameraScript>().baldi = base.transform;
     }
 
     public void WarpToExit(Vector3 position)
     {
         this.agent.Warp(position);
 
+        this.metronome.StartMetronome();
         this.musicController.QueueClips(this.musicController.playlist[0]);
     }
 
@@ -45,12 +48,9 @@ public class NullBoss : MonoBehaviour
 
             if (!this.isFightStarted)
             {
-                this.musicController.QueueClips(this.musicController.playlist[1]);
-                this.musicController.QueueClips(this.musicController.playlist[2]);
-                this.musicController.ForceQueue();
+                this.musicController.EndInitialLoop(this.metronome.curMeasure + 1);
 
                 this.isFightStarted = true;
-                this.isHit = true;
                 this.audioDevice.loop = false;
                 this.audioDevice.Stop();
                 this.audioDevice.clip = this.pain;
@@ -58,10 +58,7 @@ public class NullBoss : MonoBehaviour
                 this.StartCoroutine(this.BeginFight());
             }
             else if (this.hits < 10)
-            {
-                this.isHit = true;
                 this.StartCoroutine(this.GetHit());
-            }
         }
     }
 
@@ -92,7 +89,7 @@ public class NullBoss : MonoBehaviour
 
         this.gc.CreateProjectile(3);
         this.allowMovement = true;
-        this.isHit = false;
+        this.playerScript.isInvincible = false;
         
         while (this.audioDevice.isPlaying)
             yield return null;
@@ -103,6 +100,7 @@ public class NullBoss : MonoBehaviour
 
     private IEnumerator GetHit()
     {
+        this.playerScript.isInvincible = true;
         this.hits++;
         this.gc.allowedProjectiles--;
 
@@ -128,7 +126,7 @@ public class NullBoss : MonoBehaviour
         this.sprite.sprite = this.normalSprite;
         this.sprite.color = UnityEngine.Color.white;
         this.allowMovement = true;
-        this.isHit = false;
+        this.playerScript.isInvincible = false;
     }
 
     private UnityEngine.Color RandomColor()
@@ -199,6 +197,7 @@ public class NullBoss : MonoBehaviour
     [SerializeField] private NavMeshAgent agent;
     [SerializeField] private AudioSource audioDevice;
     [SerializeField] private BossMusicController musicController;
+    [SerializeField] private MetronomeScript metronome;
     [SerializeField] private SpriteRenderer sprite;
     [SerializeField] private Sprite normalSprite;
     [SerializeField] private Sprite grayscaleSprite;
@@ -206,7 +205,6 @@ public class NullBoss : MonoBehaviour
     [Header("Null State")]
     [SerializeField] private bool isFightStarted;
     [SerializeField] private bool allowMovement;
-    [SerializeField] private bool isHit;
     public int hits;
     [SerializeField] private bool goCrazy;
     [SerializeField] private float remainingCrazyTime;

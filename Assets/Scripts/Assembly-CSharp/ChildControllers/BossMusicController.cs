@@ -1,8 +1,6 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.XR.WSA;
 
 public class BossMusicController : MonoBehaviour
 {
@@ -45,6 +43,23 @@ public class BossMusicController : MonoBehaviour
     public void ForceQueue()
     {
         this.audioDevice1.Stop();
+    }
+
+    public void EndInitialLoop(int nextMeasure)
+    {
+        this.StartCoroutine(this.EndLoopStart(nextMeasure));
+    }
+
+    private IEnumerator EndLoopStart(int nextMeasure)
+    {
+        this.QueueClips(this.playlist[1]);
+        this.QueueClips(this.playlist[2]);
+
+        while (this.metronome.curMeasure < nextMeasure)
+            yield return null;
+        
+        this.ForceQueue();
+        this.metronome.StopMetronome();
     }
 
     private void AdvanceQueue()
@@ -90,4 +105,5 @@ public class BossMusicController : MonoBehaviour
     [SerializeField] private AudioClip[] audioQueue;
     [SerializeField] private int curGameStage;
     [SerializeField] private int curAudioStage;
+    [SerializeField] private MetronomeScript metronome;
 }

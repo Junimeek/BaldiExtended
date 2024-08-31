@@ -23,6 +23,7 @@ After that, you can clone this repository wherever you want. Then go back to Uni
 # Credits
 - The original game and assets are from mystman12 (aka, [Basically, Games](https://basically-games.itch.io/))
 - [Junimeek](https://github.com/Junimeek): Programming, new maps
+- [pahaze](https://github.com/pahaze): Metronome script
 
 This project uses a decompile by Jumpman25 and [porkypowers](https://porkypowers.itch.io/) on itch.io, found here:<br/>
 https://porkypowers.itch.io/baldi-open-source-classic-party

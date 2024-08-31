@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class CameraScript : MonoBehaviour
 {
@@ -19,22 +18,22 @@ public class CameraScript : MonoBehaviour
 			{
 				this.jumpHeight = 0f;
 				if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Mouse0) || Input.GetKeyDown(KeyCode.Mouse1))
-				{
 					this.velocity = this.initVelocity; //Start the jump
-				}
 			}
 			this.jumpHeightV3 = new Vector3(0f, this.jumpHeight, 0f); //Turn the float into a vector
 		}
-		else if (Input.GetButton("Look Behind")) this.lookBehind = 180; //Look behind you
-		else this.lookBehind = 0; //Don't look behind you
+		else if (Input.GetButton("Look Behind"))
+			this.lookBehind = 180; //Look behind you
+		else
+			this.lookBehind = 0; //Don't look behind you
 
-		if (Input.GetKey(KeyCode.C)) this.zoom = 15;
-		else this.zoom = 60;
+		if (Input.GetKey(KeyCode.C))
+			this.zoom = 15;
+		else
+			this.zoom = 60;
 
 		if (Input.GetKeyDown(KeyCode.DownArrow))
-		{
 			this.gravity = 20f;
-		}
 	}
 
 	private void LateUpdate()
@@ -43,17 +42,17 @@ public class CameraScript : MonoBehaviour
 		if (!this.ps.gameOver & !this.ps.jumpRope)
 		{
 			base.transform.position = this.player.transform.position + this.offset; //Teleport to the player, then move based on the offset vector
-			base.transform.rotation = this.player.transform.rotation * Quaternion.Euler(0f, (float)this.lookBehind, 0f); //Rotate based on player direction + lookbehind
+			base.transform.rotation = this.player.transform.rotation * Quaternion.Euler(0f, this.lookBehind, 0f); //Rotate based on player direction + lookbehind
 		}
 		else if (this.ps.gameOver && !this.ps.isSecret)
 		{
 			base.transform.position = this.baldi.transform.position + this.baldi.transform.forward * 2f + new Vector3(0f, 5f, 0f); //Puts the camera in front of Baldi
 			base.transform.LookAt(new Vector3(this.baldi.position.x, this.baldi.position.y + 5f, this.baldi.position.z)); //Makes the player look at baldi with an offset so the camera doesn't look at the feet
 		}
-		else if (this.ps.gameOver && this.ps.isSecret)
+		else if (this.ps.gameOver && (this.ps.isSecret || this.ps.isNullStyle))
 		{
-			base.transform.position = this.baldi.transform.position + this.baldi.transform.forward * 2f + new Vector3(0f, 5f, 0f); //Puts the camera in front of Baldi
-			base.transform.LookAt(new Vector3(this.baldi.position.x, this.baldi.position.y + 3.5f, this.baldi.position.z)); //Makes the player look at baldi with an offset so the camera doesn't look at the feet
+			base.transform.position = this.baldi.transform.position + this.baldi.transform.forward * 2f + new Vector3(0f, 5f, 0f); //Puts the camera in front of Null
+			base.transform.LookAt(new Vector3(this.baldi.position.x, this.baldi.position.y + 3.5f, this.baldi.position.z)); //Makes the player look at null with an offset so the camera doesn't look at the feet
 		}
 		else if (this.ps.jumpRope)
 		{
@@ -64,16 +63,16 @@ public class CameraScript : MonoBehaviour
 		this.cameraObject.fieldOfView = this.zoom;
 	}
 
-	public GameObject player;
-	public PlayerScript ps;
 	public Transform baldi;
-	public float initVelocity;
-	public float velocity;
-	public float gravity;
-	private int lookBehind;
 	public Vector3 offset;
 	public float jumpHeight;
-	public Vector3 jumpHeightV3;
+	[SerializeField] private GameObject player;
+	[SerializeField] private PlayerScript ps;
+	[SerializeField] private float initVelocity;
+	[SerializeField] private float velocity;
+	[SerializeField] private float gravity;
+	[SerializeField] private int lookBehind;
+	[SerializeField] private Vector3 jumpHeightV3;
 	[SerializeField] private Camera cameraObject;
 	[SerializeField] private int zoom;
 

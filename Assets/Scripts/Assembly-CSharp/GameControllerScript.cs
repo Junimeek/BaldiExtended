@@ -41,6 +41,7 @@ public class GameControllerScript : MonoBehaviour
 				this.modeType = "nullStyle";
 				this.isSafeMode = false;
 				this.isDifficultMath = false;
+				this.player.isNullStyle = true;
 				break;
 			default:
 				this.ignoreInitializationChecks = false;
@@ -410,8 +411,10 @@ public class GameControllerScript : MonoBehaviour
 
 	private IEnumerator NullKill()
 	{
+		if (this.isDynamicColor)
+			RenderSettings.ambientLight = Color.black;
+			
 		this.isDynamicColor = false;
-		RenderSettings.ambientLight = Color.black;
 		RenderSettings.ambientIntensity = 0f;
 
 		float remTime = 10f;

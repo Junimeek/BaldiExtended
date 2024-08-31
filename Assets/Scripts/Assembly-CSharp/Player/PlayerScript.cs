@@ -89,8 +89,8 @@ public class PlayerScript : MonoBehaviour
 
 	private void PlayerMove()
 	{
-		Vector3 vector = new Vector3(0f, 0f, 0f);
-		Vector3 vector2 = new Vector3(0f, 0f, 0f);
+		Vector3 vector;
+		Vector3 vector2;
 		vector = base.transform.forward * Input.GetAxis("Forward");
 		vector2 = base.transform.right * Input.GetAxis("Strafe");
 		if (this.stamina > 0f)
@@ -203,10 +203,13 @@ public class PlayerScript : MonoBehaviour
 
 	private void OnTriggerEnter(Collider other)
 	{
-		if (other.transform.name == "Baldi" & !this.gc.debugMode)
+		if ((other.transform.name == "Baldi" || other.transform.name == "NullBoss") && !this.gc.debugMode)
 		{
 			if (!this.gc.isSafeMode)
 			{
+				if (other.transform.name == "NullBoss" && this.isInvincible)
+					return;
+
 				this.gameOver = true;
 				RenderSettings.skybox = this.blackSky; //Sets the skybox black
 				base.StartCoroutine(this.KeepTheHudOff()); //Hides the Hud
@@ -377,5 +380,7 @@ public class PlayerScript : MonoBehaviour
 	public GameObject speedText;
 	[SerializeField] private float shoeRate;
 	public bool isSecret;
+	public bool isNullStyle;
+	public bool isInvincible;
 	[Tooltip("X = Slow, Y = Walk, Z = Run")] [SerializeField] private Vector3 speedOverrides;
 }
