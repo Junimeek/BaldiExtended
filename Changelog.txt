@@ -1,10 +1,12 @@
-### v0.4.4 ###
+### v0.5 ###
 Gameplay Changes:
 - New Mode: Challenge mode!
-- New challenge map: Dark mode!
+- New challenge map: Dark mode! Which is basically just BBCR's Null Style lmao
+- There are now a few more things that will be saved in your high scores: Your best time in Story Mode, and how many of each item you've used in each map
 
 Other Changes:
-- Saving has been overhauled. If you were playing an older version, the game will detect your older data and upgrade it to the new system. You'll see a prompt upon launching the game the first time you open it.
+- Saving has been completely overhauled. If you were playing an older version, the game will detect your older data and upgrade it to the new system. You'll see a prompt upon launching the game the first time you open it.
+- The Data Management menu actually does something now
 
 ### v0.4.3 ###
 Gameplay Changes:

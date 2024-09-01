@@ -40,13 +40,13 @@ public class ItemInformationScript : MonoBehaviour
     [SerializeField] private TMP_Text hintTextObject;
     [SerializeField] [TextArea(1,5)] private string itemText;
     [SerializeField] [TextArea(1,5)] private string hintText;
-    public EndlessScoresMenu endlessScript;
+    public HighScoresMenu highScoresScript;
     private string GetHintText()
     {
         switch(this.informationType)
         {
             case 1:
-                return this.endlessScript.endlessText;
+                return this.highScoresScript.endlessText;
             default:
                 return this.hintText;
         }

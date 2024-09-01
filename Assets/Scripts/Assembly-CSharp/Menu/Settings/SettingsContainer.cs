@@ -1,9 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
-using System;
 
 public class SettingsContainer : MonoBehaviour
 {
@@ -28,26 +25,7 @@ public class SettingsContainer : MonoBehaviour
         this.dataPath = Application.persistentDataPath + "/settings.sav";
 
         if (!File.Exists(this.dataPath))
-        {
-            this.turnSensitivity = 2f;
-            this.volumeVoice = 0f;
-            this.volumeBGM = 0f;
-            this.volumeSFX = 0f;
-            this.instantReset = true;
-            this.additionalMusic = false;
-            this.notifBoard = false;
-            PlayerPrefs.SetInt("AnalogMove", 0);
-            PlayerPrefs.SetInt("Rumble", 0);
-            PlayerPrefs.SetString("CurrentMap", "Classic");
-            PlayerPrefs.SetInt("gps_safemode", 0);
-            PlayerPrefs.SetInt("gps_difficultmath", 0);
-            PlayerPrefs.SetInt("highbooks_Classic", 0);
-            PlayerPrefs.SetInt("highbooks_ClassicExtended", 0);
-            PlayerPrefs.SetInt("highbooks_JuniperHills", 0);
-            SaveToRegistry("settings");
-            SaveToSettingsFile();
-            Debug.LogWarning("Settings binary file not found. Settings reset to defaults.");
-        }
+            this.ResetSettings();
         else
         {
             this.turnSensitivity = PlayerPrefs.GetFloat("MouseSensitivity");
@@ -75,6 +53,28 @@ public class SettingsContainer : MonoBehaviour
 
             Debug.Log("Loaded data from registry");
         }
+    }
+
+    public void ResetSettings()
+    {
+        this.turnSensitivity = 2f;
+        this.volumeVoice = 0f;
+        this.volumeBGM = 0f;
+        this.volumeSFX = 0f;
+        this.instantReset = true;
+        this.additionalMusic = false;
+        this.notifBoard = false;
+        PlayerPrefs.SetInt("AnalogMove", 0);
+        PlayerPrefs.SetInt("Rumble", 0);
+        PlayerPrefs.SetString("CurrentMap", "Classic");
+        PlayerPrefs.SetInt("gps_safemode", 0);
+        PlayerPrefs.SetInt("gps_difficultmath", 0);
+        PlayerPrefs.SetInt("highbooks_Classic", 0);
+        PlayerPrefs.SetInt("highbooks_ClassicExtended", 0);
+        PlayerPrefs.SetInt("highbooks_JuniperHills", 0);
+        SaveToRegistry("settings");
+        SaveToSettingsFile();
+        Debug.LogWarning("Settings binary file not found. Settings reset to defaults.");
     }
 
     public void SaveToRegistry(string type) // lmao i give up
@@ -137,9 +137,10 @@ public class SettingsContainer : MonoBehaviour
         {
             bf.Serialize(file, data);
         }
-        catch
+        catch (System.Exception e)
         {
             Debug.LogError("Failed to save settings binary file");
+            Debug.LogError(e);
         }
         
         file.Close();

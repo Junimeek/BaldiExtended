@@ -1,11 +1,11 @@
 using System;
+using UnityEngine;
 
 [Serializable]
 public class AchievementData
 {
     public int ach_MapCount;
     public int[] ach_Maps;
-
     public bool[] completedMaps;
 }
 
@@ -34,25 +34,36 @@ public class SaveData_FileVersion
 public class SaveData_Story
 {
     public int fileVersion;
-    public float[] bestTime = new float[3];
-    public SaveData_Story(string map, int score)
+    public int[] itemsUsed_Classic;
+    public int[] itemsUsed_ClassicExtended;
+    public int[] itemsUsed_JuniperHills;
+    public float[] bestTime;
+    public int[] totalDetentions;
+    public SaveData_Story(StatisticsController stats)
     {
-        switch(map)
+        int totalMaps = 3;
+        int totalItems = 16;
+
+        if (stats == null)
         {
-            case "defaults":
-                this.bestTime[0] = 0f;
-                this.bestTime[1] = 0f;
-                this.bestTime[2] = 0f;
-                break;
-            case "Classic":
-                this.bestTime[0] = score;
-                break;
-            case "ClassicExtended":
-                this.bestTime[1] = score;
-                break;
-            case "JuniperHills":
-                this.bestTime[2] = score;
-                break;
+            this.fileVersion = 1;
+            this.totalDetentions = new int[totalMaps];
+            this.itemsUsed_Classic = new int[totalItems];
+            this.itemsUsed_ClassicExtended = new int[totalItems];
+            this.itemsUsed_JuniperHills = new int[totalItems];
+
+            this.bestTime = new float[totalMaps];
+            for (int i = 0; i < this.bestTime.Length; i++)
+                this.bestTime[i] = 9999f;
+        }
+        else
+        {
+            this.fileVersion = stats.data_fileVersion;
+            this.totalDetentions = stats.data_totalDetentions;
+            this.itemsUsed_Classic = stats.data_ClassicLifetimeItems;
+            this.itemsUsed_ClassicExtended = stats.data_ClassicExtendedLifetimeItems;
+            this.itemsUsed_JuniperHills = stats.data_JuniperHillsLifetimeItems;
+            this.bestTime = stats.data_bestTime;
         }
     }
 }
@@ -61,25 +72,40 @@ public class SaveData_Story
 public class SaveData_Endless
 {
     public int fileVersion;
-    public int[] notebooks = new int[3];
-    public SaveData_Endless(string map, int score)
+    public int[] itemsUsed_Classic;
+    public int[] itemsUsed_ClassicExtended;
+    public int[] itemsUsed_JuniperHills;
+    public int[] notebooks;
+    public int[] totalDetentions;
+    public SaveData_Endless(StatisticsController stats)
     {
-        switch(map)
+        int totalMaps = 3;
+        int totalItems = 16;
+
+        if (stats == null)
         {
-            case "defaults":
-                this.notebooks[0] = 0;
-                this.notebooks[1] = 0;
-                this.notebooks[2] = 0;
-                break;
-            case "Classic":
-                this.notebooks[0] = score;
-                break;
-            case "ClassicExtended":
-                this.notebooks[1] = score;
-                break;
-            case "JuniperHills":
-                this.notebooks[2] = score;
-                break;
+            this.fileVersion = 1;
+            this.notebooks = new int[totalMaps];
+            this.totalDetentions = new int[totalMaps];
+            this.itemsUsed_Classic = new int[totalItems];
+            this.itemsUsed_ClassicExtended = new int[totalItems];
+            this.itemsUsed_JuniperHills = new int[totalItems];
+
+            this.notebooks[0] = PlayerPrefs.GetInt("highbooks_Classic", 0);
+            this.notebooks[1] = PlayerPrefs.GetInt("highbooks_ClassicExtended", 0);
+            this.notebooks[2] = PlayerPrefs.GetInt("highbooks_JuniperHills", 0);
+            PlayerPrefs.DeleteKey("highbooks_Classic");
+            PlayerPrefs.DeleteKey("highbooks_ClassicExtended");
+            PlayerPrefs.DeleteKey("highbooks_JuniperHills");
+        }
+        else
+        {
+            this.fileVersion = stats.data_fileVersion;
+            this.notebooks = stats.data_notebooks;
+            this.totalDetentions = stats.data_totalDetentions;
+            this.itemsUsed_Classic = stats.data_ClassicLifetimeItems;
+            this.itemsUsed_ClassicExtended = stats.data_ClassicExtendedLifetimeItems;
+            this.itemsUsed_JuniperHills = stats.data_JuniperHillsLifetimeItems;
         }
     }
 }
@@ -88,17 +114,27 @@ public class SaveData_Endless
 public class SaveData_Challenge
 {
     public int fileVersion;
-    public float[] bestTime = new float[1];
-    public SaveData_Challenge(string map, float score)
+    public int[] itemsUsed_NullStyle;
+    public float[] bestTime;
+    public int[] totalDetentions;
+    public SaveData_Challenge(StatisticsController stats)
     {
-        switch(map)
+        int totalMaps = 1;
+        int totalItems = 16;
+
+        if (stats == null)
         {
-            case "defaults":
-                this.bestTime[0] = 0f;
-                break;
-            case "NullStyle":
-                this.bestTime[0] = score;
-                break;
+            this.fileVersion = 1;
+            this.itemsUsed_NullStyle = new int[totalItems];
+            this.totalDetentions = new int[totalMaps];
+            this.bestTime = new float[totalMaps];
+        }
+        else
+        {
+            this.fileVersion = stats.data_fileVersion;
+            this.itemsUsed_NullStyle = stats.data_NullStyleLifetimeItems;
+            this.bestTime = stats.data_bestTime;
+            this.totalDetentions = stats.data_totalDetentions;
         }
     }
 }

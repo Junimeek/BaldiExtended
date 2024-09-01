@@ -225,10 +225,11 @@ public class Launcher : MonoBehaviour
         this.upgradeCanvas_Start.SetActive(false);
         this.upgradeText_process.text = "Creating story data...";
         try {
-            SaveDataController.SaveStoryData("defaults", 0);
+            SaveDataController.SaveStoryData(null);
         }
         catch (System.Exception e) {
             this.ThrowError(e.ToString());
+            Debug.LogError(e);
             yield break;
         }
 
@@ -241,10 +242,28 @@ public class Launcher : MonoBehaviour
         
         this.upgradeText_process.text = "Creating endless data...";
         try {
-            SaveDataController.SaveEndlessData("defaults", 0);
+            SaveDataController.SaveEndlessData(null);
         }
         catch (System.Exception e) {
             this.ThrowError(e.ToString());
+            Debug.LogError(e);
+            yield break;
+        }
+        
+        remTime = 0.5f;
+        while (remTime > 0f)
+        {
+            remTime -= Time.deltaTime;
+            yield return null;
+        }
+
+        this.upgradeText_process.text = "Creating challenge data...";
+        try {
+            SaveDataController.SaveChallengeData(null);
+        }
+        catch (System.Exception e) {
+            this.ThrowError(e.ToString());
+            Debug.LogError(e);
             yield break;
         }
         
@@ -296,30 +315,33 @@ public class Launcher : MonoBehaviour
         if (!File.Exists(this.savePath + "story.sav"))
         {
             try {
-                SaveDataController.SaveStoryData("defaults", 0);
+                SaveDataController.SaveStoryData(null);
             }
             catch (System.Exception e) {
                 this.ThrowError(e.ToString());
+                Debug.LogError(e);
                 yield break;
             }
         }
         if (!File.Exists(this.savePath + "endless.sav"))
         {
             try {
-                SaveDataController.SaveEndlessData("defaults", 0);
+                SaveDataController.SaveEndlessData(null);
             }
             catch (System.Exception e) {
                 this.ThrowError(e.ToString());
+                Debug.LogError(e);
                 yield break;
             }
         }
         if (!File.Exists(this.savePath + "challenge.sav"))
         {
             try {
-                SaveDataController.SaveChallengeData("defaults", 0);
+                SaveDataController.SaveChallengeData(null);
             }
             catch (System.Exception e) {
                 this.ThrowError(e.ToString());
+                Debug.LogError(e);
                 yield break;
             }
         }

@@ -32,6 +32,7 @@ public class YouWonScript : MonoBehaviour
 
 	private void SetStatistics()
 	{
+		this.stats.SaveAllData("time");
 		this.lastTime = this.stats.finalSeconds;
 		this.items = this.stats.itemsUsed;
 		this.detentions = this.stats.detentions;

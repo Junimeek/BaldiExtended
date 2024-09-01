@@ -114,8 +114,6 @@ public class GameControllerScript : MonoBehaviour
 		this.UpdateDollarAmount(0f);
 		this.StartCoroutine(this.WaitForQuarterDisable(true, false));
 
-		this.InitializeScores();
-
 		if (this.isSafeMode)
 			this.stats.disableSaving = true;
 		this.stats.itemsUsed = new int[0];
@@ -185,23 +183,10 @@ public class GameControllerScript : MonoBehaviour
 		}
 	}
 
-	private void InitializeScores()
+	public void InitializeScores()
 	{
-		switch(this.mode)
-		{
-			case "challenge":
-				break;
-			default:
-				SaveData_Endless data = SaveDataController.LoadEndlessData();
-				//this.highBooksDirectory = "highbooks_" + this.curMap;
-				if (this.curMap == "Classic")
-					this.highBooksScore = data.notebooks[0];
-				else if (this.curMap == "ClassicExtended")
-					this.highBooksScore = data.notebooks[1];
-				else if (this.curMap == "JuniperHills")
-					this.highBooksScore = data.notebooks[2];
-				break;
-		}
+		this.bestTime = stats.data_bestTime[stats.mapID];
+		this.highBooksScore = stats.data_notebooks[stats.mapID];
 	}
 
 	private void Update()
@@ -298,6 +283,14 @@ public class GameControllerScript : MonoBehaviour
 			{
 				if (this.modeType == "nullStyle")
 					this.StartCoroutine(this.NullKill());
+				
+				if (this.mode != "endless")
+					this.stats.SaveAllData(null);
+				else if (this.notebooks > this.highBooksScore && !this.isScareStarted)
+				{
+					this.stats.notebooks = this.notebooks;
+					this.stats.SaveAllData("notebooks");
+				}
 
 				this.isScareStarted = true;
 				int randomScare = Mathf.RoundToInt(UnityEngine.Random.Range(0, this.baldiJumpscareSounds.Length - 1));
@@ -306,14 +299,6 @@ public class GameControllerScript : MonoBehaviour
 
 			if (this.gameOverDelay <= 0f)
 			{
-				if (this.mode == "endless" && !this.isSafeMode)
-				{
-					if (this.notebooks > this.highBooksScore)
-						PlayerPrefs.SetInt(this.highBooksDirectory, this.notebooks);
-
-					PlayerPrefs.SetInt("CurrentBooks", this.notebooks);
-				}
-
 				if (!this.player.isSecret)
 				{
 					Time.timeScale = 1f;
@@ -1267,6 +1252,7 @@ public class GameControllerScript : MonoBehaviour
 
 					Array.Resize(ref this.stats.itemsUsed, this.stats.itemsUsed.Length + 1);
 					this.stats.itemsUsed[this.stats.itemsUsed.Length - 1] = 5;
+					this.stats.lifetimeItems[5]++;
 				}
 				else if (raycastHit3.collider.name == "PayPhone" && Vector3.Distance(this.playerTransform.position, raycastHit3.transform.position) <= 10f)
 				{
@@ -1283,6 +1269,7 @@ public class GameControllerScript : MonoBehaviour
 
 					Array.Resize(ref this.stats.itemsUsed, this.stats.itemsUsed.Length + 1);
 					this.stats.itemsUsed[this.stats.itemsUsed.Length - 1] = 5;
+					this.stats.lifetimeItems[5]++;
 				}
 			}
 		}
@@ -1510,6 +1497,7 @@ public class GameControllerScript : MonoBehaviour
 
 		Array.Resize(ref this.stats.itemsUsed, this.stats.itemsUsed.Length + 1);
 		this.stats.itemsUsed[this.stats.itemsUsed.Length - 1] = item_ID;
+		this.stats.lifetimeItems[item_ID]++;
 	}
 
 	public void LoseItem(int id)
@@ -1786,6 +1774,7 @@ public class GameControllerScript : MonoBehaviour
 	public bool isDynamicColor;
 	public int notebooks;
 	[SerializeField] private int highBooksScore;
+	[SerializeField] private float bestTime;
 	[SerializeField] private float speedrunSeconds;
 	[SerializeField] private int speedrunMinutes;
 	[SerializeField] private int speedrunHours;
@@ -1798,8 +1787,7 @@ public class GameControllerScript : MonoBehaviour
 	public int allowedProjectiles;
 	public string mode;
 	public string modeType;
-	[SerializeField] private string curMap;
-	[SerializeField] private string highBooksDirectory;
+	public string curMap;
 	[SerializeField] private string charInAttendance;
 	public Transform partyLocation;
 	public Transform movingPartyLocation;
