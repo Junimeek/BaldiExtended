@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using TMPro;
+using UnityEditor.PackageManager.UI;
 using UnityEngine;
 using UnityEngine.Rendering.PostProcessing;
 using UnityEngine.SceneManagement;
@@ -10,8 +11,6 @@ public class GameControllerScript : MonoBehaviour
 {
 	private void Awake()
 	{
-		debugActions = FindObjectOfType<DebugMenuActions>();
-		debugScreen = FindObjectOfType<DebugScreenSwitch>();
 		audioManager = FindObjectOfType<AudioManager>();
 		handIconScript = FindObjectOfType<HandIconScript>();
 
@@ -596,6 +595,8 @@ public class GameControllerScript : MonoBehaviour
 				else if ((raycastHit.collider.name == "Playtime" || raycastHit.collider.name == "Gotta Sweep" || raycastHit.collider.name == "1st Prize")
 				&& this.item[this.itemSelected] == 12)
 					handIconScript.ChangeIcon(9);
+				else if (raycastHit.collider.tag == "BreakableWindow" && this.item[this.itemSelected] == 17)
+					handIconScript.ChangeIcon(12);
 				else if (raycastHit.collider.tag == "Item")
 				{
 					this.curItem = raycastHit.collider.gameObject;
@@ -1214,6 +1215,22 @@ public class GameControllerScript : MonoBehaviour
 					else
 						this.audioDevice.PlayOneShot(this.aud_Error);
 					break;
+				case 17:
+					Ray ray8 = Camera.main.ScreenPointToRay(new Vector3((float)(Screen.width / 2), (float)(Screen.height / 2), 0f));
+					RaycastHit raycastHit8;
+					if (Physics.Raycast(ray8, out raycastHit8) && Vector3.Distance(this.playerTransform.position, raycastHit8.transform.position) <= 10f
+					&& raycastHit8.collider.tag == "BreakableWindow")
+					{
+						WindowScript window = raycastHit8.collider.gameObject.GetComponent<WindowScript>();
+						if (!window.isBroken)
+						{
+							window.BreakWindow();
+							this.audioDevice.PlayOneShot(this.aud_GlassBreak, 0.8f);
+							this.ResetItem(17);
+							this.handIconScript.ChangeIcon(0);
+						}
+					}
+					break;
 			}
 		}
 		else if (this.forceQuarter)
@@ -1760,7 +1777,6 @@ public class GameControllerScript : MonoBehaviour
 	public bool isAdditionalMusic;
 	public bool isSafeMode;
 	public bool isDifficultMath;
-	public bool debugMode;
 	public bool mouseLocked;
 	private bool gamePaused;
 	public bool showTimer;
@@ -1889,7 +1905,9 @@ public class GameControllerScript : MonoBehaviour
 		"Attendance Slip",
 		"Diet BSODA",
 		"Crystal flavored Zesty Bar",
-		"Party Popper"
+		"Party Popper",
+		"Dollar Bill",
+		"Hammer"
 	};
 	public GameObject quarter;
 	public GameObject bsodaSpray;
@@ -1926,6 +1944,7 @@ public class GameControllerScript : MonoBehaviour
 	[SerializeField] private AudioClip quietNoiseLoop;
 	[SerializeField] private AudioClip glambience;
 	[SerializeField] private AudioClip aud_BalloonPop;
+	[SerializeField] private AudioClip aud_GlassBreak;
 
 
 	[Header("Music")]
@@ -1954,8 +1973,6 @@ public class GameControllerScript : MonoBehaviour
 	public FirstPrizeScript firstPrizeScript;
 	[SerializeField] private AILocationSelectorScript wanderer;
  	[SerializeField] private SweepScript sweepScript;
-	[SerializeField] private DebugMenuActions debugActions;
-	[SerializeField] private DebugScreenSwitch debugScreen;
 	[SerializeField] private AudioManager audioManager;
 	[SerializeField] private HandIconScript handIconScript;
 }

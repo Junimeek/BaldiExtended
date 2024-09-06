@@ -203,7 +203,7 @@ public class PlayerScript : MonoBehaviour
 
 	private void OnTriggerEnter(Collider other)
 	{
-		if ((other.transform.name == "Baldi" || other.transform.name == "NullBoss") && !this.gc.debugMode)
+		if (other.transform.name == "Baldi" || other.transform.name == "NullBoss")
 		{
 			if (!this.gc.isSafeMode)
 			{
@@ -324,6 +324,16 @@ public class PlayerScript : MonoBehaviour
 		this.speedText.SetActive(true);
 		this.speedSlider.gameObject.SetActive(true);
 		this.speedSlider.value = 100f;
+	}
+
+	public void DebugAction(int id)
+	{
+		switch(id)
+		{
+			case 1:
+				this.speedOverrides = new Vector3(20f, 50f, 100f);
+				break;
+		}
 	}
 
 	public GameControllerScript gc;

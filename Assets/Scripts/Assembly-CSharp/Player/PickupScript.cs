@@ -62,6 +62,12 @@ public class PickupScript : MonoBehaviour
 			case 15:
 				this.itemPickup = pickup.PartyPopper;
 				break;
+			case 16:
+				this.itemPickup = pickup.DollarBill;
+				break;
+			case 17:
+				this.itemPickup = pickup.Hammer;
+				break;
 		}
 
 		this.itemSprite.sprite = this.gc.pickup_itemSprites[newItem];
@@ -104,6 +110,8 @@ public class PickupScript : MonoBehaviour
 				return 15;
 			case pickup.DollarBill:
 				return 16;
+			case pickup.Hammer:
+				return 17;
 			default:
 				return 5;
 		}
@@ -119,7 +127,7 @@ public class PickupScript : MonoBehaviour
 	{
 		ZestyBar, DoorLock, PrincipalKeys, BSODA, Quarter, Tape, AlarmClock,
 		NoSquee, SafetyScissors, Boots, SpeedySneakers, AttendanceSlip, DietBSODA,
-		CrystalZesty, PartyPopper, DollarBill
+		CrystalZesty, PartyPopper, DollarBill, Hammer
 	}
 	//private Player playerInput;
 }

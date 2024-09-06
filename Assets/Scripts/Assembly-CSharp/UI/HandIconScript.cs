@@ -48,6 +48,9 @@ public class HandIconScript : MonoBehaviour
             case 11:
                 this.icon.sprite = this.quarter;
                 break;
+            case 12:
+                this.icon.sprite = this.hammer;
+                break;
             default:
                 this.icon.sprite = this.recticle;
                 break;
@@ -68,4 +71,5 @@ public class HandIconScript : MonoBehaviour
     [SerializeField] private Sprite attendanceSlip;
     [SerializeField] private Sprite partyPopper;
     [SerializeField] private Sprite quarter;
+    [SerializeField] private Sprite hammer;
 }

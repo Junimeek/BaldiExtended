@@ -224,7 +224,7 @@ public class BaldiScript : MonoBehaviour
 	/*
 	1 = Door
 	2 = Bad Math
-	3 = Detention
+	3 = Detention, window breaking
 	4 = Exit
 	5 = Alarm Clock, Party
 	6 = Sight

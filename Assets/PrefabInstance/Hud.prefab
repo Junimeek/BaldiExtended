@@ -3162,6 +3162,7 @@ MonoBehaviour:
   attendanceSlip: {fileID: 247820036, guid: 1a8fd50782529154dbb539e613ddc078, type: 3}
   partyPopper: {fileID: 1168976796, guid: 1a8fd50782529154dbb539e613ddc078, type: 3}
   quarter: {fileID: -1843894968, guid: 1a8fd50782529154dbb539e613ddc078, type: 3}
+  hammer: {fileID: -976372060, guid: 1a8fd50782529154dbb539e613ddc078, type: 3}
 --- !u!1 &7390056078875830259
 GameObject:
   m_ObjectHideFlags: 0

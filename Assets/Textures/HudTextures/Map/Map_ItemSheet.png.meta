@@ -533,7 +533,7 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -541,6 +541,27 @@ TextureImporter:
       bones: []
       spriteID: 80d134e18e8f3ee4cb5baa6f939bb083
       internalID: -2027534795
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MapIcon_Hammer
+      rect:
+        serializedVersion: 2
+        x: 69
+        y: 77
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 47c8f93e933ca994f9b4529c4eee7b93
+      internalID: 485814538
       vertices: []
       indices: 
       edges: []
@@ -556,6 +577,7 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
+      MapIcon_Hammer: 485814538
       MapIcon_ExitOpen: 684863835
       MapIcon_Boots: -1852763976
       MapIcon_Sneakers: -602223161
