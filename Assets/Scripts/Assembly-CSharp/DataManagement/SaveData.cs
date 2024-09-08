@@ -42,7 +42,7 @@ public class SaveData_Story
     public SaveData_Story(StatisticsController stats)
     {
         int totalMaps = 3;
-        int totalItems = 16;
+        int totalItems = 18;
 
         if (stats == null)
         {
@@ -80,7 +80,7 @@ public class SaveData_Endless
     public SaveData_Endless(StatisticsController stats)
     {
         int totalMaps = 3;
-        int totalItems = 16;
+        int totalItems = 18;
 
         if (stats == null)
         {
@@ -120,7 +120,7 @@ public class SaveData_Challenge
     public SaveData_Challenge(StatisticsController stats)
     {
         int totalMaps = 1;
-        int totalItems = 16;
+        int totalItems = 18;
 
         if (stats == null)
         {

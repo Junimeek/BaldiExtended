@@ -13,13 +13,27 @@ public class HighScoresMenu : MonoBehaviour
         this.itemsUsed_Classic = this.storyData.itemsUsed_Classic;
         this.itemsUsed_ClassicExtended = this.storyData.itemsUsed_ClassicExtended;
         this.itemsUsed_JuniperHills = this.storyData.itemsUsed_JuniperHills;
+        this.itemsUsed_NullStyle = this.challengeData.itemsUsed_NullStyle;
 
-        for (int i = 0; i < 16; i++)
+        for (int i = 0; i < 18; i++) // Adds Story and Endless numbers together for now
         {
-            this.itemsUsed_Classic[i] += this.endlessData.itemsUsed_Classic[i];
-            this.itemsUsed_ClassicExtended[i] += this.endlessData.itemsUsed_ClassicExtended[i];
-            this.itemsUsed_JuniperHills[i] += this.endlessData.itemsUsed_JuniperHills[i];
+            try {
+                this.itemsUsed_Classic[i] += this.endlessData.itemsUsed_Classic[i];
+                this.itemsUsed_ClassicExtended[i] += this.endlessData.itemsUsed_ClassicExtended[i];
+                this.itemsUsed_JuniperHills[i] += this.endlessData.itemsUsed_JuniperHills[i];
+            }
+            catch {
+                Array.Resize(ref this.itemsUsed_Classic, this.itemsUsed_Classic.Length + 1);
+                Array.Resize(ref this.itemsUsed_ClassicExtended, this.itemsUsed_ClassicExtended.Length + 1);
+                Array.Resize(ref this.itemsUsed_JuniperHills, this.itemsUsed_JuniperHills.Length + 1);
+                this.itemsUsed_Classic[i] = 0;
+                this.itemsUsed_ClassicExtended[i] = 0;
+                this.itemsUsed_JuniperHills[i] = 0;
+            }
         }
+
+        if (this.itemsUsed_NullStyle.Length < 18)
+            Array.Resize(ref this.itemsUsed_NullStyle, 18);
 
         for (int i = 0; i < this.informationScripts.Length; i++)
         {
@@ -51,6 +65,9 @@ public class HighScoresMenu : MonoBehaviour
                 case "JuniperHills":
                     highScore = this.endlessData.notebooks[2];
                     break;
+                case "NullSyle":
+                    highScore = 0;
+                    break;
                 default:
                     highScore = 0;
                     break;
@@ -68,7 +85,6 @@ public class HighScoresMenu : MonoBehaviour
 
         for (int i = 0; i < this.maps.Length; i++)
         {
-
             switch(this.maps[i])
             {
                 case "Classic":
@@ -80,18 +96,20 @@ public class HighScoresMenu : MonoBehaviour
                 case "JuniperHills":
                     time = this.TimeConversion(this.storyData.bestTime[2]);
                     break;
+                case "NullStyle":
+                    time = this.TimeConversion(this.challengeData.bestTime[0]);
+                    break;
                 default:
-                    time = "0:00.000";
+                    time = "None";
                     break;
             }
-
             this.bestTimes[i] = time;
         }
     }
 
     private string TimeConversion(float time)
     {
-        if (time == 9999f)
+        if (time == 0f || time == 9999f)
             return "None";
 
         float seconds = time % 60f;
@@ -104,7 +122,10 @@ public class HighScoresMenu : MonoBehaviour
 
     public void GetEndlessScore(int mapSelected)
     {
-        this.endlessText = "STORY: " + this.bestTimes[mapSelected] + "\nENDLESS: " + this.scores[mapSelected] + " Notebooks";
+        if (this.IsChallengeMap(mapSelected))
+            this.endlessText = "CHALLENGE: " + this.bestTimes[mapSelected];
+        else
+            this.endlessText = "STORY: " + this.bestTimes[mapSelected] + "\nENDLESS: " + this.scores[mapSelected] + " Notebooks";
         this.informationScripts[mapSelected].HighlightItem();
 
         switch (mapSelected)
@@ -121,6 +142,21 @@ public class HighScoresMenu : MonoBehaviour
                 for (int i = 0; i < this.itemTexts.Length; i++)
                     this.itemTexts[i].text = this.itemsUsed_JuniperHills[i].ToString();
                 break;
+            case 3:
+                for (int i = 0; i < this.itemTexts.Length; i++)
+                    this.itemTexts[i].text = this.itemsUsed_NullStyle[i].ToString();
+                break;
+        }
+    }
+
+    private bool IsChallengeMap(int map)
+    {
+        switch(map)
+        {
+            case 3:
+                return true;
+            default:
+                return false;
         }
     }
 
@@ -140,6 +176,7 @@ public class HighScoresMenu : MonoBehaviour
     [SerializeField] private int[] itemsUsed_Classic;
     [SerializeField] private int[] itemsUsed_ClassicExtended;
     [SerializeField] private int[] itemsUsed_JuniperHills;
+    [SerializeField] private int[] itemsUsed_NullStyle;
     [SerializeField] private TMP_Text[] itemTexts;
     public string endlessText;
 }

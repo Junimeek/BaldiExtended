@@ -33,6 +33,7 @@ public class BaldiScript : MonoBehaviour
 		
 		if (this.gc.modeType == "nullStyle")
 		{
+			this.isNullMode = true;
 			this.agent.SetDestination(this.player.position);
 			this.baldicator.ChangeBaldicatorState("Pursuit");
 			this.ResetSpeechTimer();
@@ -56,19 +57,18 @@ public class BaldiScript : MonoBehaviour
 
 		if (this.baldiTempAnger > 0f) //Slowly decrease Baldi's temporary anger over time.
 			this.baldiTempAnger -= 0.02f * Time.deltaTime;
-
-		else this.baldiTempAnger = 0f; //Cap its lowest value at 0
+		else
+			this.baldiTempAnger = 0f; //Cap its lowest value at 0
 
 		if (this.antiHearingTime > 0f) //Decrease antiHearingTime, then when it runs out stop the effects of the antiHearing tape
 			this.antiHearingTime -= Time.deltaTime;
-
-		else this.antiHearing = false;
+		else
+			this.antiHearing = false;
 
 		if (this.endless) //Only activate if the player is playing on endless mode
 		{
 			if (this.timeToAnger > 0f) //Decrease the timeToAnger
 				this.timeToAnger -= 1f * Time.deltaTime;
-
 			else
 			{
 				this.timeToAnger = this.angerFrequency; //Set timeToAnger to angerFrequency
@@ -82,17 +82,17 @@ public class BaldiScript : MonoBehaviour
 		else if (this.sightCooldown > 0f)
 			this.sightCooldown -= Time.deltaTime;
 		
-		if (this.gc.modeType == "nullStyle")
+		if (this.isNullMode)
 			this.speechTimer -= Time.deltaTime;
 
-		if (this.gc.modeType == "nullStyle" && this.db && this.playerScript.stamina <= 0f && this.gc.IsNoItems()
+		if (this.isNullMode && this.db && this.playerScript.stamina <= 0f && this.gc.IsNoItems()
 		&& this.baldiAnger >= 5 && this.speechTimer < 61f && !this.longAudioDevice.isPlaying)
 		{
 			this.StartCoroutine(this.NullSight());
 			this.longAudioDevice.PlayOneShot(this.nullSpeech[5]);
 		}
 
-		if (this.gc.modeType == "nullStyle" && this.speechTimer < 0f)
+		if (this.isNullMode && this.speechTimer < 0f)
 		{
 			if (!this.db && this.currentPriority == 0)
 			{
@@ -126,6 +126,11 @@ public class BaldiScript : MonoBehaviour
 		}
 	}
 
+	private void OnDisable()
+	{
+		this.gc.EnableAllWindowBlockers();
+	}
+
 	private void FixedUpdate()
 	{
 		if (this.moveFrames > 0f) //Move for a certain amount of frames, and then stop moving.(Ruler slapping)
@@ -141,6 +146,7 @@ public class BaldiScript : MonoBehaviour
 
 		if (Physics.Raycast(base.transform.position + Vector3.up * 2f, direction, out raycastHit, float.PositiveInfinity, 769, QueryTriggerInteraction.Ignore) & raycastHit.transform.tag == "Player") //Create a raycast, if the raycast hits the player, Baldi can see the player
 		{
+			Debug.DrawLine(base.transform.position, raycastHit.transform.position, Color.cyan);
 			this.db = true;
 
 			if (this.alarmClock != null)
@@ -158,6 +164,7 @@ public class BaldiScript : MonoBehaviour
 			this.agent.SetDestination(this.wanderer.NewTarget("Party"));
 		else
 			this.agent.SetDestination(this.wanderer.NewTarget("Baldi")); //Head towards the position of the wanderTarget object
+
 		this.coolDown = 1f; //Set the cooldown
 	}
 
@@ -184,7 +191,7 @@ public class BaldiScript : MonoBehaviour
 		this.moveFrames = 10f;
 		this.baldiAudio.PlayOneShot(this.slap); //Play the slap sound
 
-		if (this.gc.modeType != "nullStyle")
+		if (!this.isNullMode)
 		{
 			if (this.gc.isSafeMode)
 				this.baldiAnimator.SetTrigger("ghostSlap");
@@ -248,6 +255,9 @@ public class BaldiScript : MonoBehaviour
 		}
 
 		this.isAlarmClock = false;
+
+		if (!this.allowWindowBreaking && this.currentPriority > 1)
+			this.gc.StartCoroutine(this.gc.ToggleWindowBlockers());
 
 		if (priority >= this.currentPriority)
 		{
@@ -316,6 +326,9 @@ public class BaldiScript : MonoBehaviour
 
 	private IEnumerator FollowPlayer()
 	{
+		if (!this.allowWindowBreaking)
+			this.gc.StartCoroutine(this.gc.ToggleWindowBlockers());
+
 		while (this.db)
 		{
 			this.currentPriority = 6;
@@ -355,6 +368,8 @@ public class BaldiScript : MonoBehaviour
 	public bool isParty;
 
 	[Header("Null Modifications")]
+	[SerializeField] private bool isNullMode;
+	public bool allowWindowBreaking;
 	[SerializeField] private AudioClip[] nullSpeech;
 	[SerializeField] private AudioSource longAudioDevice;
 	[SerializeField] private float speechTimer;

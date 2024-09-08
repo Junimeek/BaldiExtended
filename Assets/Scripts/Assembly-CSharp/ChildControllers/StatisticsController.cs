@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -128,7 +129,15 @@ public class StatisticsController : MonoBehaviour
             {
                 case 0:
                     for (int i = 0; i < this.lifetimeItems.Length; i++)
-                        this.data_NullStyleLifetimeItems[i] = this.lifetimeItems[i];
+                    {
+                        try {
+                            this.data_NullStyleLifetimeItems[i] = this.lifetimeItems[i];
+                        }
+                        catch {
+                            Array.Resize(ref this.data_NullStyleLifetimeItems, this.data_NullStyleLifetimeItems.Length + 1);
+                            this.data_NullStyleLifetimeItems[i] = this.lifetimeItems[i];
+                        }
+                    }
                     break;
             }
 

@@ -32,12 +32,37 @@ public class YouWonScript : MonoBehaviour
 
 	private void SetStatistics()
 	{
-		this.stats.SaveAllData("time");
 		this.lastTime = this.stats.finalSeconds;
+
+		if (this.lastTime < this.stats.data_bestTime[this.GetMapID()])
+		{
+			this.stats.SaveAllData("time");
+			this.isNewBest = true;
+		}
+		else
+			this.stats.SaveAllData(null);
+
 		this.items = this.stats.itemsUsed;
 		this.detentions = this.stats.detentions;
 
 		Destroy(this.stats.gameObject);
+	}
+
+	private int GetMapID()
+	{
+		switch(PlayerPrefs.GetString("CurrentMap"))
+		{
+			case "Classic":
+				return 0;
+			case "ClassicExtended":
+				return 1;
+			case "JuniperHills":
+				return 2;
+			case "ClassicDark":
+				return 3;
+			default:
+				return 0;
+		}
 	}
 
 	public void ChangeScreen(int newScreen)
@@ -64,6 +89,9 @@ public class YouWonScript : MonoBehaviour
 			this.isFetched = true;
 
 		this.timeText.text = this.FinalTime();
+
+		if (this.isNewBest)
+			this.newBestText.SetActive(true);
 
 		this.detentionsText.text = this.detentions.ToString();
 
@@ -95,6 +123,9 @@ public class YouWonScript : MonoBehaviour
 			case "JuniperHills":
 				this.mapIcon.sprite = this.mapSprites[3];
 				break;
+			case "ClassicDark":
+				this.mapIcon.sprite = this.mapSprites[4];
+				break;
 			default:
 				this.mapIcon.sprite = this.mapSprites[0];
 				break;
@@ -118,11 +149,13 @@ public class YouWonScript : MonoBehaviour
 
 	[SerializeField] private StatisticsController stats;
 	[SerializeField] private TMP_Text timeText;
+	[SerializeField] private GameObject newBestText;
 	[SerializeField] private TMP_Text detentionsText;
 	[SerializeField] private bool isFetched;
 	[SerializeField] private Transform itemParent;
 
 	[Header("Statistics")]
+	[SerializeField] private bool isNewBest;
 	[SerializeField] private float lastTime;
 	[SerializeField] private int[] items;
 	[SerializeField] private int detentions;

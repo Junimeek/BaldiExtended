@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.Rendering.PostProcessing;
 
 public class WindowScript : MonoBehaviour
@@ -11,16 +13,14 @@ public class WindowScript : MonoBehaviour
         this.prizeScript = this.gc.firstPrizeScript;
         this.baldiScript = this.gc.baldiScrpt;
         this.isBroken = false;
+        
+        Array.Resize(ref this.gc.windowBlockers, this.gc.windowBlockers.Length + 1);
+        this.gc.windowBlockers[this.gc.windowBlockers.Length - 1] = this.agentObstacle;
     }
     private void OnTriggerStay(Collider other)
     {
-        if (other.gameObject.name == "1st Prize" && this.prizeScript.prizeSpeed > 50f && !this.isBroken)
-        {
-            this.isBroken = true;
-
-            for (int i = 0; i < this.barriers.Length; i++)
-                this.barriers[i].enabled = false;
-        }
+        if (other.gameObject.name == "Baldi" && !this.isBroken)
+            this.BreakWindow();
     }
 
     public void BreakWindow()
@@ -33,10 +33,8 @@ public class WindowScript : MonoBehaviour
             this.windows[i].material = this.brokenMatierial;
         }
 
-        this.agentObstacle.SetActive(false);
-
-        if (this.baldiScript.isActiveAndEnabled)
-            this.baldiScript.AddNewSound(this.windows[1].transform.position, 3);
+        this.audioDevice.Play();
+        this.agentObstacle.transform.position += new Vector3(0f, 20f, 0f);
     }
 
     [SerializeField] private GameControllerScript gc;
@@ -45,6 +43,7 @@ public class WindowScript : MonoBehaviour
     [SerializeField] private MeshCollider[] barriers;
     [SerializeField] private MeshRenderer[] windows;
     [SerializeField] private Material brokenMatierial;
-    [SerializeField] private GameObject agentObstacle;
+    [SerializeField] private AudioSource audioDevice;
+    public GameObject agentObstacle;
     public bool isBroken;
 }

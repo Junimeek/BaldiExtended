@@ -3,6 +3,7 @@ using System.Collections;
 using TMPro;
 using UnityEditor.PackageManager.UI;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.Rendering.PostProcessing;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -185,7 +186,9 @@ public class GameControllerScript : MonoBehaviour
 	public void InitializeScores()
 	{
 		this.bestTime = stats.data_bestTime[stats.mapID];
-		this.highBooksScore = stats.data_notebooks[stats.mapID];
+
+		if (this.mode != "challenge")
+			this.highBooksScore = stats.data_notebooks[stats.mapID];
 	}
 
 	private void Update()
@@ -287,6 +290,7 @@ public class GameControllerScript : MonoBehaviour
 					this.stats.SaveAllData(null);
 				else if (this.notebooks > this.highBooksScore && !this.isScareStarted)
 				{
+					this.isScareStarted = true;
 					this.stats.notebooks = this.notebooks;
 					this.stats.SaveAllData("notebooks");
 				}
@@ -846,6 +850,33 @@ public class GameControllerScript : MonoBehaviour
 		this.ModifyExits("raise");
 	}
 
+	public IEnumerator ToggleWindowBlockers()
+	{
+		for (int i = 0; i < this.windowBlockers.Length; i++)
+			this.windowBlockers[i].SetActive(false);
+		
+		this.baldiScrpt.allowWindowBreaking = true;
+
+		while (this.baldiScrpt.currentPriority > 1)
+			yield return null;
+		
+		for (int i = 0; i < this.windowBlockers.Length; i++)
+			this.windowBlockers[i].SetActive(true);
+		
+		this.baldiScrpt.allowWindowBreaking = false;
+	}
+
+	public void EnableAllWindowBlockers()
+	{
+		StopCoroutine(this.ToggleWindowBlockers());
+
+		this.baldiScrpt.currentPriority = 0;
+		this.baldiScrpt.allowWindowBreaking = false;
+
+		for (int i = 0; i < this.windowBlockers.Length; i++)
+			this.windowBlockers[i].SetActive(true);
+	}
+
 	public void EndSafeGame()
 	{
 		this.isGameFail = true;
@@ -1224,6 +1255,9 @@ public class GameControllerScript : MonoBehaviour
 						WindowScript window = raycastHit8.collider.gameObject.GetComponent<WindowScript>();
 						if (!window.isBroken)
 						{
+							if (this.baldiScrpt.isActiveAndEnabled)
+								this.baldiScrpt.AddNewSound(window.agentObstacle.transform.position, 3);
+								
 							window.BreakWindow();
 							this.audioDevice.PlayOneShot(this.aud_GlassBreak, 0.8f);
 							this.ResetItem(17);
@@ -1514,7 +1548,14 @@ public class GameControllerScript : MonoBehaviour
 
 		Array.Resize(ref this.stats.itemsUsed, this.stats.itemsUsed.Length + 1);
 		this.stats.itemsUsed[this.stats.itemsUsed.Length - 1] = item_ID;
-		this.stats.lifetimeItems[item_ID]++;
+
+		try {
+			this.stats.lifetimeItems[item_ID]++;
+		}
+		catch {
+			Array.Resize(ref this.stats.lifetimeItems, this.itemNames.Length);
+			this.stats.lifetimeItems[item_ID]++;
+		}
 	}
 
 	public void LoseItem(int id)
@@ -1850,6 +1891,7 @@ public class GameControllerScript : MonoBehaviour
 	public GameObject baldiTutor;
 	public GameObject baldi;
 	[SerializeField] private GameObject nullBoss;
+	public GameObject[] windowBlockers;
 	public GameObject principal;
 	public GameObject crafters;
 	public GameObject playtime;
@@ -1907,7 +1949,7 @@ public class GameControllerScript : MonoBehaviour
 		"Crystal flavored Zesty Bar",
 		"Party Popper",
 		"Dollar Bill",
-		"Hammer"
+		"Dangerous Hammer"
 	};
 	public GameObject quarter;
 	public GameObject bsodaSpray;

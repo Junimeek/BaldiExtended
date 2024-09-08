@@ -21,6 +21,11 @@ public class MenuLoadingScreen : MonoBehaviour
             case "JuniperHills":
                 this.image.sprite = this.backgrounds[3];
                 break;
+            case "ClassicDark":
+                this.image.sprite = this.backgrounds[4];
+                foreach (TMP_Text i in this.staticTexts)
+                    i.color = Color.white;
+                break;
             default:
                 this.image.sprite = this.backgrounds[0];
                 break;
@@ -67,15 +72,21 @@ public class MenuLoadingScreen : MonoBehaviour
     private string SelectedSettings()
     {
         if (container.curMap == "ClassicDark")
-            return "HARD MODE\nNO CHARACTERS\nN\n\n       ULL";
-        else if (container.safeMode == 1 && container.difficultMath == 1)
-            return "SAFE MODE\nDIFFICULT MATH";
-        else if (container.safeMode == 1)
-            return "SAFE MODE";
-        else if (container.difficultMath == 1)
-            return "DIFFICULT MATH";
+            return "HARD MODE\nNO CHARACTERS\n\nN\n       ULL";
         else
-            return "None";
+        {
+            string returnedSettings = string.Empty;
+
+            if (container.safeMode == 1)
+                returnedSettings = returnedSettings + "SAFE MODE\n";
+            if (container.difficultMath == 1)
+                returnedSettings = returnedSettings + "DIFFICULT MATH\n";
+
+            if (returnedSettings == string.Empty)
+                return "None";
+            else
+                return returnedSettings;
+        }
     }
 
     [SerializeField] private SettingsContainer container;
@@ -86,4 +97,5 @@ public class MenuLoadingScreen : MonoBehaviour
     [SerializeField] private Sprite[] backgrounds;
     [SerializeField] private TMP_Text mapText;
     [SerializeField] private TMP_Text settingsText;
+    [SerializeField] private TMP_Text[] staticTexts;
 }
