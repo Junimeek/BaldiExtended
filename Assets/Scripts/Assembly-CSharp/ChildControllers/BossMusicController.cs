@@ -101,6 +101,7 @@ public class BossMusicController : MonoBehaviour
 
     [SerializeField] private AudioSource audioDevice1;
     [SerializeField] private AudioSource audioDevice2;
+    [SerializeField] private AudioSource audioDevice3;
     public AudioClip[] playlist;
     [SerializeField] private AudioClip[] audioQueue;
     [SerializeField] private int curGameStage;

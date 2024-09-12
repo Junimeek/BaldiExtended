@@ -38,16 +38,20 @@ namespace UpgradeSystem
         private void Start()
         {
             StopAllCoroutines();
-            stableCanvas.SetActive(false);
-            nightlyCanvas.SetActive(false);
+            this.stableCanvas.SetActive(false);
+            this.nightlyCanvas.SetActive(false);
 
-            if (isNightly) jsonDataURL = nightlyURL;
-            else jsonDataURL = stableURL;
+            if (this.isNightly)
+                this.jsonDataURL = this.nightlyURL;
+            else
+                this.jsonDataURL = this.stableURL;
 
-            if (isNightly) curVersion = nightlyBuild;
-            else curVersion = stableBuild;
+            if (this.isNightly)
+                this.curVersion = this.nightlyBuild;
+            else
+                this.curVersion = this.stableBuild;
 
-            StartCoroutine(CheckForUpdates());
+            StartCoroutine(this.CheckForUpdates());
         }
 
         private IEnumerator CheckForUpdates()
@@ -66,8 +70,8 @@ namespace UpgradeSystem
                     latestGameData = JsonUtility.FromJson<GameData> (request.downloadHandler.text);
                     if (!string.IsNullOrEmpty(latestGameData.Version) && curVersion != latestGameData.Version)
                     {
-                        descriptionText.text = latestGameData.Description;
-                        ShowPopup();
+                        this.descriptionText.text = latestGameData.Description;
+                        this.ShowPopup();
                     }
                 }
             }
@@ -80,8 +84,10 @@ namespace UpgradeSystem
                 Application.OpenURL(latestGameData.Url);
             });
 
-            if (isNightly) nightlyCanvas.SetActive(true);
-            else stableCanvas.SetActive(true);
+            if (isNightly)
+                this.nightlyCanvas.SetActive(true);
+            else
+                this.stableCanvas.SetActive(true);
         }
 
         private void OnDestroy()

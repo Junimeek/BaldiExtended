@@ -128,7 +128,8 @@ public class BaldiScript : MonoBehaviour
 
 	private void OnDisable()
 	{
-		this.gc.EnableAllWindowBlockers();
+		if (this.isNullMode)
+			this.gc.EnableAllWindowBlockers();
 	}
 
 	private void FixedUpdate()

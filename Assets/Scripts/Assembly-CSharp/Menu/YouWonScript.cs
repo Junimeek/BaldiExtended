@@ -59,7 +59,7 @@ public class YouWonScript : MonoBehaviour
 			case "JuniperHills":
 				return 2;
 			case "ClassicDark":
-				return 3;
+				return 0;
 			default:
 				return 0;
 		}

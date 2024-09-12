@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Rendering.PostProcessing;
 
 public class NullBoss : MonoBehaviour
 {
@@ -103,6 +104,7 @@ public class NullBoss : MonoBehaviour
         this.playerScript.isInvincible = true;
         this.hits++;
         this.gc.allowedProjectiles--;
+        this.QueueNextClip();
 
         if (this.hits == 10)
         {
@@ -127,6 +129,41 @@ public class NullBoss : MonoBehaviour
         this.sprite.color = UnityEngine.Color.white;
         this.allowMovement = true;
         this.playerScript.isInvincible = false;
+    }
+
+    private void QueueNextClip()
+    {
+        switch(this.hits)
+        {
+            case 2:
+                this.musicController.QueueClips(this.musicController.playlist[3]);
+                break;
+            case 3:
+                this.musicController.QueueClips(this.musicController.playlist[4]);
+                break;
+            case 4:
+                this.musicController.QueueClips(this.musicController.playlist[5]);
+                break;
+            case 5:
+                this.musicController.QueueClips(this.musicController.playlist[6]);
+                this.musicController.QueueClips(this.musicController.playlist[7]);
+                break;
+            case 6:
+                this.musicController.QueueClips(this.musicController.playlist[8]);
+                this.musicController.QueueClips(this.musicController.playlist[9]);
+                break;
+            case 7:
+                this.musicController.QueueClips(this.musicController.playlist[10]);
+                this.musicController.QueueClips(this.musicController.playlist[11]);
+                break;
+            case 8:
+                this.musicController.QueueClips(this.musicController.playlist[12]);
+                this.musicController.QueueClips(this.musicController.playlist[13]);
+                break;
+            case 9:
+                this.musicController.QueueClips(this.musicController.playlist[14]);
+                break;
+        }
     }
 
     private UnityEngine.Color RandomColor()

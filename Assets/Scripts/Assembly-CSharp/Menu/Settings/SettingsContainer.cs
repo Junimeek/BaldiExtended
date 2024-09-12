@@ -147,6 +147,12 @@ public class SettingsContainer : MonoBehaviour
         Debug.Log("Settings file created");
     }
 
+    private void LoadAllUnlocks()
+    {
+        SaveData_Challenge challengeData = SaveDataController.LoadChallengeData();
+        this.challengeMapUnlocks = challengeData.challengeUnlocks;
+    }
+
     /*
     public void SaveSettingsData(int type)
     {
@@ -231,8 +237,11 @@ public class SettingsContainer : MonoBehaviour
 
     private static SettingsContainer instance;
     [SerializeField] private string dataPath;
+
+    [Header("Unlock Data")]
+    [SerializeField] private bool[] challengeMapUnlocks;
     
-    //options
+    [Header("Opions")]
     public float turnSensitivity;
     public float volumeVoice;
     public float volumeBGM;
@@ -241,7 +250,7 @@ public class SettingsContainer : MonoBehaviour
     public bool additionalMusic;
     public bool notifBoard;
 
-    //gameplay styles
+    [Header("Gameplay Styles")]
     public string curMap;
     public int safeMode;
     public int difficultMath;

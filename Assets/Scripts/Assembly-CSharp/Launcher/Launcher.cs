@@ -4,6 +4,8 @@ using UnityEngine;
 using UpgradeSystem;
 using TMPro;
 using UnityEngine.Rendering.PostProcessing;
+using System.Diagnostics;
+using System;
 
 public class Launcher : MonoBehaviour
 {
@@ -12,16 +14,24 @@ public class Launcher : MonoBehaviour
         this.stopCanvas.SetActive(false);
         this.logoCanvas.SetActive(false);
         this.launcherCanvas.SetActive(false);
+        this.fileCanvas.SetActive(false);
         this.upgradeCanvas_Start.SetActive(false);
         this.upgradeCanvas_Process.SetActive(false);
         this.upgradeCanvas_End.SetActive(false);
         this.errorCanvas.SetActive(false);
         this.StartCoroutine(this.WaitForStart());
 
+        if (Application.platform == RuntimePlatform.WindowsEditor || Application.platform == RuntimePlatform.LinuxEditor)
+            this.versionText.text = "EDITOR\n";
+        else if (Application.platform == RuntimePlatform.WindowsPlayer)
+            this.versionText.text = "Windows Edition - ";
+        else if (Application.platform == RuntimePlatform.LinuxPlayer)
+            this.versionText.text = "Linux Edition - ";
+
         if (this.updateScript.isNightly)
-            this.versionText.text = "Build: " + updateScript.nightlyBuild;
+            this.versionText.text += "Development build " + this.updateScript.nightlyBuild;
         else
-            this.versionText.text = string.Empty;
+            this.versionText.text += "Beta V" + this.updateScript.stableBuild;
 
         this.savePath = Application.persistentDataPath + "/BaldiData/";
         this.FileChecks();
@@ -80,39 +90,108 @@ public class Launcher : MonoBehaviour
             this.audioDevice.PlayOneShot(music);
             
             if (PlayerPrefs.HasKey("highbooks_Classic") || PlayerPrefs.HasKey("highbooks_ClassicExtended") || PlayerPrefs.HasKey("highbooks_JuniperHills"))
-                SaveDataController.UpgradeSaves("endless", this.saveFileVersion);
+                UnityEngine.Debug.Log("playerprefs load");
+                //SaveDataController.UpgradeSaves("endless", this.saveFileVersion);
         }
     }
 
     public void DaClick(int id)
     {
-        if (id == 1 && !isLaunching) // Generic
-            this.audioDevice.PlayOneShot(acceptSound);
-        else if (id == 2) // Github
+        switch(id)
         {
-            this.audioDevice.PlayOneShot(acceptSound);
-            Application.OpenURL("https://github.com/Junimeek/BaldiExtended");
-        }
-        else if (id == 3 && !isLaunching) // Quit Game
-        {
-            this.audioDevice.PlayOneShot(quitSound);
-            StartCoroutine(this.WaitForQuit(1.2f));
-        }
-        else if (id == 4) // Upgrade prompts
-            this.AdvanceUpgradePrompt();
-        else if (id == 5) // Fast Quit
-            StartCoroutine(this.WaitForQuit(0.1f));
-        else if (id == 99 && !isLaunching) // Launch Game
-        {
-            this.audioDevice.volume = 0.5f;
-            this.audioDevice.PlayOneShot(splap);
-            StartCoroutine(WaitForLaunch());
+            case 2: // Github
+                this.audioDevice.PlayOneShot(this.acceptSound);
+                Application.OpenURL("https://github.com/Junimeek/BaldiExtended");
+                break;
+            case 4: // Upgrade prompts
+                this.AdvanceUpgradePrompt();
+                break;
+            case 5: // Fast Quit
+                this.StartCoroutine(this.WaitForQuit(0.1f));
+                break;
+            case 81: // Opens the location of the save file data
+                this.audioDevice.PlayOneShot(this.acceptSound);
+                this.OpenFileLocation("mainSave");
+                break;
+            case 82: // Opens the location of the backup save data
+                this.audioDevice.PlayOneShot(this.acceptSound);
+                this.OpenFileLocation("backupSave");
+                break;
+            default:
+                if (!this.isLaunching)
+                {
+                    switch(id)
+                    {
+                        case 1: // Generic
+                            this.audioDevice.PlayOneShot(this.acceptSound);
+                            break;
+                        case 3: // Quit Game
+                            this.audioDevice.PlayOneShot(this.quitSound);
+                            this.StartCoroutine(this.WaitForQuit(1.2f));
+                            break;
+                        case 6: // Open File Management
+                            this.audioDevice.PlayOneShot(this.acceptSound);
+                            this.OpenFileMenu();
+                            break;
+                        case 99:
+                            this.audioDevice.volume = 0.5f;
+                            this.audioDevice.PlayOneShot(this.splap);
+                            this.StartCoroutine(this.WaitForLaunch());
+                            break;
+                    }
+                }
+                break;
         }
     }
 
     public void OpenLink(string link)
     {
         Application.OpenURL(link);
+    }
+
+    private void OpenFileMenu()
+    {
+        if (Application.platform != RuntimePlatform.WindowsPlayer && Application.platform != RuntimePlatform.WindowsEditor)
+            this.helpfulLinks.SetActive(false);
+        
+        this.fileCanvas.SetActive(true);
+    }
+
+    public void OpenFileLocation(string location)
+    {
+        try {
+            switch(location)
+            {
+                case "mainSave":
+                    if (Application.platform == RuntimePlatform.WindowsPlayer || Application.platform == RuntimePlatform.WindowsEditor)
+                    {
+                        string systemUsername = Environment.UserName;
+                        string folderPath = "C:\\Users\\" + systemUsername + "\\AppData\\LocalLow\\JuniDev\\BaldiExtended\\BaldiData";
+                        ProcessStartInfo startInfo = new ProcessStartInfo
+                        {
+                            FileName = "explorer.exe", Arguments = folderPath
+                        };
+                        Process.Start(startInfo);
+                    }
+                    break;
+                case "backupSave":
+                    if (Application.platform == RuntimePlatform.WindowsPlayer || Application.platform == RuntimePlatform.WindowsEditor)
+                    {
+                        string systemUsername = Environment.UserName;
+                        string folderPath = "C:\\Users\\" + systemUsername + "\\AppData\\LocalLow\\JuniDev\\BaldiExtended\\BaldiData_Backup";
+                        ProcessStartInfo startInfo = new ProcessStartInfo
+                    {
+                            FileName = "explorer.exe", Arguments = folderPath
+                        };
+                        Process.Start(startInfo);
+                    }
+                    break;
+            }
+        }
+        catch(System.Exception e) {
+            this.launcherCanvas.SetActive(false);
+            this.ThrowError(e.ToString());
+        }
     }
 
     private IEnumerator WaitForLaunch()
@@ -158,7 +237,7 @@ public class Launcher : MonoBehaviour
             yield return null;
         }
 
-        Debug.LogWarning("Game Quit");
+        UnityEngine.Debug.LogWarning("Game Quit");
         Application.Quit();
     }
 
@@ -229,7 +308,7 @@ public class Launcher : MonoBehaviour
         }
         catch (System.Exception e) {
             this.ThrowError(e.ToString());
-            Debug.LogError(e);
+            UnityEngine.Debug.LogError(e);
             yield break;
         }
 
@@ -246,7 +325,7 @@ public class Launcher : MonoBehaviour
         }
         catch (System.Exception e) {
             this.ThrowError(e.ToString());
-            Debug.LogError(e);
+            UnityEngine.Debug.LogError(e);
             yield break;
         }
         
@@ -263,7 +342,7 @@ public class Launcher : MonoBehaviour
         }
         catch (System.Exception e) {
             this.ThrowError(e.ToString());
-            Debug.LogError(e);
+            UnityEngine.Debug.LogError(e);
             yield break;
         }
         
@@ -296,6 +375,7 @@ public class Launcher : MonoBehaviour
         this.errorCanvas.SetActive(true);
         this.upgradeState = 99;
         this.errorText.text = error;
+        UnityEngine.Debug.LogError(error);
     }
 
     private IEnumerator WaitForFileChecks()
@@ -319,7 +399,7 @@ public class Launcher : MonoBehaviour
             }
             catch (System.Exception e) {
                 this.ThrowError(e.ToString());
-                Debug.LogError(e);
+                UnityEngine.Debug.LogError(e);
                 yield break;
             }
         }
@@ -330,7 +410,7 @@ public class Launcher : MonoBehaviour
             }
             catch (System.Exception e) {
                 this.ThrowError(e.ToString());
-                Debug.LogError(e);
+                UnityEngine.Debug.LogError(e);
                 yield break;
             }
         }
@@ -341,7 +421,7 @@ public class Launcher : MonoBehaviour
             }
             catch (System.Exception e) {
                 this.ThrowError(e.ToString());
-                Debug.LogError(e);
+                UnityEngine.Debug.LogError(e);
                 yield break;
             }
         }
@@ -390,6 +470,8 @@ public class Launcher : MonoBehaviour
     [SerializeField] private GameObject stopCanvas;
     [SerializeField] private GameObject basicallyLogo;
     [SerializeField] private GameObject juniLogo;
+    [SerializeField] private GameObject fileCanvas;
+    [SerializeField] private GameObject helpfulLinks;
     [SerializeField] private GameObject upgradeCanvas_Start;
     [SerializeField] private TMP_Text upgradeText_start;
     [SerializeField] private GameObject upgradeCanvas_Process;

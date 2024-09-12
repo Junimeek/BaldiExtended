@@ -5,9 +5,12 @@ Gameplay Changes:
 - New Item: the Dangerous Hammer! Smash through any window you can find to be able to go through it!
 
 Other Changes:
-- Saving has been completely overhauled. If you were playing an older version, the game will detect your older data and upgrade it to the new system. You'll see a prompt upon launching the game the first time you open it.
+- Saving has been completely overhauled. You'll see a prompt upon launching the game the first time you open it. If you were playing an older version, you need to launch the game first, then close the game and go to the "Files" menu in the Launcher, and click on "Upgrade Endless Mode Data".
 - There are now a few more things that will be saved in your high scores: Your best time in Story Mode, and how many of each item you've used in each map
 - The Data Management menu actually does something now
+
+Known Bugs:
+- The cuts in the background music during the Null boss battle are extremely noticeable. This will probably be fixed in a future update, but for now we'll just have to put up with my crude audio swapping system
 
 ### v0.4.3 ###
 Gameplay Changes:

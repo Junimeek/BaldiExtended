@@ -114,17 +114,20 @@ public class SaveData_Endless
 public class SaveData_Challenge
 {
     public int fileVersion;
+    public bool[] challengeUnlocks;
     public int[] itemsUsed_NullStyle;
     public float[] bestTime;
     public int[] totalDetentions;
     public SaveData_Challenge(StatisticsController stats)
     {
+        int totalUnlocks = 1;
         int totalMaps = 1;
         int totalItems = 18;
 
         if (stats == null)
         {
             this.fileVersion = 1;
+            this.challengeUnlocks = new bool[totalUnlocks];
             this.itemsUsed_NullStyle = new int[totalItems];
             this.totalDetentions = new int[totalMaps];
             this.bestTime = new float[totalMaps];
@@ -132,6 +135,7 @@ public class SaveData_Challenge
         else
         {
             this.fileVersion = stats.data_fileVersion;
+            this.challengeUnlocks = stats.data_challengeUnlocks;
             this.itemsUsed_NullStyle = stats.data_NullStyleLifetimeItems;
             this.bestTime = stats.data_bestTime;
             this.totalDetentions = stats.data_totalDetentions;

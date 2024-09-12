@@ -59617,6 +59617,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dataPath: 
+  challengeMapUnlocks: 
   turnSensitivity: 0
   volumeVoice: 0
   volumeBGM: 0

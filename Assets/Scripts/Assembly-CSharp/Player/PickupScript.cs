@@ -15,7 +15,7 @@ public class PickupScript : MonoBehaviour
 		switch(newItem)
 		{
 			case 0:
-				this.gameObject.SetActive(false);
+				base.gameObject.SetActive(false);
 				break;
 			case 1:
 				this.itemPickup = pickup.ZestyBar;
@@ -72,6 +72,7 @@ public class PickupScript : MonoBehaviour
 
 		this.itemSprite.sprite = this.gc.pickup_itemSprites[newItem];
 		this.mapSprite = this.gc.pickup_itemMapSprites[newItem];
+		this.mapIcon.sprite = this.mapSprite;
 	}
 
 	public int ItemID()

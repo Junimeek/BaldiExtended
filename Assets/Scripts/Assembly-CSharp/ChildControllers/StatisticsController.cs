@@ -205,6 +205,7 @@ public class StatisticsController : MonoBehaviour
 
     [Header("File Data")]
     public int data_fileVersion;
+    public bool[] data_challengeUnlocks;
     public float[] data_bestTime;
     public int[] data_notebooks;
     public int[] data_totalDetentions;
