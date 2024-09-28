@@ -128,7 +128,7 @@ public class BaldiScript : MonoBehaviour
 
 	private void OnDisable()
 	{
-		if (this.isNullMode)
+		if (this.isNullMode && !this.isDisabled)
 			this.gc.EnableAllWindowBlockers();
 	}
 
@@ -226,6 +226,15 @@ public class BaldiScript : MonoBehaviour
 		this.Wander(); //Start wandering
 		this.antiHearing = true; //Set the antihearing variable to true for other scripts
 		this.antiHearingTime = t; //Set the time the tape's effect on baldi will last
+	}
+
+	public void NullOffset()
+	{
+		this.isDisabled = true;
+		this.agent.enabled = false;
+		Transform baldiSprite = base.transform.Find("BaldiSprite");
+		Vector3 curPosition = baldiSprite.position;
+		baldiSprite.position = new Vector3(curPosition.x, curPosition.y - 0.5f, curPosition.z);
 	}
 
 	public void AddNewSound(Vector3 location, int priority)
@@ -327,10 +336,10 @@ public class BaldiScript : MonoBehaviour
 
 	private IEnumerator FollowPlayer()
 	{
-		if (!this.allowWindowBreaking)
+		if (!this.allowWindowBreaking && this.isNullMode)
 			this.gc.StartCoroutine(this.gc.ToggleWindowBlockers());
 
-		while (this.db)
+		while (this.db && !this.isDisabled)
 		{
 			this.currentPriority = 6;
 			this.ClearSoundList();
@@ -396,6 +405,7 @@ public class BaldiScript : MonoBehaviour
 	public float angerFrequency;
 	public float timeToAnger;
 	public bool endless;
+	[SerializeField] private bool isDisabled;
 	public Transform player;
 	[SerializeField] private PlayerScript playerScript;
 	public AILocationSelectorScript wanderer;

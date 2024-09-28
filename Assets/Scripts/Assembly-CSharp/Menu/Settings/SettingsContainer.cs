@@ -64,6 +64,7 @@ public class SettingsContainer : MonoBehaviour
         this.instantReset = true;
         this.additionalMusic = false;
         this.notifBoard = false;
+        this.familyFriendly = true;
         PlayerPrefs.SetInt("AnalogMove", 0);
         PlayerPrefs.SetInt("Rumble", 0);
         PlayerPrefs.SetString("CurrentMap", "Classic");
@@ -80,6 +81,7 @@ public class SettingsContainer : MonoBehaviour
     public void SaveToRegistry(string type) // lmao i give up
     {
         Debug.Log("Saved " + type + " to registry");
+        
         switch(type)
         {
             case "settings":
@@ -102,14 +104,19 @@ public class SettingsContainer : MonoBehaviour
                     PlayerPrefs.SetInt("NotifBoard", 1);
                 else
                     PlayerPrefs.SetInt("NotifBoard", 0);
-            break;
+                
+                if (this.familyFriendly)
+                    PlayerPrefs.SetInt("gps_familyFriendly", 1);
+                else
+                    PlayerPrefs.SetInt("gps_familyFriendly", 0);
+                break;
             case "map":
                 PlayerPrefs.SetString("CurrentMap", this.curMap);
-            break;
+                break;
             case "gamestyles":
                 PlayerPrefs.SetInt("gps_safemode", this.safeMode);
                 PlayerPrefs.SetInt("gps_difficultmath", this.difficultMath);
-            break;
+                break;
             case "defaults":
                 PlayerPrefs.SetFloat("MouseSensitivity", 2f);
                 PlayerPrefs.SetFloat("VolumeVoice", 0f);
@@ -118,10 +125,10 @@ public class SettingsContainer : MonoBehaviour
                 PlayerPrefs.SetInt("InstantReset", 1);
                 PlayerPrefs.SetInt("AdditionalMusic", 0);
                 PlayerPrefs.SetInt("NotifBoard", 0);
-            break;
+                break;
             default:
                 Debug.LogWarning("Nothing to save");
-            break;
+                break;
         }
     }
 
@@ -249,6 +256,7 @@ public class SettingsContainer : MonoBehaviour
     public bool instantReset;
     public bool additionalMusic;
     public bool notifBoard;
+    public bool familyFriendly;
 
     [Header("Gameplay Styles")]
     public string curMap;

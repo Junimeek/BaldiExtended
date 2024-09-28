@@ -911,7 +911,7 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -919,6 +919,27 @@ TextureImporter:
       bones: []
       spriteID: 3e59aa49dc7c7c946815619d5df0a7e7
       internalID: -52686303
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Map_Window_Double
+      rect:
+        serializedVersion: 2
+        x: 103
+        y: 94
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 31e8406488ee1a54e988577e901aad95
+      internalID: -1711732096
       vertices: []
       indices: 
       edges: []
@@ -957,6 +978,7 @@ TextureImporter:
       Tile_Hall_Corner: 1325546124
       Tile_SwingDoor_DoorL: 1366881796
       Tile_Window_1Wall: -1198372189
+      Map_Window_Double: -1711732096
       Tile_SwingDoor_1Wall: 1408622325
       Tile_Filler_4: 2127587941
       Tile_Door_3Wall: -1800878236
@@ -968,11 +990,11 @@ TextureImporter:
       Tile_Door_3WallL: -56833551
       Tile_Filler_3: 1980171979
       Tile_SwingDoor_4Wall: -1357498678
-      Tile_Window_CornerL: -1587675059
       Tile_Door_CornerR: -2009672773
+      Tile_SwingDoor_3Wall: 695610903
+      Tile_Window_CornerL: -1587675059
       Tile_Window_Door: 843532617
       Tile_Hall_0Wall: 1934069201
-      Tile_SwingDoor_3Wall: 695610903
       Tile_Door_CornerL: -1751448658
   spritePackingTag: 
   pSDRemoveMatte: 0

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using TMPro;
-using UnityEditor.PackageManager.UI;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Rendering.PostProcessing;
@@ -401,6 +400,9 @@ public class GameControllerScript : MonoBehaviour
 	{
 		if (this.isDynamicColor)
 			RenderSettings.ambientLight = Color.black;
+		
+		if (this.baldiScrpt.isActiveAndEnabled)
+			this.baldiScrpt.NullOffset();
 			
 		this.isDynamicColor = false;
 		RenderSettings.ambientIntensity = 0f;
@@ -1914,12 +1916,18 @@ public class GameControllerScript : MonoBehaviour
 	[SerializeField] private RectTransform trashOverlay;
 	public bool IsNoItems()
 	{
+		int emptySlots = 0;
+
 		for (int i = 0; i < this.totalSlotCount; i++)
 		{
 			if (this.item[i] == 0)
-				return true;
+				emptySlots++;
 		}
-		return false;
+
+		if (emptySlots == this.totalSlotCount)
+			return true;
+		else
+			return false;
 	}
 
 

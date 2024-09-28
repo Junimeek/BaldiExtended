@@ -1,0 +1,21 @@
+ManifestFileVersion: 0
+CRC: 196563096
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: 61f6e2876447c9b81011a08804e85cf6
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 7b620861513e7f4ae22d585630d01f00
+HashAppended: 0
+ClassTypes:
+- Class: 83
+  Script: {instanceID: 0}
+- Class: 329
+  Script: {instanceID: 0}
+SerializeReferenceClassIdentifiers: []
+Assets:
+- Assets/Editor/BundledVideos/twitterAudio_censored.ogg
+- Assets/Editor/BundledVideos/twitterAudio_original.ogg
+- Assets/Editor/BundledVideos/twitterVideo.mp4
+Dependencies: []
