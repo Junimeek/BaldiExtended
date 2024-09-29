@@ -47,6 +47,11 @@ public class SettingsContainer : MonoBehaviour
                 this.notifBoard = true;
             else
                 this.notifBoard = false;
+            
+            if (PlayerPrefs.GetInt("gps_familyFriendly") == 1)
+                this.familyFriendly = true;
+            else
+                this.familyFriendly = false;
 
             this.safeMode = PlayerPrefs.GetInt("gps_safemode");
             this.difficultMath = PlayerPrefs.GetInt("gps_difficultmath");

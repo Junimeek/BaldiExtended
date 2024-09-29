@@ -776,7 +776,7 @@ TextureImporter:
         width: 23
         height: 23
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -784,6 +784,48 @@ TextureImporter:
       bones: []
       spriteID: c0f6a17a65dee3346855a7c0972b49aa
       internalID: -714411635
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SET_FamilyFriendly
+      rect:
+        serializedVersion: 2
+        x: 1
+        y: 64
+        width: 380
+        height: 60
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8fc2192254e52ee44b134cd6d81b6803
+      internalID: -2122665820
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SET_FamilyFriendly_Selected
+      rect:
+        serializedVersion: 2
+        x: 1
+        y: 3
+        width: 380
+        height: 60
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 04b177e60db3d0b4686280025f8a73ba
+      internalID: 878652715
       vertices: []
       indices: 
       edges: []
@@ -805,6 +847,7 @@ TextureImporter:
       SET_Data_Selected: 1041166616
       SET_Controls: -1480664244
       SET_Defaults: -1882429016
+      SET_FamilyFriendly_Selected: 878652715
       SET_Notif: 1354550592
       SET_ExtraMusic_Selected: 2118440370
       SET_Right_Selecte: 1616437163
@@ -827,6 +870,7 @@ TextureImporter:
       SET_Left_Selected: 1896570705
       SET_BlankCheckbox: -714411635
       SET_GPHeader: 1665371181
+      SET_FamilyFriendly: -2122665820
       SET_BBCROST: 500029063
       SET_Achievement: -1035839042
       SET_SFX_Selected: 880740002

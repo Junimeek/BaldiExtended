@@ -1,20 +1,19 @@
-using System;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-using System.Collections;
 
 public class SettingsLoader : MonoBehaviour
 {
     private void OnEnable()
     {
-        curSetting = null;
+        this.curSetting = null;
         this.container = FindObjectOfType<SettingsContainer>();
         this.audioManager = FindObjectOfType<AudioManager>();
         Scene curScene = SceneManager.GetActiveScene();
         sceneName = curScene.name;
         
-        if (sceneName == "MainMenu") LoadSettings("menuGP");
+        if (sceneName == "MainMenu")
+            LoadSettings("menuGP");
 
         audioManager.GetVolume();
     }
@@ -26,13 +25,15 @@ public class SettingsLoader : MonoBehaviour
         if (sceneName == "MainMenu")
             this.SaveSettings();
         else if (sceneName == "Classic" || sceneName == "ClassicExtended" ||
-                sceneName == "JuniperHills" || sceneName == "TheLine")
+        sceneName == "JuniperHills" || sceneName == "TheLine")
             this.SaveSettings();
     }
 
     public void LoadSettings(string loadType)
     {
-        if (curSetting != null) this.StoreSettings();
+        if (curSetting != null)
+            this.StoreSettings();
+
         curSetting = loadType;
 
         switch(loadType)
@@ -44,6 +45,7 @@ public class SettingsLoader : MonoBehaviour
                 sliderSensitivity.value = container.turnSensitivity;
                 toggleInstantReset.isOn = container.instantReset;
                 toggleNotifBoard.isOn = container.notifBoard;
+                toggleFamilyFriendly.isOn = container.familyFriendly;
                 sliderScript.UpdateSensitivityText();
             break;
             case "menuAudio":
@@ -71,6 +73,7 @@ public class SettingsLoader : MonoBehaviour
             container.turnSensitivity = this.sliderSensitivity.value;
             container.instantReset = this.toggleInstantReset.isOn;
             container.notifBoard = this.toggleNotifBoard.isOn;
+            container.familyFriendly = this.toggleFamilyFriendly.isOn;
         }
         else if (curSetting == "menuAudio")
         {
@@ -84,6 +87,7 @@ public class SettingsLoader : MonoBehaviour
     public void SaveSettings()
     {
         container.SaveToRegistry("settings");
+
         if (audioManager != null)
             audioManager.GetVolume();
     }
@@ -147,7 +151,6 @@ public class SettingsLoader : MonoBehaviour
     [SerializeField] private GameObject canvasGP;
     [SerializeField] private GameObject canvasAudio;
     [SerializeField] private GameObject canvasData;
-    [SerializeField] private GameObject canvasPause;
 
     [Header("Toggles")]
     [SerializeField] private Slider sliderSensitivity;
@@ -157,5 +160,6 @@ public class SettingsLoader : MonoBehaviour
     [SerializeField] private Toggle toggleAdditionalMusic;
     [SerializeField] private Toggle toggleInstantReset;
     [SerializeField] private Toggle toggleNotifBoard;
+    [SerializeField] private Toggle toggleFamilyFriendly;
 
 }

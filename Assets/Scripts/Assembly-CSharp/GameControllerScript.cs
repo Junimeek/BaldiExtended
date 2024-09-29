@@ -76,6 +76,7 @@ public class GameControllerScript : MonoBehaviour
 		this.speedrunText.color = this.masterTextColor;
 		this.itemText.color = this.masterTextColor;
 		this.notebookCount.color = this.masterTextColor;
+		this.fpsCounter.color = this.masterTextColor;
 
 		if (curSceneName == "SecretMap" && !this.isSafeMode)
 		{
@@ -192,6 +193,14 @@ public class GameControllerScript : MonoBehaviour
 
 	private void Update()
 	{
+		this.fpsTimer -= Time.unscaledDeltaTime;
+
+		if (this.fpsTimer < 0f)
+		{
+			this.fpsTimer += 0.5f;
+			this.fpsCounter.text = (1 / Time.unscaledDeltaTime).ToString("0") + "fps";
+		}
+
 		if (!this.learningActive)
 		{
 			if (Input.GetButtonDown("Pause"))
@@ -788,6 +797,7 @@ public class GameControllerScript : MonoBehaviour
 	public void ActivateBossFight(Vector3 nullPos)
 	{
 		this.speedrunText.color = Color.black;
+		this.fpsCounter.color = Color.black;
 		this.audioDevice.Stop();
 		this.nullBoss.SetActive(true);
 		this.audioDevice.PlayOneShot(this.aud_BigClose, 0.6f);
@@ -1869,6 +1879,8 @@ public class GameControllerScript : MonoBehaviour
 	[SerializeField] private TMP_Text dollarTextTop;
 	[SerializeField] private GameObject exitCountGroup;
 	[SerializeField] private TMP_Text exitCountText;
+	[SerializeField] private TMP_Text fpsCounter;
+	[SerializeField] private float fpsTimer;
 	[SerializeField] private MapCameraScript mapScript;
 	public TMP_Text speedrunText;
 	[SerializeField] private Canvas mainHud;

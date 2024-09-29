@@ -1,8 +1,5 @@
-﻿using System;
-using System.Linq.Expressions;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.Rendering.PostProcessing;
 
 public class FirstPrizeScript : MonoBehaviour
 {
@@ -19,18 +16,15 @@ public class FirstPrizeScript : MonoBehaviour
 	private void Update()
 	{
 		if (this.coolDown > 0f)
-		{
 			this.coolDown -= 1f * Time.deltaTime;
-		}
+
 		if (this.autoBrakeCool > 0f)
-		{
 			this.autoBrakeCool -= 1f * Time.deltaTime;
-		}
 		else
-		{
 			this.agent.autoBraking = true;
-		}
+		
 		this.angleDiff = Mathf.DeltaAngle(base.transform.eulerAngles.y, Mathf.Atan2(this.agent.steeringTarget.x - base.transform.position.x, this.agent.steeringTarget.z - base.transform.position.z) * 57.29578f);
+		
 		if (this.crazyTime <= 0f)
 		{
 			if (Mathf.Abs(this.angleDiff) < 5f)

@@ -621,7 +621,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0292d841ac024334bbf69beffb79cfdc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  forceSecretItem: 0
+  forceSecretItem: 2
   images:
   - {fileID: 21300000, guid: 8814f7b9046525f4689a14b1e2354688, type: 3}
   - {fileID: 21300000, guid: 485394be998e8e94b814f29f93e214f7, type: 3}

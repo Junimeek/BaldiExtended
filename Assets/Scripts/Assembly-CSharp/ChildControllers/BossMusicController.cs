@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using UnityEngine;
+using FluidMidi;
+using UnityEngine.Rendering.PostProcessing;
 
 public class BossMusicController : MonoBehaviour
 {
@@ -23,6 +25,33 @@ public class BossMusicController : MonoBehaviour
             this.audioDevice1.loop = false;
             this.audioDevice2.loop = false;
         }
+
+        if (Input.GetKeyDown(KeyCode.M))
+        {
+            if (this.newStage == 0)
+                StartCoroutine(this.SongRoutine());
+            else if (this.newStage == 1)
+                this.earlyLoop = false;
+            this.newStage++;
+        }
+    }
+
+    private IEnumerator SongRoutine()
+    {
+        this.songPlayer.Tempo = 0.82f;
+        this.songPlayer.Play();
+
+        while (!this.songPlayer.IsReady)
+            yield return null;
+        
+        while (this.earlyLoop)
+        {
+            if (this.songPlayer.Ticks > 4600)
+                this.songPlayer.Seek(0);
+            yield return null;
+        }
+
+        this.songPlayer.Tempo = 0.85f;
     }
 
     private void LateUpdate()
@@ -107,4 +136,7 @@ public class BossMusicController : MonoBehaviour
     [SerializeField] private int curGameStage;
     [SerializeField] private int curAudioStage;
     [SerializeField] private MetronomeScript metronome;
+    [SerializeField] private FluidMidi.SongPlayer songPlayer;
+    [SerializeField] private bool earlyLoop;
+    [SerializeField] private int newStage;
 }
