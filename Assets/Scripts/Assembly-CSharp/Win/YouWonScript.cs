@@ -12,12 +12,18 @@ public class YouWonScript : MonoBehaviour
 		Cursor.lockState = CursorLockMode.None;
 		Cursor.visible = true;
 
+		this.canvasRenderer.SetActive(false);
+		this.skipCanvas.SetActive(true);
+		this.isDanceFinished = true;
+
 		this.stats = FindObjectOfType<StatisticsController>();
 
 		if (this.stats != null)
 			this.SetStatistics();
 		else
 			this.SetPlaceholderStatistics();
+		
+		StartCoroutine(this.BeginBaldiDance());
 	}
 
 	private void SetPlaceholderStatistics()
@@ -63,6 +69,113 @@ public class YouWonScript : MonoBehaviour
 			default:
 				return 0;
 		}
+	}
+
+	private IEnumerator BeginBaldiDance()
+	{
+		this.cover.SetActive(true);
+		while (!Input.GetKeyDown(KeyCode.M))
+			yield return null;
+
+		this.cover.SetActive(false);
+		this.musicDevice.loop = false;
+		this.musicDevice.Play();
+		this.metronome.StartMetronome();
+
+		while(this.metronome.curBeat < this.bpmTargets[0])
+			yield return null;
+		this.isDanceFinished = false;
+		this.baldiDevice.PlayOneShot(this.baldiClips[0]);
+
+		while (this.metronome.curBeat < this.bpmTargets[1])
+			yield return null;
+		this.baldiDevice.PlayOneShot(this.baldiClips[1]);
+
+		while (this.metronome.curBeat < this.bpmTargets[2])
+			yield return null;
+		this.baldiDevice.PlayOneShot(this.baldiClips[2]);
+
+		while (this.metronome.curBeat < this.bpmTargets[3])
+			yield return null;
+		this.baldiDevice.PlayOneShot(this.baldiClips[3]);
+
+		while (this.metronome.curBeat < this.bpmTargets[4])
+			yield return null;
+		this.baldiDevice.PlayOneShot(this.baldiClips[4]);
+
+		while (this.metronome.curBeat < this.bpmTargets[5])
+			yield return null;
+		this.baldiDevice.PlayOneShot(this.baldiClips[5]);
+
+		while (this.metronome.curBeat < this.bpmTargets[6])
+			yield return null;
+		this.baldiDevice.PlayOneShot(this.baldiClips[6]);
+
+		while (this.metronome.curBeat < this.bpmTargets[7])
+			yield return null;
+		this.baldiDevice.PlayOneShot(this.baldiClips[7]);
+
+		while (this.metronome.curBeat < this.bpmTargets[7])
+			yield return null;
+		this.isDanceFinished = true;
+
+		while (this.musicDevice.isPlaying)
+			yield return null;
+
+		this.EnableCanvas(false);
+		Debug.Log("end");
+	}
+
+	private void Update()
+	{
+		if (!this.isDanceFinished)
+		{
+			this.animationTimer -= Time.unscaledDeltaTime;
+
+			if (this.animationTimer <= 0f)
+			{
+				this.animationTimer += 0.51282f;
+				this.ChangeAnimState();
+			}
+		}
+	}
+
+	private void ChangeAnimState()
+	{
+		if (this.curState == 1)
+		{
+			this.curState = 0;
+			this.animator.Play("Baldi_Dance");
+		}
+		else
+		{
+			this.curState = 1;
+			this.animator.Play("Baldi_Dance2");
+		}
+	}
+
+	public void EnableCanvas(bool forceDanceEnd)
+	{
+		this.isDanceFinished = true;
+		this.cameraObject.position = new Vector3(20f, 5f, 25f);
+		this.cameraObject.eulerAngles = new Vector3(0f, 90f, 0f);
+
+		if (forceDanceEnd)
+		{
+			this.baldiDevice.clip = null;
+			this.baldiDevice.volume = 0f;
+			this.metronome.StopMetronome();
+			this.StopCoroutine(this.BeginBaldiDance());
+		}
+
+		if (!this.musicDevice.isPlaying)
+			this.musicDevice.Play();
+		
+		this.musicDevice.loop = true;
+		this.canvasRenderer.SetActive(true);
+		this.skipCanvas.SetActive(false);
+
+		this.wowDevice.Play();
 	}
 
 	public void ChangeScreen(int newScreen)
@@ -153,6 +266,24 @@ public class YouWonScript : MonoBehaviour
 	[SerializeField] private TMP_Text detentionsText;
 	[SerializeField] private bool isFetched;
 	[SerializeField] private Transform itemParent;
+
+	[Header("Baldi Dance")]
+	[SerializeField] private MetronomeScript metronome;
+	[SerializeField] private Animator animator;
+	[SerializeField] private int curState;
+	[SerializeField] private Transform cameraObject;
+	[SerializeField] private GameObject canvasRenderer;
+	[SerializeField] private GameObject skipCanvas;
+	[SerializeField] private GameObject cover;
+	[SerializeField] private bool isDanceFinished;
+
+	[Header("Audio")]
+	[SerializeField] private AudioSource musicDevice;
+	[SerializeField] private AudioSource baldiDevice;
+	[SerializeField] private AudioClip[] baldiClips;
+	[SerializeField] private AudioSource wowDevice;
+	[SerializeField] private int[] bpmTargets;
+	[SerializeField] private float animationTimer;
 
 	[Header("Statistics")]
 	[SerializeField] private bool isNewBest;

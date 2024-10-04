@@ -32,6 +32,7 @@ public class SettingsContainer : MonoBehaviour
             this.volumeVoice = PlayerPrefs.GetFloat("VolumeVoice");
             this.volumeBGM = PlayerPrefs.GetFloat("VolumeBGM");
             this.volumeSFX = PlayerPrefs.GetFloat("VolumeSFX");
+            this.framerate = PlayerPrefs.GetInt("Framerate");
 
             if (PlayerPrefs.GetInt("InstantReset") == 1)
                 this.instantReset = true;
@@ -52,6 +53,11 @@ public class SettingsContainer : MonoBehaviour
                 this.familyFriendly = true;
             else
                 this.familyFriendly = false;
+            
+            if (PlayerPrefs.GetInt("pat_doorFix") == 1)
+                this.doorFix = true;
+            else
+                this.doorFix = false;
 
             this.safeMode = PlayerPrefs.GetInt("gps_safemode");
             this.difficultMath = PlayerPrefs.GetInt("gps_difficultmath");
@@ -66,6 +72,7 @@ public class SettingsContainer : MonoBehaviour
         this.volumeVoice = 0f;
         this.volumeBGM = 0f;
         this.volumeSFX = 0f;
+        this.framerate = Mathf.RoundToInt(Screen.currentResolution.refreshRate);
         this.instantReset = true;
         this.additionalMusic = false;
         this.notifBoard = false;
@@ -94,6 +101,26 @@ public class SettingsContainer : MonoBehaviour
                 PlayerPrefs.SetFloat("VolumeVoice", this.volumeVoice);
                 PlayerPrefs.SetFloat("VolumeBGM", this.volumeBGM);
                 PlayerPrefs.SetFloat("VolumeSFX", this.volumeSFX);
+                
+                Mathf.Clamp(this.framerate, -1, 500);
+                if (this.framerate > 0)
+                {
+                    PlayerPrefs.SetInt("Framerate", this.framerate);
+                    QualitySettings.vSyncCount = 0;
+                    Application.targetFrameRate = this.framerate;
+                }
+                else if (this.framerate == 0) // Unlimited FPS
+                {
+                    PlayerPrefs.SetInt("Framerate", 0);
+                    QualitySettings.vSyncCount = 0;
+                    Application.targetFrameRate = -1;
+                }
+                else if (this.framerate == -1) // V-Sync
+                {
+                    PlayerPrefs.SetInt("Framerate", -1);
+                    QualitySettings.vSyncCount = 1;
+                    Application.targetFrameRate = this.framerate;
+                }
 
                 if (this.instantReset)
                     PlayerPrefs.SetInt("InstantReset", 1);
@@ -262,6 +289,10 @@ public class SettingsContainer : MonoBehaviour
     public bool additionalMusic;
     public bool notifBoard;
     public bool familyFriendly;
+
+    [Header("Patches")]
+    public bool doorFix;
+    public int framerate;
 
     [Header("Gameplay Styles")]
     public string curMap;

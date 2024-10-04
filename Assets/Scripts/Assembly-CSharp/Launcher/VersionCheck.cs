@@ -22,6 +22,7 @@ namespace UpgradeSystem
         [SerializeField] private GameObject nightlyCanvas;
         [SerializeField] private Button updateButton;
         [SerializeField] private TextMeshProUGUI descriptionText;
+        [SerializeField] private TMP_Text errorText;
 
         [Space(20f)]
         [Header ("Settings")]
@@ -56,23 +57,28 @@ namespace UpgradeSystem
 
         private IEnumerator CheckForUpdates()
         {
-            UnityWebRequest request = UnityWebRequest.Get (jsonDataURL);
-            request.chunkedTransfer = false;
+            UnityWebRequest request = UnityWebRequest.Get(this.jsonDataURL);
             request.disposeDownloadHandlerOnDispose = true;
-            request.timeout = 60;
+            request.timeout = 7;
 
-            yield return request.Send();
+            yield return request.SendWebRequest();
 
             if (request.isDone)
             {
-                if (!request.isNetworkError)
+                if (request.result == UnityWebRequest.Result.Success)
                 {
-                    latestGameData = JsonUtility.FromJson<GameData> (request.downloadHandler.text);
+                    this.errorText.text = string.Empty;
+                    this.latestGameData = JsonUtility.FromJson<GameData> (request.downloadHandler.text);
                     if (!string.IsNullOrEmpty(latestGameData.Version) && curVersion != latestGameData.Version)
                     {
                         this.descriptionText.text = latestGameData.Description;
                         this.ShowPopup();
                     }
+                }
+                else
+                {
+                    this.errorText.color = Color.red;
+                    this.errorText.text = "Server connection failed.\nCannot check for new updates.\n\nError Code " + request.responseCode;
                 }
             }
             request.Dispose();
@@ -80,11 +86,11 @@ namespace UpgradeSystem
 
         private void ShowPopup()
         {
-            updateButton.onClick.AddListener (() => {
+            this.updateButton.onClick.AddListener (() => {
                 Application.OpenURL(latestGameData.Url);
             });
 
-            if (isNightly)
+            if (this.isNightly)
                 this.nightlyCanvas.SetActive(true);
             else
                 this.stableCanvas.SetActive(true);

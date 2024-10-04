@@ -52,7 +52,7 @@ public class MetronomeScript : MonoBehaviour
 
     private bool metronomeStarted = false;
     [SerializeField] private double metronomeTime, beatLength = 0f;
-    [SerializeField] private int curBeat = 0;
+    public int curBeat = 0;
     public int curMeasure;
 
     [Header("Metronome Settings")]

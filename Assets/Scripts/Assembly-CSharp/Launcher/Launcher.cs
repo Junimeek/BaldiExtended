@@ -3,7 +3,6 @@ using System.Collections;
 using UnityEngine;
 using UpgradeSystem;
 using TMPro;
-using UnityEngine.Rendering.PostProcessing;
 using System.Diagnostics;
 using System;
 
@@ -11,6 +10,9 @@ public class Launcher : MonoBehaviour
 {
     private void Start()
     {
+        Application.targetFrameRate = 0;
+        QualitySettings.vSyncCount = 1;
+
         this.stopCanvas.SetActive(false);
         this.logoCanvas.SetActive(false);
         this.launcherCanvas.SetActive(false);
@@ -87,11 +89,11 @@ public class Launcher : MonoBehaviour
         if (!isInterrupted)
         {
             this.launcherCanvas.SetActive(true);
-            this.audioDevice.PlayOneShot(music);
+            this.audioDevice.PlayOneShot(this.music);
             
-            if (PlayerPrefs.HasKey("highbooks_Classic") || PlayerPrefs.HasKey("highbooks_ClassicExtended") || PlayerPrefs.HasKey("highbooks_JuniperHills"))
-                UnityEngine.Debug.Log("playerprefs load");
-                //SaveDataController.UpgradeSaves("endless", this.saveFileVersion);
+            if (PlayerPrefs.HasKey("highbooks_Classic") || PlayerPrefs.HasKey("highbooks_ClassicExtended")
+            || PlayerPrefs.HasKey("highbooks_JuniperHills"))
+                UnityEngine.Debug.Log("Playerprefs highscore data found. Will be deleted upon save file creation.");
         }
     }
 
@@ -207,8 +209,6 @@ public class Launcher : MonoBehaviour
 
         this.launcherCanvas.SetActive(false);
         this.audioDevice.volume = 0f;
-
-        //if (!SaveDataController.CheckFileExist("endless"))
 
         if (this.upgradeFlag != "none")
         {
