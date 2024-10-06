@@ -403,7 +403,7 @@ LightmapSettings:
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 0}
-  m_LightingSettings: {fileID: 4890085278179872738, guid: 348817ae3799f5942b96f500c926e5b6,
+  m_LightingSettings: {fileID: 4890085278179872738, guid: a37695753c3477e438ae8b70590ee169,
     type: 2}
 --- !u!222 &18
 CanvasRenderer:
@@ -621,7 +621,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0292d841ac024334bbf69beffb79cfdc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  forceSecretItem: 2
+  forceSecretItem: 0
   images:
   - {fileID: 21300000, guid: 8814f7b9046525f4689a14b1e2354688, type: 3}
   - {fileID: 21300000, guid: 485394be998e8e94b814f29f93e214f7, type: 3}

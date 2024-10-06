@@ -209,7 +209,7 @@ LightmapSettings:
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 0}
-  m_LightingSettings: {fileID: 4890085278179872738, guid: 52db7d525c655ec4b87f8d4ac41bf00f,
+  m_LightingSettings: {fileID: 4890085278179872738, guid: a37695753c3477e438ae8b70590ee169,
     type: 2}
 --- !u!212 &17
 SpriteRenderer:

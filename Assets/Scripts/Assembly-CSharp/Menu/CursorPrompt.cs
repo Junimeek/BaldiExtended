@@ -58,6 +58,10 @@ public class CursorPrompt : MonoBehaviour
             case 2.4f:
                 this.text.text = "If this is enabled, Schoolhouse Trouble will play in the background during normal Story Mode gameplay.";
                 break;
+            case 4.1f:
+                this.promptParent.pivot = new Vector2(3f * this.positionMultiplier, -2f * this.positionMultiplier);
+                this.text.text = "DEVELOPMENT NOTE: Eventually, this challenge will be locked behind requiring getting the secret ending. Beating this before then, however, will keep this challenge unlocked.";
+                break;
             
         }
 

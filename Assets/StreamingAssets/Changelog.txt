@@ -1,0 +1,104 @@
+### v0.5 ###
+Gameplay Changes:
+- New Mode: Challenge mode!
+- New challenge map: Dark mode! Which is basically just BBCR's Null Style lmao
+- New Item: the Dangerous Hammer! Smash through any window you can find to be able to go through it!
+
+Other Changes:
+- Saving has been completely overhauled. You'll see a prompt upon launching the game the first time you open it. If you were playing an older version, you need to launch the game first, then close the game and go to the "Files" menu in the Launcher, and click on "Upgrade Endless Mode Data".
+- There are now a few more things that will be saved in your high scores: Your best time in Story Mode, and how many of each item you've used in each map
+- The Data Management menu actually does something now
+- A Family Friendly option has been added. This only affects some minor schoolhouse decoration.
+
+Known Bugs:
+- The cuts in the background music during the Null boss battle are extremely noticeable. This will probably be fixed in a future update, but for now we'll just have to put up with my crude audio swapping system
+
+### v0.4.3 ###
+Gameplay Changes:
+- There's now a map! It can be toggled on and off by simply pressing Tab.
+- Upgrades for the map can be purchased in the Principal's office. There is a poster next to the map upgrade vending machine that will explain in further detail.
+- You can now carry an infinite amount of quarters! All quarters will automatically be added to your wallet. To use a quarter, simply look at a vending machine and right click, and it will use any quarters you have collected. If your inventory is full, select the item you want to replace with whatever the vending machine will dispense, and it'll replace that item with the new item.
+- As a result of several new items being added (explained further below), there is now a significant change to the vending machines: They will now cost varying amounts of quarters depending on what item they give you. Diet BSODA and Crystal Zesty Bars will cost 1 quarter, regular BSODA and Energy Bars will cost 3 quarters, and Map Upgrades will cost anywhere from 1-4 quarters depending on how many you want to buy. Note that these changes do not apply to the Classic map; all items will continue to cost just 1 quarter on that map.
+- Safe mode has been changed: Now it will spawn a Ghost Baldi once you get a question wrong. Ghost Baldi will chase you just like normal Baldi, he just can't end your game.
+- Added two faculty rooms to Juniper Hills
+- Increased the number of exits in Classic Extended to 6
+- Increased the number of exits in Juniper Hills to 5
+
+Item Changes:
+- Collecting an item while your inventory is full will no longer completely discard an item; instead, it will place the item where you collected the new item, just like in BBCR.
+- The map you play will now determine the number of inventory slots you have to work with: Classic has 3 slots, Classic Extended has 5 slots, and Juniper Hills has 4 slots.
+- FOUR new items: Diet BSODA, Crystal flavored Zesty Bar, the Party Popper, and the Wallet!
+- Diet BSODA and the Crystal Flavored Zesty bar are "healthier" versions of BSODA and Energy flavored Zesty Bar
+- The Party Popper will start a party and attract all characters to the Principal's Office, the Gym, the Cafeteria, or to any classroom of your choosing! The item can be found in the Principal's office. It will also be less effective the more notebooks you have.
+- The Wallet is an item that is permanently attached to your inventory and holds coins.
+- The effects of the Zesty Bar can now be stacked
+- The Attendance Slip has been buffed slightly: the character you send to attendance will now stay there for the entire game, instead of for just 3 notebooks.
+- The Alarm Clock has been changed to act like it does in BBCR: you can set the time after dropping it somewhere, and it'll make Baldi ignore ALL sounds with the exception of the Party Popper.
+- Added a new quarter that will spawn in a random room
+- Removed a few standing quarters from Juniper Hills due to there being an excessive amount of money on that map. You can now only find a maximum of $2.50 in Classic Extended, and $2.25 in Juniper Hills.
+
+Other Changes:
+- Added a few extra posters to the halls
+- Added a new loading screen
+- The game will tell now you how many exits are remaining in the top left of the screen
+- Added the rest of Baldi's jumpscare sounds introduced in BB+
+- Baldi's AI has been slightly improved to keep him moving instead of constantly getting stuck in place for a few seconds
+- The Baldicator's animation times are slightly quicker now
+- Its a Bully will now actually go to detention if the Principal catches him. Don't worry, he won't steal anything from you while he's in there.
+
+Bug Fixes:
+- Fixed a bug where the player would not look at the Principal when sent to detention, or at Baldi when Arts and Crafters teleports you. This is actually a bug that has existed in the original game for forever, I just never found a fix for it until now.
+- Fixed a bug where Arts and crafters would softlock the player in Classic Extended and Juniper Hills
+- Fixed a bug where the characters would phase through a wall in Juniper Hills
+- Fixed a bug where picking up an item would sometimes result in you collecting the wrong item
+- Fixed a few bugs with the center item display
+- Fixed an issue that would allow you to use vending machines on the opposite side of a wall
+
+Known bugs:
+- Baldi's AI in regards to detention is still a little weird. To put it short, it bugs out when you get sent there while you're still in his sights. This results in him either heading straight there, or completely giving up on chasing you.
+- Playing in Endless Mode with Safe Mode turned on causes Baldi's audio to get cut off after answering the third question correctly
+
+### v0.4.2 ###
+Bug Fixes:
+- Fixed a bug that made Juniper Hills completely impossible
+- Fixed a bug with the Baldicator. Which actually turned out to be an even bigger bug with Baldi's wandering AI as a whole.* oops
+
+*Important Note: It's still not completely fixed. Although it's mostly working now, it appears that getting sent to detention completely resets his priority. This includes when Baldi sees you before you get sent there, even though detention is supposed to have a lower priority. I can't think of a single reason as to why this is, but I really need to push this update out as Juniper Hills DESPERATELY needs to be fixed ASAP. If anyone with Unity knowledge stumbles across this and knows how to fix it, open an issue on the GitHub repo and let me know how to fix it.
+
+### v0.4.1 ###
+Gameplay Changes:
+- New Item: The Attendance Slip! It will spawn in a random faculty room in Classic Extended and Juniper Hills. It will send Playtime, 1st Prize, or Gotta Sweep home (at least until the Principal notices. He WILL catch you, so use it wisely)!
+- The Speedy Sneakers have been nerfed, as they were EXTREMELY broken before. Trying to work on keeping the game reasonably balanced
+- Baldi's AI has changed slightly: he will remember more sounds that you make, so be careful where you go, he can follow you a lot easier now!
+- When you open Gotta Sweep's door for the first time, he will immediately begin sweeping
+
+Other Changes:
+- New Help menu! It explains the story, items, controls, and the Baldicator.
+- Background music volume has been slightly decreased
+
+Bug Fixes:
+- Fog should be fixed now
+
+Note:
+From here on out, the original Classic map is no longer going to receive any changes, as I feel that it should remain as close to the original game as possible.
+
+### v0.4.0 ###
+Gameplay Changes:
+- New gameplay style options! Add multiplication/division problems to the math game, or play in Safe Mode for a stress-free experience
+- The Principal will now only be able to see you when you can obviously see him. This is essentially just nerfing his x-ray vision that allows him to see you through multiple sets of yellow doors.
+
+Other Changes:
+- The game will now check for updates. In the launcher, you will be prompted to download a new update if a new version is found. The code I used for this is based on code created by Hamza Herbou, which can be found here: https://www.youtube.com/watch?v=z-H37N6Mjlk
+- Added settings for BGM, SFX, and Voice audio
+- Added the ability to reset your data
+- Added new icons that appear in the center of the screen when you can interact with something. For example, doors and picking up items will show a hand, having the quarter selected while looking at a vending machine will show a quarter, etc.
+- There's two different versions of the same secret ending now: one for getting all questions wrong with safe mode turned on, and one without using safe mode.
+
+Bug Fixes:
+- Finally fixed Arts and Crafters teleporting you to the wrong place in Juniper Hills. Only took me a year to fix it lmao
+
+### v0.3.1 ###
+- New Secret Endings
+- More bugfixes
+- New Map: Juniper Hills
+- Added the new math music that was used in BBCR

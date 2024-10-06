@@ -1,6 +1,5 @@
 using System;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class StatisticsController : MonoBehaviour
 {
@@ -160,9 +159,13 @@ public class StatisticsController : MonoBehaviour
                 SaveDataController.SaveChallengeData(this);
                 break;
         }
+
+        SaveHead saveHead = FindObjectOfType<SaveHead>();
+        if (saveHead != null)
+            saveHead.ActivateSaveHead(1.4f);
     }
 
-    private int GetMapID()
+    private short GetMapID()
     {
         if (this.gc.mode == "story" || this.gc.mode == "endless")
         {
@@ -197,14 +200,14 @@ public class StatisticsController : MonoBehaviour
     [Header("Game State")]
     public bool disableSaving;
     public int[] itemsUsed;
-    public int mapID;
+    public short mapID;
     public float finalSeconds;
     public int notebooks;
     public int detentions;
     public int[] lifetimeItems;
 
     [Header("File Data")]
-    public int data_fileVersion;
+    public ushort data_fileVersion;
     public bool[] data_challengeUnlocks;
     public float[] data_bestTime;
     public int[] data_notebooks;

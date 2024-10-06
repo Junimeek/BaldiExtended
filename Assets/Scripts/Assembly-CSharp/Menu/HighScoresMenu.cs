@@ -1,6 +1,6 @@
 using System;
-using TMPro;
 using UnityEngine;
+using TMPro;
 
 public class HighScoresMenu : MonoBehaviour
 {
@@ -15,7 +15,7 @@ public class HighScoresMenu : MonoBehaviour
         this.itemsUsed_JuniperHills = this.storyData.itemsUsed_JuniperHills;
         this.itemsUsed_NullStyle = this.challengeData.itemsUsed_NullStyle;
 
-        for (int i = 0; i < 18; i++) // Adds Story and Endless numbers together for now
+        for (byte i = 0; i < 18; i++) // Adds Story and Endless numbers together for now
         {
             try {
                 this.itemsUsed_Classic[i] += this.endlessData.itemsUsed_Classic[i];
@@ -35,7 +35,7 @@ public class HighScoresMenu : MonoBehaviour
         if (this.itemsUsed_NullStyle.Length < 18)
             Array.Resize(ref this.itemsUsed_NullStyle, 18);
 
-        for (int i = 0; i < this.informationScripts.Length; i++)
+        for (byte i = 0; i < this.informationScripts.Length; i++)
         {
             this.informationScripts[i].highScoresScript = this;
             this.informationScripts[i].informationType = 1;
@@ -64,9 +64,6 @@ public class HighScoresMenu : MonoBehaviour
                     break;
                 case "JuniperHills":
                     highScore = this.endlessData.notebooks[2];
-                    break;
-                case "NullSyle":
-                    highScore = 0;
                     break;
                 default:
                     highScore = 0;

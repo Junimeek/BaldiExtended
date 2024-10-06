@@ -65,9 +65,13 @@ public class Launcher : MonoBehaviour
         }
     }
 
-    public void RestartBootup()
+    public void RestartBootup(bool isSave)
     {
+        if (isSave)
+            PlayerPrefs.SetInt("saveNoticeSeen", 1);
+
         this.stopCanvas.SetActive(false);
+        this.saveNoticeCanvas.SetActive(false);
         this.StartCoroutine(this.WaitForStart());
     }
 
@@ -82,6 +86,13 @@ public class Launcher : MonoBehaviour
         {
             time -= Time.deltaTime;
             yield return null;
+        }
+
+        if (PlayerPrefs.GetInt("saveNoticeSeen", 0) == 0)
+        {
+            this.isInterrupted = true;
+            this.saveNoticeCanvas.SetActive(true);
+            this.saveHead.Play("SaveHead_Nod");
         }
 
         this.allowInterruption = false;
@@ -468,6 +479,8 @@ public class Launcher : MonoBehaviour
     [SerializeField] private GameObject launcherCanvas;
     [SerializeField] private GameObject logoCanvas;
     [SerializeField] private GameObject stopCanvas;
+    [SerializeField] private GameObject saveNoticeCanvas;
+    [SerializeField] private Animator saveHead;
     [SerializeField] private GameObject basicallyLogo;
     [SerializeField] private GameObject juniLogo;
     [SerializeField] private GameObject fileCanvas;

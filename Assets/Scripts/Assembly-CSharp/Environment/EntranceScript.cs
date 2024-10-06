@@ -21,8 +21,10 @@ public class EntranceScript : MonoBehaviour
 		if (this.gc.finaleMode && gc.exitsReached >= 1)
 		{
 			this.gc.UpdateExitCount();
+
 			if (this.allowMap)
 				this.wall.material = this.map;
+
 			if (this.exitSign != null)
 			{
 				SpriteRenderer sprite = this.exitSign.GetComponent<SpriteRenderer>();
@@ -43,6 +45,7 @@ public class EntranceScript : MonoBehaviour
 	{
 		if (!gc.isSafeMode)
 			base.transform.position = base.transform.position + new Vector3(0f, 10f, 0f);
+			
 		this.mapSprite.color = new Color(0f, 1f, 0f, this.mapSprite.color.a);
 	}
 

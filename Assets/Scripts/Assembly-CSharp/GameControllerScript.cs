@@ -11,6 +11,9 @@ public class GameControllerScript : MonoBehaviour
 {
 	private void Awake()
 	{
+		Application.targetFrameRate = Screen.currentResolution.refreshRate;
+		QualitySettings.vSyncCount = 1;
+
 		audioManager = FindObjectOfType<AudioManager>();
 		handIconScript = FindObjectOfType<HandIconScript>();
 
@@ -742,7 +745,10 @@ public class GameControllerScript : MonoBehaviour
 
 	public void ExitGame()
 	{
-		SceneManager.LoadScene("MainMenu");
+		DontDestroyOnLoad(this.stats.gameObject);
+		this.stats.SaveAllData(null);
+
+		SceneManager.LoadSceneAsync("MainMenu");
 	}
 
 	public void UnpauseGame()
@@ -816,7 +822,7 @@ public class GameControllerScript : MonoBehaviour
 			this.item[i] = 0;
 	}
 
-	public void CreateProjectile(int number)
+	public void CreateProjectile(byte number)
 	{
 		if (this.createdProjectiles == 0)
 		{
@@ -899,6 +905,11 @@ public class GameControllerScript : MonoBehaviour
 	public void UpdateExitCount()
 	{
 		this.exitCountText.text = this.exitsReached + "/" + this.entranceList.Length;
+		
+		if (this.escapeMusicStage == 1 && !this.partyMusic.isPlaying)
+			this.escapeMusicStage = 2;
+		else
+			this.escapeMusicStage = 3;
 	}
 
 	private void ModifyExits(string mode)
@@ -1022,10 +1033,8 @@ public class GameControllerScript : MonoBehaviour
 
 			if (!this.isSafeMode)
 				this.audioDevice.PlayOneShot(this.aud_AllNotebooks, 0.8f);
-			if (!this.isParty)
-				this.escapeMusic.Play();
-			else
-				this.partyMusic.Play();
+			
+			StartCoroutine(this.PlayEscapeMusic());
 		}
 		else if (this.mode == "endless")
 		{
@@ -1447,10 +1456,10 @@ public class GameControllerScript : MonoBehaviour
 	{
 		if (this.finaleMode)
 		{
-			this.escapeMusic.Play();
+			this.escapeDevice.Play();
 
 			if (this.exitsReached >= 2)
-				this.escapeMusic.volume = 0.5f;
+				this.escapeDevice.volume = 0.5f;
 		}
 		if (this.mode == "endless" && this.isAdditionalMusic)
 			this.endlessMusic.Play();
@@ -1552,7 +1561,7 @@ public class GameControllerScript : MonoBehaviour
 		yield break;
 	}
 
-	private void ResetItem(int item_ID)
+	private void ResetItem(ushort item_ID)
 	{
 		this.item[this.itemSelected] = 0;
 		this.itemSlot[this.itemSelected].texture = this.itemTextures[0];
@@ -1615,7 +1624,7 @@ public class GameControllerScript : MonoBehaviour
 				this.audioDevice.clip = this.chaosEarly;
 				this.audioDevice.loop = false;
 				this.audioDevice.Play();
-				this.escapeMusic.volume = 0.5f;
+				this.escapeDevice.volume = 0.5f;
 			}
 		}
 		else if (this.exitsReached == 3 && this.modeType != "nullStyle") //Play a louder sound
@@ -1654,7 +1663,7 @@ public class GameControllerScript : MonoBehaviour
 			this.learnMusic.Stop();
 			this.spoopLearn.Stop();
 			this.partyMusic.Stop();
-			this.escapeMusic.Stop();
+			this.escapeDevice.Stop();
 			for (int i = 0; i < this.daFinalBookCount - 2; i++)
 				this.schoolhouseTroublePlaylist[i].Stop();
 		}
@@ -1682,6 +1691,56 @@ public class GameControllerScript : MonoBehaviour
 		}
 		else if (songType == 4 && !this.partyMusic.isPlaying)
 			this.partyMusic.Play();
+	}
+
+	private IEnumerator PlayEscapeMusic()
+	{
+		this.escapeMusicStage = 1;
+		string nextState = "stageCheck";
+
+		switch(nextState)
+		{
+			case "stageCheck":
+				if (this.isParty)
+					goto case "partyMusic";
+				else if (this.escapeMusicStage == 1)
+					goto case "normalMusic";
+				else
+					goto case "slowMusicLoop";
+
+			case "partyMusic":
+				this.partyMusic.Play();
+				while (this.isParty)
+					yield return null;
+				goto case "stageCheck";
+
+			case "normalMusic":
+				this.escapeDevice.clip = this.escapeMusic[0];
+				this.escapeDevice.loop = true;
+				this.escapeDevice.Play();
+				while (this.exitsReached == 0 && !this.isParty)
+					yield return null;
+				this.escapeDevice.Stop();
+				if (this.isParty)
+					goto case "partyMusic";
+				else
+					goto case "slowMusicStart";
+
+			case "slowMusicStart":
+				this.escapeDevice.loop = false;
+				this.escapeDevice.Stop();
+				this.escapeDevice.clip = this.escapeMusic[1];
+				this.escapeDevice.Play();
+				while (this.escapeDevice.isPlaying)
+					yield return null;
+				goto case "stageCheck";
+
+			case "slowMusicLoop":
+				this.escapeDevice.loop = true;
+				this.escapeDevice.clip = this.escapeMusic[2];
+				this.escapeDevice.Play();
+				break;
+		}
 	}
 
 	private IEnumerator PlayPartyMusic()
@@ -1724,6 +1783,7 @@ public class GameControllerScript : MonoBehaviour
 	{
 		if (!this.isSafeMode && this.modeType != "nullStyle")
 		{
+			RenderSettings.skybox = this.redSky;
 			StartCoroutine(ChangeSchoolColor(phase));
 			StartCoroutine(ChangeFogColor(phase));
 		}
@@ -1812,8 +1872,8 @@ public class GameControllerScript : MonoBehaviour
 
 
 	[Header("Game Configuration")]
-	public int daFinalBookCount;
-	public int totalSlotCount;
+	public byte daFinalBookCount;
+	public byte totalSlotCount;
 	public EntranceScript[] entranceList;
 	public Transform attendanceOffice;
 	public Vector3 detentionPlayerPos;
@@ -1841,19 +1901,19 @@ public class GameControllerScript : MonoBehaviour
 	[SerializeField] private bool isScareStarted;
 	public bool ignoreInitializationChecks;
 	public bool isDynamicColor;
-	public int notebooks;
+	public byte notebooks;
 	[SerializeField] private int highBooksScore;
 	[SerializeField] private float bestTime;
 	[SerializeField] private float speedrunSeconds;
-	[SerializeField] private int speedrunMinutes;
-	[SerializeField] private int speedrunHours;
-	public int exitsReached;
+	[SerializeField] private uint speedrunMinutes;
+	[SerializeField] private uint speedrunHours;
+	public byte exitsReached;
 	[SerializeField] private float dollarAmount;
 	[SerializeField] private float remainingPartyTime;
 	public float gameOverDelay;
 	[SerializeField] private float darkLevel;
-	public int createdProjectiles;
-	public int allowedProjectiles;
+	public byte createdProjectiles;
+	public byte allowedProjectiles;
 	public string mode;
 	public string modeType;
 	public string curMap;
@@ -1888,8 +1948,7 @@ public class GameControllerScript : MonoBehaviour
 
 
 	[Header("Noteboos")]
-	public int failedNotebooks;
-	public int notebookCharReturn;
+	public byte failedNotebooks;
 	[SerializeField] private GameObject mathGameUI;
 
 
@@ -1928,9 +1987,9 @@ public class GameControllerScript : MonoBehaviour
 	[SerializeField] private RectTransform trashOverlay;
 	public bool IsNoItems()
 	{
-		int emptySlots = 0;
+		byte emptySlots = 0;
 
-		for (int i = 0; i < this.totalSlotCount; i++)
+		for (byte i = 0; i < this.totalSlotCount; i++)
 		{
 			if (this.item[i] == 0)
 				emptySlots++;
@@ -2012,7 +2071,9 @@ public class GameControllerScript : MonoBehaviour
 	[Header("Music")]
 	[SerializeField] private bool isEndlessSong;
 	public AudioSource schoolMusic;
-	public AudioSource escapeMusic;
+	[SerializeField] private AudioSource escapeDevice;
+	public AudioClip[] escapeMusic;
+	public byte escapeMusicStage;
 	public AudioSource endlessMusic;
 	public AudioSource learnMusic;
 	public AudioSource spoopLearn;

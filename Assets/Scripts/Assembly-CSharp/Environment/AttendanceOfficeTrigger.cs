@@ -32,7 +32,6 @@ public class AttendanceOfficeTrigger : MonoBehaviour
             yield return null;
         }
         
-        this.gc.notebookCharReturn = this.gc.notebooks + 99;
         this.princey.GuiltyAttendance();
     }
 

@@ -27,13 +27,13 @@ public class SettingsData
 [Serializable]
 public class SaveData_FileVersion
 {
-    public int versionNumber;
+    public ushort versionNumber;
 }
 
 [Serializable]
 public class SaveData_Story
 {
-    public int fileVersion;
+    public ushort fileVersion;
     public int[] itemsUsed_Classic;
     public int[] itemsUsed_ClassicExtended;
     public int[] itemsUsed_JuniperHills;
@@ -41,8 +41,8 @@ public class SaveData_Story
     public int[] totalDetentions;
     public SaveData_Story(StatisticsController stats)
     {
-        int totalMaps = 3;
-        int totalItems = 18;
+        ushort totalMaps = 3;
+        ushort totalItems = 18;
 
         if (stats == null)
         {
@@ -71,7 +71,7 @@ public class SaveData_Story
 [Serializable]
 public class SaveData_Endless
 {
-    public int fileVersion;
+    public ushort fileVersion;
     public int[] itemsUsed_Classic;
     public int[] itemsUsed_ClassicExtended;
     public int[] itemsUsed_JuniperHills;
@@ -79,8 +79,8 @@ public class SaveData_Endless
     public int[] totalDetentions;
     public SaveData_Endless(StatisticsController stats)
     {
-        int totalMaps = 3;
-        int totalItems = 18;
+        ushort totalMaps = 3;
+        ushort totalItems = 18;
 
         if (stats == null)
         {
@@ -91,9 +91,9 @@ public class SaveData_Endless
             this.itemsUsed_ClassicExtended = new int[totalItems];
             this.itemsUsed_JuniperHills = new int[totalItems];
 
-            this.notebooks[0] = PlayerPrefs.GetInt("highbooks_Classic", 0);
-            this.notebooks[1] = PlayerPrefs.GetInt("highbooks_ClassicExtended", 0);
-            this.notebooks[2] = PlayerPrefs.GetInt("highbooks_JuniperHills", 0);
+            this.notebooks[0] = GetPrefNotebookScore("Classic");
+            this.notebooks[1] = GetPrefNotebookScore("ClassicExtended");
+            this.notebooks[2] = GetPrefNotebookScore("JuniperHills");
             PlayerPrefs.DeleteKey("highbooks_Classic");
             PlayerPrefs.DeleteKey("highbooks_ClassicExtended");
             PlayerPrefs.DeleteKey("highbooks_JuniperHills");
@@ -107,22 +107,45 @@ public class SaveData_Endless
             this.itemsUsed_ClassicExtended = stats.data_ClassicExtendedLifetimeItems;
             this.itemsUsed_JuniperHills = stats.data_JuniperHillsLifetimeItems;
         }
+
+        int GetPrefNotebookScore(string map)
+        {
+            int score;
+
+            switch(map)
+            {
+                case "Classic":
+                    score = PlayerPrefs.GetInt("highbooks_Classic", 0);
+                    break;
+                case "ClassicExtended":
+                    score = PlayerPrefs.GetInt("highbooks_ClassicExtended", 0);
+                    break;
+                case "JuniperHills":
+                    score = PlayerPrefs.GetInt("highbooks_JuniperHills", 0);
+                    break;
+                default:
+                    score = 0;
+                    break;
+            }
+
+            return score;
+        }
     }
 }
 
 [Serializable]
 public class SaveData_Challenge
 {
-    public int fileVersion;
+    public ushort fileVersion;
     public bool[] challengeUnlocks;
     public int[] itemsUsed_NullStyle;
     public float[] bestTime;
     public int[] totalDetentions;
     public SaveData_Challenge(StatisticsController stats)
     {
-        int totalUnlocks = 1;
-        int totalMaps = 1;
-        int totalItems = 18;
+        ushort totalUnlocks = 1;
+        ushort totalMaps = 1;
+        ushort totalItems = 18;
 
         if (stats == null)
         {

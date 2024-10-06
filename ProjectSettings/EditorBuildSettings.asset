@@ -24,10 +24,10 @@ EditorBuildSettings:
     path: Assets/Scene/Scenes/Maps/JuniperHills.unity
     guid: 258e526c50ea13042ac295a806483595
   - enabled: 1
-    path: Assets/Scene/Scenes/Maps/ClassicDark.unity
+    path: Assets/Scene/Scenes/Maps/Challenges/ClassicDark.unity
     guid: 8458982a5f6e3f641b8d9664f8a747d8
   - enabled: 0
-    path: Assets/Scene/Scenes/Maps/TheLine.unity
+    path: Assets/Scene/Scenes/Maps/Challenges/TheLine.unity
     guid: 58013e277349e86459bb52c18722cddf
   - enabled: 1
     path: Assets/Scene/Scenes/GameOver.unity

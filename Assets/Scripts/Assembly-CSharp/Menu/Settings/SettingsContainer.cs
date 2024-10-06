@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
+using System.Collections;
 
 public class SettingsContainer : MonoBehaviour
 {
@@ -23,6 +24,7 @@ public class SettingsContainer : MonoBehaviour
     private void Start()
     {
         this.dataPath = Application.persistentDataPath + "/settings.sav";
+        StartCoroutine(this.CheckForStatsObject());
 
         if (!File.Exists(this.dataPath))
             this.ResetSettings();
@@ -63,6 +65,26 @@ public class SettingsContainer : MonoBehaviour
             this.difficultMath = PlayerPrefs.GetInt("gps_difficultmath");
 
             Debug.Log("Loaded data from registry");
+        }
+    }
+
+    private IEnumerator CheckForStatsObject()
+    {
+        StatisticsController stats = FindObjectOfType<StatisticsController>();
+
+        if (stats == null)
+            yield break;
+        else
+        {
+            float delay = 2f;
+
+            while (delay > 0f)
+            {
+                delay -= Time.unscaledDeltaTime;
+                yield return null;
+            }
+
+            Destroy(stats.gameObject);
         }
     }
 
