@@ -178,15 +178,20 @@ public class PlayerScript : MonoBehaviour
 			if (this.stamina < 0f & this.stamina > -5f)
 				this.stamina = -5f;
 		}
-		else if ((this.stamina < this.maxStamina) || (this.stamina < this.maxStamina && this.hugging))
+		else if ((this.stamina < this.softStaminaCap) || (this.stamina < this.softStaminaCap && this.hugging))
 		{
 			if (this.isInfiniteStamina)
-				this.stamina += this.staminaRate * 2f * playerDeltaTimeScale * 2f;
+				this.stamina += this.staminaRate * 2f * this.playerDeltaTimeScale * 2f;
 			else
-				this.stamina += this.staminaRate* 2f * playerDeltaTimeScale;
+				this.stamina += this.staminaRate * 2f * this.playerDeltaTimeScale;
 		}
 
 		this.staminaBar.value = this.stamina / this.maxStamina * 100f;
+
+		if (this.isInfiniteStamina)
+			this.softStaminaCap = 300f;
+		else
+			this.softStaminaCap = 100f;
 	}
 
 	public void IncreaseFightSpeed(int speedPoints)
@@ -385,6 +390,7 @@ public class PlayerScript : MonoBehaviour
 	public bool isProjectileGrabbed;
 
 	[SerializeField] bool isInfiniteStamina;
+	[SerializeField] private float softStaminaCap;
 	[SerializeField] bool isSpeedShoes;
 	public Slider speedSlider;
 	public GameObject speedText;

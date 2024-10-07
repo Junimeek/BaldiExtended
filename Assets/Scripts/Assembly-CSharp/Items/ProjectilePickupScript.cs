@@ -10,10 +10,12 @@ public class ProjectilePickupScript : MonoBehaviour
         this.rb = base.GetComponent<Rigidbody>();
 
         int shownObject = Mathf.RoundToInt(Random.Range(0f, this.gameObjects.Length - 1));
-        for (int i = 0; i < this.gameObjects.Length; i++)
+        for (byte i = 0; i < this.gameObjects.Length; i++)
         {
             if (i != shownObject)
                 Destroy(this.gameObjects[i]);
+            else
+                this.pickupID = i;
         }
     }
 
@@ -23,12 +25,23 @@ public class ProjectilePickupScript : MonoBehaviour
         {
             this.playerScript.isProjectileGrabbed = true;
             this.isPickedUp = true;
+
+            if (this.pickupID == 2 || this.pickupID == 3)
+            {
+                this.meshRenderer = this.gameObjects[this.pickupID].GetComponentInChildren<MeshRenderer>();
+                this.meshRenderer.material = this.transparent;
+            }
+            else
+            {
+                this.sprite = this.gameObjects[this.pickupID].GetComponent<SpriteRenderer>();
+                this.sprite.color = new Color(1f, 1f, 1f, 0.5f);
+            }
         }
     }
 
     private void Update()
     {
-        if (Input.GetMouseButtonDown(0) && this.isPickedUp)
+        if (Input.GetMouseButtonDown(0) && this.isPickedUp && !this.gc.gamePaused)
         {
             this.isThrown = true;
             this.isPickedUp = false;
@@ -68,4 +81,8 @@ public class ProjectilePickupScript : MonoBehaviour
     [SerializeField] private float lifetime;
     [SerializeField] private Rigidbody rb;
     [SerializeField] private SpriteRenderer mapIcon;
+    [SerializeField] private byte pickupID;
+    [SerializeField] private MeshRenderer meshRenderer;
+    [SerializeField] private Material transparent;
+    [SerializeField] private SpriteRenderer sprite;
 }

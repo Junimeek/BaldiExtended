@@ -11,9 +11,6 @@ public class GameControllerScript : MonoBehaviour
 {
 	private void Awake()
 	{
-		Application.targetFrameRate = Screen.currentResolution.refreshRate;
-		QualitySettings.vSyncCount = 1;
-
 		audioManager = FindObjectOfType<AudioManager>();
 		handIconScript = FindObjectOfType<HandIconScript>();
 
@@ -68,7 +65,7 @@ public class GameControllerScript : MonoBehaviour
 				break;
 		}
 
-		this.cullingMask = this.camera.cullingMask; // Changes cullingMask in the Camera
+		this.cullingMask = this.playerCamera.cullingMask; // Changes cullingMask in the Camera
 		this.audioDevice = base.GetComponent<AudioSource>(); //Get the Audio Source
 		this.mode = PlayerPrefs.GetString("CurrentMode"); //Get the current mode
 
@@ -284,7 +281,7 @@ public class GameControllerScript : MonoBehaviour
 			}
 			Time.timeScale = 0f;
 			this.gameOverDelay -= Time.unscaledDeltaTime * 0.5f;
-			this.camera.farClipPlane = this.gameOverDelay * 400f; //Set camera farClip
+			this.playerCamera.farClipPlane = this.gameOverDelay * 400f; //Set camera farClip
 
 			if (!this.player.isSecret)
 			{
@@ -338,23 +335,6 @@ public class GameControllerScript : MonoBehaviour
 			this.audioDevice.clip = this.chaosFinalLoop;
 			this.audioDevice.loop = true;
 			this.audioDevice.Play();
-		}
-
-		if (Input.GetKeyDown(KeyCode.J))
-		{
-			return; // debug function. might use for a potential new item later
-			if (!this.isSlowmo)
-			{
-				Time.timeScale = 0.5f;
-				this.isSlowmo = true;
-				Debug.Log("time is now " + Time.timeScale.ToString());
-			}
-			else
-			{
-				Time.timeScale = 1f;
-				this.isSlowmo = false;
-				Debug.Log("time is now " + Time.timeScale.ToString());
-			}
 		}
 
 		if (Input.GetKeyDown(KeyCode.R))
@@ -491,6 +471,7 @@ public class GameControllerScript : MonoBehaviour
 	public void CompleteGame()
 	{
 		DontDestroyOnLoad(this.stats.gameObject);
+		
 		this.stats.finalSeconds = this.FinalTime();
 
 		if (this.failedNotebooks >= this.daFinalBookCount)
@@ -746,7 +727,9 @@ public class GameControllerScript : MonoBehaviour
 	public void ExitGame()
 	{
 		DontDestroyOnLoad(this.stats.gameObject);
-		this.stats.SaveAllData(null);
+
+		if (this.curMap != "SecretMap")
+			this.stats.SaveAllData(null);
 
 		SceneManager.LoadSceneAsync("MainMenu");
 	}
@@ -870,10 +853,10 @@ public class GameControllerScript : MonoBehaviour
 
 	public IEnumerator ToggleWindowBlockers()
 	{
+		this.baldiScrpt.allowWindowBreaking = true;
+
 		for (int i = 0; i < this.windowBlockers.Length; i++)
 			this.windowBlockers[i].SetActive(false);
-		
-		this.baldiScrpt.allowWindowBreaking = true;
 
 		while (this.baldiScrpt.currentPriority > 1)
 			yield return null;
@@ -980,7 +963,7 @@ public class GameControllerScript : MonoBehaviour
 	{
 		this.mathMusicScript.StopSong();
 		if (audioManager != null) audioManager.SetVolume(0);
-		this.camera.cullingMask = this.cullingMask; //Sets the cullingMask to Everything
+		this.playerCamera.cullingMask = this.cullingMask; //Sets the cullingMask to Everything
 		this.learningActive = false;
 		Destroy(subject);
 		this.LockMouse(); //Prevent the mouse from moving
@@ -1370,23 +1353,6 @@ public class GameControllerScript : MonoBehaviour
 		{
 			this.dollarTextCenter.text = "$" + this.dollarAmount.ToString("0.00");
 			this.dollarTextTop.text = "$" + this.dollarAmount.ToString("0.00");
-		}
-		return;
-		
-		if (this.dollarAmount % 1 == 0f)
-		{
-			this.dollarTextCenter.text = "$" + this.dollarAmount + ".00";
-			this.dollarTextTop.text = "$" + this.dollarAmount + ".00";
-		}
-		else if (this.dollarAmount % 1 == 0.5f)
-		{
-			this.dollarTextCenter.text = "$" + this.dollarAmount + "0";
-			this.dollarTextTop.text = "$" + this.dollarAmount + "0";
-		}
-		else
-		{
-			this.dollarTextCenter.text = "$" + this.dollarAmount;
-			this.dollarTextTop.text = "$" + this.dollarAmount;
 		}
 	}
 
@@ -1891,7 +1857,7 @@ public class GameControllerScript : MonoBehaviour
 	public bool isSafeMode;
 	public bool isDifficultMath;
 	public bool mouseLocked;
-	private bool gamePaused;
+	public bool gamePaused;
 	public bool showTimer;
 	[SerializeField] private bool forceQuarter;
 	[SerializeField] private bool isLookingAtVendingMachine;
@@ -1955,7 +1921,7 @@ public class GameControllerScript : MonoBehaviour
 	[Header("Player")]
 	public Transform playerTransform;
 	public Transform cameraTransform;
-	public Camera camera;
+	[SerializeField] private Camera playerCamera;
 	private int cullingMask;
 	[SerializeField] private Material redSky;
 

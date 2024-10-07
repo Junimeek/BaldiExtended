@@ -58,6 +58,14 @@ public class CursorPrompt : MonoBehaviour
             case 2.4f:
                 this.text.text = "If this is enabled, Schoolhouse Trouble will play in the background during normal Story Mode gameplay.";
                 break;
+            case 2.5f:
+                this.promptParent.pivot = new Vector2(6f * this.positionMultiplier, 1.1f * this.positionMultiplier);
+                this.text.text = "The number displayed here is determined by your monitor's refresh rate. Change your refresh rate if you want to use a different framerate.";
+                break;
+            case 2.6f:
+                this.promptParent.pivot = new Vector2(3f * this.positionMultiplier, -2f * this.positionMultiplier);
+                this.text.text = "In earlier versions of the game, there was a bug where going through yellow doors and clicking on blue doors would alert Baldi regardless of whether the door was open or not. Disabling this will bring back that buggy behavior.";
+                break;
             case 4.1f:
                 this.promptParent.pivot = new Vector2(3f * this.positionMultiplier, -2f * this.positionMultiplier);
                 this.text.text = "DEVELOPMENT NOTE: Eventually, this challenge will be locked behind requiring getting the secret ending. Beating this before then, however, will keep this challenge unlocked.";

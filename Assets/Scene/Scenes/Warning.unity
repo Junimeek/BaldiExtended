@@ -444,10 +444,10 @@ RectTransform:
   m_Father: {fileID: 27}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 10000, y: 10000}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &29
 RectTransform:
@@ -837,7 +837,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: -3}
   m_SizeDelta: {x: 630, y: 469}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1682558858
@@ -863,20 +863,20 @@ MonoBehaviour:
   m_text: 'Hey, thanks for playing!
 
 
-    This mod uses a decompile that''s not for
-    sale, so if you paid for this mod, then you''ve been scammed and thus require
-    a ton of luck to get your money back.
+    Baldi''s Extended Schoolhouse is free and
+    open source software that is based on a decompile by Jumpman25 and porkypowers
+    on itch.io.
 
 
-    The original code, assets, and music
-    all belong to mystman12 (aka - Basically, Games!)
+    The original code, assets, and music all belong to mystman12
+    (aka - Basically, Games!)
 
 
-    And yeah, thats about
-    it.
+    And yeah, thats about it.
 
 
-    (Press any key to continue)'
+    (Press any key
+    to continue)'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 21749360ea10093439a1f9266c91c718, type: 2}
   m_sharedMaterial: {fileID: 2100000, guid: 9ea8bb120e8a8ba4aa942913babb2161, type: 2}
@@ -911,7 +911,7 @@ MonoBehaviour:
   m_fontSizeMax: 72
   m_fontStyle: 0
   m_HorizontalAlignment: 2
-  m_VerticalAlignment: 512
+  m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0

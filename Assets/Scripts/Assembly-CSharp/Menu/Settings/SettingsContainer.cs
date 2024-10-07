@@ -36,6 +36,17 @@ public class SettingsContainer : MonoBehaviour
             this.volumeSFX = PlayerPrefs.GetFloat("VolumeSFX");
             this.framerate = PlayerPrefs.GetInt("Framerate");
 
+            if (this.framerate == 0)
+            {
+                Application.targetFrameRate = -1;
+                QualitySettings.vSyncCount = 0;
+            }
+            else
+            {
+                Application.targetFrameRate = this.framerate;
+                QualitySettings.vSyncCount = 1;
+            }
+
             if (PlayerPrefs.GetInt("InstantReset") == 1)
                 this.instantReset = true;
             else
@@ -107,6 +118,7 @@ public class SettingsContainer : MonoBehaviour
         PlayerPrefs.SetInt("highbooks_Classic", 0);
         PlayerPrefs.SetInt("highbooks_ClassicExtended", 0);
         PlayerPrefs.SetInt("highbooks_JuniperHills", 0);
+        PlayerPrefs.SetInt("pat_doorFix", 1);
         SaveToRegistry("settings");
         SaveToSettingsFile();
         Debug.LogWarning("Settings binary file not found. Settings reset to defaults.");
@@ -124,11 +136,10 @@ public class SettingsContainer : MonoBehaviour
                 PlayerPrefs.SetFloat("VolumeBGM", this.volumeBGM);
                 PlayerPrefs.SetFloat("VolumeSFX", this.volumeSFX);
                 
-                Mathf.Clamp(this.framerate, -1, 500);
                 if (this.framerate > 0)
                 {
                     PlayerPrefs.SetInt("Framerate", this.framerate);
-                    QualitySettings.vSyncCount = 0;
+                    QualitySettings.vSyncCount = 1;
                     Application.targetFrameRate = this.framerate;
                 }
                 else if (this.framerate == 0) // Unlimited FPS
@@ -136,12 +147,6 @@ public class SettingsContainer : MonoBehaviour
                     PlayerPrefs.SetInt("Framerate", 0);
                     QualitySettings.vSyncCount = 0;
                     Application.targetFrameRate = -1;
-                }
-                else if (this.framerate == -1) // V-Sync
-                {
-                    PlayerPrefs.SetInt("Framerate", -1);
-                    QualitySettings.vSyncCount = 1;
-                    Application.targetFrameRate = this.framerate;
                 }
 
                 if (this.instantReset)
@@ -163,6 +168,11 @@ public class SettingsContainer : MonoBehaviour
                     PlayerPrefs.SetInt("gps_familyFriendly", 1);
                 else
                     PlayerPrefs.SetInt("gps_familyFriendly", 0);
+                
+                if (this.doorFix)
+                    PlayerPrefs.SetInt("pat_doorFix", 1);
+                else
+                    PlayerPrefs.SetInt("pat_doorFix", 0);
                 break;
             case "map":
                 PlayerPrefs.SetString("CurrentMap", this.curMap);
@@ -296,7 +306,6 @@ public class SettingsContainer : MonoBehaviour
     }
     */
 
-    private static SettingsContainer instance;
     [SerializeField] private string dataPath;
 
     [Header("Unlock Data")]

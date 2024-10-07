@@ -258,8 +258,6 @@ public class Launcher : MonoBehaviour
         this.logoCanvas.SetActive(true);
         this.basicallyLogo.SetActive(true);
         this.juniLogo.SetActive(false);
-        
-        SaveDataController.LoadEndlessData();
 
         float remTime = 2.5f;
 
@@ -472,7 +470,6 @@ public class Launcher : MonoBehaviour
 
     [Header("Save File")]
     [SerializeField] private string upgradeFlag;
-    private readonly int saveFileVersion = 1;
     [SerializeField] private string savePath;
 
     [Header("UI")]

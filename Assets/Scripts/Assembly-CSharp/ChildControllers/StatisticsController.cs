@@ -5,10 +5,52 @@ public class StatisticsController : MonoBehaviour
 {
     private void Start()
     {
+        if (instance == null)
+            instance = this;
+        else
+        {
+            instance.ForceSave();
+            Destroy(this.gameObject);
+            return;
+        }
+
         this.finalSeconds = 0f;
         this.itemsUsed = new int[0];
         this.detentions = 0;
         this.LoadAllData();
+    }
+
+    public void ForceSave()
+    {
+        if (this.disableSaving)
+            return;
+        
+        this.data_totalDetentions[this.mapID] += this.detentions;
+
+        switch(this.mapID)
+        {
+            case 0:
+                for (int i = 0; i < this.lifetimeItems.Length; i++)
+                    this.data_ClassicLifetimeItems[i] = this.lifetimeItems[i];
+                break;
+            case 1:
+                for (int i = 0; i < this.lifetimeItems.Length; i++)
+                    this.data_ClassicExtendedLifetimeItems[i] = this.lifetimeItems[i];
+                break;
+            case 2:
+                for (int i = 0; i < this.lifetimeItems.Length; i++)
+                    this.data_JuniperHillsLifetimeItems[i] = this.lifetimeItems[i];
+                break;
+        }
+
+        if (this.finalSeconds < this.data_bestTime[this.mapID])
+            this.data_bestTime[this.mapID] = this.finalSeconds;
+        
+        SaveDataController.SaveStoryData(this);
+
+        SaveHead saveHead = FindObjectOfType<SaveHead>();
+        if (saveHead != null)
+            saveHead.ActivateSaveHead(1.4f);
     }
 
     private void LoadAllData()
@@ -94,6 +136,9 @@ public class StatisticsController : MonoBehaviour
 
     public void SaveAllData(string bestType)
     {
+        if (this.disableSaving)
+            return;
+        
         this.data_totalDetentions[this.mapID] += this.detentions;
 
         if (this.gc.mode == "story" || this.gc.mode == "endless")
@@ -196,6 +241,7 @@ public class StatisticsController : MonoBehaviour
     }
 
     [SerializeField] private GameControllerScript gc;
+    [SerializeField] private static StatisticsController instance;
 
     [Header("Game State")]
     public bool disableSaving;

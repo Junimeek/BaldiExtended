@@ -2,16 +2,23 @@
 Gameplay Changes:
 - New Mode: Challenge mode!
 - New challenge map: Dark mode! Which is basically just BBCR's Null Style lmao
-- New Item: the Dangerous Hammer! Smash through any window you can find to be able to go through it!
+- New Item: the Dangerous Hammer! Smash through any window you can find to be able to go through it! At the moment, this item is only available in Dark Mode.
+- The Baldicator will now queue its expressions for sight, next sound, and wandering. This is to ensure that you will still know what Baldi is doing while other animations are playing.
 
 Other Changes:
-- Saving has been completely overhauled. You'll see a prompt upon launching the game the first time you open it. If you were playing an older version, you need to launch the game first, then close the game and go to the "Files" menu in the Launcher, and click on "Upgrade Endless Mode Data".
+- The music during the finale has been altered
+- There is a new sequence for the normal ending
+- Saving has been completely overhauled. You'll see a prompt upon launching the game the first time you open it. The game will have an indicator in the top left corner of the screen when saving is in progress. If you were playing an older version of the game, you need to launch the game first, then close the game and go to the "Files" menu in the Launcher, and click on "Upgrade Endless Mode Data".
 - There are now a few more things that will be saved in your high scores: Your best time in Story Mode, and how many of each item you've used in each map
 - The Data Management menu actually does something now
 - A Family Friendly option has been added. This only affects some minor schoolhouse decoration.
 
+Bug fixes:
+- Fixed the bully not detecting any items on you if your first item slot happens to be empty
+
 Known Bugs:
-- The cuts in the background music during the Null boss battle are extremely noticeable. This will probably be fixed in a future update, but for now we'll just have to put up with my crude audio swapping system
+- The cuts in the background music during the Null boss battle are extremely noticeable. This will likely be fixed in a future update (preferably using a MIDI player, but there aren't any good free ones), but for now we'll just have to put up with my crude audio swapping system
+- The floating textboxes in the menu are kind of screwed up
 
 ### v0.4.3 ###
 Gameplay Changes:

@@ -25,7 +25,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 392833405538520555}
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: -55, z: 0}
+  m_LocalPosition: {x: 0, y: -53, z: 0}
   m_LocalScale: {x: 60, y: 60, z: 2}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -531,6 +531,10 @@ MonoBehaviour:
   lifetime: 0
   rb: {fileID: 0}
   mapIcon: {fileID: 2083600298182807949}
+  pickupID: 0
+  meshRenderer: {fileID: 0}
+  transparent: {fileID: 2100000, guid: 3550429923a7d234b9059bc0c4dd1a34, type: 2}
+  sprite: {fileID: 0}
 --- !u!54 &5212429967832553050
 Rigidbody:
   m_ObjectHideFlags: 0

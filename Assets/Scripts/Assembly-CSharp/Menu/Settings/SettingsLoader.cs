@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
@@ -57,7 +56,9 @@ public class SettingsLoader : MonoBehaviour
                 this.canvasAudio.SetActive(false);
                 this.canvasData.SetActive(false);
                 this.toggleDoorFix.isOn = container.doorFix;
-                this.GetFramerateSettings();
+                this.framerate = Mathf.RoundToInt(Screen.currentResolution.refreshRate);
+                this.refreshText.text = this.framerate + "fps";
+                this.SetFramerateToggles();
                 break;
             case "menuAudio":
                 this.canvasGP.SetActive(false);
@@ -79,111 +80,6 @@ public class SettingsLoader : MonoBehaviour
         }
     }
 
-    private void GetFramerateSettings()
-    {
-        this.framerate = container.framerate;
-
-        if (container.framerate == -1)
-        {
-            this.toggleVSync.isOn = true;
-            this.toggleUnlimitedFramerate.isOn = false;
-            this.framerateInput.text = Mathf.RoundToInt(Screen.currentResolution.refreshRate).ToString();
-        }
-        else if (container.framerate == 0)
-        {
-            this.toggleVSync.isOn = false;
-            this.toggleUnlimitedFramerate.isOn = true;
-            this.framerateInput.text = Mathf.RoundToInt(Screen.currentResolution.refreshRate).ToString();
-        }
-        else
-        {
-            this.toggleVSync.isOn = false;
-            this.toggleUnlimitedFramerate.isOn = false;
-            this.framerateInput.text = container.framerate.ToString();
-        }
-
-        this.framerateInput.ActivateInputField();
-    }
-
-    private void SetFramerateSettings()
-    {
-        if (!this.canvasPatches.activeInHierarchy)
-            return;
-        
-        Debug.Log("Framerate saved");
-
-        this.framerateInput.DeactivateInputField();
-        if (this.toggleVSync.isOn)
-        {
-            this.framerate = -1;
-        }
-        else if (this.toggleUnlimitedFramerate.isOn)
-        {
-            this.framerate = 0;
-        }
-        else
-        {
-            try
-            {
-                this.framerate = Mathf.RoundToInt(Int32.Parse(this.framerateInput.text));
-                Debug.Log(this.framerate);
-            }
-            catch
-            {
-                this.framerate = Mathf.RoundToInt(Screen.currentResolution.refreshRate);
-                this.toggleVSync.isOn = false;
-                this.toggleUnlimitedFramerate.isOn = false;
-            }
-        }
-
-        container.framerate = this.framerate;
-    }
-
-    public void ToggleFramerateButtons(int type)
-    {
-        switch(type)
-        {
-            case 1:
-                if (this.toggleVSync.isOn)
-                {
-                    this.toggleUnlimitedFramerate.interactable = false;
-                    this.toggleUnlimitedFramerate.isOn = false;
-
-                    this.toggleUnlimitedFramerate.GetComponentInChildren<TMP_Text>().color = new Color(1f, 1f, 1f, 0.25f);
-                    foreach (Image image in this.toggleUnlimitedFramerate.GetComponentsInChildren<Image>())
-                        image.color = new Color(1f, 1f, 1f, 0.25f);
-
-                    this.framerateInput.DeactivateInputField();
-                    this.framerateInput.text = Mathf.RoundToInt(Screen.currentResolution.refreshRate).ToString();
-                }
-                else
-                {
-                    this.toggleUnlimitedFramerate.interactable = true;
-                    this.toggleUnlimitedFramerate.isOn = true;
-
-                    this.toggleUnlimitedFramerate.GetComponentInChildren<TMP_Text>().color = new Color(1f, 1f, 1f, 1f);
-                    foreach (Image image in this.toggleUnlimitedFramerate.GetComponentsInChildren<Image>())
-                        image.color = new Color(1f, 1f, 1f, 1f);
-                    
-                    this.framerateInput.ActivateInputField();
-                    this.framerateInput.text = Mathf.RoundToInt(Screen.currentResolution.refreshRate).ToString();
-                }
-                break;
-            case 2:
-                if (this.toggleUnlimitedFramerate.isOn)
-                {
-                    this.framerateInput.DeactivateInputField();
-                    this.framerateInput.text = Mathf.RoundToInt(Screen.currentResolution.refreshRate).ToString();
-                }
-                else
-                {
-                    this.framerateInput.ActivateInputField();
-                    this.framerateInput.text = Mathf.RoundToInt(Screen.currentResolution.refreshRate).ToString();
-                }
-                break;
-        }
-    }
-
     public void StoreSettings()
     {
         switch (this.curSetting)
@@ -196,6 +92,7 @@ public class SettingsLoader : MonoBehaviour
                 break;
             case "menuPatches":
                 container.doorFix = this.toggleDoorFix.isOn;
+                container.framerate = this.SetFramerate();
                 break;
             case "menuAudio":
                 container.volumeVoice = sliderVoice.value;
@@ -203,6 +100,50 @@ public class SettingsLoader : MonoBehaviour
                 container.volumeSFX = sliderSFX.value;
                 container.additionalMusic = toggleAdditionalMusic.isOn;
                 break;
+        }
+    }
+
+    private void SetFramerateToggles()
+    {
+        if (container.framerate == 0)
+            this.isUnlimited = true;
+        else
+            this.isUnlimited = false;
+        
+        this.checkmark.anchoredPosition = this.CheckmarkPosition();
+    }
+
+    public void ToggleFramerate()
+    {
+        if (this.isUnlimited)
+            this.isUnlimited = false;
+        else
+            this.isUnlimited = true;
+        
+        this.checkmark.anchoredPosition = this.CheckmarkPosition();
+    }
+
+    private Vector3 CheckmarkPosition()
+    {
+        if (!this.isUnlimited)
+            return new Vector3(215, 129, 0);
+        else
+            return new Vector3(215, 79, 0);
+    }
+
+    private int SetFramerate()
+    {
+        if (this.isUnlimited)
+        {
+            Application.targetFrameRate = -1;
+            QualitySettings.vSyncCount = 0;
+            return 0;
+        }
+        else
+        {
+            Application.targetFrameRate = this.framerate;
+            QualitySettings.vSyncCount = 1;
+            return this.framerate;
         }
     }
 
@@ -285,9 +226,9 @@ public class SettingsLoader : MonoBehaviour
     [SerializeField] private Toggle toggleNotifBoard;
     [SerializeField] private Toggle toggleFamilyFriendly;
     [SerializeField] private Toggle toggleDoorFix;
-    [SerializeField] private Toggle toggleVSync;
     [SerializeField] private int framerate;
-    [SerializeField] private TMP_InputField framerateInput;
-    [SerializeField] private Toggle toggleUnlimitedFramerate;
+    [SerializeField] private RectTransform checkmark;
+    [SerializeField] private TMP_Text refreshText;
+    [SerializeField] private bool isUnlimited;
 
 }

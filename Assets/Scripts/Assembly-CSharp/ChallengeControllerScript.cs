@@ -11,7 +11,7 @@ public class ChallengeControllerScript : MonoBehaviour
         this.curMode = PlayerPrefs.GetString("challengetype");
         this.audioDevice = base.GetComponent<AudioSource>();
 
-        this.cullingMask = this.camera.cullingMask; // Changes cullingMask in the Camera
+        this.cullingMask = this.playerCamera.cullingMask; // Changes cullingMask in the Camera
 
         switch(this.curMode)
         {
@@ -59,7 +59,7 @@ public class ChallengeControllerScript : MonoBehaviour
 	{
 		this.mathMusicScript.StopSong();
 		if (audioManager != null) audioManager.SetVolume(0);
-		this.camera.cullingMask = this.cullingMask; //Sets the cullingMask to Everything
+		this.playerCamera.cullingMask = this.cullingMask; //Sets the cullingMask to Everything
 		this.learningActive = false;
 		Destroy(subject);
 		this.LockMouse(); //Prevent the mouse from moving
@@ -233,7 +233,7 @@ public class ChallengeControllerScript : MonoBehaviour
     
     [Header("Player")]
     public Transform playerTransform;
-    public Camera camera;
+    public Camera playerCamera;
     private int cullingMask;
 
 

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -74,8 +73,13 @@ public class YouWonScript : MonoBehaviour
 	private IEnumerator BeginBaldiDance()
 	{
 		this.cover.SetActive(true);
-		while (!Input.GetKeyDown(KeyCode.M))
+		
+		float delay = 0.5f;
+		while (delay > 0f)
+		{
+			delay -= Time.unscaledDeltaTime;
 			yield return null;
+		}
 
 		this.cover.SetActive(false);
 		this.musicDevice.loop = false;
@@ -122,8 +126,8 @@ public class YouWonScript : MonoBehaviour
 		while (this.musicDevice.isPlaying)
 			yield return null;
 
+		this.metronome.StopMetronome();
 		this.EnableCanvas(false);
-		Debug.Log("end");
 	}
 
 	private void Update()
@@ -137,6 +141,11 @@ public class YouWonScript : MonoBehaviour
 				this.animationTimer += 0.51282f;
 				this.ChangeAnimState();
 			}
+		}
+		else
+		{
+			this.animationTimer = 0.512f;
+			this.animator.Play("Baldi_Dance");
 		}
 	}
 

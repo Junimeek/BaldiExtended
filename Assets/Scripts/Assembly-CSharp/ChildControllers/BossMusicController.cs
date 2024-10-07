@@ -26,6 +26,7 @@ public class BossMusicController : MonoBehaviour
             this.audioDevice2.loop = false;
         }
 
+        /*
         if (Input.GetKeyDown(KeyCode.M))
         {
             if (this.newStage == 0)
@@ -34,6 +35,7 @@ public class BossMusicController : MonoBehaviour
                 this.earlyLoop = false;
             this.newStage++;
         }
+        */
     }
 
     private IEnumerator SongRoutine()
