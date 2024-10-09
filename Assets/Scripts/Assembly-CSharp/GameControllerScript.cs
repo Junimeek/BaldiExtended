@@ -31,6 +31,8 @@ public class GameControllerScript : MonoBehaviour
 
 		this.isParty = false;
 
+		this.isDoorFix = this.ReadBoolFromRegistry("doorFix");
+
 		switch(curSceneName)
 		{
 			case "ClassicDark":
@@ -47,21 +49,12 @@ public class GameControllerScript : MonoBehaviour
 				this.masterTextColor = Color.black;
 				this.gameOverDelay = 0.5f;
 
-				if (PlayerPrefs.GetInt("gps_safemode") == 1)
-					this.isSafeMode = true;
-				else
-					this.isSafeMode = false;
-
-				if (PlayerPrefs.GetInt("gps_difficultmath") == 1)
-					this.isDifficultMath = true;
-				else
-					this.isDifficultMath = false;
+				this.isSafeMode = this.ReadBoolFromRegistry("safeMode");
+				this.isDifficultMath = this.ReadBoolFromRegistry("difficultMath");
+				this.isAdditionalMusic = this.ReadBoolFromRegistry("additionalMusic");
 
 				if (this.mode == "endless")
 					this.baldiScrpt.endless = true;
-
-				if (PlayerPrefs.GetInt("AdditionalMusic") == 1)
-					this.isAdditionalMusic = true;
 				break;
 		}
 
@@ -101,8 +94,7 @@ public class GameControllerScript : MonoBehaviour
 		this.exitCountText.text = "0/" + this.entranceList.Length;
 		this.exitCountGroup.SetActive(false);
 
-		if (PlayerPrefs.GetInt("op_showtimer") == 1)
-			this.showTimer = true;
+		this.showTimer = this.ReadBoolFromRegistry("showTimer");
 
 		this.speedrunSeconds = 0f;
 		
@@ -120,6 +112,43 @@ public class GameControllerScript : MonoBehaviour
 		this.stats.detentions = 0;
 
 		//debugScreen.DebugCloseMenu();
+	}
+
+	private bool ReadBoolFromRegistry(string entry)
+	{
+		string entryDirectory;
+		int defaultValue = 0;
+		int value = 0;
+		
+		switch(entry)
+		{
+			case "safeMode":
+				entryDirectory = "gps_safemode";
+				break;
+			case "difficultMath":
+				entryDirectory = "gps_difficultmath";
+				break;
+			case "additionalMusic":
+				entryDirectory = "AdditionalMusic";
+				break;
+			case "showTimer":
+				entryDirectory = "op_showtimer";
+				break;
+			case "doorFix":
+				entryDirectory = "pat_doorFix";
+				defaultValue = 1;
+				break;
+			default:
+				entryDirectory = "gps_difficultmath";
+				break;
+		}
+
+		value = PlayerPrefs.GetInt(entryDirectory, defaultValue);
+
+		if (value == 0)
+			return false;
+		else
+			return true;
 	}
 
 	private void InitializeItemSlots() // investigate why this shit wont work
@@ -1122,7 +1151,7 @@ public class GameControllerScript : MonoBehaviour
 					RaycastHit raycastHit;
 					if (Physics.Raycast(ray, out raycastHit) && (raycastHit.collider.tag == "SwingingDoor" & Vector3.Distance(this.playerTransform.position, raycastHit.transform.position) <= 10f))
 					{
-						raycastHit.collider.gameObject.GetComponent<SwingingDoorScript>().LockDoor(15f);
+						raycastHit.collider.gameObject.GetComponent<SwingingDoorScript>().LockDoor();
 						this.ResetItem(2);
 					}
 					break;
@@ -1188,7 +1217,7 @@ public class GameControllerScript : MonoBehaviour
 					RaycastHit raycastHit5;
 					if (Physics.Raycast(ray5, out raycastHit5) && (raycastHit5.collider.tag == "Door" & Vector3.Distance(this.playerTransform.position, raycastHit5.transform.position) <= 10f))
 					{
-						raycastHit5.collider.gameObject.GetComponent<DoorScript>().SilenceDoor();
+						raycastHit5.collider.gameObject.GetComponent<NewRoomDoor>().SilenceDoor();
 						this.ResetItem(8);
 						this.audioDevice.PlayOneShot(this.aud_Spray);
 					}
@@ -1856,6 +1885,7 @@ public class GameControllerScript : MonoBehaviour
 	public bool isAdditionalMusic;
 	public bool isSafeMode;
 	public bool isDifficultMath;
+	public bool isDoorFix;
 	public bool mouseLocked;
 	public bool gamePaused;
 	public bool showTimer;

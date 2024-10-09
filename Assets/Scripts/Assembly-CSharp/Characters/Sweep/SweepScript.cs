@@ -20,13 +20,11 @@ public class SweepScript : MonoBehaviour
 	private void Update()
 	{
 		if (this.coolDown > 0f)
-		{
 			this.coolDown -= 1f * Time.deltaTime;
-		}
+
 		if (this.waitTime > 0f)
-		{
 			this.waitTime -= Time.deltaTime;
-		}
+
 		else if (!this.active)
 		{
 			this.active = true;
@@ -39,22 +37,20 @@ public class SweepScript : MonoBehaviour
 	private void FixedUpdate()
 	{
 		if ((double)this.agent.velocity.magnitude <= 0.1 & this.coolDown <= 0f & this.wanders < 5 & this.active) // If Gotta Sweep has roamed around the school 5 times
-		{
 			this.Wander(); // Wander
-		}
 		else if (this.wanders >= 5)
-		{
 			this.GoHome(); // Go back to the closet
-		}
 	}
 
 	private void Wander()
 	{
 		this.isEarlyActivation = true;
+
 		if (this.isParty)
 			this.agent.SetDestination(this.wanderer.NewTarget("Party"));
 		else
 			this.agent.SetDestination(this.wanderer.NewTarget("Hallway"));
+
 		this.coolDown = 1f;
 		this.wanders++;
 	}
@@ -91,14 +87,14 @@ public class SweepScript : MonoBehaviour
 	private void OnTriggerEnter(Collider other)
 	{
 		if ((other.tag == "NPC" || other.tag == "Player") && !this.isParty)
-		{
 			this.audioDevice.PlayOneShot(this.aud_Sweep);
-		}
 	}
 
 	public void EarlyActivate()
 	{
-		if (this.isEarlyActivation) return;
+		if (this.isEarlyActivation)
+			return;
+		
 		this.isEarlyActivation = true;
 		this.waitTime = 0f;
 	}
