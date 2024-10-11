@@ -199,7 +199,7 @@ public class PrincipalScript : MonoBehaviour
 	public BullyScript bullyScript;
 	public BaldiScript baldiScript;
 	public AILocationSelectorScript wanderer;
-	public DoorScript officeDoor;
+	public ClassroomDoorScript officeDoor;
 	public float coolDown;
 	public float timeSeenRuleBreak;
 	public bool angry;

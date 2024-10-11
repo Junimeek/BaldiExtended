@@ -1,13 +1,12 @@
 using System.Collections;
 using UnityEngine;
 using TMPro;
-using UnityEngine.Rendering.PostProcessing;
 
 public class NotificationBoard : MonoBehaviour
 {
     private void Start()
     {
-        doorScript = FindObjectOfType<DoorScript>();
+        doorScript = FindObjectOfType<ClassroomDoorScript>();
         
         try
         {
@@ -64,7 +63,6 @@ public class NotificationBoard : MonoBehaviour
     public IEnumerator DeactivateDetentionBoard()
     {
         this.ruleGroup.SetActive(false);
-
         this.detentionGroup.SetActive(true);
 
         while (doorScript.lockTime > 0f)
@@ -139,7 +137,7 @@ public class NotificationBoard : MonoBehaviour
         this.notebooGroup.SetActive(false);
     }
 
-    [SerializeField] private DoorScript doorScript;
+    [SerializeField] private ClassroomDoorScript doorScript;
     [SerializeField] private TMP_Text ruleText;
     [SerializeField] private TMP_Text detentionText;
     [SerializeField] private TMP_Text notebooText;

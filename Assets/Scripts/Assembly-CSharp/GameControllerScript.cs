@@ -1217,7 +1217,7 @@ public class GameControllerScript : MonoBehaviour
 					RaycastHit raycastHit5;
 					if (Physics.Raycast(ray5, out raycastHit5) && (raycastHit5.collider.tag == "Door" & Vector3.Distance(this.playerTransform.position, raycastHit5.transform.position) <= 10f))
 					{
-						raycastHit5.collider.gameObject.GetComponent<NewRoomDoor>().SilenceDoor();
+						raycastHit5.collider.gameObject.GetComponent<ClassroomDoorScript>().SilenceDoor();
 						this.ResetItem(8);
 						this.audioDevice.PlayOneShot(this.aud_Spray);
 					}

@@ -25,7 +25,7 @@ public class SwingingDoorScript : MonoBehaviour
         if (!this.requirementMet)
             return;
         
-        if (!this.bDoorOpen && !this.bDoorLocked)
+        if (!this.isOpen && !this.isLocked)
         {
             if (other.tag == "Player")
                 StartCoroutine(this.DoorRoutine(true));
@@ -33,12 +33,12 @@ public class SwingingDoorScript : MonoBehaviour
                 StartCoroutine(this.DoorRoutine(false));
         }
 
-        if (this.bDoorOpen && !this.gc.isDoorFix && !this.bDoorLocked)
+        if (this.isOpen && !this.gc.isDoorFix && !this.isLocked)
         {
-            this.audioDevice.PlayOneShot(this.doorOpen);
+            this.audioDevice.PlayOneShot(this.aud_openDoor);
 
             if (other.tag == "Player")
-                this.baldi.AddNewSound(base.transform.position, 1);
+                this.baldiScript.AddNewSound(base.transform.position, 1);
         }
     }
 
@@ -50,42 +50,39 @@ public class SwingingDoorScript : MonoBehaviour
 
     private IEnumerator DoorRoutine(bool isPlayer)
     {
-        this.bDoorOpen = true;
-        this.audioDevice.PlayOneShot(this.doorOpen);
+        this.isOpen = true;
+        this.audioDevice.PlayOneShot(this.aud_openDoor);
 
         if (isPlayer)
-            this.baldi.AddNewSound(base.transform.position, 1);
+            this.baldiScript.AddNewSound(base.transform.position, 1);
 
-        this.inside.material = this.open;
-        this.outside.material = this.open;
+        this.inside.material = this.openTexture;
+        this.outside.material = this.openTexture;
         this.openTime = 3f;
 
-        while (this.openTime > 0f && !this.bDoorLocked)
+        while (this.openTime > 0f && !this.isLocked)
         {
             this.openTime -= Time.deltaTime;
             yield return null;
         }
 
-        this.bDoorOpen = false;
+        this.isOpen = false;
 
-        if (this.bDoorLocked)
+        if (!this.isLocked)
         {
-            this.inside.material = this.locked;
-            this.outside.material = this.locked;
-        }
-        else
-        {
-            this.inside.material = this.closed;
-            this.outside.material = this.closed;
+            this.inside.material = this.closedTexture;
+            this.outside.material = this.closedTexture;
         }
     }
 
     public void LockDoor()
     {
-        this.bDoorLocked = true;
+        this.isLocked = true;
         this.lockTime = 30f;
         this.obstacle.SetActive(true);
         this.barrier.enabled = true;
+        this.inside.material = this.lockedTexture;
+        this.outside.material = this.lockedTexture;
         StartCoroutine(this.LockRoutine());
     }
 
@@ -97,32 +94,32 @@ public class SwingingDoorScript : MonoBehaviour
             yield return null;
         }
 
-        this.bDoorLocked = false;
+        this.isLocked = false;
         this.obstacle.SetActive(false);
         this.barrier.enabled = false;
-        this.inside.material = this.closed;
-        this.outside.material = this.closed;
+        this.inside.material = this.closedTexture;
+        this.outside.material = this.closedTexture;
     }
 
+    private AudioSource audioDevice;
 	[SerializeField] private GameControllerScript gc;
-	[SerializeField] private BaldiScript baldi;
+	[SerializeField] private BaldiScript baldiScript;
 	[SerializeField] private MeshCollider barrier;
 	[SerializeField] private GameObject obstacle;
-	private AudioSource audioDevice;
-	[SerializeField] private AudioClip doorOpen;
+	[SerializeField] private AudioClip aud_openDoor;
 
 	private bool requirementMet;
-	private bool bDoorLocked;
-	private bool bDoorOpen;
+	private bool isLocked;
+	private bool isOpen;
 	private float openTime;
 	private float lockTime;
 
 	[Header("Rendering")]
 	[SerializeField] private MeshRenderer outside;
 	[SerializeField] private MeshRenderer inside;
-	[SerializeField] private Material closed;
-	[SerializeField] private Material open;
-	[SerializeField] private Material locked;
+	[SerializeField] private Material closedTexture;
+	[SerializeField] private Material openTexture;
+	[SerializeField] private Material lockedTexture;
 	
 	
 	

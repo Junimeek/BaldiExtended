@@ -343,7 +343,7 @@ public class PlayerScript : MonoBehaviour
 
 	public GameControllerScript gc;
 	public BaldiScript baldi;
-	public DoorScript door;
+	public ClassroomDoorScript door;
 	public PlaytimeScript playtime;
 	public bool gameOver;
 	public bool jumpRope;
