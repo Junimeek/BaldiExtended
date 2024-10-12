@@ -40,11 +40,14 @@ public class CursorPrompt : MonoBehaviour
                 break;
             case 1.2f:
                 this.promptParent.pivot = new Vector2(4f * this.positionMultiplier, 0.4f * this.positionMultiplier);
-                this.text.text = "Access the main menu";
+                this.text.text = "Access the main menu    ";
                 break;
             case 1.3f:
                 this.promptParent.pivot = new Vector2(2.6f * this.positionMultiplier, 1.1f * this.positionMultiplier);
-                this.text.text = "Quit the game";
+                this.text.text = "Quit the game   ";
+                break;
+            case 1.4f:
+                this.text.text = "Coming soon!    ";
                 break;
             case 2.1f:
                 this.text.text = "If this is enabled and Baldi catches you, the game will immediately restart instead of returning to the main menu.";
@@ -70,7 +73,6 @@ public class CursorPrompt : MonoBehaviour
                 this.promptParent.pivot = new Vector2(3f * this.positionMultiplier, -2f * this.positionMultiplier);
                 this.text.text = "DEVELOPMENT NOTE: Eventually, this challenge will be locked behind requiring getting the secret ending. Beating this before then, however, will keep this challenge unlocked.";
                 break;
-            
         }
 
         Vector2 boxSize = this.GetBoxSize(this.text.text);

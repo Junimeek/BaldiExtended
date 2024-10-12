@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -7,73 +6,69 @@ public class NullAudio : MonoBehaviour
 {
     private void Start()
     {
-        audioCollider = GetComponent<BoxCollider>();
-        isPlaying = false;
+        this.audioCollider = GetComponent<BoxCollider>();
+        this.isPlaying = false;
     }
     
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.name == "Player" && !isPlaying)
+        if (other.name == "Player" && !this.isPlaying)
 		{
-            isPlaying = true;
+            this.isPlaying = true;
             Debug.Log("Collision with Audio trigger");
             
             if (PlayerPrefs.GetInt("gps_safemode") == 1)
-            {
-                StartCoroutine(WaitForDab());
-            }
+                StartCoroutine(this.WaitForDab());
             else
             {
-                audioDevice.PlayOneShot(this.nullMonologue);
-                player.isSecret = true;
-                gc.gameOverDelay = this.gameOverDelay;
-                StartCoroutine(WaitForGlitch());
+                this.audioDevice.PlayOneShot(this.nullMonologue);
+                this.player.isSecret = true;
+                this.gc.gameOverDelay = this.gameOverDelay;
+                StartCoroutine(this.WaitForGlitch());
+
+                this.progressionController.mapUnlocks[0] = true;
+                this.progressionController.SaveProgressionData();
             }
-            
 		}
     }
 
     private IEnumerator WaitForGlitch()
     {
+        this.nullAgent.allowMovement = false;
+
         while (this.audioDevice.isPlaying)
-        {
-            nullAgent.allowMovement = false;
             yield return null;
-        }
 
-        audioCollider.enabled = !audioCollider.enabled;
+        this.audioCollider.enabled = !audioCollider.enabled;
 
-        nullAgent.allowMovement = true;
-        nullGlitchLoop.Play();
+        this.nullAgent.allowMovement = true;
+        this.nullGlitchLoop.Play();
     }
 
     private IEnumerator WaitForDab()
     {
-        baldiLecture.Play();
+        this.baldiLecture.Play();
 
         while (this.baldiLecture.isPlaying)
-        {
             yield return null;
-        }
 
-        audioCollider.enabled = !audioCollider.enabled;
+        this.audioCollider.enabled = !audioCollider.enabled;
 
-        balDab.SetActive(true);
-        balIdle.SetActive(false);
-        baldiLmfao.Play();
+        this.balDab.SetActive(true);
+        this.balIdle.SetActive(false);
+        this.baldiLmfao.Play();
 
         while (this.baldiLmfao.isPlaying)
-        {
             yield return null;
-        }
 
-        baldiLmfao.Play();
-        baldiLmfao.loop = true;
+        this.baldiLmfao.Play();
+        this.baldiLmfao.loop = true;
         SceneManager.LoadSceneAsync("MainMenu");
     }
 
     public PlayerScript player;
+    [SerializeField] private ProgressionController progressionController;
     [SerializeField] private GameControllerScript gc;
     [SerializeField] private float gameOverDelay;
     [SerializeField] private NullAgent nullAgent;

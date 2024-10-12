@@ -1475,6 +1475,7 @@ public class GameControllerScript : MonoBehaviour
 	private void SendCharacterHome(string character)
 	{
 		this.charInAttendance = character;
+		this.attendanceBlocker.SetActive(false);
 		switch(character)
 		{
 			case "Playtime":
@@ -2033,6 +2034,7 @@ public class GameControllerScript : MonoBehaviour
 	public RectTransform boots;
 	public GameObject alarmClock;
 	[SerializeField] private GameObject party;
+	[SerializeField] private GameObject attendanceBlocker;
 
 
 	[Header("Detention")]

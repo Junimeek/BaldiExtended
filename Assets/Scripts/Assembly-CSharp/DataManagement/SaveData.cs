@@ -13,21 +13,28 @@ public class AchievementData
 public class SettingsData
 {
     public bool isSettingsSaved;
-    /*
-    public float turnSensitivity;
-    public bool isInstantReset;
-    public bool isNotifBoard;
-    public float volVoice;
-    public float volBGM;
-    public float volSFX;
-    public bool isAdditionalMusic;
-    */
 }
 
 [Serializable]
-public class SaveData_FileVersion
+public class ProgressionData
 {
-    public ushort versionNumber;
+    public ushort fileVersion;
+    public bool[] mapUnlocks;
+    public ProgressionData(ProgressionController controller)
+    {
+        ushort totalMaps = 1;
+
+        if (controller == null)
+        {
+            this.fileVersion = 1;
+            this.mapUnlocks = new bool[totalMaps];
+        }
+        else
+        {
+            this.fileVersion = controller.fileVersion;
+            this.mapUnlocks = controller.mapUnlocks;
+        }
+    }
 }
 
 [Serializable]

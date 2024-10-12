@@ -169,6 +169,8 @@ public class YouWonScript : MonoBehaviour
 		this.cameraObject.position = new Vector3(20f, 5f, 25f);
 		this.cameraObject.eulerAngles = new Vector3(0f, 90f, 0f);
 
+		Destroy(this.balloons);
+
 		if (forceDanceEnd)
 		{
 			this.baldiDevice.clip = null;
@@ -285,7 +287,7 @@ public class YouWonScript : MonoBehaviour
 	[SerializeField] private GameObject skipCanvas;
 	[SerializeField] private GameObject cover;
 	[SerializeField] private bool isDanceFinished;
-
+	[SerializeField] private GameObject balloons;
 	[Header("Audio")]
 	[SerializeField] private AudioSource musicDevice;
 	[SerializeField] private AudioSource baldiDevice;

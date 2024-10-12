@@ -48,7 +48,8 @@ public class Launcher : MonoBehaviour
             Directory.CreateDirectory(this.savePath);
             this.upgradeFlag = "factory";
         }
-        else if (!File.Exists(savePath + "story.sav") || !File.Exists(savePath + "endless.sav") || !File.Exists(savePath + "challenge.sav"))
+        else if (!File.Exists(savePath + "story.sav") || !File.Exists(savePath + "endless.sav")
+        || !File.Exists(savePath + "challenge.sav") || !File.Exists(savePath + "progression.sav"))
             this.upgradeFlag = "fileMissing";
         
         if (!Directory.Exists(Application.persistentDataPath + "/BaldiData_Backup"))
@@ -354,8 +355,25 @@ public class Launcher : MonoBehaviour
             UnityEngine.Debug.LogError(e);
             yield break;
         }
-        
+
         remTime = 0.5f;
+        while (remTime > 0f)
+        {
+            remTime -= Time.deltaTime;
+            yield return null;
+        }
+
+        this.upgradeText_process.text = "Finishing...";
+        try {
+            SaveDataController.SaveProgressionData(null);
+        }
+        catch (System.Exception e) {
+            this.ThrowError(e.ToString());
+            UnityEngine.Debug.LogError(e);
+            yield break;
+        }
+        
+        remTime = 0.3f;
         while (remTime > 0f)
         {
             remTime -= Time.deltaTime;
@@ -427,6 +445,17 @@ public class Launcher : MonoBehaviour
         {
             try {
                 SaveDataController.SaveChallengeData(null);
+            }
+            catch (System.Exception e) {
+                this.ThrowError(e.ToString());
+                UnityEngine.Debug.LogError(e);
+                yield break;
+            }
+        }
+        if (!File.Exists(this.savePath + "progression.sav"))
+        {
+            try {
+                SaveDataController.SaveProgressionData(null);
             }
             catch (System.Exception e) {
                 this.ThrowError(e.ToString());

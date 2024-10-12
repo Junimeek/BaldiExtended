@@ -186,6 +186,10 @@ public class NullBoss : MonoBehaviour
         this.playerScript.IncreaseFightSpeed(0);
         this.allowMovement = false;
 
+        ProgressionController progressionController = FindObjectOfType<ProgressionController>();
+        progressionController.mapUnlocks[0] = true;
+        progressionController.SaveProgressionData();
+
         float remTime = 6.206f;
 
         while (remTime > 0f)

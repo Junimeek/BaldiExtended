@@ -37,7 +37,7 @@ public class SwingingDoorScript : MonoBehaviour
         {
             this.audioDevice.PlayOneShot(this.aud_openDoor);
 
-            if (other.tag == "Player")
+            if (other.tag == "Player" && this.baldiScript.isActiveAndEnabled)
                 this.baldiScript.AddNewSound(base.transform.position, 1);
         }
     }
@@ -53,7 +53,7 @@ public class SwingingDoorScript : MonoBehaviour
         this.isOpen = true;
         this.audioDevice.PlayOneShot(this.aud_openDoor);
 
-        if (isPlayer)
+        if (isPlayer && this.baldiScript.isActiveAndEnabled)
             this.baldiScript.AddNewSound(base.transform.position, 1);
 
         this.inside.material = this.openTexture;
