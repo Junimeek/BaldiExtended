@@ -25,6 +25,11 @@ public class PlayerScript : MonoBehaviour
 		this.isSecret = false;
 	}
 
+	public void OverrideValues(ScriptInjector injector)
+	{
+		this.speedOverrides = injector.inj_playerSpeed;
+	}
+
 	private void Update()
 	{
 		if (gc.isSlowmo)
@@ -266,7 +271,7 @@ public class PlayerScript : MonoBehaviour
 				this.isInfiniteStamina = false;
 				break;
 			case "Office Trigger":
-				this.ResetGuilt("escape", this.door.lockTime);
+				this.ResetGuilt("escape", this.gc.remainingDetentionTime);
 				break;
 			case "Gotta Sweep":
 				this.sweeping = false;
@@ -343,7 +348,6 @@ public class PlayerScript : MonoBehaviour
 
 	public GameControllerScript gc;
 	public BaldiScript baldi;
-	public ClassroomDoorScript door;
 	public PlaytimeScript playtime;
 	public bool gameOver;
 	public bool jumpRope;

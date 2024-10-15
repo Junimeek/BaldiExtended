@@ -35,7 +35,8 @@ public class VendingMachineScript : MonoBehaviour
                 this.curQuarterCount--;
                 if (!(this.curQuarterCount <= 0))
                     this.display.sprite = this.numbers[this.curQuarterCount];
-                else this.display.sprite = this.numbers[this.InitialQuarterCount()];
+                else
+                    this.display.sprite = this.numbers[this.InitialQuarterCount()];
             }
         }
 

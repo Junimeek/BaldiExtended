@@ -23,6 +23,7 @@ Bug fixes:
 - Fixed the bully not detecting any items on you if your first item slot happens to be empty
 
 Known Bugs:
+- Apparently it's possible for a vending machine to eat your quarter. This has only ever happened to me a single time, and I can't for the life of me figure out why it happened that one time. This seems to be a VERY rare bug, so you shouldn't have to worry about it at all. hopefully.
 - I did attempt to make it so when you make the Principal angry, he will only pursue you if he actively sees you. However, this behavior seems to be broken and he still knows where you are at all times, both in and out of his sight.
 - The cuts in the background music during the Null boss battle are extremely noticeable. This will likely be fixed in a future update (preferably using a MIDI player, but there aren't any good free ones), but for now we'll just have to put up with my crude audio swapping system
 - The floating textboxes in the menu are kind of screwed up

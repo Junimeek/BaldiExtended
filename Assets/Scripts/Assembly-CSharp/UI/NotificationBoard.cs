@@ -6,7 +6,7 @@ public class NotificationBoard : MonoBehaviour
 {
     private void Start()
     {
-        doorScript = FindObjectOfType<ClassroomDoorScript>();
+        this.gc = FindObjectOfType<GameControllerScript>();
         
         try
         {
@@ -26,8 +26,8 @@ public class NotificationBoard : MonoBehaviour
 
     private void Update()
     {
-        if (this.doorScript != null && this.doorScript.lockTime > 0f)
-			this.detentionText.text = "You have detention! \n" + Mathf.CeilToInt(doorScript.lockTime) + " seconds remain!";
+        if (this.gc.remainingDetentionTime > 0f)
+			this.detentionText.text = "You have detention! \n" + Mathf.CeilToInt(this.gc.remainingDetentionTime) + " seconds remain!";
     }
 
     public void RuleText(int rule)
@@ -57,7 +57,7 @@ public class NotificationBoard : MonoBehaviour
 
     public void DetentionBoardRoutine()
     {
-        StartCoroutine(DeactivateDetentionBoard());
+        StartCoroutine(this.DeactivateDetentionBoard());
     }
 
     public IEnumerator DeactivateDetentionBoard()
@@ -65,15 +65,15 @@ public class NotificationBoard : MonoBehaviour
         this.ruleGroup.SetActive(false);
         this.detentionGroup.SetActive(true);
 
-        while (doorScript.lockTime > 0f)
+        while (this.gc.remainingDetentionTime > 0f)
             yield return null;
 
         this.detentionGroup.SetActive(false);
     }
 
-    public void StartNotebooRoutine(string notename)
+    public void StartNotebooRoutine(string noteName)
     {
-        switch(notename)
+        switch(noteName)
         {
             case "Math Notebook":
                 this.notebooColor = new Color(0.75f, 0.52f, 0.54f, 1f);
@@ -113,7 +113,7 @@ public class NotificationBoard : MonoBehaviour
                 break;
         }
 
-        this.StartCoroutine(this.NotebooRoutine(notename, notebooColor));
+        this.StartCoroutine(this.NotebooRoutine(noteName, notebooColor));
     }
 
     private IEnumerator NotebooRoutine(string notename, Color color)
@@ -121,7 +121,7 @@ public class NotificationBoard : MonoBehaviour
         if (PlayerPrefs.GetInt("NotifBoard") == 1)
             this.notebooGroup.SetActive(true);
         else
-            this.StopCoroutine(this.NotebooRoutine("Science Notebook", new Color(1f, 1f, 1f, 1f)));
+            yield break;
 
         this.notebooText.text = notename;
         this.notebooText.color = color;
@@ -137,7 +137,7 @@ public class NotificationBoard : MonoBehaviour
         this.notebooGroup.SetActive(false);
     }
 
-    [SerializeField] private ClassroomDoorScript doorScript;
+    [SerializeField] private GameControllerScript gc;
     [SerializeField] private TMP_Text ruleText;
     [SerializeField] private TMP_Text detentionText;
     [SerializeField] private TMP_Text notebooText;

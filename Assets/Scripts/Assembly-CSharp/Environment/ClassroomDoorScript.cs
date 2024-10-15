@@ -103,19 +103,35 @@ public class ClassroomDoorScript : MonoBehaviour
         StartCoroutine(this.LockRoutine());
     }
 
+    public bool TryUnLock()
+    {
+        if (this.isLocked)
+        {
+            this.isLocked = false;
+            this.openTime = 3f;
+            return true;
+        }
+        else
+            return false;
+    }
+
     private IEnumerator LockRoutine()
     {
         this.audioDevice.PlayOneShot(this.aud_lock);
 
-        while (this.lockTime > 0f)
+        while (this.lockTime > 0f && this.isLocked)
         {
             this.lockTime -= Time.deltaTime;
             yield return null;
         }
 
-        this.isLocked = false;
-        this.audioDevice.PlayOneShot(this.aud_unlock);
-
+        if (this.isLocked)
+        {
+            this.isLocked = false;
+            this.audioDevice.PlayOneShot(this.aud_unlock);
+        }
+        else
+            StartCoroutine(this.DoorRoutine(true));
     }
 
     public void SilenceDoor()

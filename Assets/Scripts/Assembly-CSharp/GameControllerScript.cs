@@ -285,10 +285,8 @@ public class GameControllerScript : MonoBehaviour
 				}
 			}
 		}
-		else
-		{
-			if (Time.timeScale != 0f) Time.timeScale = 0f;
-		}
+		else if (Time.timeScale != 0f)
+			Time.timeScale = 0f;
 
 		if (this.player.stamina > 0f)
 		{
@@ -380,6 +378,9 @@ public class GameControllerScript : MonoBehaviour
 					break;
 			}
 		}
+
+		if (Time.timeScale != 0f && this.remainingDetentionTime > 0f)
+			this.remainingDetentionTime -= Time.deltaTime;
 
 		if (this.modeType == "nullStyle" && this.isDynamicColor)
 		{
@@ -1160,13 +1161,9 @@ public class GameControllerScript : MonoBehaviour
 					RaycastHit raycastHit2;
 					if (Physics.Raycast(ray2, out raycastHit2) && (raycastHit2.collider.tag == "Door" & Vector3.Distance(this.playerTransform.position, raycastHit2.transform.position) <= 10f))
 					{
-						DoorScript component = raycastHit2.collider.gameObject.GetComponent<DoorScript>();
-						if (component.DoorLocked)
-						{
-							component.UnlockDoor();
-							component.OpenDoor(3f);
+						ClassroomDoorScript component = raycastHit2.collider.gameObject.GetComponent<ClassroomDoorScript>();
+						if (component.TryUnLock())
 							this.ResetItem(3);
-						}
 					}
 					break;
 				case 4: // BSODA
@@ -2040,6 +2037,7 @@ public class GameControllerScript : MonoBehaviour
 	[Header("Detention")]
 	public bool isPrinceyTriggerShared;
 	public bool isPrinceyIgnore;
+	public float remainingDetentionTime;
 	
 	
 	[Header("SFX and Voices")]

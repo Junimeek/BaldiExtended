@@ -168,6 +168,7 @@ public class PrincipalScript : MonoBehaviour
 			this.audioQueue.QueueAudio(this.audScolds[num]); // Say one of the other lines
 
 			this.officeDoor.LockDoor(this.lockTime[this.detentions]); // Lock the door
+			this.gc.remainingDetentionTime = this.lockTime[this.detentions];
 			if (this.baldiScript.isActiveAndEnabled)
 				this.baldiScript.AddNewSound(base.transform.position, 3);
 			this.coolDown = 5f;
@@ -239,6 +240,6 @@ public class PrincipalScript : MonoBehaviour
 	[SerializeField] private RaycastHit hit;
 	private Vector3 aim;
 	public CharacterController cc;
-	private NotificationBoard notif;
+	[SerializeField] private NotificationBoard notif;
 	[SerializeField] private GameControllerScript gc;
 }

@@ -37,7 +37,7 @@ public class NullBoss : MonoBehaviour
 
     private float NullSpeed()
     {
-        return this.hits * 6f + 8f;
+        return this.hits * 5.5f + 13f;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -167,15 +167,11 @@ public class NullBoss : MonoBehaviour
 
     private UnityEngine.Color RandomColor()
     {
-        float color1;
-        float color2;
-        float color3;
+        float[] colors = {
+            Random.Range(0f, 1f), Random.Range(0f, 1f), Random.Range(0f, 1f)
+        };
 
-        color1 = Random.Range(0f, 1f);
-        color2 = Random.Range(0f, 1f);
-        color3 = Random.Range(0f, 1f);
-
-        return new UnityEngine.Color(color1, color2, color3);
+        return new UnityEngine.Color(colors[0], colors[1], colors[2]);
     }
 
     private IEnumerator End()
