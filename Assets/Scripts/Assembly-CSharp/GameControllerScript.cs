@@ -308,7 +308,7 @@ public class GameControllerScript : MonoBehaviour
 			}
 			Time.timeScale = 0f;
 			this.gameOverDelay -= Time.unscaledDeltaTime * 0.5f;
-			this.playerCamera.farClipPlane = this.gameOverDelay * 400f; //Set camera farClip
+			this.playerCamera.farClipPlane = Mathf.Clamp(this.gameOverDelay * 400f, -1f, 400f); //Set camera farClip
 
 			if (!this.player.isSecret)
 			{
@@ -351,19 +351,6 @@ public class GameControllerScript : MonoBehaviour
 			}
 		}
 
-		if (this.finaleMode && !this.audioDevice.isPlaying && this.exitsReached == 2 && this.modeType != "nullStyle")
-		{
-			this.audioDevice.clip = this.chaosEarlyLoop;
-			this.audioDevice.loop = true;
-			this.audioDevice.Play();
-		}
-		else if (this.finaleMode && !this.audioDevice.isPlaying && this.exitsReached == 3 && this.modeType != "nullStyle")
-		{
-			this.audioDevice.clip = this.chaosFinalLoop;
-			this.audioDevice.loop = true;
-			this.audioDevice.Play();
-		}
-
 		if (Input.GetKeyDown(KeyCode.R))
 		{
 			switch(this.showTimer)
@@ -392,6 +379,17 @@ public class GameControllerScript : MonoBehaviour
 				RenderSettings.ambientLight = new Color(0.4f, 0.4f, 0.4f);
 			else
 				RenderSettings.ambientLight = new Color(this.darkLevel, this.darkLevel, this.darkLevel);
+		}
+		else if (this.finaleMode && this.isDynamicColor)
+		{
+			Vector3 distance = this.entranceDarkSources[0].position - this.playerTransform.position;
+			float sqrLen = distance.sqrMagnitude;
+			this.darkLevel = Mathf.Sqrt(sqrLen / 50000f);
+
+			if (this.darkLevel >= 1f)
+				RenderSettings.ambientLight = new Color(1f, 0f, 0f);
+			else
+				RenderSettings.ambientLight = new Color(this.darkLevel, 0f, 0f);
 		}
 
 		this.speedrunSeconds += Time.unscaledDeltaTime;
@@ -425,6 +423,12 @@ public class GameControllerScript : MonoBehaviour
 		
 		if (this.baldiScrpt.isActiveAndEnabled)
 			this.baldiScrpt.NullOffset();
+		else if (this.nullBoss.GetComponent<NullBoss>().isActiveAndEnabled)
+		{
+			Transform funnyNullSprite = this.nullBoss.transform.Find("Sprite");
+			Vector3 curPosition = funnyNullSprite.transform.position;
+			funnyNullSprite.position = new Vector3(curPosition.x, curPosition.y - 0.5f, curPosition.z);
+		}
 			
 		this.isDynamicColor = false;
 		RenderSettings.ambientIntensity = 0f;
@@ -828,7 +832,6 @@ public class GameControllerScript : MonoBehaviour
 		this.mapScript.DisableAllItems();
 
 		this.createdProjectiles = 3;
-		this.allowedProjectiles = 10;
 
 		this.dollarAmount = 0f;
 		for (int i = 0; i < this.totalSlotCount; i++)
@@ -837,43 +840,38 @@ public class GameControllerScript : MonoBehaviour
 
 	public void CreateProjectile(byte number)
 	{
-		if (this.createdProjectiles == 0)
-		{
-			this.createdProjectiles = 3;
-			this.projectilesInPlay = new GameObject[3];
-			for (int i = 0; i < this.projectilesInPlay.Length; i++)
-				this.projectilesInPlay[i] = Instantiate(this.projectile, this.wanderer.NewTarget("Projectile"), Quaternion.identity);
-		}
-		else
-		{
-			this.createdProjectiles += number;
-			Array.Resize(ref this.projectilesInPlay, this.projectilesInPlay.Length + 1);
-			this.projectilesInPlay[this.projectilesInPlay.Length - 1] = Instantiate(this.projectile, this.wanderer.NewTarget("Projectile"), Quaternion.identity);
-		}
+		this.createdProjectiles += number;
+		Array.Resize(ref this.projectilesInPlay, this.projectilesInPlay.Length + number);
+
+		for (int i = this.projectilesInPlay.Length - number; i < this.projectilesInPlay.Length; i++)
+			this.projectilesInPlay[i] = Instantiate(this.projectile, this.wanderer.NewTarget("Projectile"), Quaternion.identity);
 	}
 
-	public IEnumerator WaitForProjectile()
+	public void CheckProjectileCount(NullBoss nullBoss)
 	{
-		NullBoss nullBoss = this.nullBoss.GetComponent<NullBoss>();
-		int curHit = nullBoss.hits;
-		float remTime = 5.1f;
-
-		while (remTime > 0f && !(nullBoss.hits == curHit))
+		byte hits = nullBoss.hits;
+		byte Hitclip()
 		{
-			remTime -= Time.deltaTime;
-			yield return null;
+			if (this.createdProjectiles == 0)
+				return 4;
+			else
+				return 0;
 		}
+		byte[] allowedProjectiles = {
+			1, Hitclip(), 4, 4, 4, 4, 4, 3, 2, 1, 0
+		};
 
-		if (this.createdProjectiles <= this.allowedProjectiles)
-		{
+		if (this.createdProjectiles < allowedProjectiles[hits])
 			this.CreateProjectile(1);
-		}
 	}
 
 	public void DeleteProjectiles()
 	{
 		foreach (GameObject i in this.projectilesInPlay)
 			Destroy(i);
+		
+		Array.Resize(ref this.projectilesInPlay, 0);
+		this.createdProjectiles = 0;
 	}
 
 	public void DeactivateBossFight()
@@ -1510,7 +1508,7 @@ public class GameControllerScript : MonoBehaviour
 
 	private IEnumerator BootAnimation()
 	{
-		float time = 15f;
+		float time = 30f;
 		float height = 375f;
 		Vector3 position = default(Vector3);
 		this.boots.gameObject.SetActive(true);
@@ -1592,45 +1590,47 @@ public class GameControllerScript : MonoBehaviour
 		this.exitsReached++;
 		this.AngrySchoolColors(this.exitsReached);
 
-		if (this.exitsReached == 1 && this.modeType == "nullStyle")
-		{
-			this.audioDevice.loop = true;
-			this.audioDevice.clip = this.quietNoiseLoop;
-			this.audioDevice.Play();
-		}
+		if (this.exitsReached == 1)
+			StartCoroutine(this.ChaosAudio());
 
-		if (this.exitsReached != 2 || this.modeType == "nullStyle")
+		if (this.exitsReached != 2)
 			this.audioDevice.PlayOneShot(this.aud_Switch, 0.8f);
 
-		if (this.exitsReached == 2) //Play a sound
+		if (this.modeType == "nullStyle")
 		{
-			if (this.modeType == "nullStyle")
+			switch(this.exitsReached)
 			{
-				this.audioDevice.volume = 0.85f;
-				this.audioDevice.loop = true;
-				this.audioDevice.clip = this.glambience;
-				this.audioDevice.Play();
-			}
-			else
-			{
-				this.audioDevice.volume = 0.8f;
-				this.audioDevice.clip = this.chaosEarly;
-				this.audioDevice.loop = false;
-				this.audioDevice.Play();
-				this.escapeDevice.volume = 0.5f;
+				case 1:
+					this.audioDevice.loop = true;
+					this.audioDevice.clip = this.quietNoiseLoop;
+					this.audioDevice.Play();
+					break;
+				case 2:
+					this.audioDevice.PlayOneShot(this.aud_Switch, 0.8f);
+					this.audioDevice.volume = 0.85f;
+					this.audioDevice.loop = true;
+					this.audioDevice.clip = this.glambience;
+					this.audioDevice.Play();
+					break;
+				case 3:
+					this.baldi.SetActive(false);
+					this.isDynamicColor = false;
+					break;
 			}
 		}
-		else if (this.exitsReached == 3 && this.modeType != "nullStyle") //Play a louder sound
+		else if (this.exitsReached == this.entranceList.Length - 1)
 		{
-			this.audioDevice.volume = 0.8f;
-			this.audioDevice.clip = this.chaosBuildup;
-			this.audioDevice.loop = false;
-			this.audioDevice.Play();
-		}
-		else if (this.exitsReached == 3 && this.modeType == "nullStyle")
-		{
-			this.baldi.SetActive(false);
-			this.isDynamicColor = false;
+			Transform finalSource = null;
+			for (int i = 0; i < this.entranceList.Length; i++)
+			{
+				if (entranceDarkSources[i] != null)
+				{
+					finalSource = entranceDarkSources[i];
+					break;
+				}
+			}
+			this.entranceDarkSources[0] = finalSource;
+			this.isDynamicColor = true;
 		}
 	}
 
@@ -1713,11 +1713,18 @@ public class GameControllerScript : MonoBehaviour
 				this.escapeDevice.Play();
 				while (this.exitsReached == 0 && !this.isParty)
 					yield return null;
-				this.escapeDevice.Stop();
 				if (this.isParty)
+				{
+					this.escapeDevice.Stop();
 					goto case "partyMusic";
+				}
+				else if (this.isSafeMode)
+					yield break;
 				else
+				{
+					this.escapeDevice.Stop();
 					goto case "slowMusicStart";
+				}
 
 			case "slowMusicStart":
 				this.escapeDevice.loop = false;
@@ -1772,6 +1779,55 @@ public class GameControllerScript : MonoBehaviour
 		this.schoolhouseTroublePlaylist[1].Play();
 	}
 
+	private IEnumerator ChaosAudio()
+	{
+		string state = "start";
+
+		switch(state)
+		{
+			case "start":
+				if (this.modeType == "nullStyle" || this.isSafeMode)
+					yield break;
+				this.chaosDevice.loop = false;
+				this.chaosDevice.volume = 0.8f;
+				this.chaosDevice.clip = this.chaosEarly;
+				while (this.exitsReached == 1)
+					yield return null;
+				goto case "earlyLoop";
+
+			case "earlyLoop":
+				this.chaosDevice.Play();
+				while (this.exitsReached == 2 && this.chaosDevice.isPlaying)
+					yield return null;
+				if (this.exitsReached > 2)
+				{
+					this.chaosDevice.Stop();
+					goto case "finalLoop";
+				}
+				else
+				{
+					this.chaosDevice.clip = this.chaosEarlyLoop;
+					this.chaosDevice.loop = true;
+					this.chaosDevice.Play();
+					while (this.exitsReached == 2)
+						yield return null;
+					this.chaosDevice.Stop();
+					goto case "finalLoop";
+				}
+			
+			case "finalLoop":
+				this.chaosDevice.loop = false;
+				this.chaosDevice.clip = this.chaosBuildup;
+				this.chaosDevice.Play();
+				while (this.chaosDevice.isPlaying)
+					yield return null;
+				this.chaosDevice.clip = this.chaosFinalLoop;
+				this.chaosDevice.loop = true;
+				this.chaosDevice.Play();
+				break;
+		}
+	}
+
 	private void AngrySchoolColors(int phase)
 	{
 		if (!this.isSafeMode && this.modeType != "nullStyle")
@@ -1785,28 +1841,16 @@ public class GameControllerScript : MonoBehaviour
 	private IEnumerator ChangeSchoolColor(int phase)
 	{
 		float curValue;
-		
-		switch(phase)
+
+		if (phase == 2)
 		{
-			case 2:
-				curValue = 1f;
-				
-				while (curValue > 0f)
-				{
-					curValue -= Time.deltaTime/5f;
-					RenderSettings.ambientLight = new Color(1f, curValue, curValue);
-					yield return null;
-				}
-				break;
-			case 3:
-				curValue = 1f;
-				while (curValue > 0.388f)
-				{
-					curValue -= Time.deltaTime/5f;
-					RenderSettings.ambientLight = new Color(curValue, 0f, 0f);
-					yield return null;
-				}
-				break;
+			curValue = 1f;
+			while (curValue > 0f)
+			{
+				curValue -= Time.deltaTime/5f;
+				RenderSettings.ambientLight = new Color(1f, curValue, curValue);
+				yield return null;
+			}
 		}
 	}
 
@@ -1833,32 +1877,6 @@ public class GameControllerScript : MonoBehaviour
 					RenderSettings.fogColor = new Color(1f, curValue, curValue);
 					yield return null;
 				}
-				break;
-			case 2:
-				curValue = 2f;
-				while (curValue > 0f)
-				{
-					curValue -= Time.deltaTime;
-					yield return null;
-				}
-				curValue = 0.01f;
-				while (curValue > 0f)
-				{
-					curValue -= Time.deltaTime/100f;
-					RenderSettings.fogDensity = curValue;
-					yield return null;
-				}
-				break;
-			case 3:
-				curValue = 0f;
-				RenderSettings.fogColor = new Color(1f, 0f, 0f);
-				while (curValue < 0.01f)
-				{
-					curValue += Time.deltaTime/100f;
-					RenderSettings.fogDensity = curValue;
-					yield return null;
-				}
-				RenderSettings.fogDensity = 0.01f;
 				break;
 		}
 	}
@@ -1906,8 +1924,6 @@ public class GameControllerScript : MonoBehaviour
 	[SerializeField] private float remainingPartyTime;
 	public float gameOverDelay;
 	[SerializeField] private float darkLevel;
-	public byte createdProjectiles;
-	public byte allowedProjectiles;
 	public string mode;
 	public string modeType;
 	public string curMap;
@@ -1915,8 +1931,8 @@ public class GameControllerScript : MonoBehaviour
 	public Transform partyLocation;
 	public Transform movingPartyLocation;
 	[SerializeField] private GameObject curItem;
-	[SerializeField] private GameObject[] projectilesInPlay;
 	private Color masterTextColor;
+	public Transform[] entranceDarkSources;
 
 
 	[Header("UI")]
@@ -2031,6 +2047,8 @@ public class GameControllerScript : MonoBehaviour
 	public RectTransform boots;
 	public GameObject alarmClock;
 	[SerializeField] private GameObject party;
+	public byte createdProjectiles;
+	public GameObject[] projectilesInPlay;
 	[SerializeField] private GameObject attendanceBlocker;
 
 
@@ -2054,10 +2072,11 @@ public class GameControllerScript : MonoBehaviour
 	public AudioClip aud_Switch;
 	[SerializeField] private AudioClip aud_BigClose;
 	public AudioClip[] baldiJumpscareSounds;
-	public AudioClip chaosEarly;
-	public AudioClip chaosEarlyLoop;
-	public AudioClip chaosBuildup;
-	public AudioClip chaosFinalLoop;
+	[SerializeField] private AudioSource chaosDevice;
+	[SerializeField] private AudioClip chaosEarly;
+	[SerializeField] private AudioClip chaosEarlyLoop;
+	[SerializeField] private AudioClip chaosBuildup;
+	[SerializeField] private AudioClip chaosFinalLoop;
 	[SerializeField] private AudioClip quietNoiseLoop;
 	[SerializeField] private AudioClip glambience;
 	[SerializeField] private AudioClip aud_BalloonPop;

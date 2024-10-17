@@ -318,7 +318,7 @@ public class PlayerScript : MonoBehaviour
 
 	private IEnumerator BootTimer()
 	{
-		float time = 15f;
+		float time = 30f;
 		while (time > 0f)
 		{
 			time -= Time.deltaTime;

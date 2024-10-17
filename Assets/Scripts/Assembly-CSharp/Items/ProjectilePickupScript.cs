@@ -6,6 +6,7 @@ public class ProjectilePickupScript : MonoBehaviour
     {
         this.gc = FindObjectOfType<GameControllerScript>();
         this.playerScript = FindObjectOfType<PlayerScript>();
+        this.nullBoss = FindObjectOfType<NullBoss>();
 
         this.rb = base.GetComponent<Rigidbody>();
 
@@ -46,10 +47,10 @@ public class ProjectilePickupScript : MonoBehaviour
             this.isThrown = true;
             this.isPickedUp = false;
             this.playerScript.isProjectileGrabbed = false;
-            this.lifetime = 5f;
+            this.lifetime = 3.1f;
             base.gameObject.name = "Projectile";
             this.gc.createdProjectiles--;
-            this.gc.StartCoroutine(this.gc.WaitForProjectile());
+            //this.gc.StartCoroutine(this.gc.WaitForProjectile());
         }
         
         if (this.isThrown)
@@ -73,6 +74,12 @@ public class ProjectilePickupScript : MonoBehaviour
         }
     }
 
+    private void OnDestroy()
+    {
+        this.gc.CheckProjectileCount(this.nullBoss);
+    }
+
+    [SerializeField] private NullBoss nullBoss;
     [SerializeField] private GameObject[] gameObjects;
     [SerializeField] private GameControllerScript gc;
     [SerializeField] private PlayerScript playerScript;

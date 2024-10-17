@@ -2,10 +2,16 @@
 
 public class NearExitTriggerScript : MonoBehaviour
 {
+	private void Start()
+	{
+		this.gc.entranceDarkSources[this.entranceID] = this.darkSource;
+	}
+
 	private void OnTriggerEnter(Collider other)
 	{
 		if (this.gc.exitsReached < this.gc.entranceList.Length - 1 & this.gc.finaleMode & other.tag == "Player")
 		{
+			this.gc.entranceDarkSources[this.entranceID] = null;
 			this.gc.ExitReached();
 			this.es.Lower();
 			if (this.gc.baldiScrpt.isActiveAndEnabled)
@@ -18,4 +24,6 @@ public class NearExitTriggerScript : MonoBehaviour
 
 	public GameControllerScript gc;
 	public EntranceScript es;
+	[SerializeField] private byte entranceID;
+	[SerializeField] private Transform darkSource;
 }

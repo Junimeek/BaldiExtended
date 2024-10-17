@@ -37,7 +37,10 @@ public class NullBoss : MonoBehaviour
 
     private float NullSpeed()
     {
-        return this.hits * 5.5f + 13f;
+        if (this.speedOverride != 0f)
+            return this.speedOverride;
+        else
+            return this.hits * 5.5f + 13f;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -65,8 +68,8 @@ public class NullBoss : MonoBehaviour
     private IEnumerator BeginFight()
     {  
         this.hits++;
-        this.gc.allowedProjectiles--;
         this.playerScript.IncreaseFightSpeed(1);
+        this.gc.DeleteProjectiles();
         this.sprite.sprite = this.grayscaleSprite;
 
         while (this.audioDevice.isPlaying)
@@ -87,7 +90,7 @@ public class NullBoss : MonoBehaviour
             yield return null;
         }
 
-        this.gc.CreateProjectile(3);
+        this.gc.CreateProjectile(4);
         this.allowMovement = true;
         this.playerScript.isInvincible = false;
         
@@ -102,7 +105,6 @@ public class NullBoss : MonoBehaviour
     {
         this.playerScript.isInvincible = true;
         this.hits++;
-        this.gc.allowedProjectiles--;
         this.QueueNextClip();
 
         if (this.hits == 10)
@@ -227,6 +229,7 @@ public class NullBoss : MonoBehaviour
         return new Vector3(posX, posY + 1.5f, posZ);
     }
 
+    [SerializeField] private float speedOverride;
     [SerializeField] private Transform player;
     [SerializeField] private PlayerScript playerScript;
     [SerializeField] private GameControllerScript gc;
@@ -241,7 +244,7 @@ public class NullBoss : MonoBehaviour
     [Header("Null State")]
     [SerializeField] private bool isFightStarted;
     [SerializeField] private bool allowMovement;
-    public int hits;
+    public byte hits;
     [SerializeField] private bool goCrazy;
     [SerializeField] private float remainingCrazyTime;
 

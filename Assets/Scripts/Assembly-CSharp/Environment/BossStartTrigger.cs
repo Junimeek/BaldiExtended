@@ -21,8 +21,9 @@ public class BossStartTrigger : MonoBehaviour
                 this.entrance.Lower();
                 this.gc.ActivateBossFight(this.position);
 
+                this.gc.projectilesInPlay = new GameObject[3];
                 for (int i = 0; i < this.points.Length; i++)
-                    Instantiate(this.projectile, this.points[i].position, Quaternion.identity);
+                    this.gc.projectilesInPlay[i] = Instantiate(this.projectile, this.points[i].position, Quaternion.identity);
                 
                 Destroy(this.gameObject);
             }

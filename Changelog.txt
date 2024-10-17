@@ -2,9 +2,13 @@
 Gameplay Changes:
 - New Mode: Challenge mode!
 - New challenge map: Dark mode! Which is basically just BBCR's Null Style lmao
-- New Item: the Dangerous Hammer! Smash through any window you can find to be able to go through it! At the moment, this item is only available in Dark Mode.
 - You can now charge your stamina up to 300% if you're standing in an infinite stamina zone!
 - The Baldicator will now queue its expressions for sight, next sound, and wandering. This is to ensure that you will still know what Baldi is doing while other animations are playing.
+- During the finale, once you're at just 1 exit remaining, the school will get darker as you get closer to the exit
+
+Item Changes:
+- New Item: the Dangerous Hammer! Smash through any window you can find to be able to go through it! At the moment, this item is only available in Dark Mode.
+- The duration of the Yellow Door Lock and Big'Ol Boots have been increased to 30 seconds
 - The number of times a door treated with WD-NoSquee can be opened silently has been increased to 6 times
 - A visual indicator has been added for doors treated with WD-NoSquee
 
@@ -12,12 +16,13 @@ Other Changes:
 - There is a new category in the menu: Patches. Right now the only things that are there are selecting between your monitor's refresh rate or unlimited framerate, and fixing the noisy doors bug. More info about the latter is under the Bug Fixes category.
 - The music during the finale has been altered
 - There is a new sequence for the normal ending
+- The visuals of the quick map have been changed
 - Saving has been completely overhauled. You'll see a prompt upon launching the game the first time you open it. The game will have an indicator in the top left corner of the screen when saving is in progress. If you were playing an older version of the game, you need to launch the game first, then close the game and go to the "Files" menu in the Launcher, and click on "Upgrade Endless Mode Data".
 - There are now a few more things that will be saved in your high scores: Your best time in Story Mode, and how many of each item you've used in each map
 - The Data Management menu actually does something now
 - A Family Friendly option has been added. This only affects some minor schoolhouse decoration.
 
-Bug fixes:
+Bug Fixes:
 - The bug where clicking on an open door or simply walking through open swinging doors causing Baldi to be alerted has been fixed. However, I acknowledge that some people may use this bug as part of their strategy. As such, if you prefer this bug being in the game, you can optionally disable this fix in the settings's Patches menu.
 - Clicking on an open door that has been treated with WD-NoSquee will no longer cause it to decrement the number of times the door can be silently opened
 - Fixed the bully not detecting any items on you if your first item slot happens to be empty
@@ -27,6 +32,8 @@ Known Bugs:
 - I did attempt to make it so when you make the Principal angry, he will only pursue you if he actively sees you. However, this behavior seems to be broken and he still knows where you are at all times, both in and out of his sight.
 - The cuts in the background music during the Null boss battle are extremely noticeable. This will likely be fixed in a future update (preferably using a MIDI player, but there aren't any good free ones), but for now we'll just have to put up with my crude audio swapping system
 - The floating textboxes in the menu are kind of screwed up
+
+
 
 ### v0.4.3 ###
 Gameplay Changes:
@@ -73,12 +80,16 @@ Known bugs:
 - Baldi's AI in regards to detention is still a little weird. To put it short, it bugs out when you get sent there while you're still in his sights. This results in him either heading straight there, or completely giving up on chasing you.
 - Playing in Endless Mode with Safe Mode turned on causes Baldi's audio to get cut off after answering the third question correctly
 
+
+
 ### v0.4.2 ###
 Bug Fixes:
 - Fixed a bug that made Juniper Hills completely impossible
 - Fixed a bug with the Baldicator. Which actually turned out to be an even bigger bug with Baldi's wandering AI as a whole.* oops
 
 *Important Note: It's still not completely fixed. Although it's mostly working now, it appears that getting sent to detention completely resets his priority. This includes when Baldi sees you before you get sent there, even though detention is supposed to have a lower priority. I can't think of a single reason as to why this is, but I really need to push this update out as Juniper Hills DESPERATELY needs to be fixed ASAP. If anyone with Unity knowledge stumbles across this and knows how to fix it, open an issue on the GitHub repo and let me know how to fix it.
+
+
 
 ### v0.4.1 ###
 Gameplay Changes:
@@ -97,6 +108,8 @@ Bug Fixes:
 Note:
 From here on out, the original Classic map is no longer going to receive any changes, as I feel that it should remain as close to the original game as possible.
 
+
+
 ### v0.4.0 ###
 Gameplay Changes:
 - New gameplay style options! Add multiplication/division problems to the math game, or play in Safe Mode for a stress-free experience
@@ -111,6 +124,8 @@ Other Changes:
 
 Bug Fixes:
 - Finally fixed Arts and Crafters teleporting you to the wrong place in Juniper Hills. Only took me a year to fix it lmao
+
+
 
 ### v0.3.1 ###
 - New Secret Endings
