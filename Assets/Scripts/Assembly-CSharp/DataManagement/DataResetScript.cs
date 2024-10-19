@@ -73,25 +73,27 @@ public class DataResetScript : MonoBehaviour
                 SaveDataController.SaveChallengeData(null);
                 break;
             case 98:
-                try
-                {
+                try {
                     achievementManager = FindObjectOfType<AchievementManager>();
                     Array.Resize<int>(ref achievementManager.ach_Maps, achievementManager.ach_Maps.Length-achievementManager.ach_Maps.Length);
                     achievementManager.SaveAchievementData();
                     ResetPrompt(0);
                 }
-                catch { Debug.LogError("Failed to clear achievements."); }
+                catch {
+                    Debug.LogError("Failed to clear achievements.");
+                }
                 break;
             case 99:
                 string path = Application.persistentDataPath;
-                File.Copy(path + "/BaldiData/story.sav", Application.persistentDataPath + "/BaldiData_Backup/story.sav", true);
-                File.Copy(path + "/BaldiData/endless.sav", Application.persistentDataPath + "/BaldiData_Backup/endless.sav", true);
-                File.Copy(path + "/BaldiData/challenge.sav", Application.persistentDataPath + "/BaldiData_Backup/challenge.sav", true);
-                File.Delete(path + "/BaldiData/story.sav");
-                File.Delete(path + "/BaldiData/endless.sav");
-                File.Delete(path + "/BaldiData/challenge.sav");
+                PlayerPrefs.SetInt("saveNoticeSeen", 0);
+                if (File.Exists(path + "/BaldiData/story.sav"))
+                    File.Copy(path + "/BaldiData/story.sav", Application.persistentDataPath + "/BaldiData_Backup/story.sav", true);
+                if (File.Exists(path + "/BaldiData/endless.sav"))
+                    File.Copy(path + "/BaldiData/endless.sav", Application.persistentDataPath + "/BaldiData_Backup/endless.sav", true);
+                if (File.Exists(path + "/BaldiData/challenge.sav"))
+                    File.Copy(path + "/BaldiData/challenge.sav", Application.persistentDataPath + "/BaldiData_Backup/challenge.sav", true);
                 File.Delete(Application.persistentDataPath + "/settings.sav");
-                Directory.Delete(path + "/BaldiData");
+                Directory.Delete(path + "/BaldiData", true);
                 SceneManager.LoadSceneAsync("Launcher");
                 break;
         }

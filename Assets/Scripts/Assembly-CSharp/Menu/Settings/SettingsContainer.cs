@@ -110,6 +110,7 @@ public class SettingsContainer : MonoBehaviour
         this.additionalMusic = false;
         this.notifBoard = false;
         this.familyFriendly = true;
+        this.doorFix = true;
         PlayerPrefs.SetInt("AnalogMove", 0);
         PlayerPrefs.SetInt("Rumble", 0);
         PlayerPrefs.SetString("CurrentMap", "Classic");

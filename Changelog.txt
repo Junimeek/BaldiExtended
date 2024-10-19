@@ -4,20 +4,22 @@ Gameplay Changes:
 - New challenge map: Dark mode! Which is basically just BBCR's Null Style lmao
 - You can now charge your stamina up to 300% if you're standing in an infinite stamina zone!
 - The Baldicator will now queue its expressions for sight, next sound, and wandering. This is to ensure that you will still know what Baldi is doing while other animations are playing.
+- The Baldicator has a different sprite for Sight now for improved visual clarity
 - During the finale, once you're at just 1 exit remaining, the school will get darker as you get closer to the exit
 
 Item Changes:
-- New Item: the Dangerous Hammer! Smash through any window you can find to be able to go through it! At the moment, this item is only available in Dark Mode.
+- New Item: the Dangerous Hammer! Smash through any window you can find to be able to go through it! At the moment, this item is only available in the Dark Mode challenge.
 - The duration of the Yellow Door Lock and Big'Ol Boots have been increased to 30 seconds
 - The number of times a door treated with WD-NoSquee can be opened silently has been increased to 6 times
 - A visual indicator has been added for doors treated with WD-NoSquee
+- Eating a zesty bar will now play a sound
 
 Other Changes:
 - There is a new category in the menu: Patches. Right now the only things that are there are selecting between your monitor's refresh rate or unlimited framerate, and fixing the noisy doors bug. More info about the latter is under the Bug Fixes category.
 - The music during the finale has been altered
 - There is a new sequence for the normal ending
 - The visuals of the quick map have been changed
-- Saving has been completely overhauled. You'll see a prompt upon launching the game the first time you open it. The game will have an indicator in the top left corner of the screen when saving is in progress. If you were playing an older version of the game, you need to launch the game first, then close the game and go to the "Files" menu in the Launcher, and click on "Upgrade Endless Mode Data".
+- Saving has been completely overhauled. You'll see a prompt upon launching the game the first time you open it. The game will have an indicator in the top left corner of the screen when saving is in progress. If you were playing an older version of the game, it should detect that old data and upgrade it to the new system.
 - There are now a few more things that will be saved in your high scores: Your best time in Story Mode, and how many of each item you've used in each map
 - The Data Management menu actually does something now
 - A Family Friendly option has been added. This only affects some minor schoolhouse decoration.
@@ -26,6 +28,7 @@ Bug Fixes:
 - The bug where clicking on an open door or simply walking through open swinging doors causing Baldi to be alerted has been fixed. However, I acknowledge that some people may use this bug as part of their strategy. As such, if you prefer this bug being in the game, you can optionally disable this fix in the settings's Patches menu.
 - Clicking on an open door that has been treated with WD-NoSquee will no longer cause it to decrement the number of times the door can be silently opened
 - Fixed the bully not detecting any items on you if your first item slot happens to be empty
+- The coin drop sound from the vending machines are now properly filtered through the SFX volume control
 
 Known Bugs:
 - Apparently it's possible for a vending machine to eat your quarter. This has only ever happened to me a single time, and I can't for the life of me figure out why it happened that one time. This seems to be a VERY rare bug, so you shouldn't have to worry about it at all. hopefully.

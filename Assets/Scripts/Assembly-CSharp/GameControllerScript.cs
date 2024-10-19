@@ -23,9 +23,7 @@ public class GameControllerScript : MonoBehaviour
 		Scene curScene = SceneManager.GetActiveScene();
 		string curSceneName = curScene.name;
 
-		Debug.Log("Loaded " + curSceneName);
-		Debug.Log("Safe Mode: " + PlayerPrefs.GetInt("gps_safemode"));
-		Debug.Log("Difficult Math: " + PlayerPrefs.GetInt("gps_difficultmath"));
+		Debug.Log(this.LogMapStart(curSceneName));
 
 		this.LockMouse(); //Prevent the mouse from moving
 
@@ -52,9 +50,6 @@ public class GameControllerScript : MonoBehaviour
 				this.isSafeMode = this.ReadBoolFromRegistry("safeMode");
 				this.isDifficultMath = this.ReadBoolFromRegistry("difficultMath");
 				this.isAdditionalMusic = this.ReadBoolFromRegistry("additionalMusic");
-
-				if (this.mode == "endless")
-					this.baldiScrpt.endless = true;
 				break;
 		}
 
@@ -112,6 +107,22 @@ public class GameControllerScript : MonoBehaviour
 		this.stats.detentions = 0;
 
 		//debugScreen.DebugCloseMenu();
+	}
+
+	private string LogMapStart(string curSceneName)
+	{
+		string finalLog = "GAME STARTED IN MAP ";
+		finalLog += curSceneName;
+		finalLog += " IN ";
+		finalLog += PlayerPrefs.GetString("CurrentMode");
+		finalLog += " mode WITH SETTINGS:";
+		finalLog += "\nSAFE MODE = ";
+		finalLog += this.ReadBoolFromRegistry("safeMode");
+		finalLog += "\nDIFFICULT MATH = ";
+		finalLog += this.ReadBoolFromRegistry("difficultMath");
+		finalLog += "\nDOOR FIX SETTING = ";
+		finalLog += this.ReadBoolFromRegistry("doorFix");
+		return finalLog;
 	}
 
 	private bool ReadBoolFromRegistry(string entry)
@@ -303,9 +314,8 @@ public class GameControllerScript : MonoBehaviour
 		{
 			this.cursorController.UnlockCursor();
 			if (this.mode == "endless" && this.notebooks > this.highBooksScore && !this.highScoreText.activeSelf)
-			{
 				this.highScoreText.SetActive(true);
-			}
+
 			Time.timeScale = 0f;
 			this.gameOverDelay -= Time.unscaledDeltaTime * 0.5f;
 			this.playerCamera.farClipPlane = Mathf.Clamp(this.gameOverDelay * 400f, -1f, 400f); //Set camera farClip
@@ -323,11 +333,18 @@ public class GameControllerScript : MonoBehaviour
 				
 				if (this.mode != "endless")
 					this.stats.SaveAllData(null);
-				else if (this.notebooks > this.highBooksScore && !this.isScareStarted)
+				else if (!this.isScareStarted)
 				{
 					this.isScareStarted = true;
-					this.stats.notebooks = this.notebooks;
-					this.stats.SaveAllData("notebooks");
+					PlayerPrefs.SetInt("CurrentBooks", this.notebooks);
+
+					if (this.notebooks > this.highBooksScore)
+					{
+						this.stats.notebooks = this.notebooks;
+						this.stats.SaveAllData("notebooks");
+					}
+					else
+						this.stats.SaveAllData(null);
 				}
 
 				this.isScareStarted = true;
@@ -384,12 +401,9 @@ public class GameControllerScript : MonoBehaviour
 		{
 			Vector3 distance = this.entranceDarkSources[0].position - this.playerTransform.position;
 			float sqrLen = distance.sqrMagnitude;
-			this.darkLevel = Mathf.Sqrt(sqrLen / 50000f);
+			this.darkLevel = Mathf.Clamp(Mathf.Sqrt(sqrLen / 50000f), 0.02f, 1f);
 
-			if (this.darkLevel >= 1f)
-				RenderSettings.ambientLight = new Color(1f, 0f, 0f);
-			else
-				RenderSettings.ambientLight = new Color(this.darkLevel, 0f, 0f);
+			RenderSettings.ambientLight = new Color(this.darkLevel, 0f, 0f);
 		}
 
 		this.speedrunSeconds += Time.unscaledDeltaTime;
@@ -1049,6 +1063,9 @@ public class GameControllerScript : MonoBehaviour
 		}
 		else if (this.mode == "endless")
 		{
+			if (this.baldiScrpt.isActiveAndEnabled)
+				this.baldiScrpt.endless = true;
+
 			if (this.spoopLearn.isPlaying)
 				this.spoopLearn.Stop();
 
@@ -1142,8 +1159,10 @@ public class GameControllerScript : MonoBehaviour
 				case 1: // Zesty Bar
 					if (this.player.stamina < 100f)
 						this.player.stamina = this.player.maxStamina * 2f;
-					else this.player.stamina += 100f;
-						this.ResetItem(1);
+					else
+						this.player.stamina += 100f;
+					this.audioDevice.PlayOneShot(this.aud_EatFood);
+					this.ResetItem(1);
 					break;
 				case 2: // Yellow Door Lock
 					Ray ray = Camera.main.ScreenPointToRay(new Vector3((float)(Screen.width / 2), (float)(Screen.height / 2), 0f));
@@ -1260,7 +1279,7 @@ public class GameControllerScript : MonoBehaviour
 					this.ResetItem(14);
 					break;
 				case 15: // Party Popper
-					if (!(this.movingPartyLocation == null))
+					if (this.movingPartyLocation != null)
 					{
 						this.partyLocation = this.movingPartyLocation;
 						this.wanderer.partyPoints = this.wanderer.movingPartyPoints;
@@ -1863,13 +1882,13 @@ public class GameControllerScript : MonoBehaviour
 				curValue = 0f;
 				RenderSettings.fogDensity = 0f;
 				RenderSettings.fog = true;
-				while (curValue < 0.01f)
+				while (curValue < 0.02f)
 				{
 					curValue += Time.deltaTime/100f;
 					RenderSettings.fogDensity = curValue;
 					yield return null;
 				}
-				RenderSettings.fogDensity = 0.01f;
+				RenderSettings.fogDensity = 0.02f;
 				curValue = 1f;
 				while (curValue > 0f)
 				{
@@ -2059,19 +2078,18 @@ public class GameControllerScript : MonoBehaviour
 	
 	
 	[Header("SFX and Voices")]
-	public AudioClip aud_Prize;
-	private AudioSource audioDevice;
-	private AudioSource mathAudioDevice;
-	public AudioClip aud_PrizeMobile;
-	public AudioClip aud_AllNotebooks;
-	public AudioSource tutorBaldi;
-	public AudioClip aud_Soda;
-	public AudioClip aud_Spray;
-	public AudioClip aud_Hang;
+	[SerializeField] private AudioClip aud_Prize;
+	[SerializeField] private AudioSource audioDevice;
+	[SerializeField] private AudioClip aud_AllNotebooks;
+	[SerializeField] private AudioSource tutorBaldi;
+	[SerializeField] private AudioClip aud_Soda;
+	[SerializeField] private AudioClip aud_Spray;
+	[SerializeField] private AudioClip aud_EatFood;
+	[SerializeField] private AudioClip aud_Hang;
 	[SerializeField] private AudioClip aud_Error;
-	public AudioClip aud_Switch;
+	[SerializeField] private AudioClip aud_Switch;
 	[SerializeField] private AudioClip aud_BigClose;
-	public AudioClip[] baldiJumpscareSounds;
+	[SerializeField] private AudioClip[] baldiJumpscareSounds;
 	[SerializeField] private AudioSource chaosDevice;
 	[SerializeField] private AudioClip chaosEarly;
 	[SerializeField] private AudioClip chaosEarlyLoop;

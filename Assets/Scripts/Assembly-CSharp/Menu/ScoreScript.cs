@@ -8,7 +8,7 @@ public class ScoreScript : MonoBehaviour
 		if (PlayerPrefs.GetString("CurrentMode") == "endless")
 		{
 			this.scoreText.SetActive(true);
-			this.text.text = "Score:\n" + PlayerPrefs.GetInt("CurrentBooks") + " Notebooks";
+			this.text.text = "Score:\n" + PlayerPrefs.GetInt("CurrentBooks", 2) + " Notebooks";
 		}
 	}
 

@@ -4,6 +4,7 @@ using TMPro;
 
 public class HighScoresMenu : MonoBehaviour
 {
+    
     private void OnEnable()
     {
         this.storyData = SaveDataController.LoadStoryData();

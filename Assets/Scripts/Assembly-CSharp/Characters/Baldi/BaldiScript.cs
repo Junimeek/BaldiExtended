@@ -175,10 +175,7 @@ public class BaldiScript : MonoBehaviour
 		this.coolDown = 1f;
 
 		if (sightCooldown <= 0f)
-		{
 			baldicator.ChangeBaldicatorState("Sight");
-			Debug.Log("Sighted Player");
-		}
 	}
 
 	private void Move()
@@ -384,6 +381,13 @@ public class BaldiScript : MonoBehaviour
 	[SerializeField] private AudioSource longAudioDevice;
 	[SerializeField] private float speechTimer;
 
+	[Header("Endless Mode")]
+	public bool endless;
+	[SerializeField] private float angerRate;
+	[SerializeField] private float angerRateRate;
+	[SerializeField] private float angerFrequency;
+	[SerializeField] private float timeToAnger;
+
 	[Space(20f)]
 	public bool db;
 	public float baseTime;
@@ -393,18 +397,13 @@ public class BaldiScript : MonoBehaviour
 	public float baldiTempAnger;
 	public float baldiWait;
 	public float baldiSpeedScale;
-	
+
 	[Tooltip("If this value is set to 0, then the total noteboo count will be used to calculate the speed factor.")]
 	[SerializeField] private float speedFactorOverride;
 	private float moveFrames;
 	public bool antiHearing;
 	public float antiHearingTime;
 	public float vibrationDistance;
-	public float angerRate;
-	public float angerRateRate;
-	public float angerFrequency;
-	public float timeToAnger;
-	public bool endless;
 	[SerializeField] private bool isDisabled;
 	public Transform player;
 	[SerializeField] private PlayerScript playerScript;

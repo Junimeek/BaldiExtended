@@ -45,7 +45,6 @@ public class Baldicator : MonoBehaviour
 
     private void AddToQueue(string state)
     {
-        Debug.Log(state + " added to queue");
         Array.Resize(ref this.queue, this.queue.Length + 1);
         this.queue[this.queue.Length - 1] = state;
     }
