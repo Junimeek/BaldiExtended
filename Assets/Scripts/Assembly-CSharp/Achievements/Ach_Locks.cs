@@ -8,6 +8,7 @@ public class Ach_Locks : MonoBehaviour
     [SerializeField] private int[] index;
     [SerializeField] private AchievementManager achievementManager;
 
+    /*
     private void Start()
     {
         achievementManager = FindObjectOfType<AchievementManager>();
@@ -46,4 +47,5 @@ public class Ach_Locks : MonoBehaviour
             }
         }
     }
+    */
 }

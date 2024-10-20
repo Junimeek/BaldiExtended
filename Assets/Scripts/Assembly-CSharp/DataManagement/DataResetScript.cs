@@ -72,17 +72,6 @@ public class DataResetScript : MonoBehaviour
             case 23:
                 SaveDataController.SaveChallengeData(null);
                 break;
-            case 98:
-                try {
-                    achievementManager = FindObjectOfType<AchievementManager>();
-                    Array.Resize<int>(ref achievementManager.ach_Maps, achievementManager.ach_Maps.Length-achievementManager.ach_Maps.Length);
-                    achievementManager.SaveAchievementData();
-                    ResetPrompt(0);
-                }
-                catch {
-                    Debug.LogError("Failed to clear achievements.");
-                }
-                break;
             case 99:
                 string path = Application.persistentDataPath;
                 PlayerPrefs.SetInt("saveNoticeSeen", 0);

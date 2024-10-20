@@ -8,7 +8,7 @@ using System.Runtime.CompilerServices;
 
 public class AchievementManager : MonoBehaviour
 {
-    
+    /*
     public int[] ach_Maps;
     public int[] ach_Misc;
     [SerializeField] private string dataPath;
@@ -97,4 +97,5 @@ public class AchievementManager : MonoBehaviour
         }
         else Debug.LogError("No Achievements Found");
     }
+    */
 }

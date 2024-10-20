@@ -4,20 +4,6 @@ using UnityEngine;
 
 public static class SaveDataController
 {
-    public static void UpgradeSaves(string type, int fileVersion)
-    {
-        PlayerPrefs.SetInt("highbooks_Classic", 4);
-        PlayerPrefs.SetInt("highbooks_ClassicExtended", 3);
-        PlayerPrefs.SetInt("highbooks_JuniperHills", 2);
-        
-        if (File.Exists(Application.persistentDataPath + "/BaldiData/story.sav"))
-            File.Copy(Application.persistentDataPath + "/BaldiData/story.sav", Application.persistentDataPath + "/BaldiData_Backup/story.sav");
-        if (File.Exists(Application.persistentDataPath + "/BaldiData/endless.sav"))
-            File.Copy(Application.persistentDataPath + "/BaldiData/endless.sav", Application.persistentDataPath + "/BaldiData_Backup/endless.sav");
-        if (File.Exists(Application.persistentDataPath + "/BaldiData/challenge.sav"))
-            File.Copy(Application.persistentDataPath + "/BaldiData/challenge.sav", Application.persistentDataPath + "/BaldiData_Backup/challenge.sav");
-    }
-
     public static void SaveStoryData(StatisticsController stats)
     {
         BinaryFormatter bf = new BinaryFormatter();
@@ -101,6 +87,28 @@ public static class SaveDataController
         BinaryFormatter bf = new BinaryFormatter();
         FileStream stream = File.Open(path, FileMode.Open);
         ProgressionData data = bf.Deserialize(stream) as ProgressionData;
+        stream.Close();
+
+        return data;
+    }
+
+    public static void SaveAchievementData(AchievementController controller)
+    {
+        BinaryFormatter bf = new BinaryFormatter();
+        string path = Application.persistentDataPath + "/BaldiData/achievements.sav";
+        FileStream stream = File.Create(path);
+        AchievementData data = new AchievementData(controller);
+        data.fileVersion = 1;
+        bf.Serialize(stream, data);
+        stream.Close();
+    }
+
+    public static AchievementData LoadAchievementData()
+    {
+        string path = Application.persistentDataPath + "/BaldiData/achievements.sav";
+        BinaryFormatter bf = new BinaryFormatter();
+        FileStream stream = File.Open(path, FileMode.Open);
+        AchievementData data = bf.Deserialize(stream) as AchievementData;
         stream.Close();
 
         return data;
