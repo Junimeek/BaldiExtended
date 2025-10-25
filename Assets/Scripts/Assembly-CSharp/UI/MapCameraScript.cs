@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class MapCameraScript : MonoBehaviour
 {
-    private void Start()
+    void Start()
 	{
 		this.initialOffset = base.transform.position - this.player.transform.position;
         this.isMapOn = true;
@@ -20,7 +20,7 @@ public class MapCameraScript : MonoBehaviour
         this.HideCharacters();
 	}
 
-    private void HideCharacters()
+    void HideCharacters()
     {
         if (!FindObjectOfType<GameControllerScript>().ignoreInitializationChecks)
         {
@@ -36,7 +36,8 @@ public class MapCameraScript : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Tab)) this.ToggleMap();
+        if (Input.GetKeyDown(KeyCode.Tab))
+            this.ToggleMap();
         this.playerIcon.transform.position = this.player.transform.position + this.iconOffset;
     }
 
@@ -51,7 +52,7 @@ public class MapCameraScript : MonoBehaviour
         else
         {
             this.isMapOn = true;
-            this.offset = this.initialOffset - new Vector3(0f, 30f, 0);
+            this.offset = this.initialOffset - new Vector3(0f, 25f, 0);
             this.playerIcon.transform.position = new Vector3(player.transform.position.x, this.iconOffset.y, player.transform.position.z);
         }
     }

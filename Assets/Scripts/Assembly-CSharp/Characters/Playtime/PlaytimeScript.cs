@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.AI;
 
 public class PlaytimeScript : MonoBehaviour
 {
-	private void OnEnable()
+	void OnEnable()
 	{
 		this.isDisabled = false;
 		this.gc = FindObjectOfType<GameControllerScript>();
@@ -18,16 +16,13 @@ public class PlaytimeScript : MonoBehaviour
 		this.Wander(); //Start wandering
 	}
 
-	private void Update()
+	void Update()
 	{
 		if (this.coolDown > 0f)
-		{
 			this.coolDown -= 1f * Time.deltaTime;
-		}
+
 		if (this.playCool >= 0f)
-		{
 			this.playCool -= Time.deltaTime;
-		}
 		else if (this.animator.GetBool("disappointed"))
 		{
 			this.playCool = 0f;
@@ -35,7 +30,7 @@ public class PlaytimeScript : MonoBehaviour
 		}
 	}
 
-	private void FixedUpdate()
+	void FixedUpdate()
 	{
 		if (!this.ps.jumpRope)
 		{
@@ -54,37 +49,38 @@ public class PlaytimeScript : MonoBehaviour
 				this.Wander();
 			}
 			else if (this.agent.velocity.magnitude <= 1f & this.coolDown <= 0f)
-			{
 				this.Wander();
-			}
+
 			this.jumpRopeStarted = false;
 		}
 		else
 		{
 			if (!this.jumpRopeStarted)
-			{
 				this.agent.Warp(base.transform.position - base.transform.forward * 10f); //Teleport back after touching the player
-			}
+			
 			this.jumpRopeStarted = true;
 			this.agent.speed = 0f;
 			this.playCool = 15f;
 		}
 	}
 
-	private void Wander()
+	void Wander()
 	{
-		if (this.isDisabled) return;
+		if (this.isDisabled)
+			return;
+		
 		if (this.isParty)
 			this.agent.SetDestination(this.wanderer.NewTarget("Party"));
 		else
 			this.agent.SetDestination(this.wanderer.NewTarget("Hallway"));
+
 		this.agent.speed = 15f;
 		this.playerSpotted = false;
 		this.audVal = Mathf.RoundToInt(UnityEngine.Random.Range(0f, 1f));
+
 		if (!this.audioDevice.isPlaying && !this.isParty)
-		{
 			this.audioDevice.PlayOneShot(this.aud_Random[this.audVal]);
-		}
+		
 		this.coolDown = 1f;
 	}
 
@@ -105,10 +101,11 @@ public class PlaytimeScript : MonoBehaviour
 		this.Wander();
 	}
 
-	private void TargetPlayer()
+	void TargetPlayer()
 	{
 		this.animator.SetBool("disappointed", false); //No longer be sad
-		if (this.isDisabled) return;
+		if (this.isDisabled)
+			return;
 		this.agent.SetDestination(this.player.position); // Go after the player
 		this.agent.speed = 20f; // Speed up
 		this.coolDown = 0.2f;

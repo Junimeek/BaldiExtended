@@ -1,13 +1,36 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using TMPro;
 
 public class NotificationBoard : MonoBehaviour
 {
+    /*
+    void Awake()
+    {
+        string sceneName = SceneManager.GetActiveScene().name;
+        bool isSecretMap = false;
+
+        switch (sceneName)
+        {
+            case "SecretMap":
+                isSecretMap = true;
+                break;
+            case "BAD SUM":
+                isSecretMap = true;
+                break;
+            case "TestRoom":
+                isSecretMap = true;
+                break;
+        }
+
+        if (isSecretMap)
+            Destroy(base.gameObject);
+    }
+    */
+    
     private void Start()
     {
-        this.gc = FindObjectOfType<GameControllerScript>();
-        
         try
         {
             this.ruleText.text = string.Empty;
@@ -20,7 +43,7 @@ public class NotificationBoard : MonoBehaviour
         }
         catch
         {
-            Debug.LogError("Failed to disable the notif board");
+            Debug.LogError("Notification Board not found");
         }
     }
 
@@ -137,12 +160,12 @@ public class NotificationBoard : MonoBehaviour
         this.notebooGroup.SetActive(false);
     }
 
-    [SerializeField] private GameControllerScript gc;
-    [SerializeField] private TMP_Text ruleText;
-    [SerializeField] private TMP_Text detentionText;
-    [SerializeField] private TMP_Text notebooText;
-    [SerializeField] private GameObject notebooGroup;
-    [SerializeField] private GameObject detentionGroup;
-    [SerializeField] private GameObject ruleGroup;
-    [SerializeField] private Color notebooColor;
+    [HideInInspector] public GameControllerScript gc;
+    [HideInInspector] public TMP_Text ruleText;
+    [HideInInspector] public TMP_Text detentionText;
+    [HideInInspector] public TMP_Text notebooText;
+    [HideInInspector] public GameObject notebooGroup;
+    [HideInInspector] public GameObject detentionGroup;
+    [HideInInspector] public GameObject ruleGroup;
+    [HideInInspector] public Color notebooColor;
 }

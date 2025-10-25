@@ -495,7 +495,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: SET_Right_Selecte
+      name: SET_Right_Selected
       rect:
         serializedVersion: 2
         x: 684
@@ -839,7 +839,7 @@ TextureImporter:
         width: 380
         height: 60
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -860,7 +860,7 @@ TextureImporter:
         width: 380
         height: 60
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -881,7 +881,7 @@ TextureImporter:
         width: 380
         height: 60
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -902,7 +902,7 @@ TextureImporter:
         width: 212
         height: 60
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -923,7 +923,7 @@ TextureImporter:
         width: 212
         height: 60
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -931,6 +931,90 @@ TextureImporter:
       bones: []
       spriteID: 5ea486b546515cb4aa7f214a633a5cd9
       internalID: 56354329
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SET_LeftFilled
+      rect:
+        serializedVersion: 2
+        x: 638
+        y: 682
+        width: 22
+        height: 36
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 90bd00bc74dcd03418b37ad8c51906e8
+      internalID: 917756115
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SET_LeftFilled_Selected
+      rect:
+        serializedVersion: 2
+        x: 661
+        y: 682
+        width: 22
+        height: 36
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 34f85f32c463d9a4597a3a345c20d385
+      internalID: 269142199
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SET_RightFilled_Selected
+      rect:
+        serializedVersion: 2
+        x: 684
+        y: 682
+        width: 22
+        height: 36
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5a7d13ebf6b86924ca6ddd58704cc33e
+      internalID: -1472412203
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SET_RightFilled
+      rect:
+        serializedVersion: 2
+        x: 707
+        y: 682
+        width: 22
+        height: 36
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 99d3698fdd51d2546ad35b442030ee26
+      internalID: -834076028
       vertices: []
       indices: 
       edges: []
@@ -946,45 +1030,49 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      SET_AudioHeader: -491947728
-      SET_Data_Selecte: 76340146
       SET_BGM: 711054493
       SET_Data_Selected: 1041166616
-      SET_Controls: -1480664244
-      SET_Defaults: -1882429016
       SET_FamilyFriendly_Selected: 878652715
-      SET_Notif: 1354550592
-      SET_DoorFix_Selected: -1458142983
-      SET_ExtraMusic_Selected: 2118440370
-      SET_Right_Selecte: 1616437163
-      SET_Instant: 68326399
-      SET_Left: 1721032015
+      SET_Defaults: -1882429016
+      SET_RightFilled: -834076028
       SET_Framerate: -509320417
       SET_Right: 1294232901
-      SET_Controls_Selected: -924158053
-      SET_Voices: -1397705081
+      SET_DoorFix_Selected: -1458142983
       SET_HighScore: 1680019650
       SET_Data: 168842065
-      SET_Framerate_Selected: 56354329
-      SET_ExtraMusic: 228570839
       SET_BBCROST_Selected: 2115152622
-      SET_Voices_Selected: 83336789
       SET_Defaults_Selected: 676099475
       SET_Achievement_Selected: -475109155
       SET_SFX: -1196720018
-      SET_Instant_Selected: 475174679
+      SET_PatchesHeader: -863856895
       SET_DataHeader: -1760858322
       SET_Notif_Selected: 905721407
       SET_Left_Selected: 1896570705
-      SET_PatchesHeader: -863856895
       SET_BlankCheckbox: -714411635
+      SET_Achievement: -1035839042
+      SET_BGM_Selected: 2000701839
+      SET_DoorFix: -449112648
+      SET_AudioHeader: -491947728
+      SET_Data_Selecte: 76340146
+      SET_Controls: -1480664244
+      SET_LeftFilled: 917756115
+      SET_Notif: 1354550592
+      SET_LeftFilled_Selected: 269142199
+      SET_ExtraMusic_Selected: 2118440370
+      SET_Instant: 68326399
+      SET_Left: 1721032015
+      SET_Right_Selected: 1616437163
+      SET_Controls_Selected: -924158053
+      SET_Voices: -1397705081
+      SET_Framerate_Selected: 56354329
+      SET_ExtraMusic: 228570839
+      SET_Voices_Selected: 83336789
+      SET_Instant_Selected: 475174679
       SET_GPHeader: 1665371181
       SET_FamilyFriendly: -2122665820
       SET_BBCROST: 500029063
-      SET_Achievement: -1035839042
+      SET_RightFilled_Selected: -1472412203
       SET_SFX_Selected: 880740002
-      SET_BGM_Selected: 2000701839
-      SET_DoorFix: -449112648
       SET_HighScore_Selected: -1653117428
       SettingsSheet_1: -2127469301
   spritePackingTag: 

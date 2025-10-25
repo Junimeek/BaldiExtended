@@ -43,13 +43,36 @@ public class Launcher : MonoBehaviour
     {
         this.upgradeFlag = "none";
 
+        bool IsFileMissing()
+        {
+            byte presentFiles = 0;
+
+            if (!File.Exists(savePath + "story.sav"))
+                presentFiles++;
+            if (!File.Exists(savePath + "endless.sav"))
+                presentFiles++;
+            if (!File.Exists(savePath + "challenge.sav"))
+                presentFiles++;
+            if (!File.Exists(savePath + "progression.sav"))
+                presentFiles++;
+            if (!File.Exists(savePath + "achievements.sav"))
+                presentFiles++;
+            
+            if (presentFiles > 0)
+            {
+                UnityEngine.Debug.LogWarning("One or more save files not found. Flagging launcher for file creation.");
+                return true;
+            }
+            else
+                return false;
+        }
+
         if (!Directory.Exists(this.savePath))
         {
             Directory.CreateDirectory(this.savePath);
             this.upgradeFlag = "factory";
         }
-        else if (!File.Exists(savePath + "story.sav") || !File.Exists(savePath + "endless.sav")
-        || !File.Exists(savePath + "challenge.sav") || !File.Exists(savePath + "progression.sav"))
+        else if (IsFileMissing())
             this.upgradeFlag = "fileMissing";
         
         if (!Directory.Exists(Application.persistentDataPath + "/BaldiData_Backup"))
@@ -342,7 +365,7 @@ public class Launcher : MonoBehaviour
         remTime = 0.5f;
         while (remTime > 0f)
         {
-            remTime -= Time.deltaTime;
+            remTime -= Time.unscaledDeltaTime;
             yield return null;
         }
 
@@ -359,7 +382,7 @@ public class Launcher : MonoBehaviour
         remTime = 0.5f;
         while (remTime > 0f)
         {
-            remTime -= Time.deltaTime;
+            remTime -= Time.unscaledDeltaTime;
             yield return null;
         }
 
@@ -372,11 +395,20 @@ public class Launcher : MonoBehaviour
             UnityEngine.Debug.LogError(e);
             yield break;
         }
+
+        try {
+            SaveDataController.SaveAchievementData(null);
+        }
+        catch (System.Exception e) {
+            this.ThrowError(e.ToString());
+            UnityEngine.Debug.LogError(e);
+            yield break;
+        }
         
         remTime = 0.3f;
         while (remTime > 0f)
         {
-            remTime -= Time.deltaTime;
+            remTime -= Time.unscaledDeltaTime;
             yield return null;
         }
 
@@ -456,6 +488,17 @@ public class Launcher : MonoBehaviour
         {
             try {
                 SaveDataController.SaveProgressionData(null);
+            }
+            catch (System.Exception e) {
+                this.ThrowError(e.ToString());
+                UnityEngine.Debug.LogError(e);
+                yield break;
+            }
+        }
+        if (!File.Exists(this.savePath + "achievements.sav"))
+        {
+            try {
+                SaveDataController.SaveAchievementData(null);
             }
             catch (System.Exception e) {
                 this.ThrowError(e.ToString());

@@ -20,8 +20,7 @@ public class Baldicator : MonoBehaviour
 
     public void ChangeBaldicatorState(string state)
     {
-        if (state == "Pursuit" || state == "Ignore")
-        {
+        if (state == "Pursuit" || state == "Ignore") {
             this.attentionRem = -1f;
             this.decideRem = -1f;
             this.sightRem = -1f;
@@ -29,8 +28,7 @@ public class Baldicator : MonoBehaviour
 
             StartCoroutine(this.Attention(state));
         }
-        else if (state == "Sight" || state == "Next" || state == "End")
-        {
+        else if (state == "Sight" || state == "Next" || state == "End") {
             try {
                 if (this.queue[this.queue.Length - 1] == state)
                     return;
@@ -51,12 +49,9 @@ public class Baldicator : MonoBehaviour
 
     private void LateUpdate()
     {
-        if (this.queue.Length > 0 && this.curState == none && !this.interruptQueue)
-        {
+        if (this.queue.Length > 0 && this.curState == none && !this.interruptQueue){
             StartCoroutine(this.Sight(this.queue[0]));
-
-            for (int i = 0; i < this.queue.Length; i++)
-            {
+            for (int i = 0; i < this.queue.Length; i++){
                 try {
                     this.queue[i] = this.queue[i + 1];
                 }
@@ -84,8 +79,7 @@ public class Baldicator : MonoBehaviour
         
         float quickPause = 0.1f;
 
-        while (quickPause > 0f)
-        {
+        while (quickPause > 0f) {
             quickPause -= Time.deltaTime;
             yield return null;
         }
@@ -95,8 +89,7 @@ public class Baldicator : MonoBehaviour
 
         attentionRem = 0.9f;
 
-        while (attentionRem > 0f)
-        {
+        while (attentionRem > 0f) {
             attentionRem -= Time.deltaTime;
             yield return null;
         }
@@ -113,8 +106,7 @@ public class Baldicator : MonoBehaviour
         else if (state == "Ignore")
             ChangeAnimState(ignore);
 
-        while (decideRem > 0f)
-        {
+        while (decideRem > 0f) {
             decideRem -= Time.deltaTime;
             yield return null;
         }
@@ -126,8 +118,7 @@ public class Baldicator : MonoBehaviour
     {
         sightRem = 1.3f;
 
-        switch(state)
-        {
+        switch(state) {
             case "Sight":
                 ChangeAnimState(sight);
                 break;
@@ -139,8 +130,7 @@ public class Baldicator : MonoBehaviour
                 break;
         }
 
-        while (sightRem > 0f)
-        {
+        while (sightRem > 0f) {
             sightRem -= Time.deltaTime;
             yield return null;
         }

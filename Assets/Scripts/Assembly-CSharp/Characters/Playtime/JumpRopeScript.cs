@@ -1,7 +1,5 @@
-﻿using System;
+﻿using UnityEngine;
 using TMPro;
-using UnityEngine.UI;
-using UnityEngine;
 
 public class JumpRopeScript : MonoBehaviour
 {
@@ -19,9 +17,7 @@ public class JumpRopeScript : MonoBehaviour
 	private void Update()
 	{
 		if (this.jumpDelay > 0f) //Decrease jumpDelay countdown
-		{
 			this.jumpDelay -= Time.deltaTime;
-		}
 		else if (!this.jumpStarted) //If the jump hasn't started
 		{
 			this.jumpStarted = true; //Start the jump
@@ -30,26 +26,18 @@ public class JumpRopeScript : MonoBehaviour
 			this.ropeHit = false;
 		}
 		if (this.ropePosition > 0f)
-		{
 			this.ropePosition -= Time.deltaTime;
-		}
 		else if (!this.ropeHit) //If the player has not tried to hit the rope
-		{
 			this.RopeHit();
-		}
 	}
 
 	private void RopeHit()
 	{
 		this.ropeHit = true; //Set ropehit to true
 		if (this.cs.jumpHeight <= 0.2f)
-		{
 			this.Fail(); //Fail
-		}
 		else
-		{
 			this.Success(); //Succeed
-		}
 		this.jumpStarted = false;
 	}
 
@@ -65,6 +53,10 @@ public class JumpRopeScript : MonoBehaviour
 			this.playtime.audioDevice.Stop(); //Stop playtime from talking
 			this.playtime.audioDevice.PlayOneShot(this.playtime.aud_Congrats);
 			this.ps.DeactivateJumpRope(); //Deactivate the jumprope
+			this.jumpRopeGames++;
+
+			if (this.jumpRopeGames == 10)
+				this.achievementMonitor.CollectAchievement(4, 1);
 		}
 	}
 
@@ -76,15 +68,17 @@ public class JumpRopeScript : MonoBehaviour
 		this.playtime.audioDevice.PlayOneShot(this.playtime.aud_Oops);
 	}
 
-	public TMP_Text jumpCount;
-	public Animator rope;
-	public CameraScript cs;
-	public PlayerScript ps;
-	public PlaytimeScript playtime;
-	public GameObject mobileIns;
-	public int jumps;
-	public float jumpDelay;
-	public float ropePosition;
-	public bool ropeHit;
-	public bool jumpStarted;
+	[SerializeField] private ushort jumpRopeGames;
+	[SerializeField] private AchievementMonitor achievementMonitor;
+	[SerializeField] private TMP_Text jumpCount;
+	[SerializeField] private Animator rope;
+	[SerializeField] private CameraScript cs;
+	[SerializeField] private PlayerScript ps;
+	[SerializeField] private PlaytimeScript playtime;
+	[SerializeField] private GameObject mobileIns;
+	[SerializeField] private int jumps;
+	[SerializeField] private float jumpDelay;
+	[SerializeField] private float ropePosition;
+	[SerializeField] private bool ropeHit;
+	[SerializeField] private bool jumpStarted;
 }

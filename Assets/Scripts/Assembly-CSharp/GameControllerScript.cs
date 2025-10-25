@@ -12,10 +12,11 @@ public class GameControllerScript : MonoBehaviour
 	private void Awake()
 	{
 		audioManager = FindObjectOfType<AudioManager>();
-		handIconScript = FindObjectOfType<HandIconScript>();
 
 		this.sceneLoader = this.childScripts[0].GetComponent<DebugSceneLoader>();
 		this.stats = this.childScripts[1].GetComponent<StatisticsController>();
+
+		this.disableSongInterruption = false;
 	}
 
 	private void Start()
@@ -31,7 +32,7 @@ public class GameControllerScript : MonoBehaviour
 
 		this.isDoorFix = this.ReadBoolFromRegistry("doorFix");
 
-		switch(curSceneName)
+		switch (curSceneName)
 		{
 			case "ClassicDark":
 				this.ignoreInitializationChecks = true;
@@ -63,7 +64,6 @@ public class GameControllerScript : MonoBehaviour
 		this.dollarTextTop.color = this.masterTextColor;
 		this.speedrunText.color = this.masterTextColor;
 		this.itemText.color = this.masterTextColor;
-		this.notebookCount.color = this.masterTextColor;
 		this.fpsCounter.color = this.masterTextColor;
 
 		if (curSceneName == "SecretMap" && !this.isSafeMode)
@@ -92,12 +92,11 @@ public class GameControllerScript : MonoBehaviour
 		this.showTimer = this.ReadBoolFromRegistry("showTimer");
 
 		this.speedrunSeconds = 0f;
-		
+
 		if (this.modeType != "nullStyle")
-			this.MusicPlayer(1,1); //Play the school music
+			this.MusicPlayer(1, 1); //Play the school music
 
 		this.UpdateNotebookCount(); //Update the notebook count
-		this.itemSelected = 0; //Set selection to item slot 0(the first item slot)
 		this.UpdateDollarAmount(0f);
 		this.StartCoroutine(this.WaitForQuarterDisable(true, false));
 
@@ -105,6 +104,8 @@ public class GameControllerScript : MonoBehaviour
 			this.stats.disableSaving = true;
 		this.stats.itemsUsed = new int[0];
 		this.stats.detentions = 0;
+		
+		this.itemSelected = 0; //Set selection to item slot 0(the first item slot)
 
 		//debugScreen.DebugCloseMenu();
 	}
@@ -162,7 +163,7 @@ public class GameControllerScript : MonoBehaviour
 			return true;
 	}
 
-	private void InitializeItemSlots() // investigate why this shit wont work
+	private void InitializeItemSlots()
 	{
 		//this.itemSlotOffset = 10 - this.totalSlotCount;
 
@@ -209,7 +210,6 @@ public class GameControllerScript : MonoBehaviour
 		bgList[9] = 33f;
 
 		this.itemBG.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, bgList[10 - this.totalSlotCount]);
-		this.itemSelected = 9 - this.totalSlotCount;
 
 		if (this.forceQuarterPickup)
 		{
@@ -698,15 +698,15 @@ public class GameControllerScript : MonoBehaviour
 
 	private void UpdateNotebookCount()
 	{
-		if (this.mode == "story" || this.mode == "challenge")
-			this.notebookCount.text = this.notebooks.ToString() + "/" + daFinalBookCount.ToString() + " Notebooks";
-		else
-			this.notebookCount.text = this.notebooks.ToString() + " Notebooks";
+		this.notebookCountText.text = this.notebooks.ToString();
 
-		if (this.notebooks == daFinalBookCount && (this.mode == "story" || this.mode == "challenge"))
+		if (this.mode != "endless")
+			this.notebookCountText.text += "/" + this.daFinalBookCount.ToString();
+
+		if (this.notebooks == daFinalBookCount && this.mode != "endless")
 		{
 			this.exitCountGroup.SetActive(true);
-			this.notebookCount.text = string.Empty;
+			this.notebookObject.SetActive(false);
 			this.ActivateFinaleMode();
 		}
 	}
@@ -722,6 +722,10 @@ public class GameControllerScript : MonoBehaviour
 		switch(this.modeType)
 		{
 			case "nullStyle":
+				if (notebookCountScript.isActiveAndEnabled)
+					notebookCountScript.FlipNotebooks();
+				this.audioDevice.PlayOneShot(this.aud_NotebookCollect);
+
 				if (this.notebooks == 2)
 				{
 					this.baldi.SetActive(true);
@@ -737,9 +741,10 @@ public class GameControllerScript : MonoBehaviour
 				break;
 			default:
 				GameObject gameObject = Instantiate(this.mathGameUI);
-				gameObject.GetComponent<MathGameScript>().gc = this;
-				gameObject.GetComponent<MathGameScript>().baldiScript = this.baldiScrpt;
-				gameObject.GetComponent<MathGameScript>().playerPosition = this.player.GetComponent<Transform>().position;
+				MathGameScript mathScript = gameObject.GetComponent<MathGameScript>();
+				mathScript.gc = this;
+				mathScript.baldiScript = this.baldiScrpt;
+				mathScript.playerPosition = this.player.GetComponent<Transform>().position;
 				break;
 		}
 	}
@@ -1004,20 +1009,25 @@ public class GameControllerScript : MonoBehaviour
 	public void DeactivateLearningGame(GameObject subject, bool reward)
 	{
 		this.mathMusicScript.StopSong();
-		if (audioManager != null) audioManager.SetVolume(0);
+		if (audioManager != null)
+			audioManager.SetVolume(0);
 		this.playerCamera.cullingMask = this.cullingMask; //Sets the cullingMask to Everything
 		this.learningActive = false;
 		Destroy(subject);
 		this.LockMouse(); //Prevent the mouse from moving
+		
+		if (notebookCountScript.isActiveAndEnabled)
+			notebookCountScript.FlipNotebooks();
+		this.audioDevice.PlayOneShot(this.aud_NotebookCollect);
 
 		if (!this.spoopMode) //If it isn't spoop mode, play the school music
 		{
-			MusicPlayer(0,0);
+			MusicPlayer(0, 0);
 
 			if (!this.isParty)
-				MusicPlayer(1,1);
+				MusicPlayer(1, 1);
 			else
-				MusicPlayer(4,0);
+				MusicPlayer(4, 0);
 		}
 
 		if (this.isSafeMode && this.notebooks == 2)
@@ -1058,7 +1068,7 @@ public class GameControllerScript : MonoBehaviour
 
 			if (!this.isSafeMode)
 				this.audioDevice.PlayOneShot(this.aud_AllNotebooks, 0.8f);
-			
+
 			StartCoroutine(this.PlayEscapeMusic());
 		}
 		else if (this.mode == "endless")
@@ -1073,7 +1083,7 @@ public class GameControllerScript : MonoBehaviour
 			{
 				if (!this.isParty && !this.isSafeMode)
 					this.endlessMusic.Play();
-				
+
 				this.isEndlessSong = true;
 			}
 		}
@@ -1116,12 +1126,14 @@ public class GameControllerScript : MonoBehaviour
 		{
 			this.curItem.GetComponent<PickupScript>().ChangeItem(0);
 			this.UpdateDollarAmount(0.25f);
+			this.audioDevice.PlayOneShot(this.aud_CoinCollect);
 			return;
 		}
 		if (item_ID == 16)
 		{
 			this.curItem.GetComponent<PickupScript>().ChangeItem(0);
 			this.UpdateDollarAmount(1f);
+			this.audioDevice.PlayOneShot(this.aud_CoinCollect);
 			return;
 		}
 
@@ -1147,6 +1159,7 @@ public class GameControllerScript : MonoBehaviour
 				this.itemSlot[this.itemSelected].texture = this.itemTextures[item_ID];
 			}
 		}
+		this.audioDevice.PlayOneShot(this.aud_ItemCollect);
 		this.UpdateItemName(false);
 	}
 
@@ -1637,7 +1650,7 @@ public class GameControllerScript : MonoBehaviour
 					break;
 			}
 		}
-		else if (this.exitsReached == this.entranceList.Length - 1)
+		else if ((this.exitsReached == this.entranceList.Length - 1) && !this.isSafeMode)
 		{
 			Transform finalSource = null;
 			for (int i = 0; i < this.entranceList.Length; i++)
@@ -1901,15 +1914,14 @@ public class GameControllerScript : MonoBehaviour
 	}
 
 
-	[Header("Game Configuration")]
-	public byte daFinalBookCount;
-	public byte totalSlotCount;
-	public EntranceScript[] entranceList;
-	public Transform attendanceOffice;
-	public Vector3 detentionPlayerPos;
-	public Vector3 detentionPrincipalPos;
-	[SerializeField] private bool disableSongInterruption;
-	[SerializeField] private bool forceQuarterPickup;
+	[HideInInspector] public int daFinalBookCount;
+	[HideInInspector] public int totalSlotCount;
+	[HideInInspector] public EntranceScript[] entranceList;
+	[HideInInspector] public Transform attendanceOffice;
+	[HideInInspector] public Vector3 detentionPlayerPos;
+	[HideInInspector] public Vector3 detentionPrincipalPos;
+	private bool disableSongInterruption;
+	[HideInInspector] public bool forceQuarterPickup;
 
 
 	[Header("Game State")]
@@ -1953,27 +1965,25 @@ public class GameControllerScript : MonoBehaviour
 	private Color masterTextColor;
 	public Transform[] entranceDarkSources;
 
-
 	[Header("UI")]
-	public TMP_Text notebookCount;
-	public GameObject pauseMenu;
-	public GameObject highScoreText;
-	public GameObject warning;
-	public TMP_Text staminaPercentText;
-	public GameObject reticle;
-	public RectTransform itemSelect;
-	[SerializeField] private float[] itemSelectOffset;
-	[SerializeField] private GameObject pointer;
-	[SerializeField] private TMP_Text dollarTextCenter;
-	[SerializeField] private TMP_Text dollarTextTop;
-	[SerializeField] private GameObject exitCountGroup;
-	[SerializeField] private TMP_Text exitCountText;
-	[SerializeField] private TMP_Text fpsCounter;
-	[SerializeField] private float fpsTimer;
-	[SerializeField] private MapCameraScript mapScript;
-	public TMP_Text speedrunText;
-	[SerializeField] private Canvas mainHud;
 	[SerializeField] private Light[] playerFlashlight;
+	[HideInInspector] public GameObject notebookObject;
+	[HideInInspector] public TMP_Text notebookCountText;
+	[HideInInspector] public NotebookCountScript notebookCountScript;
+	[SerializeField] GameObject pauseMenu;
+	[SerializeField] GameObject highScoreText;
+	[HideInInspector] public TMP_Text staminaPercentText;
+	[HideInInspector] public RectTransform itemSelect;
+	[SerializeField] private float[] itemSelectOffset;
+	[HideInInspector] public TMP_Text dollarTextCenter;
+	[HideInInspector] public TMP_Text dollarTextTop;
+	[HideInInspector] public GameObject exitCountGroup;
+	[HideInInspector] public TMP_Text exitCountText;
+	[HideInInspector] public TMP_Text fpsCounter;
+	[SerializeField] private float fpsTimer;
+	[HideInInspector] public MapCameraScript mapScript;
+	[HideInInspector] public TMP_Text speedrunText;
+	[SerializeField] private Canvas mainHud;
 
 
 	[Header("Noteboos")]
@@ -2099,6 +2109,9 @@ public class GameControllerScript : MonoBehaviour
 	[SerializeField] private AudioClip glambience;
 	[SerializeField] private AudioClip aud_BalloonPop;
 	[SerializeField] private AudioClip aud_GlassBreak;
+	[SerializeField] private AudioClip aud_NotebookCollect;
+	[SerializeField] private AudioClip aud_ItemCollect;
+	[SerializeField] private AudioClip aud_CoinCollect;
 
 
 	[Header("Music")]
@@ -2130,5 +2143,5 @@ public class GameControllerScript : MonoBehaviour
 	[SerializeField] private AILocationSelectorScript wanderer;
  	[SerializeField] private SweepScript sweepScript;
 	[SerializeField] private AudioManager audioManager;
-	[SerializeField] private HandIconScript handIconScript;
+	[HideInInspector] public HandIconScript handIconScript;
 }

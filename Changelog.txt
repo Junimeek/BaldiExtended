@@ -1,6 +1,20 @@
 ### v0.5.1 ###
-Bug Fixes:
+Gameplay Changes:
+- The addition/subtraction problems when Difficult Math is enabled are now three digits
 
+Other Changes:
+- The notebook count display from BB+ has been added to this mod
+- Items and money will now play a sound when being picked up
+
+Internal Changes:
+- Updated the Unity Engine to version 2021.3.45f2 to address a security vulnerability that all applications built in Unity Engine 2017.1-onwards contain. Unity Technologies has advised all developers to update their Unity version asap. You can read more about it here: https://discussions.unity.com/t/unity-platform-protection-take-immediate-action-to-protect-your-games-and-apps/1688031
+- Some variables are now set in the new MasterController gameobject. This was done to make modifying the scenes a little easier since some things would break when making changes to the UI.
+
+Bug Fixes:
+- The random ambience noises are now properly filtered through the SFX volume control
+- The sprite bouncing effect on pickups (notebooks and items) is now consistent regardless of framerate
+- Fixed an issue where some characters would not appear on the quick map
+- Fixed an issue where the school colors would suddenly flip to red when reaching the second-to-last exit in safe mode
 
 
 ### v0.5 ###

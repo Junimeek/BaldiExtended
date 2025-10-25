@@ -21,7 +21,7 @@ public class PlayerScript : MonoBehaviour
 		this.isInfiniteStamina = false;
 		this.isSpeedShoes = false;
 		this.speedSlider.gameObject.SetActive(false);
-		this.speedText.SetActive(false);
+		this.sneakerIcon.SetActive(false);
 		this.isSecret = false;
 	}
 
@@ -167,7 +167,7 @@ public class PlayerScript : MonoBehaviour
 				{
 					speedSlider.value = -5f;
 					speedSlider.gameObject.SetActive(false);
-					speedText.SetActive(false);
+					sneakerIcon.SetActive(false);
 					this.isSpeedShoes = false;
 				}
 			}
@@ -331,7 +331,7 @@ public class PlayerScript : MonoBehaviour
 	public void ActivateSpeedShoes()
 	{
 		this.isSpeedShoes = true;
-		this.speedText.SetActive(true);
+		this.sneakerIcon.SetActive(true);
 		this.speedSlider.gameObject.SetActive(true);
 		this.speedSlider.value = 100f;
 	}
@@ -397,7 +397,7 @@ public class PlayerScript : MonoBehaviour
 	[SerializeField] private float softStaminaCap;
 	[SerializeField] bool isSpeedShoes;
 	public Slider speedSlider;
-	public GameObject speedText;
+	public GameObject sneakerIcon;
 	[SerializeField] private float shoeRate;
 	public bool isSecret;
 	public bool isNullStyle;

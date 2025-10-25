@@ -1,7 +1,5 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.Rendering.PostProcessing;
 
 public class SweepScript : MonoBehaviour
 {
@@ -90,6 +88,28 @@ public class SweepScript : MonoBehaviour
 			this.audioDevice.PlayOneShot(this.aud_Sweep);
 	}
 
+	private void OnTriggerStay(Collider other)
+	{
+		if (other.tag == "Player" && this.agent.velocity.magnitude > 0.5f)
+		{
+			this.playerSweepingTime += Time.deltaTime;
+
+			if (this.playerSweepingTime >= 30f && !this.achievementCollected)
+			{
+				this.achievementCollected = true;
+				this.achievementMonitor.CollectAchievement(4, 0);
+			}
+		}
+	}
+
+	private void OnTriggerExit(Collider other)
+	{
+		if (other.tag == "Player")
+		{
+			this.playerSweepingTime = 0f;
+		}
+	}
+
 	public void EarlyActivate()
 	{
 		if (this.isEarlyActivation)
@@ -99,6 +119,12 @@ public class SweepScript : MonoBehaviour
 		this.waitTime = 0f;
 	}
 
+	[Header("Achievement")]
+	[SerializeField] private AchievementMonitor achievementMonitor;
+	[SerializeField] private float playerSweepingTime;
+	[SerializeField] private bool achievementCollected;
+
+	[Header("Sweep State")]
 	public AILocationSelectorScript wanderer;
 	public float coolDown;
 	public float waitTime;

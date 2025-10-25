@@ -9,12 +9,15 @@ public class MathGameScript : MonoBehaviour
 {
     private void Start()
     {   
-        this.spider.SetActive(false);
-        
         this.mathMusicScript = FindObjectOfType<MathMusicScript>();
 
         this.gc.ActivateLearningGame();
         this.problem = 0;
+
+        if (PlayerPrefs.GetInt("gps_difficultmath") == 1)
+            this.difficultMath = true;
+        else
+            this.difficultMath = false;
 
         if (this.gc.notebooks == 1)
         {
@@ -74,29 +77,36 @@ public class MathGameScript : MonoBehaviour
             this.QueueAudio(this.bal_problems[this.problem - 1]);
 
             int questionType;
-            if (PlayerPrefs.GetInt("gps_difficultmath") == 1)
+            if (this.difficultMath)
                 questionType = Mathf.RoundToInt(UnityEngine.Random.Range(1f,4f));
             else
                 questionType = Mathf.RoundToInt(UnityEngine.Random.Range(1f,2f));
             
             int digit1 = Mathf.RoundToInt(UnityEngine.Random.Range(0f,9f));
-            int digit2 = Mathf.RoundToInt(UnityEngine.Random.Range(0f,9f));
+            int digit2 = Mathf.RoundToInt(UnityEngine.Random.Range(-9f,9f));
+            int digit3 = Mathf.RoundToInt(UnityEngine.Random.Range(-9f,9f));
 
             if ((this.gc.mode != "endless" && (this.problem <= 2 || this.gc.notebooks <= 1)) || (this.gc.mode == "endless" && (this.problem <= 2 || this.gc.notebooks != 2))/* || gc.isSafeMode*/)
             {
-                switch(questionType)
+                switch (questionType)
                 {
                     case 2:
-                        NewSubtractionProblem(digit1, digit2);
+                        if (this.difficultMath)
+                            NewComplexAdditionProblem(digit1, digit2, digit3);
+                        else
+                            NewSubtractionProblem(digit1, Mathf.Abs(digit2));
                         break;
                     case 3:
-                        NewMultiplicationProblem(digit1, digit2);
+                        NewMultiplicationProblem(digit1, Mathf.Abs(digit2));
                         break;
                     case 4:
-                        NewDivisionProblem(digit1, digit2);
+                        NewDivisionProblem(digit1, Mathf.Abs(digit2));
                         break;
                     default:
-                        NewAdditionProblem(digit1, digit2);
+                        if (this.difficultMath)
+                            NewComplexAdditionProblem(digit1, digit2, digit3);
+                        else
+                            NewAdditionProblem(digit1, Mathf.Abs(digit2));
                         break;
                 }
             }
@@ -148,15 +158,6 @@ public class MathGameScript : MonoBehaviour
                     }
                 }
             }
-            else if (this.isKitsune)
-            {
-                this.spider.SetActive(false);
-                //this.endDelay = 3.75f;
-                this.endDelay = 1.5f;
-                this.questionText.color = new Color(0f, 0f, 0f, 1f);
-                this.questionText.text = "THAT LAST ONE\nWAS NOT VERY\nSIGHTREADABLE";
-                //this.baldiAudio.PlayOneShot(this.dash);
-            }
             else if (this.gc.mode == "endless" & this.problemsWrong <= 0)
             {
                 int num = Mathf.RoundToInt(UnityEngine.Random.Range(0f, 1f));
@@ -203,7 +204,7 @@ public class MathGameScript : MonoBehaviour
         }
     }
 
-    private void NewAdditionProblem(int digit1, int digit2)
+    void NewAdditionProblem(int digit1, int digit2)
     {
         this.solution = digit1 + digit2;
         this.questionText.text = string.Concat(new object[]
@@ -222,7 +223,7 @@ public class MathGameScript : MonoBehaviour
         this.QueueAudio(this.bal_equals);
     }
 
-    private void NewSubtractionProblem(int digit1, int digit2)
+    void NewSubtractionProblem(int digit1, int digit2)
     {
         this.solution = digit1 - digit2;
         this.questionText.text = string.Concat(new object[]
@@ -241,7 +242,59 @@ public class MathGameScript : MonoBehaviour
         this.QueueAudio(this.bal_equals);
     }
 
-    private void NewMultiplicationProblem(int digit1, int digit2)
+    void NewComplexAdditionProblem(int digit1, int digit2, int digit3)
+    {
+        this.solution = digit1 + digit2 + digit3;
+        this.questionText.text = "SOLVE MATH Q";
+        this.questionText.text += this.problem;
+        this.questionText.text += ": \n \n";
+        this.questionText.text += digit1;
+        this.QueueAudio(this.bal_numbers[digit1]);
+
+        if (digit2 < 0)
+            this.QueueAudio(bal_minus);
+        else
+        {
+            this.questionText.text += "+";
+            this.QueueAudio(bal_plus);
+        }
+
+        this.questionText.text += digit2;
+        this.QueueAudio(this.bal_numbers[Mathf.Abs(digit2)]);
+
+        if (digit3 < 0)
+            this.QueueAudio(bal_minus);
+        else
+        {
+            this.questionText.text += "+";
+            this.QueueAudio(bal_plus);
+        }
+
+        this.questionText.text += digit3;
+        this.QueueAudio(this.bal_numbers[Mathf.Abs(digit3)]);
+
+        this.questionText.text += "=";
+        this.QueueAudio(this.bal_equals);
+    }
+
+    string GetSign(int digit, int remainder)
+    {
+        switch (digit)
+        {
+            case 1:
+                if (remainder % 2 == 0)
+                    return "+";
+                else
+                    return "-";
+            default:
+                if (remainder % 2 == 0)
+                    return "+";
+                else
+                    return "-";
+        }
+    }
+
+    void NewMultiplicationProblem(int digit1, int digit2)
     {
         this.solution = digit1 * digit2;
         this.questionText.text = string.Concat(new object[]
@@ -260,7 +313,7 @@ public class MathGameScript : MonoBehaviour
         this.QueueAudio(this.bal_equals);
     }
 
-    private void NewDivisionProblem(int digit1, int digit2)
+    void NewDivisionProblem(int digit1, int digit2)
     {
         int index = digit1 + digit2;
         int newDigit1;
@@ -313,20 +366,6 @@ public class MathGameScript : MonoBehaviour
         float glitch1;
         float glitch2;
         float glitch3;
-
-        float randblah = UnityEngine.Random.Range(1f,22f);
-        int randblah2 = Mathf.RoundToInt(randblah);
-
-        if (randblah2 == 22)
-        {
-            this.isKitsune = true;
-            this.spider.SetActive(true);
-            this.questionText.color = new Color(1f, 1f, 1f, 1f);
-            this.questionText.text = "SOLVE LEVEL 22:";
-            this.QueueAudio(this.colonge);
-            this.QueueAudio(this.bal_equals);
-            return;
-        }
 
         switch(digit1)
         {
@@ -531,7 +570,8 @@ public class MathGameScript : MonoBehaviour
 
         if (this.problemsWrong == 0)
             this.gc.DeactivateLearningGame(base.gameObject, true);
-        else this.gc.DeactivateLearningGame(base.gameObject, false);
+        else
+            this.gc.DeactivateLearningGame(base.gameObject, false);
     }
 
     public void ButtonPress(int value)
@@ -612,15 +652,12 @@ public class MathGameScript : MonoBehaviour
 
     private bool questionInProgress;
     [SerializeField] private bool impossibleMode;
+    [SerializeField] private bool difficultMath;
     private bool joystickEnabled;
     private int problemsWrong;
     [SerializeField] private AudioClip[] audioQueue = new AudioClip[20];
     public AudioSource baldiAudio;
     private int randompraise;
     [SerializeField] private MathMusicScript mathMusicScript;
-    [SerializeField] private AudioClip colonge;
-    [SerializeField] private AudioClip dash;
-    [SerializeField] private GameObject spider;
     [SerializeField] private TMP_Text speedrunText;
-    public bool isKitsune;
 }

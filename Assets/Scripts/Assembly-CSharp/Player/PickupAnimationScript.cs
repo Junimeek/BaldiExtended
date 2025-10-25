@@ -2,19 +2,38 @@
 
 public class PickupAnimationScript : MonoBehaviour
 {
-	private void Start()
+	void Start()
 	{
-		this.itemPosition = base.GetComponent<Transform>();
+		this.speed = Mathf.Clamp(speed, 0.1f, 5f);
+		if (this.amplitude <= 0)
+			this.amplitude = 1;
+
+		this.itemTransform = GetComponent<Transform>();
+		this.xPosition = itemTransform.localPosition.x;
+		this.yPosition = itemTransform.localPosition.y;
+		this.yOffset = yPosition;
+		this.zPosition = itemTransform.localPosition.z;
+
+		this.modifiedSpeed = 4f / speed;
 	}
 
-	private void Update()
+	void Update()
 	{
-		if (this.isFast)
-			this.itemPosition.localPosition = new Vector3(0f, Mathf.Sin(Time.frameCount * 0.02f) / 2f + 0.5f, 0f);
-		else
-			this.itemPosition.localPosition = new Vector3(0f, Mathf.Sin((float)Time.frameCount * 0.017453292f) / 2f + 1f, 0f);
+		yPosition = amplitude * Mathf.Sin(4f * Mathf.PI / modifiedSpeed * sinPosition) + yOffset;
+		itemTransform.localPosition = new Vector3(xPosition, yPosition, zPosition);
+		sinPosition += Time.deltaTime;
+
+		if (sinPosition > modifiedSpeed / 2f)
+			sinPosition -= modifiedSpeed / 2f;
 	}
 
-	private Transform itemPosition;
-	[SerializeField] private bool isFast;
+	Transform itemTransform;
+	float xPosition;
+	float yPosition;
+	float yOffset;
+	float zPosition;
+	float sinPosition;
+	[SerializeField] float speed;
+	float modifiedSpeed;
+	[SerializeField] float amplitude;
 }
