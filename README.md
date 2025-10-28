@@ -16,7 +16,7 @@ Major changes made from Baldi's Basics Classic version 1.4.3:
 I'll upload this to sites such as GameBanana at some point, but not until version 1.0 releases (i.e, whenever I stop doing major code rewrites and the only new content will be in the form of new maps and items).
 
 ## Downloading and using the Source Code
-**Note**: If you just want to play the game, the download link is [here](https://github.com/Junimeek/BaldiExtended/releases/tag/beta-0.5.0a). Just scroll down and click on `BaldiExtended_Windows_0.5.0a` and it'll start downloading.
+**Note**: If you just want to play the game, the download link is [here](https://github.com/Junimeek/BaldiExtended/releases/tag/beta-0.5.1). Just scroll down and click on `BaldiExtended_Windows_0.5.1` and it'll start downloading.
 
 The stuff that follows is just for the nerds such as myself:<br/>
 Download and install [Unity Hub](https://unity.com/download), and create a Unity account or log into your Unity account if you already have one. Next, install [Unity Engine 2021.3.45f2](https://unity.com/releases/editor/whats-new/2021.3.45f2).
@@ -32,5 +32,6 @@ After that, you can clone this repository wherever you want. Then go back to Uni
 
 This project uses a decompile by Jumpman25 and [porkypowers](https://porkypowers.itch.io/) on itch.io, found here:<br/>
 https://porkypowers.itch.io/baldi-open-source-classic-party
+
 
 All other credits can be found in the game's credits menu.
