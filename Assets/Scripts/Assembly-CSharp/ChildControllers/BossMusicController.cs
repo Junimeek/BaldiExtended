@@ -1,8 +1,6 @@
 using System;
 using System.Collections;
 using UnityEngine;
-using FluidMidi;
-using UnityEngine.Rendering.PostProcessing;
 
 public class BossMusicController : MonoBehaviour
 {

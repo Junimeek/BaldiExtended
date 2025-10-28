@@ -237,7 +237,7 @@ public class GameControllerScript : MonoBehaviour
 
 		if (this.fpsTimer < 0f)
 		{
-			this.fpsTimer += 0.5f;
+			this.fpsTimer += 0.25f;
 			this.fpsCounter.text = (1 / Time.unscaledDeltaTime).ToString("0") + "fps";
 		}
 
@@ -386,12 +386,23 @@ public class GameControllerScript : MonoBehaviour
 		if (Time.timeScale != 0f && this.remainingDetentionTime > 0f)
 			this.remainingDetentionTime -= Time.deltaTime;
 
-		if (this.modeType == "nullStyle" && this.isDynamicColor)
+		if (this.modeType == "nullStyle" && this.exitsReached < 3)
 		{
 			Vector3 distance = this.baldi.transform.position - this.playerTransform.position;
 			float sqrLen = distance.sqrMagnitude;
 			this.darkLevel = Mathf.Sqrt(sqrLen / 300000f);
-			
+
+			if (this.darkLevel >= 0.4f)
+				RenderSettings.ambientLight = new Color(0.4f, 0.4f, 0.4f);
+			else
+				RenderSettings.ambientLight = new Color(this.darkLevel, this.darkLevel, this.darkLevel);
+		}
+		else if (this.modeType == "nullStyle" && this.isDynamicColor)
+		{
+			Vector3 distance = this.entranceDarkSources[0].position - this.playerTransform.position;
+			float sqrLen = distance.sqrMagnitude;
+			this.darkLevel = Mathf.Clamp(Mathf.Sqrt(sqrLen / 50000f), 0.02f, 1f);
+
 			if (this.darkLevel >= 0.4f)
 				RenderSettings.ambientLight = new Color(0.4f, 0.4f, 0.4f);
 			else
@@ -836,18 +847,39 @@ public class GameControllerScript : MonoBehaviour
 		this.ModifyExits("raise");
 	}
 
+	void ToggleFlashlight(float lightChange)
+    {
+        switch(lightChange)
+		{
+			case 1:
+				this.playerFlashlights[0].intensity = 1f;
+				this.playerFlashlights[1].intensity = 1f;
+				break;
+			default:
+				this.playerFlashlights[0].intensity = 0f;
+				this.playerFlashlights[1].intensity = 0f;
+				break;
+        }
+    }
+
 	public void ActivateBossFight(Vector3 nullPos)
 	{
-		this.speedrunText.color = Color.black;
-		this.fpsCounter.color = Color.black;
+		this.isDynamicColor = false;
 		this.audioDevice.Stop();
 		this.nullBoss.SetActive(true);
 		this.audioDevice.PlayOneShot(this.aud_BigClose, 0.6f);
 		this.nullBoss.GetComponent<NullBoss>().WarpToExit(nullPos);
 		RenderSettings.ambientLight = new Color(1f, 1f, 1f);
-		this.playerFlashlight[0].intensity = 0f;
-		this.playerFlashlight[1].intensity = 0f;
+		this.ToggleFlashlight(0f);
+
+		this.minimalUI.SetActive(true);
+		this.speedrunText = this.minimalSpeedrunText;
+		this.fpsCounter = this.minimalFpsCounter;
+		handIconScript.icon = this.minimalCenterIcon;
+		this.speedrunText.color = Color.black;
+		this.fpsCounter.color = Color.black;
 		this.mainHud.renderMode = RenderMode.WorldSpace;
+
 		this.mapScript.DisableAllItems();
 
 		this.createdProjectiles = 3;
@@ -1630,7 +1662,7 @@ public class GameControllerScript : MonoBehaviour
 
 		if (this.modeType == "nullStyle")
 		{
-			switch(this.exitsReached)
+			switch (this.exitsReached)
 			{
 				case 1:
 					this.audioDevice.loop = true;
@@ -1646,25 +1678,32 @@ public class GameControllerScript : MonoBehaviour
 					break;
 				case 3:
 					this.baldi.SetActive(false);
-					this.isDynamicColor = false;
+					this.entranceDarkSources[0] = this.GetFinalDarkSource();
 					break;
 			}
 		}
 		else if ((this.exitsReached == this.entranceList.Length - 1) && !this.isSafeMode)
 		{
-			Transform finalSource = null;
-			for (int i = 0; i < this.entranceList.Length; i++)
-			{
-				if (entranceDarkSources[i] != null)
-				{
-					finalSource = entranceDarkSources[i];
-					break;
-				}
-			}
-			this.entranceDarkSources[0] = finalSource;
+			this.entranceDarkSources[0] = this.GetFinalDarkSource();
 			this.isDynamicColor = true;
+			this.ToggleFlashlight(0.5f);
 		}
 	}
+	
+	Transform GetFinalDarkSource()
+	{
+		Transform finalSource = null;
+		for (int i = 0; i < this.entranceList.Length; i++)
+		{
+			if (entranceDarkSources[i] != null)
+			{
+				finalSource = entranceDarkSources[i];
+				break;
+			}
+		}
+		return finalSource;
+    }
+	
 
 	public void DespawnCrafters()
 	{
@@ -1966,7 +2005,7 @@ public class GameControllerScript : MonoBehaviour
 	public Transform[] entranceDarkSources;
 
 	[Header("UI")]
-	[SerializeField] private Light[] playerFlashlight;
+	[HideInInspector] public Light[] playerFlashlights;
 	[HideInInspector] public GameObject notebookObject;
 	[HideInInspector] public TMP_Text notebookCountText;
 	[HideInInspector] public NotebookCountScript notebookCountScript;
@@ -2002,8 +2041,6 @@ public class GameControllerScript : MonoBehaviour
 	[Header("Characters")]
 	public GameObject baldiTutor;
 	public GameObject baldi;
-	[SerializeField] private GameObject nullBoss;
-	public GameObject[] windowBlockers;
 	public GameObject principal;
 	public GameObject crafters;
 	public GameObject playtime;
@@ -2072,12 +2109,9 @@ public class GameControllerScript : MonoBehaviour
 	public GameObject quarter;
 	public GameObject bsodaSpray;
 	public GameObject dietBsodaSpray;
-	[SerializeField] private GameObject projectile;
 	public RectTransform boots;
 	public GameObject alarmClock;
 	[SerializeField] private GameObject party;
-	public byte createdProjectiles;
-	public GameObject[] projectilesInPlay;
 	[SerializeField] private GameObject attendanceBlocker;
 
 
@@ -2085,8 +2119,20 @@ public class GameControllerScript : MonoBehaviour
 	public bool isPrinceyTriggerShared;
 	public bool isPrinceyIgnore;
 	public float remainingDetentionTime;
-	
-	
+
+	[Header("Challenge Stuff")]
+	[SerializeField] private GameObject nullBoss;
+	public GameObject[] windowBlockers;
+	[SerializeField] private GameObject projectile;
+	public byte createdProjectiles;
+	public GameObject[] projectilesInPlay;
+	[SerializeField] GameObject minimalUI;
+	[SerializeField] TMP_Text minimalSpeedrunText;
+	[SerializeField] TMP_Text minimalFpsCounter;
+	[SerializeField] Image minimalCenterIcon;
+
+
+
 	[Header("SFX and Voices")]
 	[SerializeField] private AudioClip aud_Prize;
 	[SerializeField] private AudioSource audioDevice;

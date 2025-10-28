@@ -55,7 +55,7 @@ public class JumpRopeScript : MonoBehaviour
 			this.ps.DeactivateJumpRope(); //Deactivate the jumprope
 			this.jumpRopeGames++;
 
-			if (this.jumpRopeGames == 10)
+			if (this.jumpRopeGames == 10 && achievementMonitor.isActiveAndEnabled)
 				this.achievementMonitor.CollectAchievement(4, 1);
 		}
 	}

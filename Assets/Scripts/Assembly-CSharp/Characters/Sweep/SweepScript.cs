@@ -97,7 +97,8 @@ public class SweepScript : MonoBehaviour
 			if (this.playerSweepingTime >= 30f && !this.achievementCollected)
 			{
 				this.achievementCollected = true;
-				this.achievementMonitor.CollectAchievement(4, 0);
+				if (this.achievementMonitor.isActiveAndEnabled)
+					this.achievementMonitor.CollectAchievement(4, 0);
 			}
 		}
 	}

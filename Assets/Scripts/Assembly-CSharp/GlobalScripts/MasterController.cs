@@ -36,6 +36,7 @@ public class MasterController : MonoBehaviour
         gc.exitCountText = this.exitCountText;
         gc.fpsCounter = this.fpsCounter;
         gc.mapScript = this.mapCameraScript;
+        gc.playerFlashlights = this.playerFlashlights;
         notifboardScript.gc = this.gc;
         notifboardScript.ruleText = this.notifRuleText;
         notifboardScript.detentionText = this.notifDetentionText;
@@ -78,6 +79,7 @@ public class MasterController : MonoBehaviour
     public bool forceQuarterPickup;
 
     [Header("UI")]
+    [SerializeField] Light[] playerFlashlights;
     [SerializeField] HandIconScript handIconScript;
     [SerializeField] NotebookCountScript notebookCountScript;
     [SerializeField] TMP_Text notebookCountText;
