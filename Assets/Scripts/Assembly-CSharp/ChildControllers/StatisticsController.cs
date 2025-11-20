@@ -1,4 +1,5 @@
 using System;
+using OldSaveData;
 using UnityEngine;
 
 public class StatisticsController : MonoBehaviour
@@ -46,7 +47,7 @@ public class StatisticsController : MonoBehaviour
         if (this.finalSeconds < this.data_bestTime[this.mapID])
             this.data_bestTime[this.mapID] = this.finalSeconds;
         
-        SaveDataController.SaveStoryData(this);
+        // OldSaveDataController.SaveStoryData(this);
 
         SaveHead saveHead = FindObjectOfType<SaveHead>();
         if (saveHead != null)
@@ -59,8 +60,8 @@ public class StatisticsController : MonoBehaviour
 
         if (this.gc.mode == "story" || this.gc.mode == "endless")
         {
-            SaveData_Story storyData = SaveDataController.LoadStoryData();
-            SaveData_Endless endlessData = SaveDataController.LoadEndlessData();
+            SaveData_Story storyData = OldSaveDataLoader.LoadOldStoryData();
+            SaveData_Endless endlessData = OldSaveDataLoader.LoadOldEndlessData();
 
             this.data_fileVersion = storyData.fileVersion;
             this.data_bestTime = storyData.bestTime;
@@ -112,7 +113,7 @@ public class StatisticsController : MonoBehaviour
         }
         else if (this.gc.mode == "challenge")
         {
-            SaveData_Challenge challengeData = SaveDataController.LoadChallengeData();
+            SaveData_Challenge challengeData = OldSaveDataLoader.LoadOldChallengeData();
 
             this.data_fileVersion = challengeData.fileVersion;
             this.data_totalDetentions = challengeData.totalDetentions;
@@ -192,18 +193,20 @@ public class StatisticsController : MonoBehaviour
             }
         }
 
+        /*
         switch (this.gc.mode)
         {
             case "story":
-                SaveDataController.SaveStoryData(this);
+                OldSaveDataController.SaveStoryData(this);
                 break;
             case "endless":
-                SaveDataController.SaveEndlessData(this);
+                OldSaveDataController.SaveEndlessData(this);
                 break;
             case "challenge":
-                SaveDataController.SaveChallengeData(this);
+                OldSaveDataController.SaveChallengeData(this);
                 break;
         }
+        */
 
         SaveHead saveHead = FindObjectOfType<SaveHead>();
         if (saveHead != null)

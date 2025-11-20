@@ -2,38 +2,6 @@ using System;
 using UnityEngine;
 
 [Serializable]
-public class AchievementData
-{
-    public ushort fileVersion;
-    public bool[] storyCompletion;
-    public bool[] endlessMilestones;
-    public bool[] challengeCompletion;
-    public bool[] miniChallenges;
-    public bool[] secretUnlocks;
-
-    public AchievementData(AchievementController controller)
-    {
-        if (controller == null)
-        {
-            this.fileVersion = 1;
-            this.storyCompletion = new bool[3];
-            this.endlessMilestones = new bool[3];
-            this.challengeCompletion = new bool[1];
-            this.miniChallenges = new bool[3];
-            this.secretUnlocks = new bool[1];
-        }
-        else
-        {
-            this.fileVersion = controller.data_fileVersion;
-            this.storyCompletion = controller.data_storyCompletion;
-            this.endlessMilestones = controller.data_endlessMilestones;
-            this.miniChallenges = controller.data_miniChallenges;
-            this.secretUnlocks = controller.data_secretUnlocks;
-        }
-    }
-}
-
-[Serializable]
 public class SettingsData
 {
     public bool isSettingsSaved;

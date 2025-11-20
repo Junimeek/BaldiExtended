@@ -2,6 +2,8 @@ using System.IO;
 using System.Collections;
 using UnityEngine;
 using UpgradeSystem;
+using SaveDataEncryption;
+using OldSaveData;
 using TMPro;
 using System.Diagnostics;
 using System;
@@ -21,6 +23,8 @@ public class Launcher : MonoBehaviour
         this.upgradeCanvas_Process.SetActive(false);
         this.upgradeCanvas_End.SetActive(false);
         this.errorCanvas.SetActive(false);
+
+        this.isInterrupted = CheckForOldSaveData();
         this.StartCoroutine(this.WaitForStart());
 
         if (Application.platform == RuntimePlatform.WindowsEditor || Application.platform == RuntimePlatform.LinuxEditor)
@@ -33,10 +37,181 @@ public class Launcher : MonoBehaviour
         if (this.updateScript.isNightly)
             this.versionText.text += "Development build " + this.updateScript.nightlyBuild;
         else
-            this.versionText.text += "Beta V" + this.updateScript.stableBuild;
+            this.versionText.text += "Beta v" + this.updateScript.stableBuild;
 
         this.savePath = Application.persistentDataPath + "/BaldiData/";
-        this.FileChecks();
+    }
+
+    public void SaveFile()
+    {
+        int saveID = 1;
+        string jsonData = JsonUtility.ToJson(dataContainer, true);
+        string path = Application.persistentDataPath + "/BaldiData/";
+        
+        if (enableJsonEncryption)
+            path += "baldidata" + saveID + ".sav";
+        else
+            path += "baldidata" + saveID + ".json";
+
+        using (StreamWriter sw = File.CreateText(path))
+        {
+            if (enableJsonEncryption)
+            {
+                sw.WriteLine(SaveEncryption.EncryptSaveFile(jsonData));
+            }
+            else
+            {
+                sw.WriteLine(jsonData);
+            }
+            sw.Close();
+        }
+    }
+
+    public void LoadFile()
+    {
+        string jsonData = ReadJson();
+        dataContainer.SetData(jsonData);
+    }
+
+    string ReadJson()
+    {
+        int saveID = 1;
+        string loadedBinaryData = "";
+        string loadedJsonData = "";
+        string path = UnityEngine.Application.persistentDataPath + "/BaldiData/";
+
+        if (enableJsonEncryption)
+            path += "baldidata" + saveID + ".sav";
+        else
+            path += "baldidata" + saveID + ".json";
+
+        using (StreamReader sr = File.OpenText(path))
+        {
+            string s = "";
+            while ((s = sr.ReadLine()) != null)
+            {
+                loadedBinaryData += s;
+            }
+            sr.Close();
+
+            if (enableJsonEncryption)
+            {
+                loadedJsonData = SaveEncryption.DecryptSaveFile(loadedBinaryData);
+                UnityEngine.Debug.Log(loadedBinaryData);
+                UnityEngine.Debug.Log(loadedJsonData);
+            }
+            else
+            {
+                loadedJsonData = loadedBinaryData;
+                UnityEngine.Debug.Log(loadedJsonData);
+            }
+        }
+        
+        return loadedJsonData;
+    }
+
+    public void ConvertFile()
+    {
+        SaveData_Story oldStoryData = OldSaveDataLoader.LoadOldStoryData();
+        SaveData_Endless oldEndlessData = OldSaveDataLoader.LoadOldEndlessData();
+        SaveData_Challenge oldChallengeData = OldSaveDataLoader.LoadOldChallengeData();
+        ProgressionData oldProgressionData = OldSaveDataLoader.LoadOldProgressionData();
+
+        int itemCount = 18;
+        int mapCount = 5;
+
+        int saveFileVersion = 2;
+        int[] gameVersion = new int[] {
+            0, 6, 0
+        };
+        bool[] challengeUnlocks = oldProgressionData.mapUnlocks;
+        int[] items_classic = oldStoryData.itemsUsed_Classic;
+        int[] items_classicExtended = oldStoryData.itemsUsed_ClassicExtended;
+        int[] items_juniperHills = oldStoryData.itemsUsed_JuniperHills;
+        int[] items_classicDark = oldChallengeData.itemsUsed_NullStyle;
+        int[] items_mitakihara = new int[itemCount];
+        float[] bestTimes = oldStoryData.bestTime;
+        int[] totalDetentions = oldStoryData.totalDetentions;
+        int[] endlessNotebooks = oldEndlessData.notebooks;
+
+        Array.Resize(ref items_classic, itemCount);
+        Array.Resize(ref items_classicExtended, itemCount);
+        Array.Resize(ref items_juniperHills, itemCount);
+        Array.Resize(ref items_classicDark, itemCount);
+        Array.Resize(ref totalDetentions, mapCount);
+        Array.Resize(ref bestTimes, mapCount);
+        Array.Resize(ref endlessNotebooks, mapCount);
+        
+        for (int i = 0; i < itemCount; i++)
+        {
+            UnityEngine.Debug.LogWarning(items_classicDark[i]);
+        }
+
+        for (int i = 0; i < itemCount; i++)
+        {
+            items_classic[i] += oldEndlessData.itemsUsed_Classic[i];
+            items_classicExtended[i] += oldEndlessData.itemsUsed_ClassicExtended[i];
+            items_juniperHills[i] += oldEndlessData.itemsUsed_JuniperHills[i];
+        }
+
+        for (int i = 0; i < mapCount; i++)
+        {
+            try
+            {
+                totalDetentions[i] += oldEndlessData.totalDetentions[i];
+            }
+            catch
+            {
+                totalDetentions[i] = 0;
+            }
+        }
+
+        bestTimes[3] = oldChallengeData.bestTime[0];
+
+        dataContainer.saveFileVersion = saveFileVersion;
+        dataContainer.gameVersion = gameVersion;
+        dataContainer.challengeUnlocks = challengeUnlocks;
+        dataContainer.items_classic = items_classic;
+        dataContainer.items_classicExtended = items_classicExtended;
+        dataContainer.items_juniperHills = items_juniperHills;
+        dataContainer.items_classicDark = items_classicDark;
+        dataContainer.items_mitakihara = items_mitakihara;
+        dataContainer.bestTimes = bestTimes;
+        dataContainer.totalDetentions = totalDetentions;
+        dataContainer.endlessNotebooks = endlessNotebooks;
+
+        SaveFile();
+        UnityEngine.Debug.Log("Conversion complete");
+    }
+
+    bool CheckForOldSaveData()
+    {
+        int triggeredChecks = 0;
+        string initialPath = Application.persistentDataPath + "/BaldiData/";
+        string[] curFile = {
+            "story.sav",
+            "endless.sav",
+            "challenge.sav",
+            "progression.sav"
+        };
+
+        for (int i = 0; i < 4; i++)
+        {
+            if (File.Exists(initialPath + curFile[i])) {
+                triggeredChecks++;
+            }
+            UnityEngine.Debug.Log("Completed check for " + curFile[i]);
+        }
+
+        UnityEngine.Debug.Log("Found " + triggeredChecks + " files.");
+
+        if (triggeredChecks != 0)
+        {
+            this.interruptionType = "NewSaveSystemUpgrade";
+            return true;
+        }
+        else
+            return false;
     }
 
     private void FileChecks()
@@ -54,8 +229,6 @@ public class Launcher : MonoBehaviour
             if (!File.Exists(savePath + "challenge.sav"))
                 presentFiles++;
             if (!File.Exists(savePath + "progression.sav"))
-                presentFiles++;
-            if (!File.Exists(savePath + "achievements.sav"))
                 presentFiles++;
             
             if (presentFiles > 0)
@@ -96,12 +269,14 @@ public class Launcher : MonoBehaviour
 
         this.stopCanvas.SetActive(false);
         this.saveNoticeCanvas.SetActive(false);
+        this.newSaveUpgradeCanvas.SetActive(false);
+        this.interruptionType = "";
         this.StartCoroutine(this.WaitForStart());
+        this.isInterrupted = false;
     }
 
     private IEnumerator WaitForStart()
     {
-        this.isInterrupted = false;
         this.allowInterruption = true;
 
         float time = 0.3f;
@@ -112,14 +287,23 @@ public class Launcher : MonoBehaviour
             yield return null;
         }
 
+        this.allowInterruption = false;
+
+        if (this.isInterrupted) {
+            switch(interruptionType)
+            {
+                case "NewSaveSystemUpgrade":
+                    this.newSaveUpgradeCanvas.SetActive(true);
+                    break;
+            }
+        }
+
         if (PlayerPrefs.GetInt("saveNoticeSeen", 0) == 0)
         {
             this.isInterrupted = true;
             this.saveNoticeCanvas.SetActive(true);
             this.saveHead.Play("SaveHead_Nod");
         }
-
-        this.allowInterruption = false;
 
         if (!isInterrupted)
         {
@@ -333,85 +517,6 @@ public class Launcher : MonoBehaviour
         while (this.upgradeState == 0)
             yield return null;
 
-        this.upgradeCanvas_Process.SetActive(true);
-        this.upgradeCanvas_Start.SetActive(false);
-        this.upgradeText_process.text = "Creating story data...";
-        try {
-            SaveDataController.SaveStoryData(null);
-        }
-        catch (System.Exception e) {
-            this.ThrowError(e.ToString());
-            UnityEngine.Debug.LogError(e);
-            yield break;
-        }
-
-        float remTime = 0.5f;
-        while (remTime > 0f)
-        {
-            remTime -= Time.unscaledDeltaTime;
-            yield return null;
-        }
-        
-        this.upgradeText_process.text = "Creating endless data...";
-        try {
-            SaveDataController.SaveEndlessData(null);
-        }
-        catch (System.Exception e) {
-            this.ThrowError(e.ToString());
-            UnityEngine.Debug.LogError(e);
-            yield break;
-        }
-        
-        remTime = 0.5f;
-        while (remTime > 0f)
-        {
-            remTime -= Time.unscaledDeltaTime;
-            yield return null;
-        }
-
-        this.upgradeText_process.text = "Creating challenge data...";
-        try {
-            SaveDataController.SaveChallengeData(null);
-        }
-        catch (System.Exception e) {
-            this.ThrowError(e.ToString());
-            UnityEngine.Debug.LogError(e);
-            yield break;
-        }
-
-        remTime = 0.5f;
-        while (remTime > 0f)
-        {
-            remTime -= Time.unscaledDeltaTime;
-            yield return null;
-        }
-
-        this.upgradeText_process.text = "Finishing...";
-        try {
-            SaveDataController.SaveProgressionData(null);
-        }
-        catch (System.Exception e) {
-            this.ThrowError(e.ToString());
-            UnityEngine.Debug.LogError(e);
-            yield break;
-        }
-
-        try {
-            SaveDataController.SaveAchievementData(null);
-        }
-        catch (System.Exception e) {
-            this.ThrowError(e.ToString());
-            UnityEngine.Debug.LogError(e);
-            yield break;
-        }
-        
-        remTime = 0.3f;
-        while (remTime > 0f)
-        {
-            remTime -= Time.unscaledDeltaTime;
-            yield return null;
-        }
-
         this.AdvanceUpgradePrompt();
         this.upgradeCanvas_End.SetActive(true);
         this.upgradeCanvas_Process.SetActive(false);
@@ -451,62 +556,6 @@ public class Launcher : MonoBehaviour
         this.upgradeCanvas_Start.SetActive(false);
         this.upgradeText_process.text = "Creating data...";
 
-        if (!File.Exists(this.savePath + "story.sav"))
-        {
-            try {
-                SaveDataController.SaveStoryData(null);
-            }
-            catch (System.Exception e) {
-                this.ThrowError(e.ToString());
-                UnityEngine.Debug.LogError(e);
-                yield break;
-            }
-        }
-        if (!File.Exists(this.savePath + "endless.sav"))
-        {
-            try {
-                SaveDataController.SaveEndlessData(null);
-            }
-            catch (System.Exception e) {
-                this.ThrowError(e.ToString());
-                UnityEngine.Debug.LogError(e);
-                yield break;
-            }
-        }
-        if (!File.Exists(this.savePath + "challenge.sav"))
-        {
-            try {
-                SaveDataController.SaveChallengeData(null);
-            }
-            catch (System.Exception e) {
-                this.ThrowError(e.ToString());
-                UnityEngine.Debug.LogError(e);
-                yield break;
-            }
-        }
-        if (!File.Exists(this.savePath + "progression.sav"))
-        {
-            try {
-                SaveDataController.SaveProgressionData(null);
-            }
-            catch (System.Exception e) {
-                this.ThrowError(e.ToString());
-                UnityEngine.Debug.LogError(e);
-                yield break;
-            }
-        }
-        if (!File.Exists(this.savePath + "achievements.sav"))
-        {
-            try {
-                SaveDataController.SaveAchievementData(null);
-            }
-            catch (System.Exception e) {
-                this.ThrowError(e.ToString());
-                UnityEngine.Debug.LogError(e);
-                yield break;
-            }
-        }
-
         float remTime = 1.5f;
 
         while (remTime > 0f)
@@ -528,6 +577,8 @@ public class Launcher : MonoBehaviour
         this.StartCoroutine(this.WaitForLogo());
     }
 
+    [SerializeField] bool enableJsonEncryption;
+    [SerializeField] SaveDataContainer dataContainer;
     [SerializeField] private LoadingManager loadingManager;
     [SerializeField] private VersionCheck updateScript;
     [SerializeField] private AudioSource audioDevice;
@@ -538,6 +589,7 @@ public class Launcher : MonoBehaviour
     [SerializeField] private bool isLaunching;
     [SerializeField] private bool allowInterruption;
     [SerializeField] private bool isInterrupted;
+    [SerializeField] string interruptionType;
     [SerializeField] private int upgradeState;
 
     [Header("Save File")]
@@ -560,6 +612,7 @@ public class Launcher : MonoBehaviour
     [SerializeField] private TMP_Text upgradeText_process;
     [SerializeField] private GameObject upgradeCanvas_End;
     [SerializeField] private TMP_Text upgradeText_End;
+    [SerializeField] GameObject newSaveUpgradeCanvas;
     [SerializeField] private TMP_Text upgradeText_EndLocation;
     [SerializeField] private GameObject errorCanvas;
     [SerializeField] private TMP_Text errorText;

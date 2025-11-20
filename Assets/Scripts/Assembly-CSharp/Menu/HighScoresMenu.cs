@@ -7,9 +7,9 @@ public class HighScoresMenu : MonoBehaviour
     
     private void OnEnable()
     {
-        this.storyData = SaveDataController.LoadStoryData();
-        this.endlessData = SaveDataController.LoadEndlessData();
-        this.challengeData = SaveDataController.LoadChallengeData();
+        this.storyData = OldSaveData.OldSaveDataLoader.LoadOldStoryData();
+        this.endlessData = OldSaveData.OldSaveDataLoader.LoadOldEndlessData();
+        this.challengeData = OldSaveData.OldSaveDataLoader.LoadOldChallengeData();
 
         this.itemsUsed_Classic = this.storyData.itemsUsed_Classic;
         this.itemsUsed_ClassicExtended = this.storyData.itemsUsed_ClassicExtended;

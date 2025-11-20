@@ -1,4 +1,5 @@
 using UnityEngine;
+using OldSaveData;
 
 public class ProgressionController : MonoBehaviour
 {
@@ -9,7 +10,7 @@ public class ProgressionController : MonoBehaviour
 
     private void LoadProgressionData()
     {
-        ProgressionData data = SaveDataController.LoadProgressionData();
+        ProgressionData data = OldSaveDataLoader.LoadOldProgressionData();
 
         this.fileVersion = data.fileVersion;
         this.mapUnlocks = data.mapUnlocks;
@@ -17,7 +18,7 @@ public class ProgressionController : MonoBehaviour
 
     public void SaveProgressionData()
     {
-        SaveDataController.SaveProgressionData(this);
+        // OldSaveDataLoader.SaveProgressionData(this);
     }
 
     public ushort fileVersion;

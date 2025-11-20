@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using TMPro;
+using OldSaveData;
 
 public class DataResetScript : MonoBehaviour
 {
@@ -62,15 +63,6 @@ public class DataResetScript : MonoBehaviour
         {
             case 2:
                 FindObjectOfType<SettingsContainer>().ResetSettings();
-                break;
-            case 21:
-                SaveDataController.SaveStoryData(null);
-                break;
-            case 22:
-                SaveDataController.SaveEndlessData(null);
-                break;
-            case 23:
-                SaveDataController.SaveChallengeData(null);
                 break;
             case 99:
                 string path = Application.persistentDataPath;

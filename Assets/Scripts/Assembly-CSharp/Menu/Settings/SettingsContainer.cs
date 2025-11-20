@@ -221,7 +221,7 @@ public class SettingsContainer : MonoBehaviour
 
     private void LoadAllUnlocks()
     {
-        SaveData_Challenge challengeData = SaveDataController.LoadChallengeData();
+        SaveData_Challenge challengeData = OldSaveData.OldSaveDataLoader.LoadOldChallengeData();
         this.challengeMapUnlocks = challengeData.challengeUnlocks;
     }
 

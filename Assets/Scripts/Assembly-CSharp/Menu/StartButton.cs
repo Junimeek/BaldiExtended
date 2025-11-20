@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using UnityEngine;
-using UnityEngine.UI;
-//using UnityEditor.MPE;
+﻿using UnityEngine;
 
 public class StartButton : MonoBehaviour
 {

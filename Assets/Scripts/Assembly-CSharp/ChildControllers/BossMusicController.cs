@@ -23,38 +23,9 @@ public class BossMusicController : MonoBehaviour
             this.audioDevice1.loop = false;
             this.audioDevice2.loop = false;
         }
-
-        /*
-        if (Input.GetKeyDown(KeyCode.M))
-        {
-            if (this.newStage == 0)
-                StartCoroutine(this.SongRoutine());
-            else if (this.newStage == 1)
-                this.earlyLoop = false;
-            this.newStage++;
-        }
-        */
     }
 
-    private IEnumerator SongRoutine()
-    {
-        this.songPlayer.Tempo = 0.82f;
-        this.songPlayer.Play();
-
-        while (!this.songPlayer.IsReady)
-            yield return null;
-        
-        while (this.earlyLoop)
-        {
-            if (this.songPlayer.Ticks > 4600)
-                this.songPlayer.Seek(0);
-            yield return null;
-        }
-
-        this.songPlayer.Tempo = 0.85f;
-    }
-
-    private void LateUpdate()
+    void LateUpdate()
     {
         if (!this.audioDevice1.isPlaying && !this.audioDevice2.isPlaying && this.audioQueue.Length > 1)
             this.AdvanceQueue();
@@ -79,7 +50,7 @@ public class BossMusicController : MonoBehaviour
         this.StartCoroutine(this.EndLoopStart(nextMeasure));
     }
 
-    private IEnumerator EndLoopStart(int nextMeasure)
+    IEnumerator EndLoopStart(int nextMeasure)
     {
         this.QueueClips(this.playlist[1]);
         this.QueueClips(this.playlist[2]);
@@ -91,7 +62,7 @@ public class BossMusicController : MonoBehaviour
         this.metronome.StopMetronome();
     }
 
-    private void AdvanceQueue()
+    void AdvanceQueue()
     {
         for (int i = 0; i < this.audioQueue.Length; i++)
         {
@@ -136,7 +107,6 @@ public class BossMusicController : MonoBehaviour
     [SerializeField] private int curGameStage;
     [SerializeField] private int curAudioStage;
     [SerializeField] private MetronomeScript metronome;
-    [SerializeField] private FluidMidi.SongPlayer songPlayer;
     [SerializeField] private bool earlyLoop;
     [SerializeField] private int newStage;
 }

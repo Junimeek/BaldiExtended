@@ -1,3 +1,8 @@
+### v0.5.2 ###
+Internal Changes:
+- Removed Newtonsoft JSON and Fluid MIDI Player
+
+
 ### v0.5.1 ###
 The original plan for this update was to finally implement achievements, but the process of adding them has just been taking way too long, and in the wake of the Unity security vulnerability, I figured I needed to push out an actual new version.
 
