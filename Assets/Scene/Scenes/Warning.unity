@@ -300,7 +300,6 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.37311918, g: 0.3807398, b: 0.35872716, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!124 &22
 Behaviour:
@@ -403,6 +402,7 @@ Canvas:
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
   m_AdditionalShaderChannelsFlag: 25
   m_SortingLayerID: 0
   m_SortingOrder: 0
@@ -864,7 +864,7 @@ MonoBehaviour:
 
 
     Baldi''s Extended Schoolhouse is free and
-    open source software that is derived from a decompile by Jumpman25 and porkypowers
+    open source software that is derived from a decompile by Jumpman25 and PSPLeafFox
     on itch.io.
 
 

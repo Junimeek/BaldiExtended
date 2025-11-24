@@ -52,7 +52,7 @@ namespace UpgradeSystem
             else
                 this.curVersion = this.stableBuild;
 
-            StartCoroutine(this.CheckForUpdates());
+            // StartCoroutine(this.CheckForUpdates());
         }
 
         private IEnumerator CheckForUpdates()

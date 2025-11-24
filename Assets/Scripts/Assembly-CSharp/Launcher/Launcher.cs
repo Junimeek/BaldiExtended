@@ -24,7 +24,6 @@ public class Launcher : MonoBehaviour
         this.upgradeCanvas_End.SetActive(false);
         this.errorCanvas.SetActive(false);
 
-        this.isInterrupted = CheckForOldSaveData();
         this.StartCoroutine(this.WaitForStart());
 
         if (Application.platform == RuntimePlatform.WindowsEditor || Application.platform == RuntimePlatform.LinuxEditor)
@@ -40,178 +39,6 @@ public class Launcher : MonoBehaviour
             this.versionText.text += "Beta v" + this.updateScript.stableBuild;
 
         this.savePath = Application.persistentDataPath + "/BaldiData/";
-    }
-
-    public void SaveFile()
-    {
-        int saveID = 1;
-        string jsonData = JsonUtility.ToJson(dataContainer, true);
-        string path = Application.persistentDataPath + "/BaldiData/";
-        
-        if (enableJsonEncryption)
-            path += "baldidata" + saveID + ".sav";
-        else
-            path += "baldidata" + saveID + ".json";
-
-        using (StreamWriter sw = File.CreateText(path))
-        {
-            if (enableJsonEncryption)
-            {
-                sw.WriteLine(SaveEncryption.EncryptSaveFile(jsonData));
-            }
-            else
-            {
-                sw.WriteLine(jsonData);
-            }
-            sw.Close();
-        }
-    }
-
-    public void LoadFile()
-    {
-        string jsonData = ReadJson();
-        dataContainer.SetData(jsonData);
-    }
-
-    string ReadJson()
-    {
-        int saveID = 1;
-        string loadedBinaryData = "";
-        string loadedJsonData = "";
-        string path = UnityEngine.Application.persistentDataPath + "/BaldiData/";
-
-        if (enableJsonEncryption)
-            path += "baldidata" + saveID + ".sav";
-        else
-            path += "baldidata" + saveID + ".json";
-
-        using (StreamReader sr = File.OpenText(path))
-        {
-            string s = "";
-            while ((s = sr.ReadLine()) != null)
-            {
-                loadedBinaryData += s;
-            }
-            sr.Close();
-
-            if (enableJsonEncryption)
-            {
-                loadedJsonData = SaveEncryption.DecryptSaveFile(loadedBinaryData);
-                UnityEngine.Debug.Log(loadedBinaryData);
-                UnityEngine.Debug.Log(loadedJsonData);
-            }
-            else
-            {
-                loadedJsonData = loadedBinaryData;
-                UnityEngine.Debug.Log(loadedJsonData);
-            }
-        }
-        
-        return loadedJsonData;
-    }
-
-    public void ConvertFile()
-    {
-        SaveData_Story oldStoryData = OldSaveDataLoader.LoadOldStoryData();
-        SaveData_Endless oldEndlessData = OldSaveDataLoader.LoadOldEndlessData();
-        SaveData_Challenge oldChallengeData = OldSaveDataLoader.LoadOldChallengeData();
-        ProgressionData oldProgressionData = OldSaveDataLoader.LoadOldProgressionData();
-
-        int itemCount = 18;
-        int mapCount = 5;
-
-        int saveFileVersion = 2;
-        int[] gameVersion = new int[] {
-            0, 6, 0
-        };
-        bool[] challengeUnlocks = oldProgressionData.mapUnlocks;
-        int[] items_classic = oldStoryData.itemsUsed_Classic;
-        int[] items_classicExtended = oldStoryData.itemsUsed_ClassicExtended;
-        int[] items_juniperHills = oldStoryData.itemsUsed_JuniperHills;
-        int[] items_classicDark = oldChallengeData.itemsUsed_NullStyle;
-        int[] items_mitakihara = new int[itemCount];
-        float[] bestTimes = oldStoryData.bestTime;
-        int[] totalDetentions = oldStoryData.totalDetentions;
-        int[] endlessNotebooks = oldEndlessData.notebooks;
-
-        Array.Resize(ref items_classic, itemCount);
-        Array.Resize(ref items_classicExtended, itemCount);
-        Array.Resize(ref items_juniperHills, itemCount);
-        Array.Resize(ref items_classicDark, itemCount);
-        Array.Resize(ref totalDetentions, mapCount);
-        Array.Resize(ref bestTimes, mapCount);
-        Array.Resize(ref endlessNotebooks, mapCount);
-        
-        for (int i = 0; i < itemCount; i++)
-        {
-            UnityEngine.Debug.LogWarning(items_classicDark[i]);
-        }
-
-        for (int i = 0; i < itemCount; i++)
-        {
-            items_classic[i] += oldEndlessData.itemsUsed_Classic[i];
-            items_classicExtended[i] += oldEndlessData.itemsUsed_ClassicExtended[i];
-            items_juniperHills[i] += oldEndlessData.itemsUsed_JuniperHills[i];
-        }
-
-        for (int i = 0; i < mapCount; i++)
-        {
-            try
-            {
-                totalDetentions[i] += oldEndlessData.totalDetentions[i];
-            }
-            catch
-            {
-                totalDetentions[i] = 0;
-            }
-        }
-
-        bestTimes[3] = oldChallengeData.bestTime[0];
-
-        dataContainer.saveFileVersion = saveFileVersion;
-        dataContainer.gameVersion = gameVersion;
-        dataContainer.challengeUnlocks = challengeUnlocks;
-        dataContainer.items_classic = items_classic;
-        dataContainer.items_classicExtended = items_classicExtended;
-        dataContainer.items_juniperHills = items_juniperHills;
-        dataContainer.items_classicDark = items_classicDark;
-        dataContainer.items_mitakihara = items_mitakihara;
-        dataContainer.bestTimes = bestTimes;
-        dataContainer.totalDetentions = totalDetentions;
-        dataContainer.endlessNotebooks = endlessNotebooks;
-
-        SaveFile();
-        UnityEngine.Debug.Log("Conversion complete");
-    }
-
-    bool CheckForOldSaveData()
-    {
-        int triggeredChecks = 0;
-        string initialPath = Application.persistentDataPath + "/BaldiData/";
-        string[] curFile = {
-            "story.sav",
-            "endless.sav",
-            "challenge.sav",
-            "progression.sav"
-        };
-
-        for (int i = 0; i < 4; i++)
-        {
-            if (File.Exists(initialPath + curFile[i])) {
-                triggeredChecks++;
-            }
-            UnityEngine.Debug.Log("Completed check for " + curFile[i]);
-        }
-
-        UnityEngine.Debug.Log("Found " + triggeredChecks + " files.");
-
-        if (triggeredChecks != 0)
-        {
-            this.interruptionType = "NewSaveSystemUpgrade";
-            return true;
-        }
-        else
-            return false;
     }
 
     private void FileChecks()
@@ -308,6 +135,7 @@ public class Launcher : MonoBehaviour
         if (!isInterrupted)
         {
             this.launcherCanvas.SetActive(true);
+            this.bannerCanvas.SetActive(true);
             this.audioDevice.PlayOneShot(this.music);
             
             if (PlayerPrefs.HasKey("highbooks_Classic") || PlayerPrefs.HasKey("highbooks_ClassicExtended")
@@ -600,6 +428,7 @@ public class Launcher : MonoBehaviour
     [SerializeField] private GameObject launcherCanvas;
     [SerializeField] private GameObject logoCanvas;
     [SerializeField] private GameObject stopCanvas;
+    [SerializeField] GameObject bannerCanvas;
     [SerializeField] private GameObject saveNoticeCanvas;
     [SerializeField] private Animator saveHead;
     [SerializeField] private GameObject basicallyLogo;

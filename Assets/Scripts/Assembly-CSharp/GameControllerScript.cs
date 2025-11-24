@@ -2085,7 +2085,7 @@ public class GameControllerScript : MonoBehaviour
 	public TMP_Text itemText;
 	public Sprite[] pickup_itemSprites;
 	public Sprite[] pickup_itemMapSprites;
-	private string[] itemNames = new string[]
+	readonly string[] itemNames = new string[]
 	{
 		"Nothing",
 		"Energy flavored Zesty Bar",

@@ -2,29 +2,44 @@ namespace SaveDataEncryption
 {
     public static class SaveEncryption
     {
-        static string EncryptionAlgorithm(string data)
+        static byte[] EncryptData(string data)
         {
-            char xorKey = (char)5903;
-            string outputString = "";
-            int length = data.Length;
+            byte[] inputBytes = System.Text.Encoding.UTF8.GetBytes(data);
+            byte key = 39;
+            // char xorKey = (char)5903;
 
-            for (int i = 0; i < length; i++)
+            for (int i = 0; i < inputBytes.Length; i++)
             {
-                outputString += char.ToString((char)(data[i] ^ xorKey));
+                inputBytes[i] ^= key;
+            }
+            return inputBytes;
+        }
+
+        static string DecryptData(byte[] data)
+        {
+            byte[] inputBytes = data;
+            byte key = 39;
+
+            for (int i = 0; i < inputBytes.Length; i++)
+            {
+                inputBytes[i] ^= key;
             }
 
-            return outputString;
+            string decryptedString = System.Text.Encoding.UTF8.GetString(inputBytes);
+            return decryptedString;
         }
 
         public static string EncryptSaveFile(string data)
         {
-            string encryptedString = EncryptionAlgorithm(data);
-            return encryptedString;
+            byte[] encryptedData = EncryptData(data);
+            string dataAsBase64 = System.Convert.ToBase64String(encryptedData);
+            return dataAsBase64;
         }
 
         public static string DecryptSaveFile(string data)
         {
-            string decryptedString = EncryptionAlgorithm(data);
+            byte[] encryptedData = System.Convert.FromBase64String(data);
+            string decryptedString = DecryptData(encryptedData);
             return decryptedString;
         }
     }

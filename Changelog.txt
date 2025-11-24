@@ -1,6 +1,14 @@
 ### v0.5.2 ###
+Major Future Change:
+Beta 0.6 will change how save files work. When 0.6 is released, you will be prompted about the changes in the Launcher. Follow the instructions it gives you to update your save files before you update to 0.6.
+
+Misc Changes:
+- Reorganized the layout of the launcher
+- The new update message is now a banner at the top of the launcher menu that fetches update data from my website
+- Changed the credits in the launcher and in-game credits menu to reflect PSPLeafFox's username change
+
 Internal Changes:
-- Removed Newtonsoft JSON and Fluid MIDI Player
+- Removed Newtonsoft JSON, Fluid MIDI Player, and some unnecessary files that I left in in StreamingAssets
 
 
 ### v0.5.1 ###
