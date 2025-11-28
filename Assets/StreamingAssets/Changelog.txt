@@ -1,20 +1,47 @@
+### v0.5.2 ###
+Major Future Change:
+Beta 0.6 will change how save files work. When 0.6 is released, you will be prompted about the changes in the Launcher. Follow the instructions it gives you to update your save files before you update to 0.6.
+
+Misc Changes:
+- Reorganized the layout of the launcher
+- The new update message is now a banner at the top of the launcher menu that fetches update data from my website
+- Changed the credits in the launcher and in-game credits menu to reflect PSPLeafFox's username change
+-The Null boss fight now has a health bar
+
+Bug Fixes:
+- Fixed the flashlight not working at all
+- Fixed the Crystal Zesty Bar not playing a sound when eating one
+- Fixed an issue where projectiles in the Classic Dark challenge kept spawning on top of eachother
+
+Internal Changes:
+- Removed Newtonsoft JSON, Fluid MIDI Player, and some unnecessary files that I left in in StreamingAssets
+
+
 ### v0.5.1 ###
+The original plan for this update was to finally implement achievements, but the process of adding them has just been taking way too long, and in the wake of the Unity security vulnerability, I figured I needed to push out an actual new version.
+
 Gameplay Changes:
-- The addition/subtraction problems when Difficult Math is enabled are now three digits
+- The addition/subtraction problems when Difficult Math is enabled now have three digits
+- You will now automatically equip a flashlight during the finale to improve navigation
 
 Other Changes:
 - The notebook count display from BB+ has been added to this mod
 - Items and money will now play a sound when being picked up
+- You can now see the center UI icon during the Null bossfight
+- Removed the bus that was in the Classic Dark map. seriously why was it even there
+- Added a few new posters
+- Removed a few posters for personal reasons
 
 Internal Changes:
 - Updated the Unity Engine to version 2021.3.45f2 to address a security vulnerability that all applications built in Unity Engine 2017.1-onwards contain. Unity Technologies has advised all developers to update their Unity version asap. You can read more about it here: https://discussions.unity.com/t/unity-platform-protection-take-immediate-action-to-protect-your-games-and-apps/1688031
-- Some variables are now set in the new MasterController gameobject. This was done to make modifying the scenes a little easier since some things would break when making changes to the UI.
+- Some variables are now set in the new MasterController gameobject. This was done to make modifying the scenes a little easier since some things would instantly break when making changes to the UI.
 
 Bug Fixes:
 - The random ambience noises are now properly filtered through the SFX volume control
 - The sprite bouncing effect on pickups (notebooks and items) is now consistent regardless of framerate
+- Fixed a bug where the school colors would suddenly flip to red when reaching the second-to-last exit in safe mode
 - Fixed an issue where some characters would not appear on the quick map
-- Fixed an issue where the school colors would suddenly flip to red when reaching the second-to-last exit in safe mode
+- Fixed an issue where you could see parts of the UI when looking out the window of the East Exit after defeating Null
 
 
 ### v0.5 ###

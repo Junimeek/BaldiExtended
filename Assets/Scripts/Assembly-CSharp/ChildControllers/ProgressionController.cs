@@ -18,7 +18,7 @@ public class ProgressionController : MonoBehaviour
 
     public void SaveProgressionData()
     {
-        // OldSaveDataLoader.SaveProgressionData(this);
+        OldSaveDataLoader.SaveOldProgressionData(this);
     }
 
     public ushort fileVersion;

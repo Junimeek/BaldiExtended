@@ -35,7 +35,6 @@ public class BaldiScript : MonoBehaviour
 		{
 			this.isNullMode = true;
 			this.agent.SetDestination(this.player.position);
-			this.baldicator.ChangeBaldicatorState("Pursuit");
 			this.ResetSpeechTimer();
 		}
 	}

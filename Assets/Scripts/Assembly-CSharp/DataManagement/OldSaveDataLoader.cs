@@ -45,5 +45,49 @@ namespace OldSaveData
             stream.Close();
             return data;
         }
+
+        public static void SaveOldStoryData(StatisticsController stats)
+        {
+            BinaryFormatter bf = new BinaryFormatter();
+            string path = Application.persistentDataPath + "/BaldiData/story.sav";
+            FileStream stream = File.Create(path);
+            SaveData_Story data = new SaveData_Story(stats);
+            data.fileVersion = 1;
+            bf.Serialize(stream, data);
+            stream.Close();
+        }
+
+        public static void SaveOldEndlessData(StatisticsController stats)
+        {
+            BinaryFormatter bf = new BinaryFormatter();
+            string path = Application.persistentDataPath + "/BaldiData/endless.sav";
+            FileStream stream = File.Create(path);
+            SaveData_Endless data = new SaveData_Endless(stats);
+            data.fileVersion = 1;
+            bf.Serialize(stream, data);
+            stream.Close();
+        }
+
+        public static void SaveOldChallengeData(StatisticsController stats)
+        {
+            BinaryFormatter bf = new BinaryFormatter();
+            string path = Application.persistentDataPath + "/BaldiData/challenge.sav";
+            FileStream stream = File.Create(path);
+            SaveData_Challenge data = new SaveData_Challenge(stats);
+            data.fileVersion = 1;
+            bf.Serialize(stream, data);
+            stream.Close();
+        }
+
+        public static void SaveOldProgressionData(ProgressionController progression)
+        {
+            BinaryFormatter bf = new BinaryFormatter();
+            string path = Application.persistentDataPath + "/BaldiData/progression.sav";
+            FileStream stream = File.Create(path);
+            ProgressionData data = new ProgressionData(progression);
+            data.fileVersion = 1;
+            bf.Serialize(stream, data);
+            stream.Close();
+        }
     }
 }

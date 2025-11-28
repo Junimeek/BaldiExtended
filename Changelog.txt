@@ -6,6 +6,12 @@ Misc Changes:
 - Reorganized the layout of the launcher
 - The new update message is now a banner at the top of the launcher menu that fetches update data from my website
 - Changed the credits in the launcher and in-game credits menu to reflect PSPLeafFox's username change
+-The Null boss fight now has a health bar
+
+Bug Fixes:
+- Fixed the flashlight not working at all
+- Fixed the Crystal Zesty Bar not playing a sound when eating one
+- Fixed an issue where projectiles in the Classic Dark challenge kept spawning on top of eachother
 
 Internal Changes:
 - Removed Newtonsoft JSON, Fluid MIDI Player, and some unnecessary files that I left in in StreamingAssets

@@ -53,7 +53,6 @@ public class NullBoss : MonoBehaviour
             {
                 this.musicController.EndInitialLoop(this.metronome.curMeasure + 1);
 
-                this.isFightStarted = true;
                 this.audioDevice.loop = false;
                 this.audioDevice.Stop();
                 this.audioDevice.clip = this.pain;
@@ -78,18 +77,27 @@ public class NullBoss : MonoBehaviour
             yield return null;
         }
         
+        this.isFightStarted = true;
         this.sprite.sprite = this.normalSprite;
         this.sprite.color = UnityEngine.Color.white;
         this.audioDevice.clip = this.bossClip_start;
         this.audioDevice.Play();
 
-        float remTime = 10.5f;
+        while (this.audioDevice.isPlaying)
+            yield return null;
+        
+        this.audioDevice.clip = this.bossClip_startYell;
+        this.audioDevice.Play();
+        this.healthBar.InitializeHealthBar();
+
+        float remTime = 2.6f;
         while (remTime > 0f)
         {
             remTime -= Time.deltaTime;
             yield return null;
         }
 
+        this.gc.InitializeProjectileArrays();
         this.gc.CreateProjectile(4);
         this.allowMovement = true;
         this.playerScript.isInvincible = false;
@@ -119,6 +127,7 @@ public class NullBoss : MonoBehaviour
         this.audioDevice.Play();
         this.allowMovement = false;
         this.sprite.sprite = this.grayscaleSprite;
+        this.healthBar.DecreaseHealthBar();
 
         while (this.audioDevice.isPlaying)
         {
@@ -183,6 +192,7 @@ public class NullBoss : MonoBehaviour
         this.audioDevice.Play();
         this.playerScript.IncreaseFightSpeed(0);
         this.allowMovement = false;
+        this.healthBar.HideHealthBar();
 
         ProgressionController progressionController = FindObjectOfType<ProgressionController>();
         progressionController.mapUnlocks[0] = true;
@@ -233,6 +243,7 @@ public class NullBoss : MonoBehaviour
     [SerializeField] private Transform player;
     [SerializeField] private PlayerScript playerScript;
     [SerializeField] private GameControllerScript gc;
+    [SerializeField] BossHealthBar healthBar;
     [SerializeField] private NavMeshAgent agent;
     [SerializeField] private AudioSource audioDevice;
     [SerializeField] private BossMusicController musicController;
@@ -242,7 +253,7 @@ public class NullBoss : MonoBehaviour
     [SerializeField] private Sprite grayscaleSprite;
 
     [Header("Null State")]
-    [SerializeField] private bool isFightStarted;
+    public bool isFightStarted;
     [SerializeField] private bool allowMovement;
     public byte hits;
     [SerializeField] private bool goCrazy;
@@ -252,6 +263,7 @@ public class NullBoss : MonoBehaviour
     [SerializeField] private AudioClip introClip_start;
     [SerializeField] private AudioClip introClip_loop;
     [SerializeField] private AudioClip bossClip_start;
+    [SerializeField] AudioClip bossClip_startYell;
     [SerializeField] private AudioClip pain;
     [SerializeField] private AudioClip endClip_null;
     [SerializeField] private AudioClip endClip_bg;

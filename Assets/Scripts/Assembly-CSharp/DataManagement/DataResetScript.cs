@@ -64,6 +64,16 @@ public class DataResetScript : MonoBehaviour
             case 2:
                 FindObjectOfType<SettingsContainer>().ResetSettings();
                 break;
+            case 21:
+                OldSaveDataLoader.SaveOldStoryData(null);
+                break;
+            case 22:
+                OldSaveDataLoader.SaveOldEndlessData(null);
+                break;
+            case 23:
+                OldSaveDataLoader.SaveOldChallengeData(null);
+                OldSaveDataLoader.SaveOldProgressionData(null);
+                break;
             case 99:
                 string path = Application.persistentDataPath;
                 PlayerPrefs.SetInt("saveNoticeSeen", 0);

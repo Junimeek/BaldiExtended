@@ -47,7 +47,7 @@ public class StatisticsController : MonoBehaviour
         if (this.finalSeconds < this.data_bestTime[this.mapID])
             this.data_bestTime[this.mapID] = this.finalSeconds;
         
-        // OldSaveDataController.SaveStoryData(this);
+        OldSaveDataLoader.SaveOldStoryData(this);
 
         SaveHead saveHead = FindObjectOfType<SaveHead>();
         if (saveHead != null)
@@ -193,20 +193,18 @@ public class StatisticsController : MonoBehaviour
             }
         }
 
-        /*
         switch (this.gc.mode)
         {
             case "story":
-                OldSaveDataController.SaveStoryData(this);
+                OldSaveDataLoader.SaveOldStoryData(this);
                 break;
             case "endless":
-                OldSaveDataController.SaveEndlessData(this);
+                OldSaveDataLoader.SaveOldEndlessData(this);
                 break;
             case "challenge":
-                OldSaveDataController.SaveChallengeData(this);
+                OldSaveDataLoader.SaveOldChallengeData(this);
                 break;
         }
-        */
 
         SaveHead saveHead = FindObjectOfType<SaveHead>();
         if (saveHead != null)
