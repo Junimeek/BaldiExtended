@@ -15,8 +15,6 @@ public class GameControllerScript : MonoBehaviour
 
 		this.sceneLoader = this.childScripts[0].GetComponent<DebugSceneLoader>();
 		this.stats = this.childScripts[1].GetComponent<StatisticsController>();
-
-		this.disableSongInterruption = false;
 	}
 
 	private void Start()
@@ -94,7 +92,7 @@ public class GameControllerScript : MonoBehaviour
 		this.speedrunSeconds = 0f;
 
 		if (this.modeType != "nullStyle")
-			this.MusicPlayer(1, 1); //Play the school music
+			this.MusicPlayer(1); //Play the school music
 
 		this.UpdateNotebookCount(); //Update the notebook count
 		this.UpdateDollarAmount(0f);
@@ -322,14 +320,14 @@ public class GameControllerScript : MonoBehaviour
 
 			if (!this.player.isSecret)
 			{
-				this.MusicPlayer(0,0);
+				this.MusicPlayer(0);
 				this.endlessMusic.Stop();
 			}
 
 			if (!this.player.isSecret && !this.isScareStarted)
 			{
 				if (this.modeType == "nullStyle")
-					this.StartCoroutine(this.NullKill());
+					challengeController.EndChallengeGame(1);
 				
 				if (this.mode != "endless")
 					this.stats.SaveAllData(null);
@@ -441,23 +439,9 @@ public class GameControllerScript : MonoBehaviour
 			this.CheckRaycast();
 	}
 
+	/*
 	private IEnumerator NullKill()
 	{
-		if (this.isDynamicColor)
-			RenderSettings.ambientLight = Color.black;
-		
-		if (this.baldiScrpt.isActiveAndEnabled)
-			this.baldiScrpt.NullOffset();
-		else if (this.nullBoss.GetComponent<NullBoss>().isActiveAndEnabled)
-		{
-			Transform funnyNullSprite = this.nullBoss.transform.Find("Sprite");
-			Vector3 curPosition = funnyNullSprite.transform.position;
-			funnyNullSprite.position = new Vector3(curPosition.x, curPosition.y - 0.5f, curPosition.z);
-		}
-			
-		this.isDynamicColor = false;
-		RenderSettings.ambientIntensity = 0f;
-
 		float remTime = 10f;
 
 		while (remTime > 6f)
@@ -517,6 +501,7 @@ public class GameControllerScript : MonoBehaviour
 			yield return null;
 		}
 	}
+	
 
 	private UnityEngine.Color RandomColor()
 	{
@@ -526,6 +511,7 @@ public class GameControllerScript : MonoBehaviour
 
 		return new Color(r, g, b);
 	}
+	*/
 
 	public void CompleteGame()
 	{
@@ -716,9 +702,13 @@ public class GameControllerScript : MonoBehaviour
 
 		if (this.notebooks == daFinalBookCount && this.mode != "endless")
 		{
-			this.exitCountGroup.SetActive(true);
-			this.notebookObject.SetActive(false);
-			this.ActivateFinaleMode();
+			if (this.mode == "stoty")
+            {
+                this.exitCountGroup.SetActive(true);
+				this.notebookObject.SetActive(false);
+            }
+			else if (this.mode == "challenge")
+				this.ActivateFinaleMode();
 		}
 	}
 
@@ -824,7 +814,7 @@ public class GameControllerScript : MonoBehaviour
         this.bully.SetActive(true); //Turns on Bully
         this.firstPrize.SetActive(true); //Turns on First-Prize
 		//this.TestEnemy.SetActive(true); //Turns on Test-Enemy
-		MusicPlayer(0,0);
+		MusicPlayer(0);
 		this.mathMusicScript.StopSong();
 		this.audioDevice.PlayOneShot(this.aud_Hang);
 	}
@@ -858,153 +848,34 @@ public class GameControllerScript : MonoBehaviour
 		this.playerFlashlights[1].intensity = lightChange;
     }
 
-	public void ActivateBossFight(Vector3 nullPos)
-	{
-		this.isDynamicColor = false;
-		this.audioDevice.Stop();
-		this.nullBoss.SetActive(true);
+	public void TemporaryBossActivation()
+    {
+        this.audioDevice.Stop();
 		this.audioDevice.PlayOneShot(this.aud_BigClose, 0.6f);
-		this.nullBoss.GetComponent<NullBoss>().WarpToExit(nullPos);
-		RenderSettings.ambientLight = new Color(1f, 1f, 1f);
 		this.ToggleFlashlight(0f);
+		this.mapScript.DisableAllItems();
+    }
 
+	public void SwitchToMinimalUI()
+    {
 		this.minimalUI.SetActive(true);
-		this.speedrunText = this.minimalSpeedrunText;
+        this.speedrunText = this.minimalSpeedrunText;
 		this.fpsCounter = this.minimalFpsCounter;
 		handIconScript.icon = this.minimalCenterIcon;
 		this.speedrunText.color = Color.black;
 		this.fpsCounter.color = Color.black;
 		this.mainHud.renderMode = RenderMode.WorldSpace;
 
-		this.mapScript.DisableAllItems();
-
-		this.createdProjectiles = 3;
-
 		this.dollarAmount = 0f;
 		for (int i = 0; i < this.totalSlotCount; i++)
 			this.item[i] = 0;
-	}
-
-	public void InitializeProjectileArrays()
-    {
-        this.projectilesInPlay = new GameObject[6];
     }
 
-	public void CreateProjectile(byte number)
-	{
-		this.createdProjectiles += number;
-		Vector3 newProjectileLocation = Vector3.zero;
-
-		for (int i = this.projectilesInPlay.Length - number; i < this.projectilesInPlay.Length; i++)
-        {
-			newProjectileLocation = GetNewProjectileLocation();
-			GameObject projectileToPlace = Instantiate(this.projectile, newProjectileLocation, Quaternion.identity);
-            SetProjectileInFirstAvailableSlot(projectileToPlace);
-        }
-	}
-
-	Vector3 GetNewProjectileLocation()
+	public Vector3 GetNewWanderLocation(string wanderType)
     {
-        Vector3 newLocation = this.wanderer.NewTarget("Projectile");	
-		int checkStep = 0;
-		switch(checkStep)
-        {
-            case 0:
-				if (IsProjectileOverlap(newLocation))
-					goto case 1;
-				else
-					return newLocation;
-			case 1:
-				newLocation = this.wanderer.NewTarget("Projectile");
-				goto case 0;
-        }
-		return newLocation; // this is just here because the compiler throws an error without it
+        Vector3 newLocation = this.wanderer.NewTarget(wanderType);
+		return newLocation;
     }
-
-	bool IsProjectileOverlap(Vector3 locationToCheck)
-    {
-        for (int i = 0; i < projectilesInPlay.Length; i++)
-        {
-			if (projectilesInPlay[i] == null)
-				continue;
-            else if (projectilesInPlay[i].transform.position == locationToCheck)
-				return true;
-			else
-				continue;
-        }
-		return false;
-    }
-
-	void SetProjectileInFirstAvailableSlot(GameObject projectileToPlace)
-    {
-        for (int i = 0; i < projectilesInPlay.Length; i++)
-        {
-            if (projectilesInPlay[i] == null)
-            {
-                projectilesInPlay[i] = projectileToPlace;
-				break;
-            }
-        }
-    }
-
-	public void CheckProjectileCount(NullBoss nullBoss)
-	{
-		byte hits = nullBoss.hits;
-		byte Hitclip()
-		{
-			if (this.createdProjectiles == 0 && nullBoss.isFightStarted)
-				return 4;
-			else
-				return 0;
-		}
-		byte[] allowedProjectiles = {
-			1, Hitclip(), 3, 3, 3, 3, 3, 3, 2, 1, 0
-		};
-
-		if (this.createdProjectiles < allowedProjectiles[hits])
-			this.CreateProjectile(1);
-	}
-
-	public void DeleteProjectiles()
-	{
-		foreach (GameObject i in this.projectilesInPlay)
-			Destroy(i);
-		
-		Array.Resize(ref this.projectilesInPlay, 0);
-		this.createdProjectiles = 0;
-	}
-
-	public void DeactivateBossFight()
-	{
-		this.ModifyExits("raise");
-	}
-
-	public IEnumerator ToggleWindowBlockers()
-	{
-		this.baldiScrpt.allowWindowBreaking = true;
-
-		for (int i = 0; i < this.windowBlockers.Length; i++)
-			this.windowBlockers[i].SetActive(false);
-
-		while (this.baldiScrpt.currentPriority > 1)
-			yield return null;
-		
-		for (int i = 0; i < this.windowBlockers.Length; i++)
-			this.windowBlockers[i].SetActive(true);
-		
-		this.baldiScrpt.allowWindowBreaking = false;
-	}
-
-	public void EnableAllWindowBlockers()
-	{
-		StopCoroutine(this.ToggleWindowBlockers());
-
-		this.baldiScrpt.currentPriority = 0;
-		this.baldiScrpt.allowWindowBreaking = false;
-
-		for (int i = 0; i < this.windowBlockers.Length; i++)
-			this.windowBlockers[i].SetActive(true);
-	}
 
 	public void EndSafeGame()
 	{
@@ -1023,7 +894,7 @@ public class GameControllerScript : MonoBehaviour
 			this.escapeMusicStage = 3;
 	}
 
-	private void ModifyExits(string mode)
+	public void ModifyExits(string mode)
 	{
 		switch(mode)
 		{
@@ -1040,7 +911,8 @@ public class GameControllerScript : MonoBehaviour
 
 	public void GetAngry(float value) //Make Baldi get angry
 	{
-		if (!this.spoopMode) this.ActivateSpoopMode();
+		if (!this.spoopMode)
+			this.ActivateSpoopMode();
 			
 		this.baldiScrpt.GetAngry(value);
 	}
@@ -1053,37 +925,12 @@ public class GameControllerScript : MonoBehaviour
 		this.tutorBaldi.Stop(); //Make tutor Baldi stop talking
 		if (!this.spoopMode || this.isSafeMode) //If the player hasn't gotten a question wrong
 		{
-			MusicPlayer(0,0); //Start playing the learn music
+			MusicPlayer(0); //Start playing the learn music
 			this.mathMusicScript.TheAwakening();
 		}
-		else if (this.spoopMode)
+		else if (this.spoopMode && audioManager != null)
 		{
-			if (this.isAdditionalMusic)
-			{
-				if (notebooks > 2)
-				{
-					if (audioManager != null)
-						audioManager.SetVolume(1);
-					
-					if (!this.disableSongInterruption)
-					{
-						if (!(this.mode == "endless"))
-						{
-							MusicPlayer(0,0);
-							MusicPlayer(2,2);
-						}
-						else if (this.notebooks <= this.daFinalBookCount && !this.isEndlessSong)
-						{
-							MusicPlayer(0,0);
-							MusicPlayer(2,2);
-						}
-					}
-				}
-				else if (this.notebooks == 1 && this.audioManager != null)
-					audioManager.SetVolume(0);
-			}
-			else if (this.audioManager != null)
-				this.audioManager.SetVolume(0);
+			this.audioManager.SetVolume(1);
 		}
 	}
 
@@ -1103,40 +950,30 @@ public class GameControllerScript : MonoBehaviour
 
 		if (!this.spoopMode) //If it isn't spoop mode, play the school music
 		{
-			MusicPlayer(0, 0);
+			MusicPlayer(0);
 
 			if (!this.isParty)
-				MusicPlayer(1, 1);
+				MusicPlayer(1);
 			else
-				MusicPlayer(4, 0);
+				MusicPlayer(3);
 		}
 
 		if (this.isSafeMode && this.notebooks == 2)
 			ActivateSafeMode();
 
-		if (this.spoopMode && notebooks >= 2) // my music stuff
+		if (this.spoopMode) // my music stuff
 		{
-			if (this.notebooks >= 2 && this.notebooks < this.daFinalBookCount && this.disableSongInterruption)
-			{
-				MusicPlayer(3,0);
-				return;
-			}
-			else if (!this.isEndlessSong) 
-				MusicPlayer(0,0);
-
 			if (audioManager != null)
 				audioManager.SetVolume(0);
 			
 			if (this.notebooks < this.daFinalBookCount)
 			{
 				if (this.isParty)
-					MusicPlayer(4,0);
+					MusicPlayer(3);
 				else
-					MusicPlayer(1, this.notebooks);
+					MusicPlayer(1);
 			}
 		}
-		else if (this.spoopMode && this.notebooks == 1)
-			MusicPlayer(2,2);
 
 		if (this.notebooks == 1 && reward) // If this is the players first notebook and they didn't get any questions wrong, reward them with a quarter
 		{
@@ -1146,6 +983,7 @@ public class GameControllerScript : MonoBehaviour
 		else if (this.notebooks >= this.daFinalBookCount && this.mode == "story") // Plays the all 7 notebook sound
 		{
 			this.spoopLearn.Stop();
+			this.ActivateFinaleMode();
 
 			if (!this.isSafeMode)
 				this.audioDevice.PlayOneShot(this.aud_AllNotebooks, 0.8f);
@@ -1156,17 +994,6 @@ public class GameControllerScript : MonoBehaviour
 		{
 			if (this.baldiScrpt.isActiveAndEnabled)
 				this.baldiScrpt.endless = true;
-
-			if (this.spoopLearn.isPlaying)
-				this.spoopLearn.Stop();
-
-			if (this.isAdditionalMusic && !this.isEndlessSong)
-			{
-				if (!this.isParty && !this.isSafeMode)
-					this.endlessMusic.Play();
-
-				this.isEndlessSong = true;
-			}
 		}
 	}
 
@@ -1378,11 +1205,11 @@ public class GameControllerScript : MonoBehaviour
 					{
 						this.partyLocation = this.movingPartyLocation;
 						this.wanderer.partyPoints = this.wanderer.movingPartyPoints;
-						this.MusicPlayer(0,0);
+						this.MusicPlayer(0);
 						Instantiate(this.party, this.partyLocation.position, this.cameraTransform.rotation);
 						this.audioDevice.PlayOneShot(this.aud_BalloonPop);
 						this.ResetItem(15);
-						this.MusicPlayer(4,0);
+						this.MusicPlayer(3);
 						this.StartCoroutine(PlayPartyMusic());
 					}
 					else
@@ -1768,44 +1595,95 @@ public class GameControllerScript : MonoBehaviour
 		Camera.main.GetComponent<CameraScript>().offset = new Vector3(0f, -1f, 0f);
 	}
 
-	// 0 = Stop All, 1 = school, 2 = learn, 3 = uninterrupted school, 4 = party
-	public void MusicPlayer(int songType, int SongId)
+	// 0 = Stop All, 1 = schoolhouse, 2 = learn, 3 = party
+	public void MusicPlayer(int songType)
 	{
-		if (songType == 0) // stop all
-		{
-			this.schoolMusic.Stop();
-			this.learnMusic.Stop();
-			this.spoopLearn.Stop();
-			this.partyMusic.Stop();
-			this.escapeDevice.Stop();
-			for (int i = 0; i < this.daFinalBookCount - 2; i++)
-				this.schoolhouseTroublePlaylist[i].Stop();
-		}
-		else if (songType == 1 && !this.finaleMode) // schoolhouse
-		{
-			if (SongId == 1) this.schoolMusic.Play();
-			else if (SongId >= 2 && this.isAdditionalMusic && this.mode != "endless")
-			{
-				if (this.notebooks < this.daFinalBookCount)
-					this.schoolhouseTroublePlaylist[SongId - 2].Play();
-			}
-		}
-		else if (songType == 2) // math game
-		{
-			if (SongId == 1) this.learnMusic.Play();
-			else if (SongId == 2 && !this.disableSongInterruption && this.isAdditionalMusic)
-			{
-				this.spoopLearn.Play();
-			}
-		}
-		else if (songType == 3)
-		{
-			if (!this.schoolhouseTroublePlaylist[0].isPlaying && !this.schoolhouseTroublePlaylist[1].isPlaying)
-				StartCoroutine(UninterruptedMusic());
-		}
-		else if (songType == 4 && !this.partyMusic.isPlaying)
-			this.partyMusic.Play();
+		switch (songType)
+        {
+            case 0:
+				this.schoolMusic.Stop();
+				this.learnMusic.Stop();
+				this.partyMusic.Stop();
+				this.escapeDevice.Stop();
+				break;
+			case 1:
+				if (!this.spoopMode)
+					this.schoolMusic.Play();
+				else if (!this.isMusicStarted && this.isAdditionalMusic)
+					StartCoroutine(PlaylistRoutine());
+				else if (this.finaleMode)
+                {
+					this.schoolMusic.Stop();
+                    StartCoroutine(PlayEscapeMusic());
+                }
+				break;
+			case 2:
+				if (!this.spoopMode)
+					this.learnMusic.Play();
+				break;
+			case 3:
+				if (!this.partyMusic.isPlaying)
+					this.partyMusic.Play();
+				break;
+        }
 	}
+
+	IEnumerator PlaylistRoutine()
+    {
+		this.isMusicStarted = true;
+        int[] lastSongs = {
+            0, 0
+        };
+
+		switch (lastSongs[0])
+        {
+            case 0:
+				int nextSong = GetRandomSong(lastSongs[0], lastSongs[1]);
+				lastSongs[0] = lastSongs[1];
+				lastSongs[1] = nextSong;
+				Debug.LogWarning("Now playing: Song " + nextSong);
+				this.musicDevice.clip = this.backgroudMusicPlaylist[lastSongs[1]];
+				this.musicDevice.Play();
+				goto case 1;
+			case 1:
+				while (!this.isParty && !this.finaleMode && this.musicDevice.isPlaying)
+					yield return null;
+				if (this.finaleMode)
+                {
+					this.musicDevice.Stop();
+					break;
+                }
+				else if (this.isParty)
+					goto case 12;
+				else
+					goto case 0;
+			case 12: // Party Mode
+				MusicPlayer(3);
+				while (this.isParty)
+					yield return null;
+				if (!this.finaleMode)
+					goto case 0;
+				else
+					break;
+        }
+    }
+
+	int GetRandomSong(int song1, int song2)
+    {
+		int songID = 0;
+		if (song1 == song2)
+        {
+            songID = Mathf.FloorToInt(UnityEngine.Random.Range(0f, (float)backgroudMusicPlaylist.Length - 0.1f));
+			return songID;
+        }
+
+		while (songID == song1 || songID == song2)
+        {
+            songID = Mathf.FloorToInt(UnityEngine.Random.Range(0f, (float)backgroudMusicPlaylist.Length - 0.1f));
+			Debug.Log("Rerolled song: " + songID);
+        }
+		return songID;
+    }
 
 	private IEnumerator PlayEscapeMusic()
 	{
@@ -1872,7 +1750,7 @@ public class GameControllerScript : MonoBehaviour
 			this.remainingPartyTime = 84.65f;
 		else
 			this.remainingPartyTime = (-1.5f / this.daFinalBookCount * this.notebooks + 2f) * 60f;
-		MusicPlayer(4,0);
+		MusicPlayer(3);
 
 		while (this.remainingPartyTime > 0f)
 		{
@@ -1880,14 +1758,11 @@ public class GameControllerScript : MonoBehaviour
 			yield return null;
 		}
 
-		this.MusicPlayer(0,0);
+		this.MusicPlayer(0);
 		this.isParty = false;
 		this.DeactivateParty();
 		
-		if (this.spoopMode)
-			this.MusicPlayer(1,this.notebooks);
-		else if (this.isSafeMode)
-			this.MusicPlayer(1,1);
+		this.MusicPlayer(1);
 	}
 
 	private IEnumerator UninterruptedMusic()
@@ -2009,7 +1884,6 @@ public class GameControllerScript : MonoBehaviour
 	[HideInInspector] public Transform attendanceOffice;
 	[HideInInspector] public Vector3 detentionPlayerPos;
 	[HideInInspector] public Vector3 detentionPrincipalPos;
-	private bool disableSongInterruption;
 	[HideInInspector] public bool forceQuarterPickup;
 
 
@@ -2169,18 +2043,10 @@ public class GameControllerScript : MonoBehaviour
 	public bool isPrinceyTriggerShared;
 	public bool isPrinceyIgnore;
 	public float remainingDetentionTime;
-
-	[Header("Challenge Stuff")]
-	[SerializeField] private GameObject nullBoss;
-	public GameObject[] windowBlockers;
-	[SerializeField] private GameObject projectile;
-	public byte createdProjectiles;
-	public GameObject[] projectilesInPlay;
 	[SerializeField] GameObject minimalUI;
 	[SerializeField] TMP_Text minimalSpeedrunText;
 	[SerializeField] TMP_Text minimalFpsCounter;
 	[SerializeField] Image minimalCenterIcon;
-
 
 
 	[Header("SFX and Voices")]
@@ -2212,7 +2078,7 @@ public class GameControllerScript : MonoBehaviour
 
 	[Header("Music")]
 	[SerializeField] private bool isEndlessSong;
-	public AudioSource schoolMusic;
+	[SerializeField] AudioSource schoolMusic;
 	[SerializeField] private AudioSource escapeDevice;
 	public AudioClip[] escapeMusic;
 	public byte escapeMusicStage;
@@ -2223,11 +2089,15 @@ public class GameControllerScript : MonoBehaviour
 	public AudioClip LearnQ2;
 	public AudioClip LearnQ3;
 	public AudioSource partyMusic;
-	public AudioSource[] schoolhouseTroublePlaylist;
+	[SerializeField] AudioClip[] backgroudMusicPlaylist;
+	[SerializeField] AudioSource musicDevice;
+	[SerializeField] bool isMusicStarted;
+	[SerializeField] AudioSource[] schoolhouseTroublePlaylist;
 
 
 	[Header("Scripts")]
 	public GameObject[] childScripts;
+	[SerializeField] ChallengeController challengeController;
 	[HideInInspector] public StatisticsController stats;
 	private DebugSceneLoader sceneLoader;
 	[SerializeField] private MathMusicScript mathMusicScript;

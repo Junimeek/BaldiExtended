@@ -19,11 +19,11 @@ public class BossStartTrigger : MonoBehaviour
             else
             {
                 this.entrance.Lower();
-                this.gc.ActivateBossFight(this.position);
+                this.challengeController.ActivateNullBossFight(this.position);
 
-                this.gc.projectilesInPlay = new GameObject[3];
+                this.challengeController.projectilesInPlay = new GameObject[3];
                 for (int i = 0; i < this.points.Length; i++)
-                    this.gc.projectilesInPlay[i] = Instantiate(this.projectile, this.points[i].position, Quaternion.identity);
+                    this.challengeController.projectilesInPlay[i] = Instantiate(this.projectile, this.points[i].position, Quaternion.identity);
                 
                 Destroy(this.gameObject);
             }
@@ -32,6 +32,7 @@ public class BossStartTrigger : MonoBehaviour
 
     [SerializeField] private Vector3 position;
     [SerializeField] private GameControllerScript gc;
+    [SerializeField] ChallengeController challengeController;
     [SerializeField] private EntranceScript entrance;
     [SerializeField] private Transform[] points;
     [SerializeField] private GameObject projectile;

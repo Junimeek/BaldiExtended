@@ -8795,7 +8795,7 @@ MonoBehaviour:
   errorText: {fileID: 795948175}
   isNightly: 0
   stableBuild: 0.5.2
-  nightlyBuild: 25.48.2
+  nightlyBuild: 25.49.1
   curVersion: 
   stableURL: https://raw.githubusercontent.com/Junimeek/BaldiExtended/main/VersionStable.json
   nightlyURL: https://raw.githubusercontent.com/Junimeek/BaldiExtended/main/VersionNightly.json
@@ -17142,7 +17142,7 @@ Camera:
     width: 1
     height: 1
   near clip plane: 0.3
-  far clip plane: 1000
+  far clip plane: 10
   field of view: 60
   orthographic: 0
   orthographic size: 5

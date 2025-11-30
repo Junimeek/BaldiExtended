@@ -68,7 +68,7 @@ public class NullBoss : MonoBehaviour
     {  
         this.hits++;
         this.playerScript.IncreaseFightSpeed(1);
-        this.gc.DeleteProjectiles();
+        this.challengeController.DeleteProjectiles();
         this.sprite.sprite = this.grayscaleSprite;
 
         while (this.audioDevice.isPlaying)
@@ -97,8 +97,8 @@ public class NullBoss : MonoBehaviour
             yield return null;
         }
 
-        this.gc.InitializeProjectileArrays();
-        this.gc.CreateProjectile(4);
+        this.challengeController.InitializeProjectileArrays();
+        this.challengeController.CreateProjectile(4);
         this.allowMovement = true;
         this.playerScript.isInvincible = false;
         
@@ -118,7 +118,7 @@ public class NullBoss : MonoBehaviour
         if (this.hits == 10)
         {
             this.StartCoroutine(this.End());
-            this.gc.DeleteProjectiles();
+            this.challengeController.DeleteProjectiles();
             yield break;
         }
 
@@ -218,7 +218,7 @@ public class NullBoss : MonoBehaviour
             yield return null;
         }
         
-        this.gc.DeactivateBossFight();
+        this.challengeController.DeactivateBossFight();
         Destroy(base.gameObject);
     }
 
@@ -243,6 +243,7 @@ public class NullBoss : MonoBehaviour
     [SerializeField] private Transform player;
     [SerializeField] private PlayerScript playerScript;
     [SerializeField] private GameControllerScript gc;
+    [SerializeField] ChallengeController challengeController;
     [SerializeField] BossHealthBar healthBar;
     [SerializeField] private NavMeshAgent agent;
     [SerializeField] private AudioSource audioDevice;

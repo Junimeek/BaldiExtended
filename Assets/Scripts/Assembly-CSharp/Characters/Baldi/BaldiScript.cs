@@ -128,7 +128,7 @@ public class BaldiScript : MonoBehaviour
 	private void OnDisable()
 	{
 		if (this.isNullMode && !this.isDisabled)
-			this.gc.EnableAllWindowBlockers();
+			this.challengeController.EnableAllWindowBlockers();
 	}
 
 	private void FixedUpdate()
@@ -262,8 +262,8 @@ public class BaldiScript : MonoBehaviour
 
 		this.isAlarmClock = false;
 
-		if (!this.allowWindowBreaking && this.currentPriority > 1)
-			this.gc.StartCoroutine(this.gc.ToggleWindowBlockers());
+		if (!this.allowWindowBreaking && this.currentPriority > 1 && gc.mode == "challenge")
+			this.gc.StartCoroutine(this.challengeController.ToggleWindowBlockers());
 
 		if (priority >= this.currentPriority)
 		{
@@ -333,7 +333,7 @@ public class BaldiScript : MonoBehaviour
 	private IEnumerator FollowPlayer()
 	{
 		if (!this.allowWindowBreaking && this.isNullMode)
-			this.gc.StartCoroutine(this.gc.ToggleWindowBlockers());
+			this.gc.StartCoroutine(this.challengeController.ToggleWindowBlockers());
 
 		while (this.db && !this.isDisabled)
 		{
@@ -374,6 +374,7 @@ public class BaldiScript : MonoBehaviour
 	public bool isParty;
 
 	[Header("Null Modifications")]
+	[SerializeField] ChallengeController challengeController;
 	[SerializeField] private bool isNullMode;
 	public bool allowWindowBreaking;
 	[SerializeField] private AudioClip[] nullSpeech;

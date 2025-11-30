@@ -5,6 +5,7 @@ public class ProjectilePickupScript : MonoBehaviour
     private void Start()
     {
         this.gc = FindObjectOfType<GameControllerScript>();
+        this.challengeController = FindObjectOfType<ChallengeController>();
         this.playerScript = FindObjectOfType<PlayerScript>();
         this.nullBoss = FindObjectOfType<NullBoss>();
 
@@ -49,7 +50,7 @@ public class ProjectilePickupScript : MonoBehaviour
             this.playerScript.isProjectileGrabbed = false;
             this.lifetime = 3.1f;
             base.gameObject.name = "Projectile";
-            this.gc.createdProjectiles--;
+            this.challengeController.createdProjectiles--;
             //this.gc.StartCoroutine(this.gc.WaitForProjectile());
         }
         
@@ -76,20 +77,21 @@ public class ProjectilePickupScript : MonoBehaviour
 
     private void OnDestroy()
     {
-        this.gc.CheckProjectileCount(this.nullBoss);
+        this.challengeController.CheckProjectileCount(this.nullBoss);
     }
 
-    [SerializeField] private NullBoss nullBoss;
+    NullBoss nullBoss;
     [SerializeField] private GameObject[] gameObjects;
-    [SerializeField] private GameControllerScript gc;
-    [SerializeField] private PlayerScript playerScript;
-    [SerializeField] private bool isPickedUp;
-    [SerializeField] private bool isThrown;
-    [SerializeField] private float lifetime;
-    [SerializeField] private Rigidbody rb;
+    GameControllerScript gc;
+    ChallengeController challengeController;
+    PlayerScript playerScript;
+    bool isPickedUp;
+    bool isThrown;
+    float lifetime;
+    Rigidbody rb;
     [SerializeField] private SpriteRenderer mapIcon;
-    [SerializeField] private byte pickupID;
-    [SerializeField] private MeshRenderer meshRenderer;
+    byte pickupID;
+    MeshRenderer meshRenderer;
     [SerializeField] private Material transparent;
-    [SerializeField] private SpriteRenderer sprite;
+    SpriteRenderer sprite;
 }
