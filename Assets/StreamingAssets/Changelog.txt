@@ -1,20 +1,30 @@
 ### v0.5.2 ###
 Major Future Change:
-Beta 0.6 will change how save files work. When 0.6 is released, you will be prompted about the changes in the Launcher. Follow the instructions it gives you to update your save files before you update to 0.6.
+Beta 0.6 will change how save files work. When 0.6 is released, you will be prompted about the changes in the Launcher (note that an internet connection is required for this to work). Follow the instructions it gives you to update your save files before you update to 0.6.
+
+Gameplay Changes:
+- Gotta Sweep's hitbox is now disabled when using a Party Popper and while a party is active
+- Decreased the maximum number of projectiles available at the same time in the Null boss battle from 4 to 3
 
 Misc Changes:
 - Reorganized the layout of the launcher
 - The new update message is now a banner at the top of the launcher menu that fetches update data from my website
 - Changed the credits in the launcher and in-game credits menu to reflect PSPLeafFox's username change
+- The background music (ie, "Schoolhouse Trouble" and "Schoolhouse Escape (Free Run)") has now been replaced with a revolving ensemble of four songs
 -The Null boss fight now has a health bar
 
 Bug Fixes:
 - Fixed the flashlight not working at all
 - Fixed the Crystal Zesty Bar not playing a sound when eating one
+- Fixed a bug where using the Party Popper within 13 seconds of reaching the first exit would cause the background music to stop working
+- Fixed a bug where the second exit would not play a sound in Safe Mode
+- Fixed an issue where using the Party Popper would not stop the normal background music in endless mode
 - Fixed an issue where projectiles in the Classic Dark challenge kept spawning on top of eachother
+- Fixed a tiny issue where dancing Baldi's sprites were backwards
 
 Internal Changes:
 - Removed Newtonsoft JSON, Fluid MIDI Player, and some unnecessary files that I left in in StreamingAssets
+- Moved some of the scripts for Dark Mode to a separate ChallengeController script
 
 
 ### v0.5.1 ###

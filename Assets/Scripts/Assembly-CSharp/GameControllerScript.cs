@@ -92,7 +92,7 @@ public class GameControllerScript : MonoBehaviour
 		this.speedrunSeconds = 0f;
 
 		if (this.modeType != "nullStyle")
-			this.MusicPlayer(1); //Play the school music
+			StartCoroutine(this.MusicRoutine(0)); //Play the school music
 
 		this.UpdateNotebookCount(); //Update the notebook count
 		this.UpdateDollarAmount(0f);
@@ -439,80 +439,6 @@ public class GameControllerScript : MonoBehaviour
 			this.CheckRaycast();
 	}
 
-	/*
-	private IEnumerator NullKill()
-	{
-		float remTime = 10f;
-
-		while (remTime > 6f)
-		{
-			RenderSettings.ambientIntensity += Time.unscaledDeltaTime  / 7f;
-			RenderSettings.ambientLight += new Color(Time.unscaledDeltaTime / 8f, Time.unscaledDeltaTime  / 8f, Time.unscaledDeltaTime  / 8f);
-			remTime -= Time.unscaledDeltaTime;
-			yield return null;
-		}
-
-		RenderSettings.ambientLight = this.RandomColor();
-
-		while (remTime > 4f)
-		{
-			RenderSettings.ambientIntensity += Time.unscaledDeltaTime  / 7f;
-			RenderSettings.ambientLight += new Color(Time.unscaledDeltaTime / 4f, Time.unscaledDeltaTime  / 4f, Time.unscaledDeltaTime  / 3f);
-			remTime -= Time.unscaledDeltaTime;
-			yield return null;
-		}
-
-		RenderSettings.ambientLight = this.RandomColor();
-
-		while (remTime > 3f)
-		{
-			RenderSettings.ambientIntensity += Time.unscaledDeltaTime  / 7f;
-			RenderSettings.ambientLight += new Color(Time.unscaledDeltaTime / 4f, Time.unscaledDeltaTime  / 4f, Time.unscaledDeltaTime  / 3f);
-			remTime -= Time.unscaledDeltaTime;
-			yield return null;
-		}
-
-		RenderSettings.ambientLight = this.RandomColor();
-
-		while (remTime > 2f)
-		{
-			RenderSettings.ambientIntensity += Time.unscaledDeltaTime  / 7f;
-			RenderSettings.ambientLight += new Color(Time.unscaledDeltaTime / 4f, Time.unscaledDeltaTime  / 4f, Time.unscaledDeltaTime  / 3f);
-			remTime -= Time.unscaledDeltaTime;
-			yield return null;
-		}
-
-		RenderSettings.ambientLight = this.RandomColor();
-
-		while (remTime > 1f)
-		{
-			RenderSettings.ambientIntensity += Time.unscaledDeltaTime  / 7f;
-			RenderSettings.ambientLight += new Color(Time.unscaledDeltaTime / 4f, Time.unscaledDeltaTime  / 4f, Time.unscaledDeltaTime  / 3f);
-			remTime -= Time.unscaledDeltaTime;
-			yield return null;
-		}
-
-		RenderSettings.ambientLight = new Color(0.8f, 0f, 0f);
-
-		while (remTime > 0f)
-		{
-			RenderSettings.ambientIntensity += Time.unscaledDeltaTime  / 7f;
-			remTime -= Time.unscaledDeltaTime;
-			yield return null;
-		}
-	}
-	
-
-	private UnityEngine.Color RandomColor()
-	{
-		float r = UnityEngine.Random.Range(0f, 1f);
-		float g = UnityEngine.Random.Range(0f, 1f);
-		float b = UnityEngine.Random.Range(0f, 1f);
-
-		return new Color(r, g, b);
-	}
-	*/
-
 	public void CompleteGame()
 	{
 		DontDestroyOnLoad(this.stats.gameObject);
@@ -702,7 +628,7 @@ public class GameControllerScript : MonoBehaviour
 
 		if (this.notebooks == daFinalBookCount && this.mode != "endless")
 		{
-			if (this.mode == "stoty")
+			if (this.mode == "story")
             {
                 this.exitCountGroup.SetActive(true);
 				this.notebookObject.SetActive(false);
@@ -817,11 +743,13 @@ public class GameControllerScript : MonoBehaviour
 		MusicPlayer(0);
 		this.mathMusicScript.StopSong();
 		this.audioDevice.PlayOneShot(this.aud_Hang);
+		this.crafterScript = FindObjectOfType<CraftersScript>();
+		this.principalScript = FindObjectOfType<PrincipalScript>();
 	}
 
 	public void ActivateSafeMode()
 	{
-		if (!this.isGameFail)
+		if (!this.isGameFail && this.notebooks < 3)
 			this.baldi.SetActive(true);
 
 		this.principal.SetActive(true);
@@ -834,11 +762,15 @@ public class GameControllerScript : MonoBehaviour
         	this.gottaSweep.SetActive(true);
 		if (this.charInAttendance != "1st Prize")
 			this.firstPrize.SetActive(true);
+		
+		this.crafterScript = FindObjectOfType<CraftersScript>();
+		this.principalScript = FindObjectOfType<PrincipalScript>();
 	}
 
 	private void ActivateFinaleMode()
 	{
 		this.finaleMode = true;
+		this.escapeMusicStage = 1;
 		this.ModifyExits("raise");
 	}
 
@@ -888,7 +820,7 @@ public class GameControllerScript : MonoBehaviour
 	{
 		this.exitCountText.text = this.exitsReached + "/" + this.entranceList.Length;
 		
-		if (this.escapeMusicStage == 1 && !this.partyMusic.isPlaying)
+		if (this.escapeMusicStage == 1)
 			this.escapeMusicStage = 2;
 		else
 			this.escapeMusicStage = 3;
@@ -936,44 +868,20 @@ public class GameControllerScript : MonoBehaviour
 
 	public void DeactivateLearningGame(GameObject subject, bool reward)
 	{
+		this.learningActive = false;
+		Destroy(subject);
+		this.LockMouse(); //Prevent the mouse from moving
 		this.mathMusicScript.StopSong();
 		if (audioManager != null)
 			audioManager.SetVolume(0);
 		this.playerCamera.cullingMask = this.cullingMask; //Sets the cullingMask to Everything
-		this.learningActive = false;
-		Destroy(subject);
-		this.LockMouse(); //Prevent the mouse from moving
 		
 		if (notebookCountScript.isActiveAndEnabled)
 			notebookCountScript.FlipNotebooks();
 		this.audioDevice.PlayOneShot(this.aud_NotebookCollect);
 
-		if (!this.spoopMode) //If it isn't spoop mode, play the school music
-		{
-			MusicPlayer(0);
-
-			if (!this.isParty)
-				MusicPlayer(1);
-			else
-				MusicPlayer(3);
-		}
-
-		if (this.isSafeMode && this.notebooks == 2)
-			ActivateSafeMode();
-
-		if (this.spoopMode) // my music stuff
-		{
-			if (audioManager != null)
-				audioManager.SetVolume(0);
-			
-			if (this.notebooks < this.daFinalBookCount)
-			{
-				if (this.isParty)
-					MusicPlayer(3);
-				else
-					MusicPlayer(1);
-			}
-		}
+		if (audioManager != null)
+			audioManager.SetVolume(0);
 
 		if (this.notebooks == 1 && reward) // If this is the players first notebook and they didn't get any questions wrong, reward them with a quarter
 		{
@@ -982,13 +890,10 @@ public class GameControllerScript : MonoBehaviour
 		}
 		else if (this.notebooks >= this.daFinalBookCount && this.mode == "story") // Plays the all 7 notebook sound
 		{
-			this.spoopLearn.Stop();
 			this.ActivateFinaleMode();
 
 			if (!this.isSafeMode)
 				this.audioDevice.PlayOneShot(this.aud_AllNotebooks, 0.8f);
-
-			StartCoroutine(this.PlayEscapeMusic());
 		}
 		else if (this.mode == "endless")
 		{
@@ -1203,14 +1108,8 @@ public class GameControllerScript : MonoBehaviour
 				case 15: // Party Popper
 					if (this.movingPartyLocation != null)
 					{
-						this.partyLocation = this.movingPartyLocation;
-						this.wanderer.partyPoints = this.wanderer.movingPartyPoints;
-						this.MusicPlayer(0);
-						Instantiate(this.party, this.partyLocation.position, this.cameraTransform.rotation);
-						this.audioDevice.PlayOneShot(this.aud_BalloonPop);
+						this.ActivateParty();
 						this.ResetItem(15);
-						this.MusicPlayer(3);
-						this.StartCoroutine(PlayPartyMusic());
 					}
 					else
 						this.audioDevice.PlayOneShot(this.aud_Error);
@@ -1370,42 +1269,59 @@ public class GameControllerScript : MonoBehaviour
 
 	public void ActivateParty()
 	{
-		this.principal.GetComponent<PrincipalScript>().GoToParty();
-		this.firstPrizeScript.GoToParty();
-
-		if (this.baldiScrpt.isActiveAndEnabled)
-			this.baldiScrpt.GoToParty();
-		if (this.playtimeScript.isActiveAndEnabled)
-			this.playtimeScript.GoToParty();
-		if (this.sweepScript.isActiveAndEnabled)
-			this.sweepScript.GoToParty();
-		if (this.crafters.GetComponent<CraftersScript>().isActiveAndEnabled)
-			this.crafters.GetComponent<CraftersScript>().isParty = true;
+		this.isParty = true;
+		this.audioDevice.PlayOneShot(this.aud_BalloonPop);
+		this.partyLocation = this.movingPartyLocation;
+		this.wanderer.partyPoints = this.wanderer.movingPartyPoints;
+		Instantiate(this.party, this.partyLocation.position, this.cameraTransform.rotation);
+		
+		if (principalScript.isActiveAndEnabled)
+			principalScript.GoToParty();
+		if (firstPrizeScript.isActiveAndEnabled)
+			firstPrizeScript.GoToParty();
+		if (baldiScrpt.isActiveAndEnabled)
+			baldiScrpt.GoToParty();
+		if (playtimeScript.isActiveAndEnabled)
+			playtimeScript.GoToParty();
+		if (sweepScript.isActiveAndEnabled)
+			sweepScript.GoToParty();
+		if (crafterScript.isActiveAndEnabled)
+			crafterScript.isParty = true;
+		
+		StartCoroutine(PartyRoutine());
 	}
+
+	IEnumerator PartyRoutine()
+    {
+        if (this.mode == "endless")
+			this.remainingPartyTime = 60f;
+		else
+			this.remainingPartyTime = (-1.5f / this.daFinalBookCount * this.notebooks + 2f) * 60f;
+		
+		while (this.remainingPartyTime > 0f)
+        {
+            this.remainingPartyTime -= Time.deltaTime;
+			yield return null;
+        }
+		this.DeactivateParty();
+    }
 
 	public void DeactivateParty()
 	{
-		if (this.finaleMode)
-		{
-			this.escapeDevice.Play();
+		this.isParty = false;
 
-			if (this.exitsReached >= 2)
-				this.escapeDevice.volume = 0.5f;
-		}
-		if (this.mode == "endless" && this.isAdditionalMusic)
-			this.endlessMusic.Play();
-
-		this.principal.GetComponent<PrincipalScript>().LeaveParty();
-		this.firstPrizeScript.isParty = false;
-
-		if (this.baldiScrpt.isActiveAndEnabled)
-			this.baldiScrpt.isParty = false;
-		if (this.playtimeScript.isActiveAndEnabled)
-			this.playtimeScript.LeaveParty();
-		if (this.sweepScript.isActiveAndEnabled)
-			this.sweepScript.LeaveParty();
-		if (this.crafters.GetComponent<CraftersScript>().isActiveAndEnabled)
-			this.crafters.GetComponent<CraftersScript>().isParty = false;
+		if (principalScript.isActiveAndEnabled)
+			principalScript.LeaveParty();
+		if (firstPrizeScript.isActiveAndEnabled)
+			firstPrizeScript.isParty = false;
+		if (baldiScrpt.isActiveAndEnabled)
+			baldiScrpt.isParty = false;
+		if (playtimeScript.isActiveAndEnabled)
+			playtimeScript.LeaveParty();
+		if (sweepScript.isActiveAndEnabled)
+			sweepScript.LeaveParty();
+		if (crafterScript.isActiveAndEnabled)
+			crafterScript.isParty = false;
 	}
 
 	private void SendCharacterHome(string character)
@@ -1426,23 +1342,6 @@ public class GameControllerScript : MonoBehaviour
 			case "1st Prize":
 				this.firstPrizeScript.GoToAttendance();
 				this.ResetItem(12);
-				break;
-		}
-	}
-
-	private void ReactivateAttendanceCharacter()
-	{
-		switch (this.charInAttendance)
-		{
-			case "Playtime":
-				this.playtime.SetActive(true);
-				break;
-			case "Gotta Sweep":
-				this.gottaSweep.SetActive(true);
-				this.sweepScript.GoHome();
-				break;
-			case "1st Prize":
-				this.firstPrize.SetActive(true);
 				break;
 		}
 	}
@@ -1534,7 +1433,7 @@ public class GameControllerScript : MonoBehaviour
 		if (this.exitsReached == 1)
 			StartCoroutine(this.ChaosAudio());
 
-		if (this.exitsReached != 2)
+		if (this.exitsReached != 2 || this.isSafeMode)
 			this.audioDevice.PlayOneShot(this.aud_Switch, 0.8f);
 
 		if (this.modeType == "nullStyle")
@@ -1603,68 +1502,148 @@ public class GameControllerScript : MonoBehaviour
             case 0:
 				this.schoolMusic.Stop();
 				this.learnMusic.Stop();
-				this.partyMusic.Stop();
 				this.escapeDevice.Stop();
-				break;
-			case 1:
-				if (!this.spoopMode)
-					this.schoolMusic.Play();
-				else if (!this.isMusicStarted && this.isAdditionalMusic)
-					StartCoroutine(PlaylistRoutine());
-				else if (this.finaleMode)
-                {
-					this.schoolMusic.Stop();
-                    StartCoroutine(PlayEscapeMusic());
-                }
-				break;
-			case 2:
-				if (!this.spoopMode)
-					this.learnMusic.Play();
-				break;
-			case 3:
-				if (!this.partyMusic.isPlaying)
-					this.partyMusic.Play();
 				break;
         }
 	}
 
-	IEnumerator PlaylistRoutine()
+	IEnumerator MusicRoutine(int initialCase)
     {
+		if (this.isMusicStarted)
+			yield break;
+		
 		this.isMusicStarted = true;
         int[] lastSongs = {
             0, 0
         };
 
-		switch (lastSongs[0])
+		switch (initialCase)
         {
             case 0:
-				int nextSong = GetRandomSong(lastSongs[0], lastSongs[1]);
-				lastSongs[0] = lastSongs[1];
-				lastSongs[1] = nextSong;
-				Debug.LogWarning("Now playing: Song " + nextSong);
-				this.musicDevice.clip = this.backgroudMusicPlaylist[lastSongs[1]];
-				this.musicDevice.Play();
-				goto case 1;
-			case 1:
-				while (!this.isParty && !this.finaleMode && this.musicDevice.isPlaying)
+				if (this.isSafeMode || !this.spoopMode)
+					goto case 30;
+				else if (!this.isAdditionalMusic)
+					goto case 2; 
+				else
+                {
+                    int nextSong = GetRandomSong(lastSongs[0], lastSongs[1]);
+					lastSongs[0] = lastSongs[1];
+					lastSongs[1] = nextSong;
+					Debug.LogWarning("Now playing: Song " + nextSong);
+					this.musicDevice.clip = this.backgroudMusicPlaylist[lastSongs[1]];
+					this.musicDevice.loop = false;
+					this.musicDevice.Play();
+					goto case 1;
+                }
+			case 1: // Regular music with Additional Music enabled
+                while (!this.isParty && !this.finaleMode && this.musicDevice.isPlaying)
+					yield return null;
+				if (!this.musicDevice.isPlaying)
+					goto case 0;
+				else
+					goto case 3;
+			case 2: // No additional music
+				while (!this.finaleMode && !this.isParty)
+					yield return null;
+				goto case 3;
+			case 3: // Check for usage of the party popper
+				this.musicDevice.Stop();
+				if (this.isParty)
+					goto case 11;
+				else
+					goto case 20;
+			case 7:
+				while (!this.finaleMode && !this.isParty)
 					yield return null;
 				if (this.finaleMode)
-                {
-					this.musicDevice.Stop();
-					break;
-                }
-				else if (this.isParty)
-					goto case 12;
+					goto case 24;
 				else
-					goto case 0;
-			case 12: // Party Mode
-				MusicPlayer(3);
+                {
+					this.schoolMusic.Stop();
+                    goto case 11;
+                }
+			case 11: // Party Popper
+				this.musicDevice.loop = true;
+				this.musicDevice.clip = this.partyMusic;
+				this.musicDevice.Play();
 				while (this.isParty)
 					yield return null;
-				if (!this.finaleMode)
-					goto case 0;
+				this.musicDevice.Stop();
+				if (this.finaleMode)
+					goto case 20;
 				else
-					break;
+					goto case 0;
+			case 20: // Check whether the player has reached any exit or not
+				if (this.escapeMusicStage == 1 && !this.isSafeMode)
+                {
+					this.musicDevice.loop = true;
+                    this.musicDevice.clip = this.escapeMusic[0];
+					this.musicDevice.Play();
+					goto case 21;
+                }
+				else if (this.isSafeMode)
+					goto case 24;
+				else
+					goto case 23;
+			case 21: // Play the initial escape music
+				while (this.escapeMusicStage == 1 && !this.isParty)
+					yield return null;
+				this.musicDevice.Stop();
+				if (this.isParty)
+					goto case 11;
+				else if (this.escapeMusicStage == 2)
+					goto case 22;
+				else
+					goto case 23;
+			case 22: // Play the transition to the slow loop
+				this.escapeMusicStage = 2;
+				this.musicDevice.loop = false;
+				this.musicDevice.clip = this.escapeMusic[1];
+				this.musicDevice.Play();
+				while (this.musicDevice.isPlaying && !this.isParty)
+					yield return null;
+				this.escapeMusicStage = 3;
+				if (this.isParty)
+					goto case 11;
+				else
+					goto case 23;
+			case 23: // Play the slow loop
+				this.musicDevice.loop = true;
+				this.musicDevice.clip = this.escapeMusic[2];
+				this.musicDevice.Play();
+				while (!this.isParty)
+					yield return null;
+				if (this.isParty)
+					goto case 11;
+				else
+					yield break;
+			case 24: // Escape music in safe mode
+				this.musicDevice.loop = true;
+				this.musicDevice.clip = this.escapeMusic[0];
+				this.musicDevice.Play();
+				while (!this.isParty)
+					yield return null;
+				goto case 11;
+			case 30: // Normal school music
+				if (this.finaleMode)
+					goto case 24;
+				this.musicDevice.clip = this.schoolMusic.clip;
+				this.musicDevice.loop = true;
+				this.musicDevice.Play();
+				while (!this.learningActive && !this.isParty)
+					yield return null;
+				if (this.isParty)
+                {
+					this.musicDevice.Stop();
+                    goto case 11;
+                }
+				else
+					goto case 31;
+			case 31:
+				this.musicDevice.Stop();
+				while (this.learningActive)
+					yield return null;
+				goto case 0;
         }
     }
 
@@ -1684,96 +1663,6 @@ public class GameControllerScript : MonoBehaviour
         }
 		return songID;
     }
-
-	private IEnumerator PlayEscapeMusic()
-	{
-		this.escapeMusicStage = 1;
-		string nextState = "stageCheck";
-
-		switch(nextState)
-		{
-			case "stageCheck":
-				if (this.isParty)
-					goto case "partyMusic";
-				else if (this.escapeMusicStage == 1)
-					goto case "normalMusic";
-				else
-					goto case "slowMusicLoop";
-
-			case "partyMusic":
-				this.partyMusic.Play();
-				while (this.isParty)
-					yield return null;
-				goto case "stageCheck";
-
-			case "normalMusic":
-				this.escapeDevice.clip = this.escapeMusic[0];
-				this.escapeDevice.loop = true;
-				this.escapeDevice.Play();
-				while (this.exitsReached == 0 && !this.isParty)
-					yield return null;
-				if (this.isParty)
-				{
-					this.escapeDevice.Stop();
-					goto case "partyMusic";
-				}
-				else if (this.isSafeMode)
-					yield break;
-				else
-				{
-					this.escapeDevice.Stop();
-					goto case "slowMusicStart";
-				}
-
-			case "slowMusicStart":
-				this.escapeDevice.loop = false;
-				this.escapeDevice.Stop();
-				this.escapeDevice.clip = this.escapeMusic[1];
-				this.escapeDevice.Play();
-				while (this.escapeDevice.isPlaying)
-					yield return null;
-				goto case "stageCheck";
-
-			case "slowMusicLoop":
-				this.escapeDevice.loop = true;
-				this.escapeDevice.clip = this.escapeMusic[2];
-				this.escapeDevice.Play();
-				break;
-		}
-	}
-
-	private IEnumerator PlayPartyMusic()
-	{
-		this.isParty = true;
-		this.ActivateParty();
-		if (this.mode == "endless")
-			this.remainingPartyTime = 84.65f;
-		else
-			this.remainingPartyTime = (-1.5f / this.daFinalBookCount * this.notebooks + 2f) * 60f;
-		MusicPlayer(3);
-
-		while (this.remainingPartyTime > 0f)
-		{
-			this.remainingPartyTime -= Time.deltaTime;
-			yield return null;
-		}
-
-		this.MusicPlayer(0);
-		this.isParty = false;
-		this.DeactivateParty();
-		
-		this.MusicPlayer(1);
-	}
-
-	private IEnumerator UninterruptedMusic()
-	{
-		this.schoolhouseTroublePlaylist[0].Play();
-
-		while (this.schoolhouseTroublePlaylist[0].isPlaying)
-			yield return null;
-
-		this.schoolhouseTroublePlaylist[1].Play();
-	}
 
 	private IEnumerator ChaosAudio()
 	{
@@ -1877,7 +1766,6 @@ public class GameControllerScript : MonoBehaviour
 		}
 	}
 
-
 	[HideInInspector] public int daFinalBookCount;
 	[HideInInspector] public int totalSlotCount;
 	[HideInInspector] public EntranceScript[] entranceList;
@@ -1899,14 +1787,15 @@ public class GameControllerScript : MonoBehaviour
 	public bool mouseLocked;
 	public bool gamePaused;
 	public bool showTimer;
-	[SerializeField] private bool forceQuarter;
-	[SerializeField] private bool isLookingAtVendingMachine;
-	[SerializeField] private bool isItemUpgrade;
+	[SerializeField] bool forceQuarter;
+	[SerializeField] bool isLookingAtVendingMachine;
+	[SerializeField] bool isItemUpgrade;
 	public bool isParty;
 	public bool isGameFail;
 	[SerializeField] private bool isScareStarted;
 	public bool ignoreInitializationChecks;
 	public bool isDynamicColor;
+	[SerializeField] bool isMusicStarted;
 	public byte notebooks;
 	[SerializeField] private int highBooksScore;
 	[SerializeField] private float bestTime;
@@ -1914,6 +1803,7 @@ public class GameControllerScript : MonoBehaviour
 	[SerializeField] private uint speedrunMinutes;
 	[SerializeField] private uint speedrunHours;
 	public byte exitsReached;
+	[SerializeField] byte escapeMusicStage;
 	[SerializeField] private float dollarAmount;
 	[SerializeField] private float remainingPartyTime;
 	public float gameOverDelay;
@@ -2077,21 +1967,18 @@ public class GameControllerScript : MonoBehaviour
 
 
 	[Header("Music")]
-	[SerializeField] private bool isEndlessSong;
 	[SerializeField] AudioSource schoolMusic;
 	[SerializeField] private AudioSource escapeDevice;
 	public AudioClip[] escapeMusic;
-	public byte escapeMusicStage;
 	public AudioSource endlessMusic;
 	public AudioSource learnMusic;
 	public AudioSource spoopLearn;
 	public AudioClip LearnQ1;
 	public AudioClip LearnQ2;
 	public AudioClip LearnQ3;
-	public AudioSource partyMusic;
+	[SerializeField] AudioClip partyMusic;
 	[SerializeField] AudioClip[] backgroudMusicPlaylist;
 	[SerializeField] AudioSource musicDevice;
-	[SerializeField] bool isMusicStarted;
 	[SerializeField] AudioSource[] schoolhouseTroublePlaylist;
 
 
@@ -2106,6 +1993,8 @@ public class GameControllerScript : MonoBehaviour
 	public BaldiScript baldiScrpt;
 	public PlaytimeScript playtimeScript;
 	public FirstPrizeScript firstPrizeScript;
+	[SerializeField] PrincipalScript principalScript;
+	[SerializeField] CraftersScript crafterScript;
 	[SerializeField] private AILocationSelectorScript wanderer;
  	[SerializeField] private SweepScript sweepScript;
 	[SerializeField] private AudioManager audioManager;

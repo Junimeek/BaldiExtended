@@ -13,6 +13,7 @@ public class SweepScript : MonoBehaviour
 		this.agent = base.GetComponent<NavMeshAgent>();
 		this.audioDevice = base.GetComponent<AudioSource>();
 		this.waitTime = UnityEngine.Random.Range(120f, 180f);
+		this.sweepHitbox = base.GetComponent<CapsuleCollider>();
 	}
 
 	private void Update()
@@ -74,11 +75,13 @@ public class SweepScript : MonoBehaviour
 		this.waitTime = 199f;
 		this.wanders = -99;
 		this.agent.SetDestination(this.gc.partyLocation.position);
+		this.sweepHitbox.enabled = false;
 	}
 
 	public void LeaveParty()
 	{
 		this.isParty = false;
+		this.sweepHitbox.enabled = true;
 		this.GoHome();
 	}
 
@@ -133,6 +136,7 @@ public class SweepScript : MonoBehaviour
 	public bool active;
 	public bool isEarlyActivation;
 	[SerializeField] private bool isParty;
+	Collider sweepHitbox;
 	private Vector3 origin;
 	public AudioClip aud_Sweep;
 	public AudioClip aud_Intro;

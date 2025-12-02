@@ -8795,7 +8795,7 @@ MonoBehaviour:
   errorText: {fileID: 795948175}
   isNightly: 0
   stableBuild: 0.5.2
-  nightlyBuild: 25.49.1
+  nightlyBuild: 25.49.3
   curVersion: 
   stableURL: https://raw.githubusercontent.com/Junimeek/BaldiExtended/main/VersionStable.json
   nightlyURL: https://raw.githubusercontent.com/Junimeek/BaldiExtended/main/VersionNightly.json
