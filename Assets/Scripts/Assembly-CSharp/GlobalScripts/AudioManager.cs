@@ -3,11 +3,11 @@ using UnityEngine.Audio;
 
 public class AudioManager : MonoBehaviour
 {
-    [SerializeField] private static AudioManager instance;
-    [SerializeField] private AudioMixer mixer;
-    [SerializeField] private float volumeBGM;
-    [SerializeField] private float volumeSFX;
-    [SerializeField] private float volumeVoice;
+    [SerializeField] static AudioManager instance;
+    [SerializeField] AudioMixer mixer;
+    [SerializeField] float volumeBGM;
+    [SerializeField] float volumeSFX;
+    [SerializeField] float volumeVoice;
 
     private void Awake()
     {
@@ -56,17 +56,21 @@ public class AudioManager : MonoBehaviour
 
     public void SetVolume(int id)
     {
-        if (id == 0) // normal
+        switch(id)
         {
-            mixer.SetFloat("volBGM", volumeBGM);
-            mixer.SetFloat("volSFX", volumeSFX);
-            mixer.SetFloat("volVoice", volumeVoice);
-        }
-
-        else if (id == 1) // learn in spoop mode
-        {
-            mixer.SetFloat("volSFX", -80f);
-            mixer.SetFloat("volVoice", -80f);
+            case 0: // normal
+                mixer.SetFloat("volBGM", volumeBGM);
+                mixer.SetFloat("volSFX", volumeSFX);
+                mixer.SetFloat("volVoice", volumeVoice);
+                break;
+            case 1: // learn in spoop mode
+                mixer.SetFloat("volSFX", -80f);
+                mixer.SetFloat("volVoice", -80f);
+                break;
+            case 2:
+                mixer.SetFloat("volBGM", -80f);
+                mixer.SetFloat("volVoice", -80f);
+                break;
         }
     }
 }

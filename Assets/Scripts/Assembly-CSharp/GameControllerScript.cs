@@ -30,6 +30,9 @@ public class GameControllerScript : MonoBehaviour
 
 		this.isDoorFix = this.ReadBoolFromRegistry("doorFix");
 
+		if (audioManager != null)
+			audioManager.SetVolume(0);
+
 		switch (curSceneName)
 		{
 			case "ClassicDark":
@@ -45,6 +48,7 @@ public class GameControllerScript : MonoBehaviour
 				this.ignoreInitializationChecks = false;
 				this.masterTextColor = Color.black;
 				this.gameOverDelay = 0.5f;
+				this.modeType = "";
 
 				this.isSafeMode = this.ReadBoolFromRegistry("safeMode");
 				this.isDifficultMath = this.ReadBoolFromRegistry("difficultMath");
@@ -321,7 +325,6 @@ public class GameControllerScript : MonoBehaviour
 			if (!this.player.isSecret)
 			{
 				this.MusicPlayer(0);
-				this.endlessMusic.Stop();
 			}
 
 			if (!this.player.isSecret && !this.isScareStarted)
@@ -348,6 +351,8 @@ public class GameControllerScript : MonoBehaviour
 				this.isScareStarted = true;
 				int randomScare = Mathf.RoundToInt(UnityEngine.Random.Range(0, this.baldiJumpscareSounds.Length - 1));
 				this.audioDevice.PlayOneShot(this.baldiJumpscareSounds[randomScare]);
+				if (audioManager != null)
+					audioManager.SetVolume(2);
 			}
 
 			if (this.gameOverDelay <= 0f)
@@ -628,13 +633,8 @@ public class GameControllerScript : MonoBehaviour
 
 		if (this.notebooks == daFinalBookCount && this.mode != "endless")
 		{
-			if (this.mode == "story")
-            {
-                this.exitCountGroup.SetActive(true);
-				this.notebookObject.SetActive(false);
-            }
-			else if (this.mode == "challenge")
-				this.ActivateFinaleMode();
+			this.exitCountGroup.SetActive(true);
+			this.notebookObject.SetActive(false);
 		}
 	}
 
@@ -653,10 +653,11 @@ public class GameControllerScript : MonoBehaviour
 					notebookCountScript.FlipNotebooks();
 				this.audioDevice.PlayOneShot(this.aud_NotebookCollect);
 
-				if (this.notebooks == 2)
-				{
-					this.ModifyExits("lower");
-				}
+				if (this.notebooks == this.daFinalBookCount)
+                {
+					this.finaleMode = true;
+                    this.ModifyExits("raise");
+                }
 
 				if (this.notebooks >= 3)
 				{
@@ -679,6 +680,8 @@ public class GameControllerScript : MonoBehaviour
     {
 		this.baldi.SetActive(true);
         this.baldiScrpt.GetAngry(1f);
+		this.audioDevice.PlayOneShot(this.aud_Switch, 0.8f);
+		this.ModifyExits("lower");
     }
 
 	public void LockMouse()
@@ -856,14 +859,9 @@ public class GameControllerScript : MonoBehaviour
 		this.UnlockMouse(); //Unlock the mouse
 		this.tutorBaldi.Stop(); //Make tutor Baldi stop talking
 		if (!this.spoopMode || this.isSafeMode) //If the player hasn't gotten a question wrong
-		{
-			MusicPlayer(0); //Start playing the learn music
 			this.mathMusicScript.TheAwakening();
-		}
-		else if (this.spoopMode && audioManager != null)
-		{
+		else if (audioManager != null)
 			this.audioManager.SetVolume(1);
-		}
 	}
 
 	public void DeactivateLearningGame(GameObject subject, bool reward)
@@ -879,9 +877,6 @@ public class GameControllerScript : MonoBehaviour
 		if (notebookCountScript.isActiveAndEnabled)
 			notebookCountScript.FlipNotebooks();
 		this.audioDevice.PlayOneShot(this.aud_NotebookCollect);
-
-		if (audioManager != null)
-			audioManager.SetVolume(0);
 
 		if (this.notebooks == 1 && reward) // If this is the players first notebook and they didn't get any questions wrong, reward them with a quarter
 		{
@@ -1501,8 +1496,6 @@ public class GameControllerScript : MonoBehaviour
         {
             case 0:
 				this.schoolMusic.Stop();
-				this.learnMusic.Stop();
-				this.escapeDevice.Stop();
 				break;
         }
 	}
@@ -1529,7 +1522,6 @@ public class GameControllerScript : MonoBehaviour
                     int nextSong = GetRandomSong(lastSongs[0], lastSongs[1]);
 					lastSongs[0] = lastSongs[1];
 					lastSongs[1] = nextSong;
-					Debug.LogWarning("Now playing: Song " + nextSong);
 					this.musicDevice.clip = this.backgroudMusicPlaylist[lastSongs[1]];
 					this.musicDevice.loop = false;
 					this.musicDevice.Play();
@@ -1659,7 +1651,6 @@ public class GameControllerScript : MonoBehaviour
 		while (songID == song1 || songID == song2)
         {
             songID = Mathf.FloorToInt(UnityEngine.Random.Range(0f, (float)backgroudMusicPlaylist.Length - 0.1f));
-			Debug.Log("Rerolled song: " + songID);
         }
 		return songID;
     }
@@ -1968,18 +1959,10 @@ public class GameControllerScript : MonoBehaviour
 
 	[Header("Music")]
 	[SerializeField] AudioSource schoolMusic;
-	[SerializeField] private AudioSource escapeDevice;
 	public AudioClip[] escapeMusic;
-	public AudioSource endlessMusic;
-	public AudioSource learnMusic;
-	public AudioSource spoopLearn;
-	public AudioClip LearnQ1;
-	public AudioClip LearnQ2;
-	public AudioClip LearnQ3;
 	[SerializeField] AudioClip partyMusic;
 	[SerializeField] AudioClip[] backgroudMusicPlaylist;
 	[SerializeField] AudioSource musicDevice;
-	[SerializeField] AudioSource[] schoolhouseTroublePlaylist;
 
 
 	[Header("Scripts")]

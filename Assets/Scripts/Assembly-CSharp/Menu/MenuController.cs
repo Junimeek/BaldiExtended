@@ -6,7 +6,9 @@ public class MenuController : MonoBehaviour
 {
 	private void Start()
 	{
-
+		AudioManager audioManager = FindObjectOfType<AudioManager>();
+		if (audioManager != null)
+			audioManager.SetVolume(0);
 	}
 
 	public void OnEnable()

@@ -8795,7 +8795,7 @@ MonoBehaviour:
   errorText: {fileID: 795948175}
   isNightly: 0
   stableBuild: 0.5.2
-  nightlyBuild: 25.49.3
+  nightlyBuild: 25.49.4
   curVersion: 
   stableURL: https://raw.githubusercontent.com/Junimeek/BaldiExtended/main/VersionStable.json
   nightlyURL: https://raw.githubusercontent.com/Junimeek/BaldiExtended/main/VersionNightly.json
@@ -9526,23 +9526,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7b5fc16da712566439cef8f01921abd5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentLoadedFileID: 0
   saveFileVersion: 0
   gameVersion: 
-  bestTimes: 
+  playerName: 
   sItems_classic: 
   sItems_classicExtended: 
   sItems_juniperHills: 
-  sItems_mitakihara: 
+  sBestTimes: 
   sDetentions: 
   eItems_classic: 
   eItems_classicExtended: 
   eItems_juniperHills: 
-  eItems_mitakihara: 
-  eDetentions: 
   eNotebooks: 
+  eDetentions: 
   challengeUnlocks: 
-  cItemsClassicDark: 
+  cItemsDarkMode: 
+  cBestTimes: 
+  cDetentions: 
 --- !u!4 &1016207695
 Transform:
   m_ObjectHideFlags: 0

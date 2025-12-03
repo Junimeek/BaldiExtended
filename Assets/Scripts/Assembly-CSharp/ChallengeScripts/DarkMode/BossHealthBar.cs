@@ -49,7 +49,7 @@ public class BossHealthBar : MonoBehaviour
         switch(healthThing)
         {
             case 0:
-                this.bars[curHealth].color = Color.white;
+                this.bars[curHealth].color = Color.green;
                 this.curHealth++;
                 this.audioDevice.Play();
                 goto case 1;
@@ -58,9 +58,10 @@ public class BossHealthBar : MonoBehaviour
                     yield return null;
                 goto case 2;
             case 2:
+                this.bars[curHealth - 1].color = Color.white;
                 if (curHealth < 9)
                     goto case 0;
-                break;
+                yield break;
         }
     }
 
@@ -68,6 +69,17 @@ public class BossHealthBar : MonoBehaviour
     {
         curHealth--;
         bars[curHealth].color = Color.clear;
+
+        if (curHealth > 2 && curHealth <= 5)
+        {
+            for (int i = 0; i < curHealth; i++)
+                bars[i].color = Color.yellow;
+        }
+        else if (curHealth <= 2)
+        {
+            for (int i = 0; i < curHealth; i++)
+                bars[i].color = Color.red;
+        }
     }
 
     public void HideHealthBar()

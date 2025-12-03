@@ -1,5 +1,4 @@
-using System;
-using System.Collections;
+
 using System.IO;
 using UnityEngine;
 using TMPro;
@@ -55,7 +54,7 @@ public class NewDataConversion : MonoBehaviour
                 {
                     Directory.CreateDirectory(kyokuraDataDirectory);
                 }
-                catch(Exception e)
+                catch(System.Exception e)
                 {
                     ThrowError("Unable to create Kyokura directory.", e.ToString());
                 }
@@ -69,7 +68,7 @@ public class NewDataConversion : MonoBehaviour
                 EnableSettingsButton(settingsButton);
                 // LoadSave(kyokuraDataDirectory);
             }
-            catch(Exception e)
+            catch(System.Exception e)
             {
                 ThrowError("Failed to copy and save data to new directory.", e.ToString());
             }
@@ -83,50 +82,57 @@ public class NewDataConversion : MonoBehaviour
 
     void ConvertGameData()
     {
-        UnityEngine.Debug.Log("Save files will now be converted to the Version 2 format.");
+        Debug.Log("Save files will now be converted to the Version 2 format.");
 
         SaveData_Story oldStoryData = OldSaveDataLoader.LoadOldStoryData();
         SaveData_Endless oldEndlessData = OldSaveDataLoader.LoadOldEndlessData();
         SaveData_Challenge oldChallengeData = OldSaveDataLoader.LoadOldChallengeData();
         ProgressionData oldProgressionData = OldSaveDataLoader.LoadOldProgressionData();
 
-        int itemCount = 18;
-        int mapCount = 5;
+        int mapCount = 3;
 
         int saveFileVersion = 2;
         int[] gameVersion = new int[] {
             0, 6, 0
         };
         float[] bestTimes = oldStoryData.bestTime;
-
-        Array.Resize(ref bestTimes, mapCount);
-
-        bestTimes[3] = oldChallengeData.bestTime[0];
         int[] bestTimesInMS = new int[mapCount];
         float[] timeInSeconds = new float[mapCount];
 
         for (int i = 0; i < mapCount; i++)
         {
-            timeInSeconds[i] = bestTimes[i] * 1000f;
-            bestTimesInMS[i] = Mathf.RoundToInt(timeInSeconds[i]);
+            try
+            {
+                timeInSeconds[i] = bestTimes[i] * 1000f;
+                bestTimesInMS[i] = Mathf.RoundToInt(timeInSeconds[i]);
+            }
+            catch
+            {
+                bestTimesInMS[i] = 0;
+            }
         }
 
         saveDataContainer.saveFileVersion = saveFileVersion;
         saveDataContainer.gameVersion = gameVersion;
-        saveDataContainer.bestTimes = bestTimesInMS;
+        saveDataContainer.playerName = "";
+        saveDataContainer.sBestTimes = bestTimesInMS;
         saveDataContainer.sItems_classic = oldStoryData.itemsUsed_Classic;
         saveDataContainer.sItems_classicExtended = oldStoryData.itemsUsed_ClassicExtended;
         saveDataContainer.sItems_juniperHills = oldStoryData.itemsUsed_JuniperHills;
-        saveDataContainer.sItems_mitakihara = new int[itemCount];
         saveDataContainer.sDetentions = oldStoryData.totalDetentions;
         saveDataContainer.eItems_classic = oldEndlessData.itemsUsed_Classic;
         saveDataContainer.eItems_classicExtended = oldEndlessData.itemsUsed_ClassicExtended;
         saveDataContainer.eItems_juniperHills = oldEndlessData.itemsUsed_JuniperHills;
-        saveDataContainer.eItems_mitakihara = new int[itemCount];
         saveDataContainer.eDetentions = oldEndlessData.totalDetentions;
         saveDataContainer.eNotebooks = oldEndlessData.notebooks;
         saveDataContainer.challengeUnlocks = oldProgressionData.mapUnlocks;
-        saveDataContainer.cItemsClassicDark = oldChallengeData.itemsUsed_NullStyle;
+        saveDataContainer.cItemsDarkMode = oldChallengeData.itemsUsed_NullStyle;
+        saveDataContainer.cDetentions = new int[1];
+
+        bestTimesInMS = new int[1];
+        timeInSeconds = oldChallengeData.bestTime;
+        bestTimesInMS[0] = Mathf.RoundToInt(timeInSeconds[0] * 1000f);
+        saveDataContainer.cBestTimes = bestTimesInMS;
     }
 
     void SaveGameDataInNewDirectory(string kyoDir)
@@ -148,7 +154,7 @@ public class NewDataConversion : MonoBehaviour
             }
             sw.Close();
         }
-        UnityEngine.Debug.Log("Data saved in " + path);
+        Debug.Log("Data saved in " + path);
     }
 
     string GetFileName(string directory, int fileID)
@@ -181,7 +187,7 @@ public class NewDataConversion : MonoBehaviour
         }
 
         string jsonData = SaveEncryption.DecryptSaveFile(base64Data);
-        UnityEngine.Debug.Log(jsonData);
+        Debug.Log(jsonData);
     }
 
     public void ExportSettingsData()
@@ -215,15 +221,15 @@ public class NewDataConversion : MonoBehaviour
         completedChecks[1] = true;
         finishPrompt.SetActive(true);
 
-        UnityEngine.Debug.Log("Settings exported.");
+        Debug.Log("Settings exported.");
     }
 
     void ThrowError(string theError, string exceptionThing)
     {
         this.errorPrompt.SetActive(true);
         this.errorText.text = theError + "\n\n" + exceptionThing;
-        UnityEngine.Debug.LogError(theError);
-        UnityEngine.Debug.LogError(exceptionThing);
+        Debug.LogError(theError);
+        Debug.LogError(exceptionThing);
     }
 
     string GetKyokuraDirectory(string juniDir)
