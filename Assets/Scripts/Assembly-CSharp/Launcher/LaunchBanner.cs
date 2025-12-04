@@ -110,11 +110,17 @@ public class LaunchBanner : MonoBehaviour
         }
     }
 
-    public void BannerButtonClick(int type)
+    public void BannerButtonClick()
     {
-        switch(type)
+        switch(latestUpdateData.buttonType)
         {
-            case 2:
+            case "news-link":
+                launcherController.OpenSaveUpgradeDialog();
+                break;
+            case "download-link":
+                launcherController.OpenLink(latestUpdateData.url);
+                break;
+            default:
                 launcherController.OpenLink(latestUpdateData.url);
                 break;
         }

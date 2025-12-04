@@ -10,6 +10,7 @@ Misc Changes:
 - Reorganized the layout of the launcher
 - The new update message is now a banner at the top of the launcher menu that fetches update data from my website
 - Changed the credits in the launcher and in-game credits menu to reflect PSPLeafFox's username change
+- Made it so double clicking the Quit button on the menu will force the game to close immediately
 - The background music (ie, "Schoolhouse Trouble" and "Schoolhouse Escape (Free Run)") has now been replaced with a revolving ensemble of four songs
 -The Null boss fight now has a health bar
 

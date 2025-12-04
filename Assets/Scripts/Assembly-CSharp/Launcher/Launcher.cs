@@ -166,6 +166,12 @@ public class Launcher : MonoBehaviour
         }
     }
 
+    public void OpenSaveUpgradeDialog()
+    {
+        this.launcherCNews.SetActive(true);
+        this.launcherCMain.SetActive(false);
+    }
+
     public void OpenLink(string link)
     {
         Application.OpenURL(link);
@@ -353,6 +359,8 @@ public class Launcher : MonoBehaviour
 
     [Header("UI")]
     [SerializeField] private GameObject launcherCanvas;
+    [SerializeField] GameObject launcherCMain;
+    [SerializeField] GameObject launcherCNews;
     [SerializeField] private GameObject logoCanvas;
     [SerializeField] private GameObject stopCanvas;
     [SerializeField] GameObject bannerCanvas;

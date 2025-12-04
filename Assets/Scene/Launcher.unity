@@ -5139,22 +5139,10 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 2046631933}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 1
-        m_CallState: 2
-      - m_Target: {fileID: 56524782}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
+      - m_Target: {fileID: 131061661}
+        m_TargetAssemblyTypeName: LaunchBanner, Assembly-CSharp
+        m_MethodName: BannerButtonClick
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -10929,6 +10917,8 @@ MonoBehaviour:
   savePath: 
   presentFiles: 
   launcherCanvas: {fileID: 974913838}
+  launcherCMain: {fileID: 56524782}
+  launcherCNews: {fileID: 2046631933}
   logoCanvas: {fileID: 1996734463}
   stopCanvas: {fileID: 123807246}
   bannerCanvas: {fileID: 131061657}
@@ -12603,7 +12593,7 @@ GameObject:
   - component: {fileID: 1232948687}
   - component: {fileID: 1232948686}
   m_Layer: 5
-  m_Name: Junidev
+  m_Name: Kyokura
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
