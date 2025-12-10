@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class MenuPlayerController : MonoBehaviour
 {
+    [SerializeField] bool isMouseLocked;
     [Header("Player")]
     [SerializeField] float sensitivity;
     [SerializeField] float mouseSensitivity;
@@ -24,7 +25,7 @@ public class MenuPlayerController : MonoBehaviour
     {
         this.mouseSensitivity = PlayerPrefs.GetFloat("MouseSensitivity");
 
-        this.LockMouse();
+        this.TogglePlayerControl(true);
 
         this.height = base.transform.position.y;
 		this.playerRotation = base.transform.rotation;
@@ -33,27 +34,33 @@ public class MenuPlayerController : MonoBehaviour
 
     void Update()
     {
-        this.MouseMove();
-        this.PlayerMove();
-        if (this.cc.velocity.magnitude > 0f)
-            this.LockMouse();
+        if (this.isMouseLocked)
+        {
+            this.MouseMove();
+            this.PlayerMove();
+            if (this.cc.velocity.magnitude > 0f)
+                this.LockMouse();
         
-        if (Input.GetButton("Look Behind"))
-            this.cameraLookBehind = 180;
-        else
-            this.cameraLookBehind = 0;
-        
-        if (Input.GetKey(KeyCode.C))
-			this.cameraZoom = 15;
-		else
-			this.cameraZoom = 60;
+            if (Input.GetButton("Look Behind"))
+                this.cameraLookBehind = 180;
+            else
+                this.cameraLookBehind = 0;
+
+            if (Input.GetKey(KeyCode.C))
+			    this.cameraZoom = 15;
+    		else
+	    		this.cameraZoom = 60;
+        }
     }
 
     void LateUpdate()
     {
-        cameraObject.transform.position = base.transform.position + cameraOffset;
-        cameraObject.transform.rotation = base.transform.rotation * Quaternion.Euler(0f, this.cameraLookBehind, 0f);
-        this.camera.fieldOfView = this.cameraZoom;
+        if (this.isMouseLocked)
+        {
+            cameraObject.transform.position = base.transform.position + cameraOffset;
+            cameraObject.transform.rotation = base.transform.rotation * Quaternion.Euler(0f, this.cameraLookBehind, 0f);
+            this.camera.fieldOfView = this.cameraZoom;
+        }
     }
 
     void MouseMove()
@@ -82,19 +89,37 @@ public class MenuPlayerController : MonoBehaviour
         this.cc.Move(moveDirection);
     }
 
+    public void TogglePlayerControl(bool toggleThing)
+    {
+        if (toggleThing)
+            this.LockMouse();
+        else
+            this.UnlockMouse();
+    }
+
     public void LeaveTestMove()
     {
         this.UnlockMouse();
+        this.camera.enabled = false;
+    }
+
+    public void ReEnterTestMove(float newSensitivity)
+    {
+        this.camera.enabled = true;
+        this.LockMouse();
+        this.mouseSensitivity = newSensitivity;
     }
 
     void LockMouse()
     {
+        this.isMouseLocked = true;
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
 
     void UnlockMouse()
     {
+        this.isMouseLocked = false;
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
     }

@@ -2,6 +2,9 @@ using UnityEngine;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
 using System.Collections;
+using UnityEngine.SceneManagement;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class SettingsContainer : MonoBehaviour
 {
@@ -21,7 +24,7 @@ public class SettingsContainer : MonoBehaviour
     }
     */
 
-    private void Start()
+    void Start()
     {
         this.dataPath = Application.persistentDataPath + "/settings.sav";
         StartCoroutine(this.CheckForStatsObject());
@@ -79,7 +82,7 @@ public class SettingsContainer : MonoBehaviour
         }
     }
 
-    private IEnumerator CheckForStatsObject()
+    IEnumerator CheckForStatsObject()
     {
         StatisticsController stats = FindObjectOfType<StatisticsController>();
 
@@ -197,7 +200,60 @@ public class SettingsContainer : MonoBehaviour
         }
     }
 
-    private void SaveToSettingsFile()
+    public void ToggleMenu(bool toggleSetting)
+    {
+        if (toggleSetting)
+        {
+            this.settingsCanvas.SetActive(true);
+            this.menuCam.enabled = true;
+            this.infoBox.SetActive(true);
+        }
+        else
+        {
+            StartCoroutine(LoadTestEnvironment());
+        }
+    }
+
+    IEnumerator LoadTestEnvironment()
+    {
+        if (SceneManager.sceneCount == 2)
+        {
+            testEnvironmentController.ReEnableTestEnvironment(this.sensitivitySlider.value);
+            DisableStuff(2);
+            yield break;
+        }
+        float progressNum = 0f;
+        DisableStuff(1);
+
+        AsyncOperation loadRoutine = SceneManager.LoadSceneAsync("MenuTestEnvironment", LoadSceneMode.Additive);
+        while (!loadRoutine.isDone)
+        {
+            progressNum = Mathf.RoundToInt(loadRoutine.progress / 0.9f * 100f);
+            yield return null;
+        }
+        DisableStuff(2);
+        this.testEnvironmentController = FindObjectOfType<TestEnvironmentController>();
+    }
+
+    void DisableStuff(int thing)
+    {
+        switch(thing)
+        {
+            case 1:
+                this.eventSystem.enabled = false;
+                this.baldiDevice.Stop();
+                this.musicDevice.Stop();
+                break;
+            case 2:
+                this.audioListener.enabled = false;
+                this.infoBox.SetActive(false);
+                this.settingsCanvas.SetActive(false);
+                this.menuCam.enabled = false;
+                break;
+        }
+    }
+
+    void SaveToSettingsFile()
     {
         BinaryFormatter bf = new BinaryFormatter();
         FileStream file = File.Create(this.dataPath);
@@ -219,93 +275,11 @@ public class SettingsContainer : MonoBehaviour
         Debug.Log("Settings file created");
     }
 
-    private void LoadAllUnlocks()
+    void LoadAllUnlocks()
     {
         SaveData_Challenge challengeData = OldSaveData.OldSaveDataLoader.LoadOldChallengeData();
         this.challengeMapUnlocks = challengeData.challengeUnlocks;
     }
-
-    /*
-    public void SaveSettingsData(int type)
-    {
-        BinaryFormatter bf = new BinaryFormatter();
-        FileStream file = File.Create(this.dataPath);
-        SettingsData data = new SettingsData();
-
-        switch(type)
-        {
-            case 1:
-                data.turnSensitivity = this.turnSensitivity;
-                data.isInstantReset = this.instantReset;
-                data.isNotifBoard = this.notifBoard;
-                data.volVoice = this.volumeVoice;
-                data.volBGM = this.volumeBGM;
-                data.volSFX = this.volumeSFX;
-                data.isAdditionalMusic = this.additionalMusic;
-            break;
-            case 2:
-                data.turnSensitivity = this.turnSensitivity;
-                data.volVoice = this.volumeVoice;
-                data.volBGM = this.volumeBGM;
-                data.volSFX = this.volumeSFX;
-            break;
-            default:
-                Debug.LogError("Failed to save settings");
-                file.Close();
-            return;
-        }
-        
-        bf.Serialize(file, data);
-        file.Close();
-        Debug.Log("saved settings");
-    }
-
-    public void LoadSettingsData(int type)
-    {
-        if (File.Exists(this.dataPath))
-        {
-            BinaryFormatter bf = new BinaryFormatter();
-            FileStream file = File.Open(this.dataPath, FileMode.Open);
-            SettingsData data = (SettingsData)bf.Deserialize(file);
-            file.Close();
-
-            switch(type)
-            {
-                case 1:
-                    this.turnSensitivity = data.turnSensitivity;
-                    this.instantReset = data.isInstantReset;
-                    this.notifBoard = data.isNotifBoard;
-                    this.volumeVoice = data.volVoice;
-                    this.volumeBGM = data.volBGM;
-                    this.volumeSFX = data.volSFX;
-                    this.additionalMusic = data.isAdditionalMusic;
-                break;
-                case 2:
-                    this.turnSensitivity = data.turnSensitivity;
-                    this.volumeVoice = data.volVoice;
-                    this.volumeBGM = data.volBGM;
-                    this.volumeSFX = data.volSFX;
-                break;
-                default:
-                    Debug.LogError("Failed to load settings.");
-                return;
-            }
-            Debug.Log("Loaded Settings");
-        }
-        else
-        {
-            Debug.LogError("Settings file not found, resetting to defaults...");
-            this.turnSensitivity = 0.2f;
-            this.instantReset = true;
-            this.notifBoard = false;
-            this.volumeVoice = 0f;
-            this.volumeBGM = 0f;
-            this.volumeSFX = 0f;
-            this.additionalMusic = false;
-            this.SaveSettingsData(1);
-        }
-    }
-    */
 
     [SerializeField] private string dataPath;
 
@@ -330,4 +304,15 @@ public class SettingsContainer : MonoBehaviour
     public string curMap;
     public int safeMode;
     public int difficultMath;
+
+    [Header("Test Environment stuff")]
+    [SerializeField] TestEnvironmentController testEnvironmentController;
+    [SerializeField] Camera menuCam;
+    [SerializeField] AudioListener audioListener;
+    [SerializeField] EventSystem eventSystem;
+    [SerializeField] GameObject settingsCanvas;
+    [SerializeField] GameObject infoBox;
+    [SerializeField] AudioSource baldiDevice;
+    [SerializeField] AudioSource musicDevice;
+    [SerializeField] Slider sensitivitySlider;
 }

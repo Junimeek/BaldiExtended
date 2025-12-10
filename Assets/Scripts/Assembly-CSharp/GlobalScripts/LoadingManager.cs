@@ -45,14 +45,16 @@ public class LoadingManager : MonoBehaviour
 
         loadingCanvas.SetActive(true);
 
-        if (loadType == 1) this.joe.color = new Color(1f, 1f, 1f, 0f);
-        else this.joe.color = new Color(1f, 1f, 1f, 1f);
+        if (loadType == 1)
+            this.joe.color = new Color(1f, 1f, 1f, 0f);
+        else
+            this.joe.color = new Color(1f, 1f, 1f, 1f);
 
         AsyncOperation op = SceneManager.LoadSceneAsync(targetScene);
 
         while (!op.isDone)
         {
-            curPercent = Mathf.RoundToInt((op.progress/0.9f)*100f);
+            curPercent = Mathf.RoundToInt(op.progress / 0.9f * 100f);
             barPercent.value = curPercent;
             percentageText.text = curPercent + "%";
             yield return null;

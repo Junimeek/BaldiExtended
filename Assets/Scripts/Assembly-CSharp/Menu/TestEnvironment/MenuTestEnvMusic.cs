@@ -8,6 +8,12 @@ public class MenuTestEnvMusic : MonoBehaviour
 
     void Start()
     {
+        StartLoop();
+    }
+
+    public void StartLoop()
+    {
+        this.audioDevice.Stop();
         this.audioDevice.clip = this.loopClip;
         this.audioDevice.loop = true;
         this.audioDevice.Play();
