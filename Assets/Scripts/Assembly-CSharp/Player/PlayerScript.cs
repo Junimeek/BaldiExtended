@@ -85,6 +85,13 @@ public class PlayerScript : MonoBehaviour
 		this.playerRotation = rotation;
 	}
 
+	public void LookAtExitDirection(Quaternion rotation)
+    {
+        rotation.x = 0f;
+		rotation.z = 0f;
+		this.playerRotation = rotation;
+    }
+
 	private void MouseMove()
 	{
 		this.playerRotation.eulerAngles = new Vector3(this.playerRotation.eulerAngles.x, this.playerRotation.eulerAngles.y, this.fliparoo);
@@ -98,6 +105,8 @@ public class PlayerScript : MonoBehaviour
 		Vector3 vector2;
 		vector = base.transform.forward * Input.GetAxis("Forward");
 		vector2 = base.transform.right * Input.GetAxis("Strafe");
+		Vector3 position1 = base.transform.position;
+		Vector3 position2 = base.transform.position;
 		if (this.stamina > 0f)
 		{
 			if (Input.GetButton("Run"))
@@ -128,14 +137,21 @@ public class PlayerScript : MonoBehaviour
 				this.sensitivity = 1f;
 		}
 
-		if (gc.isSlowmo)
-			this.playerSpeed *= this.playerDeltaTimeScale;
-		else
-			this.playerSpeed *= this.playerDeltaTimeScale;
+		this.playerSpeed *= Time.deltaTime;
 
 		this.moveDirection = (vector + vector2).normalized * this.playerSpeed * this.sensitivity;
 
-		if (!(!this.jumpRope & !this.sweeping & !this.hugging))
+		/*
+		if (this.hugging)
+        {
+            Transform prizeTransform = this.firstPrize.transform;
+			Vector3 forwardPrizePosition = prizeTransform.forward;
+			Vector3 huggingPlayerPosition = new Vector3(forwardPrizePosition.x * 3f, this.height, forwardPrizePosition.z * 3f);
+			this.moveDirection = huggingPlayerPosition;
+        }
+		*/
+
+		if (!(!this.jumpRope && !this.sweeping && !this.hugging))
 		{
 			if (this.sweeping && !this.bootsActive)
 				this.moveDirection = this.gottaSweep.velocity * Time.deltaTime + this.moveDirection * 0.3f;
@@ -146,7 +162,47 @@ public class PlayerScript : MonoBehaviour
 		}
 
 		this.cc.Move(this.moveDirection);
+		position1 = base.transform.position;
+
+		if (this.hugging)
+			this.curPlayerSpeed = firstPrize.velocity.magnitude;
+		else
+			this.curPlayerSpeed = playerSpeed * 100f;
+		//speedText.text = Mathf.CeilToInt(curPlayerSpeed).ToString();
 	}
+
+	void FixedUpdate()
+    {
+        
+    }
+
+	public void WarpPlayer(string warpLocation)
+    {
+		Vector3 newLocation = new Vector3();
+		this.cc.enabled = false;
+		this.hugging = false;
+		this.sweeping = false;
+		this.isInfiniteStamina = false;
+
+        switch(warpLocation)
+        {
+            case "detention":
+				newLocation = new Vector3(gc.detentionPlayerPos.x, this.height, gc.detentionPlayerPos.z);
+				LookAtCharacter("princey");
+				break;
+			case "crafters":
+				newLocation = new Vector3(this.craftersDestination.x, this.height, this.craftersDestination.z);
+				//this.baldi.AddNewSound(newLocation, 5);
+				break;
+        }
+		base.transform.position = newLocation;
+		this.cc.enabled = true;
+    }
+
+	public void SetCraftersDestination(Vector3 point)
+    {
+        this.craftersDestination = point;
+    }
 
 	private void StaminaCheck()
 	{
@@ -282,6 +338,14 @@ public class PlayerScript : MonoBehaviour
 		}
 	}
 
+	public bool CheckPlayerWindowState()
+    {
+        if (this.hugging && this.curPlayerSpeed > 39f)
+			return true;
+		else
+			return false;
+    }
+
 	public void ResetGuilt(string type, float amount)
 	{
 		if (amount >= this.guilt)
@@ -355,6 +419,8 @@ public class PlayerScript : MonoBehaviour
 	public bool hugging;
 	public bool bootsActive;
 	public int principalBugFixer;
+	[SerializeField] float curPlayerSpeed;
+	[SerializeField] TMPro.TMP_Text speedText;
 	[SerializeField] private Transform princeyPos;
 	public float sweepingFailsave;
 	[SerializeField] public float fliparoo;
@@ -393,6 +459,7 @@ public class PlayerScript : MonoBehaviour
 	public Canvas mobile2;
 	public bool isProjectileGrabbed;
 
+	public Vector3 craftersDestination;
 	[SerializeField] bool isInfiniteStamina;
 	[SerializeField] private float softStaminaCap;
 	[SerializeField] bool isSpeedShoes;

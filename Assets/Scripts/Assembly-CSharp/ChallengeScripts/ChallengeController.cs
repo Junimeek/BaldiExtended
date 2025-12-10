@@ -225,7 +225,6 @@ public class ChallengeController : MonoBehaviour
 			1, Hitclip(), 3, 3, 3, 3, 3, 3, 2, 1, 0
 		};
 
-        Debug.Log("Allowed projectiles: " + allowedProjectiles[hits]);
 		if (this.createdProjectiles < allowedProjectiles[hits])
 			this.CreateProjectile(1);
 	}

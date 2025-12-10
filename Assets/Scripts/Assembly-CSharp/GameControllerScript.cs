@@ -1474,7 +1474,33 @@ public class GameControllerScript : MonoBehaviour
 		}
 		return finalSource;
     }
-	
+
+	public void CraftersWarp(Vector3 telePlayer, Vector3 teleBaldi)
+    {
+		if (this.baldiScrpt.isActiveAndEnabled)
+			this.baldiScrpt.WarpToCrafterPoint(teleBaldi);
+		this.player.SetCraftersDestination(telePlayer);
+		this.player.WarpPlayer("crafters");
+		this.player.LookAtCharacter("baldi");
+		/*
+        EntranceScript[] exits = new EntranceScript[this.entranceList.Length];
+		int openExits = 0;
+		for (int i = 0; i < exits.Length; i++)
+        {
+			if (this.entranceList[i].GetExitState())
+            {
+                openExits++;
+				exits[i] = entranceList[i];
+            }
+        }
+		int exitID = Mathf.FloorToInt(UnityEngine.Random.Range(0f, openExits - 0.05f));
+		Vector3[] fetchedWarpPoints = this.craftersWarpPoints[exitID].GetCraftersWarpPoints();
+		this.baldiScrpt.WarpToCrafterPoint(fetchedWarpPoints[0]);
+		this.player.SetCraftersDestination(fetchedWarpPoints[1]);
+		this.player.WarpPlayer("crafters");
+		this.player.LookAtExitDirection(this.craftersWarpPoints[exitID].GetPlayerRotation(this.playerTransform.position));
+		*/
+    }
 
 	public void DespawnCrafters()
 	{
@@ -1808,6 +1834,7 @@ public class GameControllerScript : MonoBehaviour
 	[SerializeField] private GameObject curItem;
 	private Color masterTextColor;
 	public Transform[] entranceDarkSources;
+	public CraftersWarpPoints[] craftersWarpPoints;
 
 	[Header("UI")]
 	[HideInInspector] public Light[] playerFlashlights;

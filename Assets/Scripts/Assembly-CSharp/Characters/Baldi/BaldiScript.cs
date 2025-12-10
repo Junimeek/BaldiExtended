@@ -215,6 +215,11 @@ public class BaldiScript : MonoBehaviour
 		this.baldiTempAnger += value; //Increase Baldi's Temporary Anger
 	}
 
+	public void WarpToCrafterPoint(Vector3 point)
+    {
+        agent.Warp(point);
+    }
+
 	public void ActivateAntiHearing(float t)
 	{
 		this.ClearSoundList();

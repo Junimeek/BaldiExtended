@@ -3,18 +3,33 @@ using UnityEngine;
 
 public class WindowScript : MonoBehaviour
 {
-    private void Start()
+    void Start()
     {
         this.challengeController = FindObjectOfType<ChallengeController>();
         this.isBroken = false;
-        
-        Array.Resize(ref this.challengeController.windowBlockers, this.challengeController.windowBlockers.Length + 1);
-        this.challengeController.windowBlockers[this.challengeController.windowBlockers.Length - 1] = this.agentObstacle;
+        GameControllerScript gc = FindObjectOfType<GameControllerScript>();
+        this.player = gc.player;
+        this.baldi = gc.baldiScrpt;
+
+        if (gc.modeType == "nullStyle")
+        {
+            Array.Resize(ref this.challengeController.windowBlockers, this.challengeController.windowBlockers.Length + 1);
+            this.challengeController.windowBlockers[this.challengeController.windowBlockers.Length - 1] = this.agentObstacle;
+        }
     }
-    private void OnTriggerStay(Collider other)
+    
+    void OnTriggerStay(Collider other)
     {
         if (other.gameObject.name == "Baldi" && !this.isBroken)
             this.BreakWindow();
+        /*
+        else if (other.gameObject.tag == "Player" && player.CheckPlayerWindowState() && !this.isBroken)
+        {
+            if (baldi.isActiveAndEnabled)
+                baldi.AddNewSound(agentObstacle.transform.position, 3);
+            BreakWindow();
+        }
+        */
     }
 
     public void BreakWindow()
@@ -32,10 +47,12 @@ public class WindowScript : MonoBehaviour
     }
 
     ChallengeController challengeController;
-    [SerializeField] private MeshCollider[] barriers;
-    [SerializeField] private MeshRenderer[] windows;
-    [SerializeField] private Material brokenMatierial;
-    [SerializeField] private AudioSource audioDevice;
+    [SerializeField] MeshCollider[] barriers;
+    [SerializeField] MeshRenderer[] windows;
+    [SerializeField] Material brokenMatierial;
+    [SerializeField] AudioSource audioDevice;
     public GameObject agentObstacle;
     [HideInInspector] public bool isBroken;
+    [SerializeField] PlayerScript player;
+    [SerializeField] BaldiScript baldi;
 }

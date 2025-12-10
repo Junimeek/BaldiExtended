@@ -37,6 +37,7 @@ public class MasterController : MonoBehaviour
         gc.fpsCounter = this.fpsCounter;
         gc.mapScript = this.mapCameraScript;
         gc.playerFlashlights = this.playerFlashlights;
+        gc.craftersWarpPoints = this.craftersWarpPoints;
         notifboardScript.gc = this.gc;
         notifboardScript.ruleText = this.notifRuleText;
         notifboardScript.detentionText = this.notifDetentionText;
@@ -73,6 +74,7 @@ public class MasterController : MonoBehaviour
     };
     public forceMode gameMode;
     [HideInInspector] public string modeSetting;
+    [SerializeField] CraftersWarpPoints[] craftersWarpPoints;
     public Transform attendanceOfficeLocation;
     public Vector3 detentionPlayerPosition;
     public Vector3 detentionPrincipalPosition;

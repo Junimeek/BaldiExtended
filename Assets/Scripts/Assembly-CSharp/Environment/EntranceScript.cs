@@ -2,13 +2,14 @@
 
 public class EntranceScript : MonoBehaviour
 {
-	private void Start()
+	void Start()
 	{
 		this.isMapOn = true;
+		this.isUp = false;
 		this.ToggleMapIcon();
 	}
 
-	private void Update()
+	void Update()
 	{
 		if (Input.GetKeyDown(KeyCode.Tab))
 			this.ToggleMapIcon();
@@ -17,6 +18,7 @@ public class EntranceScript : MonoBehaviour
 	public void Lower()
 	{
 		base.transform.position = base.transform.position - new Vector3(0f, 10f, 0f);
+		this.isUp = false;
 		
 		if (this.gc.finaleMode && gc.exitsReached >= 1)
 		{
@@ -47,9 +49,10 @@ public class EntranceScript : MonoBehaviour
 			base.transform.position = base.transform.position + new Vector3(0f, 10f, 0f);
 			
 		this.mapSprite.color = new Color(0f, 1f, 0f, this.mapSprite.color.a);
+		this.isUp = true;
 	}
 
-	private void ToggleMapIcon()
+	void ToggleMapIcon()
 	{
 		if (this.isMapOn)
 		{
@@ -63,6 +66,11 @@ public class EntranceScript : MonoBehaviour
 		}
 	}
 
+	public bool GetExitState()
+    {
+        return this.isUp;
+    }
+
 	[SerializeField] private bool allowMap;
 	public GameControllerScript gc;
 	public Material map;
@@ -72,4 +80,5 @@ public class EntranceScript : MonoBehaviour
 	[SerializeField] private SpriteRenderer mapSprite;
 	[SerializeField] private Sprite closedSprite;
 	private bool isMapOn;
+	bool isUp;
 }

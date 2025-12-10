@@ -95,13 +95,9 @@ public class CraftersScript : MonoBehaviour
 
 	private void OnTriggerEnter(Collider other)
 	{
-		if (other.tag == "Player" & this.angry) // If arts is angry and is touching the player
+		if (other.tag == "Player" && this.angry) // If arts is angry and is touching the player
 		{
-			this.cc.enabled = false;
-			this.player.position = new Vector3(this.playerTeleLocation.x, this.player.position.y, this.playerTeleLocation.z); // Teleport the player to X: 5, their current Y position, Z: 80
-			this.baldiAgent.Warp(new Vector3(this.baldiTeleLocation.x, this.baldi.position.y, this.baldiTeleLocation.z)); // Teleport Baldi to X: 5, baldi's Y, Z: 125
-			this.playerScript.LookAtCharacter("baldi"); // Make the player look at baldi
-			this.cc.enabled = true;
+			this.gc.CraftersWarp(this.playerTeleLocation, this.baldiTeleLocation);
 			this.gc.DespawnCrafters(); // Despawn Arts And Crafters
 		}
 	}

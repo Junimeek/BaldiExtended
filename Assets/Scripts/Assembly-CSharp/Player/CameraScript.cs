@@ -31,9 +31,6 @@ public class CameraScript : MonoBehaviour
 			this.zoom = 15;
 		else
 			this.zoom = 60;
-
-		if (Input.GetKeyDown(KeyCode.DownArrow))
-			this.gravity = 20f;
 	}
 
 	private void LateUpdate()

@@ -1,3 +1,11 @@
+### v0.5.3 ###
+Gameplay Changes:
+Playtime and 1st Prize spawn in slightly different locations in the Classic Extended map
+
+Bug Fixes:
+Removed a debug function that I accidentally enabled in the last build
+
+
 ### v0.5.2 ###
 Major Future Change:
 Beta 0.6 will change how save files work. When 0.6 is released, you will be prompted about the changes in the Launcher (note that an internet connection is required for this to work). Follow the instructions it gives you to update your save files before you update to 0.6.
