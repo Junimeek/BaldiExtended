@@ -12,10 +12,10 @@ public class BaldiScript : MonoBehaviour
 
 	private void Start()
 	{
-		this.baldiAudio = base.GetComponent<AudioSource>(); //Get The Baldi Audio Source(Used mostly for the slap sound)
-		this.agent = base.GetComponent<NavMeshAgent>(); //Get the Nav Mesh Agent
-		this.timeToMove = this.baseTime; //Sets timeToMove to baseTime
-		this.Wander(); //Start wandering
+		this.baldiAudio = base.GetComponent<AudioSource>();
+		this.agent = base.GetComponent<NavMeshAgent>();
+		this.timeToMove = this.baseTime;
+		this.Wander();
 
 		this.ClearSoundList();
 
@@ -29,7 +29,12 @@ public class BaldiScript : MonoBehaviour
 			this.baldiSpeedScale = this.speedFactorOverride;
 
 		if (this.gc.isSafeMode)
+		{
 			this.baldiAnimator.SetTrigger("ghostSlap");
+			this.niceMode = true;
+			StartCoroutine(this.DelayedSpeechStart());
+			this.ResetSpeechTimer();
+		}
 		
 		if (this.gc.modeType == "nullStyle")
 		{
@@ -41,32 +46,32 @@ public class BaldiScript : MonoBehaviour
 
 	private void Update()
 	{
-		if (this.timeToMove > 0f) //If timeToMove is greater then 0, decrease it
+		if (this.timeToMove > 0f)
 			this.timeToMove -= 1f * Time.deltaTime;
 
 		else
 		{
 			if (this.baldiAnger == 0) this.timeToMove = 3f;
 			else this.timeToMove = this.baldiWait - this.baldiTempAnger;
-			this.Move(); //Start moving
+			this.Move();
 		}
 
-		if (this.coolDown > 0f) //If coolDown is greater then 0, decrease it
+		if (this.coolDown > 0f)
 			this.coolDown -= 1f * Time.deltaTime;
 
-		if (this.baldiTempAnger > 0f) //Slowly decrease Baldi's temporary anger over time.
+		if (this.baldiTempAnger > 0f)
 			this.baldiTempAnger -= 0.02f * Time.deltaTime;
 		else
-			this.baldiTempAnger = 0f; //Cap its lowest value at 0
+			this.baldiTempAnger = 0f;
 
-		if (this.antiHearingTime > 0f) //Decrease antiHearingTime, then when it runs out stop the effects of the antiHearing tape
+		if (this.antiHearingTime > 0f)
 			this.antiHearingTime -= Time.deltaTime;
 		else
 			this.antiHearing = false;
 
-		if (this.endless) //Only activate if the player is playing on endless mode
+		if (this.endless)
 		{
-			if (this.timeToAnger > 0f) //Decrease the timeToAnger
+			if (this.timeToAnger > 0f)
 				this.timeToAnger -= 1f * Time.deltaTime;
 			else
 			{
@@ -81,27 +86,35 @@ public class BaldiScript : MonoBehaviour
 		else if (this.sightCooldown > 0f)
 			this.sightCooldown -= Time.deltaTime;
 		
-		if (this.isNullMode)
+		if (this.isNullMode || this.niceMode)
 			this.speechTimer -= Time.deltaTime;
 
 		if (this.isNullMode && this.db && this.playerScript.stamina <= 0f && this.gc.IsNoItems()
 		&& this.baldiAnger >= 5 && this.speechTimer < 61f && !this.longAudioDevice.isPlaying)
 		{
 			this.StartCoroutine(this.NullSight());
-			this.longAudioDevice.PlayOneShot(this.nullSpeech[5]);
+			this.longAudioDevice.PlayOneShot(this.randomSpeechList[5]);
 		}
 
-		if (this.isNullMode && this.speechTimer < 0f)
+		if (this.speechTimer < 0f)
 		{
-			if (!this.db && this.currentPriority == 0)
+			if (this.isNullMode)
 			{
-				this.ResetSpeechTimer();
-				this.longAudioDevice.PlayOneShot(this.nullSpeech[6]);
+				if (!this.db && this.currentPriority == 0)
+				{
+					this.ResetSpeechTimer();
+					this.longAudioDevice.PlayOneShot(this.randomSpeechList[6]);
+				}
+				else
+				{
+					this.ResetSpeechTimer();
+					this.baldiAudio.PlayOneShot(this.randomSpeechList[this.RandomSpeech()]);
+				}
 			}
-			else
+			else if (this.niceMode && !this.db && this.currentPriority == 0)
 			{
 				this.ResetSpeechTimer();
-				this.baldiAudio.PlayOneShot(this.nullSpeech[this.RandomSpeech()]);
+				this.longAudioDevice.PlayOneShot(this.randomSpeechList[3]);
 			}
 		}
 	}
@@ -114,6 +127,17 @@ public class BaldiScript : MonoBehaviour
 	private int RandomSpeech()
 	{
 		return Mathf.RoundToInt(UnityEngine.Random.Range(0f, 4f));
+	}
+
+	IEnumerator DelayedSpeechStart()
+	{
+		float tempTimer = 0.2f;
+		while (tempTimer > 0f)
+		{
+			tempTimer -= Time.deltaTime;
+			yield return null;
+		}
+		this.baldiAudio.PlayOneShot(this.randomSpeechList[0]);
 	}
 
 	private IEnumerator NullSight()
@@ -382,7 +406,7 @@ public class BaldiScript : MonoBehaviour
 	[SerializeField] ChallengeController challengeController;
 	[SerializeField] private bool isNullMode;
 	public bool allowWindowBreaking;
-	[SerializeField] private AudioClip[] nullSpeech;
+	[SerializeField] private AudioClip[] randomSpeechList;
 	[SerializeField] private AudioSource longAudioDevice;
 	[SerializeField] private float speechTimer;
 
@@ -392,6 +416,9 @@ public class BaldiScript : MonoBehaviour
 	[SerializeField] private float angerRateRate;
 	[SerializeField] private float angerFrequency;
 	[SerializeField] private float timeToAnger;
+
+	[Header("Other stuff")]
+	[SerializeField] bool niceMode;
 
 	[Space(20f)]
 	public bool db;
@@ -418,7 +445,6 @@ public class BaldiScript : MonoBehaviour
 	public Animator baldiAnimator;
 	public float coolDown;
 	[SerializeField] private Vector3 previous;
-	private bool rumble;
 	private NavMeshAgent agent;
 	private GameControllerScript gc;
 	public GameObject alarmClock;

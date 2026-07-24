@@ -732,18 +732,17 @@ public class GameControllerScript : MonoBehaviour
 
 	public void ActivateSpoopMode()
 	{
-		this.spoopMode = true; //Tells the game its time for spooky
-		this.ModifyExits("lower"); //Lowers all the exits
-		this.baldiTutor.SetActive(false); //Turns off Baldi(The one that you see at the start of the game)
-		this.baldi.SetActive(true); //Turns on Baldi
-        this.principal.SetActive(true); //Turns on Principal
-        this.crafters.SetActive(true); //Turns on Crafters
-        this.playtime.SetActive(true); //Turns on Playtime
-        this.gottaSweep.SetActive(true); //Turns on Gotta Sweep
-        this.bully.SetActive(true); //Turns on Bully
-        this.firstPrize.SetActive(true); //Turns on First-Prize
-		//this.TestEnemy.SetActive(true); //Turns on Test-Enemy
-		MusicPlayer(0);
+		this.spoopMode = true;
+		this.ModifyExits("lower");
+		this.baldiTutor.SetActive(false);
+		this.baldi.SetActive(true);
+        this.principal.SetActive(true);
+        this.crafters.SetActive(true);
+        this.playtime.SetActive(true);
+        this.gottaSweep.SetActive(true);
+        this.bully.SetActive(true);
+        this.firstPrize.SetActive(true);
+		this.MusicPlayer(0);
 		this.mathMusicScript.StopSong();
 		this.audioDevice.PlayOneShot(this.aud_Hang);
 		this.crafterScript = FindObjectOfType<CraftersScript>();
@@ -753,7 +752,10 @@ public class GameControllerScript : MonoBehaviour
 	public void ActivateSafeMode()
 	{
 		if (!this.isGameFail && this.notebooks < 3)
+		{
 			this.baldi.SetActive(true);
+			this.baldiTutor.SetActive(false);
+		}
 
 		this.principal.SetActive(true);
         this.crafters.SetActive(true);
@@ -815,8 +817,9 @@ public class GameControllerScript : MonoBehaviour
 	public void EndSafeGame()
 	{
 		this.isGameFail = true;
+		this.safeBaldi.SetActive(true);
+		this.safeBaldi.transform.position = this.baldi.transform.position;
 		this.baldi.SetActive(false);
-		this.audioDevice.PlayOneShot(this.aud_Hang);
 	}
 
 	public void UpdateExitCount()
@@ -1113,16 +1116,14 @@ public class GameControllerScript : MonoBehaviour
 					Ray ray8 = Camera.main.ScreenPointToRay(new Vector3((float)(Screen.width / 2), (float)(Screen.height / 2), 0f));
 					RaycastHit raycastHit8;
 					if (Physics.Raycast(ray8, out raycastHit8) && Vector3.Distance(this.playerTransform.position, raycastHit8.transform.position) <= 10f
-					&& raycastHit8.collider.tag == "BreakableWindow")
+					&& raycastHit8.collider.CompareTag("BreakableWindow"))
 					{
 						WindowScript window = raycastHit8.collider.gameObject.GetComponent<WindowScript>();
 						if (!window.isBroken)
 						{
 							if (this.baldiScrpt.isActiveAndEnabled)
 								this.baldiScrpt.AddNewSound(window.agentObstacle.transform.position, 3);
-								
 							window.BreakWindow();
-							this.audioDevice.PlayOneShot(this.aud_GlassBreak, 0.8f);
 							this.ResetItem(17);
 							this.handIconScript.ChangeIcon(0);
 						}
@@ -1873,6 +1874,7 @@ public class GameControllerScript : MonoBehaviour
 	[Header("Characters")]
 	public GameObject baldiTutor;
 	public GameObject baldi;
+	[SerializeField] GameObject safeBaldi;
 	public GameObject principal;
 	public GameObject crafters;
 	public GameObject playtime;
@@ -1978,7 +1980,6 @@ public class GameControllerScript : MonoBehaviour
 	[SerializeField] private AudioClip quietNoiseLoop;
 	[SerializeField] private AudioClip glambience;
 	[SerializeField] private AudioClip aud_BalloonPop;
-	[SerializeField] private AudioClip aud_GlassBreak;
 	[SerializeField] private AudioClip aud_NotebookCollect;
 	[SerializeField] private AudioClip aud_ItemCollect;
 	[SerializeField] private AudioClip aud_CoinCollect;

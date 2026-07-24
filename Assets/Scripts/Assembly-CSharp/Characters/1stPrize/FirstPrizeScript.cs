@@ -46,7 +46,7 @@ public class FirstPrizeScript : MonoBehaviour
 		}
 		this.motorAudio.pitch = (this.agent.velocity.magnitude + 1f) * Time.timeScale;
 
-		this.prizeSpeed = this.agent.speed;
+		this.actualSpeed = agent.velocity.magnitude;
 		//if (this.prevSpeed - this.agent.velocity.magnitude > 15f)
 		//{
 		//	this.audioDevice.PlayOneShot(this.audBang);
@@ -58,6 +58,17 @@ public class FirstPrizeScript : MonoBehaviour
 	{
 		if (this.isDisabled || this.isParty)
 			return;
+		
+		RaycastHit windowRayCastHit;
+		bool windowRayCast = Physics.Raycast(base.transform.position, base.transform.rotation * Vector3.forward, out windowRayCastHit, float.PositiveInfinity);
+		if (this.actualSpeed > 30f && windowRayCast && windowRayCastHit.transform.CompareTag("BreakableWindow"))
+		{
+			if ((base.transform.position - windowRayCastHit.transform.position).magnitude < 3.5f)
+			{
+				WindowScript windowScript = windowRayCastHit.transform.GetComponent<WindowScript>();
+				windowScript.FirstPrizeHit();
+			}
+		}
 
 		Vector3 direction = this.player.position - base.transform.position;
 		RaycastHit raycastHit;
@@ -85,7 +96,7 @@ public class FirstPrizeScript : MonoBehaviour
 				this.playerSeen = false;
 				this.Wander();
 			}
-			else if (this.agent.velocity.magnitude <= 1f & this.coolDown <= 0f & (base.transform.position - this.agent.destination).magnitude < 5f)
+			else if (this.actualSpeed <= 1f & this.coolDown <= 0f & (base.transform.position - this.agent.destination).magnitude < 5f)
 			{
 				this.Wander();
 			}
@@ -184,5 +195,5 @@ public class FirstPrizeScript : MonoBehaviour
 	public bool isDisabled;
 	public bool isParty;
 	private GameControllerScript gc;
-	public float prizeSpeed;
+	[SerializeField] float actualSpeed;
 }

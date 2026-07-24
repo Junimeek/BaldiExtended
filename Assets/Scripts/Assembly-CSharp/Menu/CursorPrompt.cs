@@ -59,7 +59,7 @@ public class CursorPrompt : MonoBehaviour
                 this.text.text = "Censors swearing in minor details";
                 break;
             case 2.4f:
-                this.text.text = "If this is enabled, Schoolhouse Trouble will play in the background during normal Story Mode gameplay.";
+                this.text.text = "Plays background music during Story Mode and Endless Mode gameplay.";
                 break;
             case 2.5f:
                 this.promptParent.pivot = new Vector2(6f * this.positionMultiplier, 1.1f * this.positionMultiplier);

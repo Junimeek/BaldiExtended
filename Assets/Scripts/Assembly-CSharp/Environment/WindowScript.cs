@@ -14,22 +14,30 @@ public class WindowScript : MonoBehaviour
         if (gc.modeType == "nullStyle")
         {
             Array.Resize(ref this.challengeController.windowBlockers, this.challengeController.windowBlockers.Length + 1);
-            this.challengeController.windowBlockers[this.challengeController.windowBlockers.Length - 1] = this.agentObstacle;
+            this.challengeController.windowBlockers[^1] = this.agentObstacle;
         }
     }
     
     void OnTriggerStay(Collider other)
     {
         if (other.gameObject.name == "Baldi" && !this.isBroken)
-            this.BreakWindow();
-        /*
-        else if (other.gameObject.tag == "Player" && player.CheckPlayerWindowState() && !this.isBroken)
+            BreakWindow();
+        else if (other.gameObject.CompareTag("Player") && player.CheckPlayerWindowState() && !this.isBroken)
+        {
+            BreakWindow();
+            if (baldi.isActiveAndEnabled)
+                baldi.AddNewSound(agentObstacle.transform.position, 3);
+        }
+    }
+
+    public void FirstPrizeHit()
+    {
+        if (!this.isBroken)
         {
             if (baldi.isActiveAndEnabled)
                 baldi.AddNewSound(agentObstacle.transform.position, 3);
             BreakWindow();
         }
-        */
     }
 
     public void BreakWindow()
@@ -53,6 +61,6 @@ public class WindowScript : MonoBehaviour
     [SerializeField] AudioSource audioDevice;
     public GameObject agentObstacle;
     [HideInInspector] public bool isBroken;
-    [SerializeField] PlayerScript player;
-    [SerializeField] BaldiScript baldi;
+    PlayerScript player;
+    BaldiScript baldi;
 }

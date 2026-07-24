@@ -263,7 +263,7 @@ MonoBehaviour:
   m_PixelsPerUnitMultiplier: 1
 --- !u!95 &95577681448161251
 Animator:
-  serializedVersion: 4
+  serializedVersion: 5
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -280,7 +280,8 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &1172220804185963
 GameObject:
   m_ObjectHideFlags: 0
@@ -1721,6 +1722,7 @@ Canvas:
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
   m_AdditionalShaderChannelsFlag: 25
   m_SortingLayerID: 0
   m_SortingOrder: 10
@@ -1780,7 +1782,6 @@ MonoBehaviour:
   gc: {fileID: 0}
   baldiScript: {fileID: 0}
   playerPosition: {x: 0, y: 0, z: 0}
-  mathGame: {fileID: 1621128418378796}
   results:
   - {fileID: 114708224925366789}
   - {fileID: 114715900937520998}
@@ -1819,13 +1820,21 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 85da2e45958508a49b2eca56a1d7982f, type: 3}
   - {fileID: 8300000, guid: 07d9e3b8994df65408b5ac1de4e22efd, type: 3}
   - {fileID: 8300000, guid: d5beff9b4de80e0478fb96e13843a693, type: 3}
+  - {fileID: 8300000, guid: e89f9673e14d18e498d2d58ca0eefe5a, type: 3}
+  - {fileID: 8300000, guid: c9cc1241ea1e01545a605ebee0c00957, type: 3}
+  - {fileID: 8300000, guid: 2953b44750479374c860601fa73c057c, type: 3}
+  bal_comfort:
+  - {fileID: 8300000, guid: 615c367edd75e994ea5f3ec5854d3330, type: 3}
+  - {fileID: 8300000, guid: 85170a1b08ca6004aa99f8a850321bb3, type: 3}
+  - {fileID: 8300000, guid: 85b7c9d7ef9f1e44ca2d084772e354e1, type: 3}
+  - {fileID: 8300000, guid: 02d83d72a4e7acd4f8cad5e522bbdfd5, type: 3}
   bal_problems:
   - {fileID: 8300000, guid: 625133ce2d083ef4fa81f24662773433, type: 3}
   - {fileID: 8300000, guid: 4ddf52b9d9fb35f41939ffb24658e4a0, type: 3}
   - {fileID: 8300000, guid: dc35e3c10b2c71a4996d521f66838e05, type: 3}
-  firstButton: {fileID: 114077775041605245}
   problem: 0
   impossibleMode: 0
+  difficultMath: 0
   audioQueue:
   - {fileID: 0}
   - {fileID: 0}
@@ -1847,13 +1856,8 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
-  baldiAudio: {fileID: 82212521532976993}
   mathMusicScript: {fileID: 0}
-  colonge: {fileID: 8300000, guid: b5488fa7640f3db4db9de1762365b1ab, type: 3}
-  dash: {fileID: 8300000, guid: 38f6e5a2414e82b4f990dcd9751951e0, type: 3}
-  spider: {fileID: 956797308909029360}
   speedrunText: {fileID: 7652717387918160349}
-  isKitsune: 0
 --- !u!82 &82212521532976993
 AudioSource:
   m_ObjectHideFlags: 0

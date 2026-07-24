@@ -4,6 +4,7 @@ using UnityEngine;
 using UpgradeSystem;
 using OldSaveData;
 using TMPro;
+using UnityEngine.UI;
 
 public class Launcher : MonoBehaviour
 {
@@ -22,7 +23,7 @@ public class Launcher : MonoBehaviour
         this.errorCanvas.SetActive(false);
         this.presentFiles = new bool[4];
 
-        this.StartCoroutine(this.WaitForStart());
+        quiltedTerminal.BeginGameBoot();
 
         if (Application.platform == RuntimePlatform.WindowsEditor || Application.platform == RuntimePlatform.LinuxEditor)
             this.versionText.text = "EDITOR\n";
@@ -38,6 +39,11 @@ public class Launcher : MonoBehaviour
 
         this.savePath = Application.persistentDataPath + "/BaldiData/";
         this.FileChecks();
+    }
+
+    public void FinalBoot()
+    {
+        this.StartCoroutine(this.WaitForStart());
     }
 
     void FileChecks()
@@ -148,8 +154,10 @@ public class Launcher : MonoBehaviour
                             this.audioDevice.PlayOneShot(this.acceptSound);
                             break;
                         case 3: // Quit Game
+                            this.audioDevice.Stop();
                             this.audioDevice.PlayOneShot(this.quitSound);
-                            this.StartCoroutine(this.WaitForQuit(1.2f));
+                            quiltedTerminal.QuitGame();
+                            launcherCanvas.SetActive(false);
                             break;
                         case 6: // Open File Management
                             this.audioDevice.PlayOneShot(this.acceptSound);
@@ -189,6 +197,9 @@ public class Launcher : MonoBehaviour
     {
         float time = 0.5f;
         this.isLaunching = true;
+
+        mainButtons[0].interactable = false;
+        mainButtons[1].interactable = false;
 
         while (time > 0f)
         {
@@ -339,6 +350,7 @@ public class Launcher : MonoBehaviour
     }
 
     [SerializeField] bool enableJsonEncryption;
+    [SerializeField] QuiltedTerminal quiltedTerminal;
     [SerializeField] SaveDataContainer dataContainer;
     [SerializeField] private LoadingManager loadingManager;
     [SerializeField] private VersionCheck updateScript;
@@ -381,4 +393,5 @@ public class Launcher : MonoBehaviour
     [SerializeField] private GameObject errorCanvas;
     [SerializeField] private TMP_Text errorText;
     [SerializeField] private TMP_Text versionText;
+    [SerializeField] Button[] mainButtons;
 }

@@ -7,10 +7,14 @@ using UnityEngine.UI;
 
 public class MathGameScript : MonoBehaviour
 {
+    private void OnEnable()
+    {
+        this.mathMusicScript = FindObjectOfType<MathMusicScript>();
+        this.baldiAudio = base.GetComponent<AudioSource>();
+    }
+
     private void Start()
     {   
-        this.mathMusicScript = FindObjectOfType<MathMusicScript>();
-
         this.gc.ActivateLearningGame();
         this.problem = 0;
 
@@ -42,7 +46,7 @@ public class MathGameScript : MonoBehaviour
         else
             this.baldiFeed.SetBool("talking", true);
         
-        if ((Input.GetKeyDown("return") || Input.GetKeyDown("enter")) & this.questionInProgress)
+        if ((Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter)) && this.questionInProgress)
         {
             this.questionInProgress = false;
             this.CheckAnswer();
@@ -145,17 +149,26 @@ public class MathGameScript : MonoBehaviour
                     case 5:
                         this.endDelay = 4.6f;
                         break;
+                    case 6:
+                        this.endDelay = 1.9f;
+                        break;
+                    case 7:
+                        this.endDelay = 2.2f;
+                        break;
+                    case 8:
+                        this.endDelay = 1.6f;
+                        break;
+                    default:
+                        this.endDelay = 2f;
+                        break;
                 }
 
                 this.questionText.text = "WOW! YOU EXIST!";
 
-                if (gc.isSafeMode)
+                if (gc.isSafeMode && this.problemsWrong >= 3)
                 {
-                    if (this.problemsWrong >= 3)
-                    {
-                        this.endDelay = 1.5f;
-                        this.gc.failedNotebooks++;
-                    }
+                    this.endDelay = 2.8f;
+                    this.gc.failedNotebooks++;
                 }
             }
             else if (this.gc.mode == "endless" & this.problemsWrong <= 0)
@@ -195,7 +208,7 @@ public class MathGameScript : MonoBehaviour
 
                 if (this.gc.isSafeMode)
                 {
-                    this.endDelay = 1.5f;
+                    this.endDelay = 2.8f;
                     this.questionText.text = "It's ok, everyone makes mistakes.";
                 }
                 else
@@ -495,20 +508,28 @@ public class MathGameScript : MonoBehaviour
                 this.results[this.problem - 1].texture = this.correct;
                 this.baldiAudio.Stop();
                 this.ClearAudioQueue();
-                int num = Mathf.RoundToInt(UnityEngine.Random.Range(0f, 5f));
+                int num = Mathf.RoundToInt(UnityEngine.Random.Range(0f, bal_praises.Length - 1f));
                 this.randompraise = num;
                 this.QueueAudio(this.bal_praises[num]);
                 this.NewProblem();
             }
             else
             {
+                this.ClearAudioQueue();
+                this.baldiAudio.Stop();
                 this.problemsWrong++;
                 this.results[this.problem - 1].texture = this.incorrect;
 
                 if (this.gc.isSafeMode)
                 {
-                    this.baldiAudio.Stop();
                     this.gc.ActivateSafeMode();
+                    int num;
+                    if (this.problem == 3)
+                        num = 3;
+                    else
+                        num = Mathf.RoundToInt(UnityEngine.Random.Range(0f, bal_comfort.Length - 2f));
+                    this.randompraise = num;
+                    this.QueueAudio(this.bal_comfort[num]);
                 }
                 else if (!this.gc.spoopMode)
                 {
@@ -528,8 +549,6 @@ public class MathGameScript : MonoBehaviour
                     this.baldiScript.GetAngry(1f);
                 }
 
-                this.ClearAudioQueue();
-                this.baldiAudio.Stop();
                 this.NewProblem();
             }
         }
@@ -578,11 +597,11 @@ public class MathGameScript : MonoBehaviour
     {
         if (value >= 0 & value <= 9)
         {
-            this.playerAnswer.text = this.playerAnswer.text + value;
+            this.playerAnswer.text += value;
         }
         else if (value == -1)
         {
-            this.playerAnswer.text = this.playerAnswer.text + "-";
+            this.playerAnswer.text += "-";
         }
         else
         {
@@ -605,59 +624,57 @@ public class MathGameScript : MonoBehaviour
     public GameControllerScript gc;
     public BaldiScript baldiScript;
     public Vector3 playerPosition;
-    public GameObject mathGame;
-    public RawImage[] results = new RawImage[3];
-    public Texture correct;
-    public Texture incorrect;
-    public TMP_InputField playerAnswer;
-    public TMP_Text questionText;
-    public TMP_Text questionText2;
-    public TMP_Text questionText3;
-    public Animator baldiFeed;
-    public Transform baldiFeedTransform;
-    public AudioClip bal_plus;
-    public AudioClip bal_minus;
-    public AudioClip bal_times;
-    public AudioClip bal_divided;
-    public AudioClip bal_equals;
-    public AudioClip bal_howto;
-    public AudioClip bal_intro;
-    public AudioClip bal_screech;
-    public AudioClip[] bal_numbers = new AudioClip[10];
-    public AudioClip[] bal_praises = new AudioClip[5];
-    public AudioClip[] bal_problems = new AudioClip[3];
-    public Button firstButton;
-    private float endDelay;
-    public int problem;
-    private int audioInQueue;
-    private float solution;
-    private string[] hintText = new string[]
+    [SerializeField] RawImage[] results = new RawImage[3];
+    [SerializeField] Texture correct;
+    [SerializeField] Texture incorrect;
+    [SerializeField] TMP_InputField playerAnswer;
+    [SerializeField] TMP_Text questionText;
+    [SerializeField] TMP_Text questionText2;
+    [SerializeField] TMP_Text questionText3;
+    [SerializeField] Animator baldiFeed;
+    [SerializeField] Transform baldiFeedTransform;
+    [SerializeField] AudioClip bal_plus;
+    [SerializeField] AudioClip bal_minus;
+    [SerializeField] AudioClip bal_times;
+    [SerializeField] AudioClip bal_divided;
+    [SerializeField] AudioClip bal_equals;
+    [SerializeField] AudioClip bal_howto;
+    [SerializeField] AudioClip bal_intro;
+    [SerializeField] AudioClip bal_screech;
+    [SerializeField] AudioClip[] bal_numbers;
+    [SerializeField] AudioClip[] bal_praises;
+    [SerializeField] AudioClip[] bal_comfort;
+    [SerializeField] AudioClip[] bal_problems;
+    float endDelay;
+    [SerializeField] int problem;
+    int audioInQueue;
+    float solution;
+    readonly string[] hintText = new string[]
     {
         "I GET ANGRIER FOR EVERY PROBLEM YOU GET WRONG",
         "I HEAR EVERY DOOR YOU OPEN",
         "(placeholder text; remember to fill in later)"
     };
 
-    private string[] endlessHintText = new string[]
+    readonly string[] endlessHintText = new string[]
     {
         "That's more like it...",
         "Keep up the good work or see me after class..."
     };
 
-    private string[] safeText = new string[]
+    readonly string[] safeText = new string[]
     {
         "Looks like you might need a little help...",
         "Please see me after class..."
     };
 
-    private bool questionInProgress;
+    bool questionInProgress;
     [SerializeField] private bool impossibleMode;
     [SerializeField] private bool difficultMath;
-    private bool joystickEnabled;
-    private int problemsWrong;
+    int problemsWrong;
     [SerializeField] private AudioClip[] audioQueue = new AudioClip[20];
-    public AudioSource baldiAudio;
-    private int randompraise;
+    AudioSource baldiAudio;
+    int randompraise;
     [SerializeField] private MathMusicScript mathMusicScript;
     [SerializeField] private TMP_Text speedrunText;
 }

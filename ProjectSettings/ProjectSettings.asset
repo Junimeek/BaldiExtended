@@ -716,11 +716,11 @@ PlayerSettings:
   apiCompatibilityLevel: 6
   activeInputHandler: 0
   windowsGamepadBackendHint: 0
-  cloudProjectId: 
+  cloudProjectId: 0c94bf0f-ec3c-46e5-a15a-24dba8771a3b
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
-  projectName: 
-  organizationId: 
+  projectName: Baldi's Extended Schoolhouse
+  organizationId: junimeek
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0
   playerDataPath: 

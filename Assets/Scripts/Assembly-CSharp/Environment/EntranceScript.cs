@@ -17,7 +17,11 @@ public class EntranceScript : MonoBehaviour
 
 	public void Lower()
 	{
-		base.transform.position = base.transform.position - new Vector3(0f, 10f, 0f);
+		if (moveDistance == 0f)
+			base.transform.position -= new Vector3(0f, 10f, 0f);
+		else
+			base.transform.position -= new Vector3(0f, moveDistance, 0f);
+		
 		this.isUp = false;
 		
 		if (this.gc.finaleMode && gc.exitsReached >= 1)
@@ -46,8 +50,13 @@ public class EntranceScript : MonoBehaviour
 	public void Raise()
 	{
 		if (!gc.isSafeMode)
-			base.transform.position = base.transform.position + new Vector3(0f, 10f, 0f);
-			
+		{
+			if (moveDistance == 0f)
+				base.transform.position += new Vector3(0f, 10f, 0f);
+			else
+				base.transform.position += new Vector3(0f, moveDistance, 0f);
+		}
+		
 		this.mapSprite.color = new Color(0f, 1f, 0f, this.mapSprite.color.a);
 		this.isUp = true;
 	}
@@ -71,7 +80,11 @@ public class EntranceScript : MonoBehaviour
         return this.isUp;
     }
 
-	[SerializeField] private bool allowMap;
+	[Header("Configuration")]
+	[SerializeField] bool allowMap;
+	[SerializeField] float moveDistance;
+	
+	[Space(20f)]
 	public GameControllerScript gc;
 	public Material map;
 	public MeshRenderer wall;

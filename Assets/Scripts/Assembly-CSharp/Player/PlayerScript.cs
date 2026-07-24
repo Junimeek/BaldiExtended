@@ -165,10 +165,9 @@ public class PlayerScript : MonoBehaviour
 		position1 = base.transform.position;
 
 		if (this.hugging)
-			this.curPlayerSpeed = firstPrize.velocity.magnitude;
+			this.actualPlayerSpeed = firstPrize.velocity.magnitude;
 		else
-			this.curPlayerSpeed = playerSpeed * 100f;
-		//speedText.text = Mathf.CeilToInt(curPlayerSpeed).ToString();
+			this.actualPlayerSpeed = cc.velocity.magnitude;
 	}
 
 	void FixedUpdate()
@@ -340,7 +339,7 @@ public class PlayerScript : MonoBehaviour
 
 	public bool CheckPlayerWindowState()
     {
-        if (this.hugging && this.curPlayerSpeed > 39f)
+        if (this.hugging && this.actualPlayerSpeed > 30f)
 			return true;
 		else
 			return false;
@@ -419,7 +418,7 @@ public class PlayerScript : MonoBehaviour
 	public bool hugging;
 	public bool bootsActive;
 	public int principalBugFixer;
-	[SerializeField] float curPlayerSpeed;
+	[SerializeField] float actualPlayerSpeed;
 	[SerializeField] TMPro.TMP_Text speedText;
 	[SerializeField] private Transform princeyPos;
 	public float sweepingFailsave;

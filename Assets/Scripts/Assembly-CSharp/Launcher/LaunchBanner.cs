@@ -50,7 +50,7 @@ public class LaunchBanner : MonoBehaviour
 
                 if (IsVersionOutdated())
                 {
-                    this.bannerBorder.color = Color.green;
+                    this.bannerBorder.color = new Color(0.68f, 0.87f, 0.9f);
                     this.bannerTitle.text = latestUpdateData.title;
                     this.bannerTitle.fontStyle = FontStyles.Underline;
                     this.bannerInfoText.text = latestUpdateData.infoButtonText;

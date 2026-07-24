@@ -1,3 +1,15 @@
+### v0.6 ###
+Gameplay Changes:
+- You can now use 1st Prize to smash through windows
+
+Misc Changes:
+- Added a few more random praises for the math game
+- Added some voice clips that play when you get a problem wrong with Safe Mode enabled
+- Baldi will now remain visible when you get caught in Safe Mode
+
+Bug Fixes:
+- Updated the description of the Additional Music toggle to reflect the change to the setting that occurred in 0.5.2
+
 ### v0.5.3 ###
 Gameplay Changes:
 Playtime and 1st Prize spawn in slightly different locations in the Classic Extended map
