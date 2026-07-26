@@ -360,6 +360,9 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 4508f543c87ebdd4eb66fb5fb22eb56a, type: 3}
   - {fileID: 8300000, guid: a6b30d7ad67d16e4aa91fcf1bbe2f828, type: 3}
   - {fileID: 8300000, guid: 301b22ef8f7d6174593b531a65f0db9e, type: 3}
+  praises:
+  - {fileID: 8300000, guid: a6ac4d0b27453434880ad9faf2ea177d, type: 3}
+  - {fileID: 8300000, guid: 7510e432570074441bb4b9b312ef65fb, type: 3}
   wowDevice: {fileID: 29}
   bpmTargets: 050000000d000000150000001d000000250000002d000000350000003d00000046000000
   animationTimer: 0
@@ -563,7 +566,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: -454355258116272183, guid: a6df6867348b4bc40a40377c3b9f8b10,
     type: 2}
-  m_audioClip: {fileID: 8300000, guid: a6ac4d0b27453434880ad9faf2ea177d, type: 3}
+  m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1

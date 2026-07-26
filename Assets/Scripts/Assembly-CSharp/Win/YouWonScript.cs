@@ -186,7 +186,14 @@ public class YouWonScript : MonoBehaviour
 		this.canvasRenderer.SetActive(true);
 		this.skipCanvas.SetActive(false);
 
+		this.wowDevice.clip = this.GetRandomPraise();
 		this.wowDevice.Play();
+	}
+
+	AudioClip GetRandomPraise()
+	{
+		int num = Mathf.RoundToInt(Random.Range(0f, this.praises.Length - 1));
+		return praises[num];
 	}
 
 	public void ChangeScreen(int newScreen)
@@ -292,6 +299,7 @@ public class YouWonScript : MonoBehaviour
 	[SerializeField] private AudioSource musicDevice;
 	[SerializeField] private AudioSource baldiDevice;
 	[SerializeField] private AudioClip[] baldiClips;
+	[SerializeField] AudioClip[] praises;
 	[SerializeField] private AudioSource wowDevice;
 	[SerializeField] private int[] bpmTargets;
 	[SerializeField] private float animationTimer;

@@ -220,7 +220,8 @@ AudioSource:
   m_GameObject: {fileID: 5}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: -5792644659538878051, guid: a6df6867348b4bc40a40377c3b9f8b10,
+    type: 2}
   m_audioClip: {fileID: 8300000, guid: b1afc731f8fbbae4aac5314ae405e6e0, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
@@ -335,7 +336,6 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.37311918, g: 0.3807398, b: 0.35872716, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!124 &16
 Behaviour:
@@ -438,6 +438,7 @@ Canvas:
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
   m_AdditionalShaderChannelsFlag: 25
   m_SortingLayerID: 0
   m_SortingOrder: 0
@@ -471,7 +472,7 @@ RectTransform:
   m_GameObject: {fileID: 5}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.6, y: 0.6, z: 0.6}
+  m_LocalScale: {x: 0.4, y: 0.4, z: 0.4}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 23}
@@ -480,7 +481,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 400, y: 400}
+  m_SizeDelta: {x: 512, y: 512}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &23
 RectTransform:
@@ -628,6 +629,9 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 326684367f1546a4bbc047fd0df5b11d, type: 3}
   - {fileID: 21300000, guid: dcbdbf446e7190649b952da13cc16518, type: 3}
   - {fileID: 21300000, guid: ab3ba141f4b464249bf924707921f1b7, type: 3}
+  - {fileID: 21300000, guid: 1a4cc899c3b19654db255c8524768b55, type: 3}
+  - {fileID: 21300000, guid: 227c23cf6ac190f4abef242db3f65f3a, type: 3}
+  - {fileID: 21300000, guid: 1c97c27563e1340419323510a20c685c, type: 3}
   rare: {fileID: 21300000, guid: 1c4a613b94c86a3489f9db9a87167e01, type: 3}
   resetText: {fileID: 1595924768}
   aud_fakeError: {fileID: 8300000, guid: 1be84cea775ac4d4bb990678f2440f81, type: 3}
@@ -655,7 +659,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 8814f7b9046525f4689a14b1e2354688, type: 3}
+  m_Sprite: {fileID: 21300000, guid: dcbdbf446e7190649b952da13cc16518, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1359,6 +1363,7 @@ Canvas:
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
   m_AdditionalShaderChannelsFlag: 0
   m_SortingLayerID: 0
   m_SortingOrder: 1
@@ -1412,7 +1417,7 @@ AudioSource:
   m_GameObject: {fileID: 1250798759}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: -454355258116272183, guid: a6df6867348b4bc40a40377c3b9f8b10,
+  OutputAudioMixerGroup: {fileID: -8107925666041164883, guid: a6df6867348b4bc40a40377c3b9f8b10,
     type: 2}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
@@ -1576,6 +1581,7 @@ Canvas:
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
   m_AdditionalShaderChannelsFlag: 25
   m_SortingLayerID: 0
   m_SortingOrder: 0

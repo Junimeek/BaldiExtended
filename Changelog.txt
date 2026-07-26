@@ -1,4 +1,4 @@
-### v0.6 ###
+### v0.5.4 ###
 Gameplay Changes:
 - You can now use 1st Prize to smash through windows
 
@@ -6,9 +6,11 @@ Misc Changes:
 - Added a few more random praises for the math game
 - Added some voice clips that play when you get a problem wrong with Safe Mode enabled
 - Baldi will now remain visible when you get caught in Safe Mode
+- Added a few more images in the game over screen
 
 Bug Fixes:
 - Updated the description of the Additional Music toggle to reflect the change to the setting that occurred in 0.5.2
+- Fixed the game over screen's audio not being filtered through the volume controls
 
 ### v0.5.3 ###
 Gameplay Changes:

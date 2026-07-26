@@ -14,8 +14,6 @@ public class GameOverScript : MonoBehaviour
 
 		switch(this.forceSecretItem)
 		{
-			case 0:
-				break;
 			case 1:
 				StartCoroutine(this.WaitFor99());
 				return;
@@ -27,6 +25,8 @@ public class GameOverScript : MonoBehaviour
 				this.image.color = Color.black;
 				StartCoroutine(this.WaitForFakeError());
 				return;
+			default:
+				break;
 		}
 
 		float chance = Random.Range(1f, 99f);
@@ -34,7 +34,7 @@ public class GameOverScript : MonoBehaviour
 		if (chance < 98f)
 		{
 			string curMap = PlayerPrefs.GetString("CurrentMap");
-			int num = Mathf.RoundToInt(Random.Range(0f, 4f));
+			int num = Mathf.RoundToInt(Random.Range(0f, this.images.Length - 1));
 			this.image.sprite = this.images[num];
 			
 			if (PlayerPrefs.GetInt("InstantReset") == 1 && curMap != "ClassicDark")
@@ -99,7 +99,7 @@ public class GameOverScript : MonoBehaviour
 			yield return null;
 		}
 
-		this.image.transform.localScale = new Vector3(5f, 5f, 1f);
+		this.image.transform.localScale = new Vector3(3f, 3f, 1f);
 		this.image.color = Color.red;
 		this.audioDevice.Play();
 		this.resetText.text = string.Empty;

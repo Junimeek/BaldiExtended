@@ -22427,7 +22427,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &216200944
 RectTransform:
   m_ObjectHideFlags: 0
@@ -30027,14 +30027,8 @@ MonoBehaviour:
     on the next few pages.
 
 
-    Baldi''s
-    Basics Classic and Birthday Bash
-
-    Decompiles:                     , Jumpman25
-
-
-    New
-    Maps / Additional Programming:                 !
+    New Maps
+    / Additional Programming:                 !
 
     Metronome Script:            
     !'
@@ -43324,7 +43318,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 214, y: -102}
+  m_AnchoredPosition: {x: 214, y: 2}
   m_SizeDelta: {x: 163, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &976812088
@@ -53832,7 +53826,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1358690322
 RectTransform:
   m_ObjectHideFlags: 0
@@ -64168,7 +64162,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 109, y: -136}
+  m_AnchoredPosition: {x: 109, y: -32}
   m_SizeDelta: {x: 163, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1814258650
@@ -64965,7 +64959,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: v0.6
+  m_text: v0.5.4
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 21749360ea10093439a1f9266c91c718, type: 2}
   m_sharedMaterial: {fileID: 2100000, guid: 9ea8bb120e8a8ba4aa942913babb2161, type: 2}
@@ -65970,7 +65964,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1868613539
 RectTransform:
   m_ObjectHideFlags: 0
