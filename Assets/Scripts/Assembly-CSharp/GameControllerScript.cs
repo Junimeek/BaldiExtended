@@ -1119,11 +1119,21 @@ public class GameControllerScript : MonoBehaviour
 					&& raycastHit8.collider.CompareTag("BreakableWindow"))
 					{
 						WindowScript window = raycastHit8.collider.gameObject.GetComponent<WindowScript>();
-						if (!window.isBroken)
+						if (window != null && !window.isBroken)
 						{
 							if (this.baldiScrpt.isActiveAndEnabled)
 								this.baldiScrpt.AddNewSound(window.agentObstacle.transform.position, 3);
 							window.BreakWindow();
+							this.ResetItem(17);
+							this.handIconScript.ChangeIcon(0);
+							break;
+						}
+						CDMWindowScript darkWindow = raycastHit8.collider.gameObject.GetComponent<CDMWindowScript>();
+						if (!darkWindow.isBroken)
+						{
+							if (this.baldiScrpt.isActiveAndEnabled)
+								this.baldiScrpt.AddNewSound(darkWindow.agentObstacle.transform.position, 3);
+							darkWindow.BreakWindow();
 							this.ResetItem(17);
 							this.handIconScript.ChangeIcon(0);
 						}
@@ -1141,7 +1151,7 @@ public class GameControllerScript : MonoBehaviour
 				{
 					VendingMachineScript curVendingMachine = raycastHit3.collider.gameObject.GetComponent<VendingMachineScript>();
 
-					if (curVendingMachine.vendingMachineType == VendingMachineScript.machineType.Map_Upgrade && curVendingMachine.curQuarterCount == 0)
+					if (curVendingMachine.vendingMachineType == VendingMachineScript.MachineType.Map_Upgrade && curVendingMachine.curQuarterCount == 0)
 					{
 						this.audioDevice.PlayOneShot(this.aud_Error);
 						StopCoroutine(this.MoneyWarning(2));
@@ -1159,7 +1169,7 @@ public class GameControllerScript : MonoBehaviour
 					this.UpdateDollarAmount(-0.25f);
 					curVendingMachine.UseQuarter();
 
-					if (curVendingMachine.curQuarterCount == 0 && !(curVendingMachine.vendingMachineType == VendingMachineScript.machineType.Map_Upgrade))
+					if (curVendingMachine.curQuarterCount == 0 && !(curVendingMachine.vendingMachineType == VendingMachineScript.MachineType.Map_Upgrade))
 					{
 						this.CollectItem(curVendingMachine.DispensedItem());
 						curVendingMachine.ResetQuarterCount();
@@ -1748,9 +1758,13 @@ public class GameControllerScript : MonoBehaviour
 		if (phase == 2)
 		{
 			curValue = 1f;
+			foreach (VendingMachineScript i in this.vendingMachines)
+			{
+				i.LightMachine();
+			}
 			while (curValue > 0f)
 			{
-				curValue -= Time.deltaTime/5f;
+				curValue -= Time.deltaTime / 5f;
 				RenderSettings.ambientLight = new Color(1f, curValue, curValue);
 				yield return null;
 			}
@@ -1787,6 +1801,7 @@ public class GameControllerScript : MonoBehaviour
 	[HideInInspector] public int daFinalBookCount;
 	[HideInInspector] public int totalSlotCount;
 	[HideInInspector] public EntranceScript[] entranceList;
+	[HideInInspector] public VendingMachineScript[] vendingMachines;
 	[HideInInspector] public Transform attendanceOffice;
 	[HideInInspector] public Vector3 detentionPlayerPos;
 	[HideInInspector] public Vector3 detentionPrincipalPos;
@@ -2004,8 +2019,8 @@ public class GameControllerScript : MonoBehaviour
 	public BaldiScript baldiScrpt;
 	public PlaytimeScript playtimeScript;
 	public FirstPrizeScript firstPrizeScript;
-	[SerializeField] PrincipalScript principalScript;
-	[SerializeField] CraftersScript crafterScript;
+	public PrincipalScript principalScript;
+	public CraftersScript crafterScript;
 	[SerializeField] private AILocationSelectorScript wanderer;
  	[SerializeField] private SweepScript sweepScript;
 	[SerializeField] private AudioManager audioManager;

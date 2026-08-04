@@ -13,7 +13,7 @@ public class VendingMachineScript : MonoBehaviour
 
     public void UseQuarter()
     {
-        if (this.vendingMachineType == machineType.Map_Upgrade)
+        if (this.vendingMachineType == MachineType.Map_Upgrade)
         {
             GameControllerScript gc = FindObjectOfType<GameControllerScript>();
 
@@ -43,6 +43,11 @@ public class VendingMachineScript : MonoBehaviour
         this.audioDevice.PlayOneShot(this.quarterSound);
     }
 
+    public void LightMachine()
+    {
+        this.machineFront.material = this.litMaterial;
+    }
+
     public void ResetQuarterCount()
     {
         this.curQuarterCount = this.InitialQuarterCount();
@@ -52,13 +57,13 @@ public class VendingMachineScript : MonoBehaviour
     {
         switch(this.vendingMachineType)
         {
-            case machineType.BSODA:
+            case MachineType.BSODA:
                 return 4;
-            case machineType.Zesty:
+            case MachineType.Zesty:
                 return 1;
-            case machineType.Diet_BSODA:
+            case MachineType.Diet_BSODA:
                 return 13;
-            case machineType.Crystal_Zesty:
+            case MachineType.Crystal_Zesty:
                 return 14;
             default:
                 return 5;
@@ -69,15 +74,15 @@ public class VendingMachineScript : MonoBehaviour
     {
         switch(this.vendingMachineType)
         {
-            case machineType.BSODA:
+            case MachineType.BSODA:
                 return 3;
-            case machineType.Zesty:
+            case MachineType.Zesty:
                 return 3;
-            case machineType.Diet_BSODA:
+            case MachineType.Diet_BSODA:
                  return 1;
-            case machineType.Crystal_Zesty:
+            case MachineType.Crystal_Zesty:
                 return 1;
-            case machineType.Map_Upgrade:
+            case MachineType.Map_Upgrade:
                 return 4;
             default:
                 return 1;
@@ -86,11 +91,14 @@ public class VendingMachineScript : MonoBehaviour
 
     [Header("Configuration")]
     [SerializeField] private bool disableQuarterRequirement;
-    public machineType vendingMachineType;
-    public enum machineType
+    public MachineType vendingMachineType;
+    public enum MachineType
     {
         BSODA, Zesty, Diet_BSODA, Crystal_Zesty, Map_Upgrade
     }
+    [SerializeField] MeshRenderer machineFront;
+    [SerializeField] Material litMaterial;
+
     [Header("Current State")]
     public int curQuarterCount;
     [SerializeField] private Sprite[] numbers;

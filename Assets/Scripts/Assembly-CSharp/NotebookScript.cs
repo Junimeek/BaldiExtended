@@ -24,7 +24,7 @@ public class NotebookScript : MonoBehaviour
 		if (Input.GetMouseButtonDown(0) && Time.timeScale != 0f) {
 			Ray ray = Camera.main.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2, 0f));
 			RaycastHit raycastHit;
-			if (Physics.Raycast(ray, out raycastHit) && raycastHit.transform.tag == "Notebook" && Vector3.Distance(this.player.position, base.transform.position) < this.openingDistance) {
+			if (Physics.Raycast(ray, out raycastHit) && raycastHit.transform.CompareTag("Notebook") && Vector3.Distance(this.player.position, base.transform.position) < this.openingDistance) {
 				base.transform.position = new Vector3(base.transform.position.x, 200f, base.transform.position.z);
 				this.up = false;
 				this.respawnTime = 120f;

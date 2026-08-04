@@ -16,7 +16,10 @@ public class MasterController : MonoBehaviour
         gc.totalSlotCount = this.inventorySlotCount;
         gc.mode = this.modeSetting;
         gc.entranceList = this.exitList;
+        gc.vendingMachines = this.vendingMachines;
         gc.attendanceOffice = this.attendanceOfficeLocation;
+        gc.principalScript = this.princeyScript;
+        gc.crafterScript = this.crafterScript;
         gc.detentionPlayerPos = this.detentionPlayerPosition;
         gc.detentionPrincipalPos = this.detentionPrincipalPosition;
         gc.forceQuarterPickup = this.forceQuarterPickup;
@@ -68,6 +71,7 @@ public class MasterController : MonoBehaviour
     public int finalNotebookCount;
     public int inventorySlotCount;
     public EntranceScript[] exitList;
+    [SerializeField] VendingMachineScript[] vendingMachines;
     public enum forceMode
     {
         Dont_Force, Story_Mode, Endless_Mode, Challenge_Mode
@@ -112,4 +116,5 @@ public class MasterController : MonoBehaviour
     [SerializeField] PlayerScript playerScript;
     [SerializeField] BaldiScript baldiScript;
     [SerializeField] PrincipalScript princeyScript;
+    [SerializeField] CraftersScript crafterScript;
 }

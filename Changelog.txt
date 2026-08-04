@@ -1,3 +1,18 @@
+### v0.5.5 ###
+Gameplay Changes:
+- The formula I was using to calculate Baldi's slap interval has been changed. What this means to players is that the speed curve in the Classic map will now be identical to how it was in the original game, but his speed curve in both Classic Extended and Juniper Hills is now significantly more aggressive.
+-- Note that this change somehow led to Null unintentionally getting MUCH faster than before. I'm not even sure how that happened, it just did. If anyone plays this, I'm asking for feedback on his new speed because I'm unsure if he's too fast now or not. You can find ways to contact me about this at junimeek.net/contact
+
+Misc Changes:
+- The textures on the fronts of the vending machines now have a lit up variant for the "angry" school
+
+Bug Fixes:
+- Gotta Sweep will no longer get stuck on a corner if there are multiple characters caught in his hitbox
+- Gotta Sweep will no longer destroy your eardrums every time a character stays on the edge of his hitbox
+- Safe Mode Baldi will now properly yell "I'm gonna find you!!!" in the Classic and Juniper Hills maps
+- Null can no longer be pushed by a BSODA during his pre-bossfight monologue
+
+
 ### v0.5.4 ###
 Gameplay Changes:
 - You can now use 1st Prize to smash through windows
@@ -11,6 +26,7 @@ Misc Changes:
 Bug Fixes:
 - Updated the description of the Additional Music toggle to reflect the change to the setting that occurred in 0.5.2
 - Fixed the game over screen's audio not being filtered through the volume controls
+
 
 ### v0.5.3 ###
 Gameplay Changes:

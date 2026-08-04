@@ -37,7 +37,7 @@ public class ClassroomDoorScript : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.tag != "Player")
+        if (!other.CompareTag("Player"))
         {
             this.openTime = 3f;
             StartCoroutine(this.DoorRoutine(false));

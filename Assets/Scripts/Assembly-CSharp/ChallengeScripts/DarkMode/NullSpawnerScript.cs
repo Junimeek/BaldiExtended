@@ -9,11 +9,11 @@ public class NullSpawnerScript : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        if (other.tag == "Player" && gc.notebooks == 2)
+        if (other.CompareTag("Player") && gc.notebooks == 2)
         {
             gc.SpawnNullBaldi();
-            baldiSource.PlayOneShot(theAudioClip);
-            foreach (GameObject i in evilColliders)
+            this.baldiSource.PlayOneShot(theAudioClip);
+            foreach (GameObject i in this.evilColliders)
             {
                 Destroy(i);
             }

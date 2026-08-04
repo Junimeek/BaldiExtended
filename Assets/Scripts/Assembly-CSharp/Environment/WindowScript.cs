@@ -1,28 +1,18 @@
-using System;
 using UnityEngine;
 
 public class WindowScript : MonoBehaviour
 {
     void Start()
     {
-        this.challengeController = FindObjectOfType<ChallengeController>();
         this.isBroken = false;
         GameControllerScript gc = FindObjectOfType<GameControllerScript>();
         this.player = gc.player;
         this.baldi = gc.baldiScrpt;
-
-        if (gc.modeType == "nullStyle")
-        {
-            Array.Resize(ref this.challengeController.windowBlockers, this.challengeController.windowBlockers.Length + 1);
-            this.challengeController.windowBlockers[^1] = this.agentObstacle;
-        }
     }
     
     void OnTriggerStay(Collider other)
     {
-        if (other.gameObject.name == "Baldi" && !this.isBroken)
-            BreakWindow();
-        else if (other.gameObject.CompareTag("Player") && player.CheckPlayerWindowState() && !this.isBroken)
+        if (other.gameObject.CompareTag("Player") && player.CheckPlayerWindowState() && !this.isBroken)
         {
             BreakWindow();
             if (baldi.isActiveAndEnabled)
@@ -50,13 +40,16 @@ public class WindowScript : MonoBehaviour
             this.windows[i].material = this.brokenMatierial;
         }
 
+        if (this.poster.gameObject)
+            this.poster.SetActive(false);
         this.audioDevice.Play();
         this.agentObstacle.transform.position += new Vector3(0f, 20f, 0f);
+        base.gameObject.layer = 2;
     }
 
-    ChallengeController challengeController;
     [SerializeField] MeshCollider[] barriers;
     [SerializeField] MeshRenderer[] windows;
+    [SerializeField] GameObject poster;
     [SerializeField] Material brokenMatierial;
     [SerializeField] AudioSource audioDevice;
     public GameObject agentObstacle;

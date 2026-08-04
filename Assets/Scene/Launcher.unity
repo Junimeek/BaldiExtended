@@ -1679,7 +1679,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   requestURL: https://junimeek.net/kyokura/baldi-extended/communications/banner/
-  curAppVersion: 000000000500000004000000
+  curAppVersion: 000000000500000005000000
   bannerBorder: {fileID: 131061659}
   bannerTitle: {fileID: 1489580926}
   bannerButton: {fileID: 532566523}
@@ -8876,8 +8876,8 @@ MonoBehaviour:
   descriptionText: {fileID: 1091418939}
   errorText: {fileID: 795948175}
   isNightly: 0
-  stableBuild: 0.5.4
-  nightlyBuild: 26.30.7
+  stableBuild: 0.5.5
+  nightlyBuild: 26.32.2
   curVersion: 
   stableURL: https://raw.githubusercontent.com/Junimeek/BaldiExtended/main/VersionStable.json
   nightlyURL: https://raw.githubusercontent.com/Junimeek/BaldiExtended/main/VersionNightly.json

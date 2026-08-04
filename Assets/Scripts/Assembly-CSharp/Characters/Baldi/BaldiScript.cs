@@ -1,8 +1,9 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 
+[RequireComponent(typeof(AudioSource))]
+[RequireComponent(typeof(NavMeshAgent))]
 public class BaldiScript : MonoBehaviour
 {
 	private void Awake()
@@ -12,23 +13,26 @@ public class BaldiScript : MonoBehaviour
 
 	private void Start()
 	{
-		this.baldiAudio = base.GetComponent<AudioSource>();
-		this.agent = base.GetComponent<NavMeshAgent>();
+		this.baldiAudio = GetComponent<AudioSource>();
+		this.agent = GetComponent<NavMeshAgent>();
+		this.baseTime = 3f;
 		this.timeToMove = this.baseTime;
 		this.Wander();
 
 		this.ClearSoundList();
 
-		if (speedFactorOverride == 0f)
+		if (!this.isSpeedFactorSet)
 		{
-			float speedFactor = this.gc.daFinalBookCount + 0.5f;
-			float bookSquare = speedFactor * speedFactor;
-			this.baldiSpeedScale = MathF.Sqrt(15.2f / bookSquare);
+			if (speedFactorOverride <= 0f)
+				this.SetSpeedFactor();
+        	else
+			{
+				this.baldiSpeedScale = this.speedFactorOverride;
+				this.isSpeedFactorSet = true;
+			}
 		}
-		else
-			this.baldiSpeedScale = this.speedFactorOverride;
 
-		if (this.gc.isSafeMode)
+		if (gc.isSafeMode)
 		{
 			this.baldiAnimator.SetTrigger("ghostSlap");
 			this.niceMode = true;
@@ -36,7 +40,7 @@ public class BaldiScript : MonoBehaviour
 			this.ResetSpeechTimer();
 		}
 		
-		if (this.gc.modeType == "nullStyle")
+		if (gc.modeType == "nullStyle")
 		{
 			this.isNullMode = true;
 			this.agent.SetDestination(this.player.position);
@@ -51,8 +55,10 @@ public class BaldiScript : MonoBehaviour
 
 		else
 		{
-			if (this.baldiAnger == 0) this.timeToMove = 3f;
-			else this.timeToMove = this.baldiWait - this.baldiTempAnger;
+			if (this.baldiAnger == 0)
+				this.timeToMove = 3f;
+			else
+				this.timeToMove = this.baldiWait - this.baldiTempAnger;
 			this.Move();
 		}
 
@@ -89,7 +95,7 @@ public class BaldiScript : MonoBehaviour
 		if (this.isNullMode || this.niceMode)
 			this.speechTimer -= Time.deltaTime;
 
-		if (this.isNullMode && this.db && this.playerScript.stamina <= 0f && this.gc.IsNoItems()
+		if (this.isNullMode && this.db && this.playerScript.stamina <= 0f && gc.IsNoItems()
 		&& this.baldiAnger >= 5 && this.speechTimer < 61f && !this.longAudioDevice.isPlaying)
 		{
 			this.StartCoroutine(this.NullSight());
@@ -121,12 +127,12 @@ public class BaldiScript : MonoBehaviour
 
 	private void ResetSpeechTimer()
 	{
-		this.speechTimer = UnityEngine.Random.Range(35f, 75f);
+		this.speechTimer = Random.Range(35f, 75f);
 	}
 
 	private int RandomSpeech()
 	{
-		return Mathf.RoundToInt(UnityEngine.Random.Range(0f, 4f));
+		return Mathf.RoundToInt(Random.Range(0f, 4f));
 	}
 
 	IEnumerator DelayedSpeechStart()
@@ -151,8 +157,8 @@ public class BaldiScript : MonoBehaviour
 
 	private void OnDisable()
 	{
-		if (this.isNullMode && !this.isDisabled)
-			this.challengeController.EnableAllWindowBlockers();
+		if (this.isNullMode && !this.isDisabled && challengeController != null)
+			challengeController.EnableAllWindowBlockers();
 	}
 
 	private void FixedUpdate()
@@ -223,15 +229,26 @@ public class BaldiScript : MonoBehaviour
 
 	public void GetAngry(float value)
 	{
-		this.baldiAnger += value; // Increase Baldi's anger by the value provided
+		this.baldiAnger += value;
 
-		if (this.baldiAnger < 0.5f) //Cap Baldi anger at a minimum of 0.5
+		if (this.baldiAnger < 0.5f)
 			this.baldiAnger = 0.5f;
 		
-		this.baldiWait = -3f * this.baldiAnger / (this.baldiAnger + 2f / this.baldiSpeedScale) + 3f; // Some formula I don't understand.
+		if (!this.isSpeedFactorSet)
+			this.SetSpeedFactor();
+		
+		this.baldiWait = -3f * this.baldiAnger / (this.baldiAnger + this.baldiSpeedScale / 0.65f) + 3f;
 		
 		if (this.baldiWait <= 0f)
 			this.baldiWait = 3f;
+	}
+
+	void SetSpeedFactor()
+	{
+		float nb = gc.daFinalBookCount;
+        float speedFactor = 0.2f * nb * nb / nb + 0.6f;
+        this.baldiSpeedScale = Mathf.Clamp(speedFactor, 1f, Mathf.Infinity);
+		this.isSpeedFactorSet = true;
 	}
 
 	public void GetTempAngry(float value)
@@ -241,16 +258,16 @@ public class BaldiScript : MonoBehaviour
 
 	public void WarpToCrafterPoint(Vector3 point)
     {
-        agent.Warp(point);
+        this.agent.Warp(point);
     }
 
 	public void ActivateAntiHearing(float t)
 	{
 		this.ClearSoundList();
 		this.DecreasePriority();
-		this.Wander(); //Start wandering
-		this.antiHearing = true; //Set the antihearing variable to true for other scripts
-		this.antiHearingTime = t; //Set the time the tape's effect on baldi will last
+		this.Wander();
+		this.antiHearing = true;
+		this.antiHearingTime = t;
 	}
 
 	public void NullOffset()
@@ -362,7 +379,7 @@ public class BaldiScript : MonoBehaviour
 	private IEnumerator FollowPlayer()
 	{
 		if (!this.allowWindowBreaking && this.isNullMode)
-			this.gc.StartCoroutine(this.challengeController.ToggleWindowBlockers());
+			gc.StartCoroutine(this.challengeController.ToggleWindowBlockers());
 
 		while (this.db && !this.isDisabled)
 		{
@@ -384,7 +401,7 @@ public class BaldiScript : MonoBehaviour
 
 	private IEnumerator WaitForPartyEnd()
 	{
-		this.AddNewSound(this.gc.partyLocation.position, 5);
+		this.AddNewSound(gc.partyLocation.position, 5);
 		this.isParty = true;
 
 		while (!this.db && this.isParty)
@@ -395,57 +412,57 @@ public class BaldiScript : MonoBehaviour
 
 	[Header("Priority System")]
 	public int currentPriority;
-	[SerializeField] private Vector3[] soundList;
-	public Baldicator baldicator;
-	[SerializeField] private float sightCooldown;
-	[SerializeField] private Vector3 theNewLocation;
+	[SerializeField] Vector3[] soundList;
+	[SerializeField] Baldicator baldicator;
+	[SerializeField] float sightCooldown;
+	[SerializeField] Vector3 theNewLocation;
 	public bool isAlarmClock;
 	public bool isParty;
 
 	[Header("Null Modifications")]
 	[SerializeField] ChallengeController challengeController;
-	[SerializeField] private bool isNullMode;
+	[SerializeField] bool isNullMode;
 	public bool allowWindowBreaking;
-	[SerializeField] private AudioClip[] randomSpeechList;
-	[SerializeField] private AudioSource longAudioDevice;
-	[SerializeField] private float speechTimer;
+	[SerializeField] AudioClip[] randomSpeechList;
+	[SerializeField] AudioSource longAudioDevice;
+	[SerializeField] float speechTimer;
 
 	[Header("Endless Mode")]
 	public bool endless;
-	[SerializeField] private float angerRate;
-	[SerializeField] private float angerRateRate;
-	[SerializeField] private float angerFrequency;
-	[SerializeField] private float timeToAnger;
+	[SerializeField] float angerRate;
+	[SerializeField] float angerRateRate;
+	[SerializeField] float angerFrequency;
+	[SerializeField] float timeToAnger;
 
 	[Header("Other stuff")]
 	[SerializeField] bool niceMode;
 
 	[Space(20f)]
-	public bool db;
-	public float baseTime;
-	public float speed;
-	public float timeToMove;
-	public float baldiAnger;
-	public float baldiTempAnger;
-	public float baldiWait;
-	public float baldiSpeedScale;
+	[SerializeField] bool db;
+	float baseTime;
+	[SerializeField] float speed;
+	float timeToMove;
+	float baldiAnger;
+	float baldiTempAnger;
+	float baldiWait;
+	float baldiSpeedScale;
+	bool isSpeedFactorSet;
 
 	[Tooltip("If this value is set to 0, then the total noteboo count will be used to calculate the speed factor.")]
-	[SerializeField] private float speedFactorOverride;
-	private float moveFrames;
+	[SerializeField] float speedFactorOverride;
+	float moveFrames;
 	public bool antiHearing;
 	public float antiHearingTime;
-	public float vibrationDistance;
-	[SerializeField] private bool isDisabled;
-	public Transform player;
-	[SerializeField] private PlayerScript playerScript;
-	public AILocationSelectorScript wanderer;
-	private AudioSource baldiAudio;
-	public AudioClip slap;
-	public Animator baldiAnimator;
-	public float coolDown;
-	[SerializeField] private Vector3 previous;
-	private NavMeshAgent agent;
-	private GameControllerScript gc;
+	[SerializeField] bool isDisabled;
+	[SerializeField] Transform player;
+	[SerializeField] PlayerScript playerScript;
+	[SerializeField] AILocationSelectorScript wanderer;
+	AudioSource baldiAudio;
+	[SerializeField] AudioClip slap;
+	[SerializeField] Animator baldiAnimator;
+	float coolDown;
+	[SerializeField] Vector3 previous;
+	NavMeshAgent agent;
+	GameControllerScript gc;
 	public GameObject alarmClock;
 }

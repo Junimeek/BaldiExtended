@@ -63,10 +63,11 @@ public class FirstPrizeScript : MonoBehaviour
 		bool windowRayCast = Physics.Raycast(base.transform.position, base.transform.rotation * Vector3.forward, out windowRayCastHit, float.PositiveInfinity);
 		if (this.actualSpeed > 30f && windowRayCast && windowRayCastHit.transform.CompareTag("BreakableWindow"))
 		{
-			if ((base.transform.position - windowRayCastHit.transform.position).magnitude < 3.5f)
+			if ((base.transform.position - windowRayCastHit.transform.position).magnitude < 5f)
 			{
 				WindowScript windowScript = windowRayCastHit.transform.GetComponent<WindowScript>();
 				windowScript.FirstPrizeHit();
+				this.audioDevice.PlayOneShot(this.metalpipe);
 			}
 		}
 
@@ -166,34 +167,29 @@ public class FirstPrizeScript : MonoBehaviour
 		this.agent.SetDestination(this.gc.attendanceOffice.position);
 	}
 
-	public float debug;
-	public float turnSpeed;
-	public float str;
-	public float angleDiff;
-	public float normSpeed;
-	public float runSpeed;
-	public float currentSpeed;
-	public float acceleration;
-	public float speed;
-	public float autoBrakeCool;
-	public float crazyTime;
-	public Quaternion targetRotation;
-	public float coolDown;
-	private float prevSpeed;
-	public bool playerSeen;
-	public bool hugAnnounced;
-	public AILocationSelectorScript wanderer;
-	public Transform player;
-	public AudioClip[] aud_Found = new AudioClip[2];
-	public AudioClip[] aud_Lost = new AudioClip[2];
-	public AudioClip[] aud_Hug = new AudioClip[2];
-	public AudioClip[] aud_Random = new AudioClip[2];
-	public AudioClip audBang;
-	public AudioSource audioDevice;
-	public AudioSource motorAudio;
-	private NavMeshAgent agent;
+	[SerializeField] float turnSpeed;
+	[SerializeField] float angleDiff;
+	[SerializeField] float normSpeed;
+	[SerializeField] float runSpeed;
+	[SerializeField] float currentSpeed;
+	[SerializeField] float autoBrakeCool;
+	[SerializeField] float crazyTime;
+	[SerializeField] float coolDown;
+	[SerializeField] bool playerSeen;
+	[SerializeField] bool hugAnnounced;
+	[SerializeField] AILocationSelectorScript wanderer;
+	[SerializeField] Transform player;
+	[SerializeField] AudioClip[] aud_Found = new AudioClip[2];
+	[SerializeField] AudioClip[] aud_Lost = new AudioClip[2];
+	[SerializeField] AudioClip[] aud_Hug = new AudioClip[2];
+	[SerializeField] AudioClip[] aud_Random = new AudioClip[2];
+	[SerializeField] AudioClip audBang;
+	[SerializeField] AudioClip metalpipe;
+	[SerializeField] AudioSource audioDevice;
+	[SerializeField] AudioSource motorAudio;
+	NavMeshAgent agent;
 	public bool isDisabled;
 	public bool isParty;
-	private GameControllerScript gc;
+	GameControllerScript gc;
 	[SerializeField] float actualSpeed;
 }

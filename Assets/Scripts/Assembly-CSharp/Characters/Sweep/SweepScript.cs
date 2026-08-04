@@ -1,23 +1,127 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 using UnityEngine.AI;
 
+[RequireComponent(typeof(NavMeshAgent))]
 public class SweepScript : MonoBehaviour
 {
 	private void Start()
 	{
 		this.origin = base.transform.position;
 		this.gc = FindObjectOfType<GameControllerScript>();
+		this.currentSweepState = CurrentSweepState.Stationary;
+		this.speechCooldown = 0f;
+		StartCoroutine(this.WaitRoutine());
 	}
 	private void OnEnable()
 	{
 		this.agent = base.GetComponent<NavMeshAgent>();
 		this.audioDevice = base.GetComponent<AudioSource>();
-		this.waitTime = UnityEngine.Random.Range(120f, 180f);
 		this.sweepHitbox = base.GetComponent<CapsuleCollider>();
+	}
+
+	IEnumerator WaitRoutine()
+	{
+		Debug.Log("started wait");
+		this.waitTime = Random.Range(120f, 180f);
+		while (waitTime > 0f && !this.isParty)
+		{
+			waitTime -= Time.deltaTime;
+			yield return null;
+		}
+		if (!this.hasActivated)
+			this.hasActivated = true;
+		
+		StartCoroutine(this.SweepingRoutine());
+	}
+
+	IEnumerator SweepingRoutine()
+	{
+		this.audioDevice.PlayOneShot(this.aud_Intro);
+		this.speechCooldown = 3f;
+		this.wanders = 0;
+		int curStage;
+		if (this.isParty)
+			curStage = 11;
+		else
+			curStage = 1;
+
+		switch(curStage)
+		{
+			case 0: // Waiting for GS to reach destination
+				while (!this.IsDestinationReached() && !this.isParty)
+					yield return null;
+				if (this.isParty)
+					goto case 11;
+				else if (this.wanders >= 5)
+					goto case 3;
+				else
+					goto case 1;
+			case 1: // Calculate new target destination
+				this.Wander();
+				while (this.agent.pathPending)
+					yield return null;
+				this.SetV2Destination(this.agent.destination);
+				goto case 2;
+			case 2: // Check if the target destination is too close to the current location
+				if ((v2Location - v2Target).magnitude < 1.5f)
+					goto case 1;
+				this.wanders++;
+				Debug.Log("Heading to destination " + this.wanders);
+				goto case 0;
+			case 3: // Head home
+				Debug.Log("Heading home");
+				this.sweepHitbox.enabled = true;
+				this.agent.SetDestination(this.origin);
+				while (this.agent.pathPending)
+					yield return null;
+				while (!this.IsDestinationReached() && !this.isParty)
+					yield return null;
+				if (this.isParty)
+					goto case 11;
+				break;
+			case 11:
+				Debug.Log("Heading to party");
+				this.agent.SetDestination(gc.partyLocation.position);
+				while (this.agent.pathPending)
+					yield return null;
+				this.SetV2Destination(this.agent.destination);
+				while (!this.IsDestinationReached())
+					yield return null;
+				goto case 12;
+			case 12:
+				this.sweepHitbox.enabled = false;
+				this.agent.SetDestination(wanderer.NewTarget("Party"));
+				while (this.agent.pathPending)
+					yield return null;
+				this.SetV2Destination(this.agent.destination);
+				while (!this.IsDestinationReached())
+					yield return null;
+				if (this.isParty)
+					goto case 12;
+				else
+					goto case 3;
+		}
+		StartCoroutine(WaitRoutine());
+	}
+
+	bool IsDestinationReached()
+	{
+		if ((v2Target - v2Location).magnitude >= 1.5f)
+			return false;
+		else
+			return true;
+	}
+
+	void SetV2Destination(Vector3 target)
+	{
+		this.v2Target.x = target.x;
+		this.v2Target.y = target.z;
 	}
 
 	private void Update()
 	{
+		/*
 		if (this.coolDown > 0f)
 			this.coolDown -= 1f * Time.deltaTime;
 
@@ -28,22 +132,30 @@ public class SweepScript : MonoBehaviour
 		{
 			this.active = true;
 			this.wanders = 0;
-			this.Wander(); // Start wandering
-			this.audioDevice.PlayOneShot(this.aud_Intro); // "Looks like its sweeping time!"
+			this.Wander();
+			this.audioDevice.PlayOneShot(this.aud_Intro);
 		}
+		*/
+		if (this.speechCooldown > 0f)
+			this.speechCooldown -= Time.deltaTime;
 	}
 
 	private void FixedUpdate()
 	{
+		this.v2Location.x = base.transform.position.x;
+		this.v2Location.y = base.transform.position.z;
+		/*
 		if ((double)this.agent.velocity.magnitude <= 0.1 & this.coolDown <= 0f & this.wanders < 5 & this.active) // If Gotta Sweep has roamed around the school 5 times
-			this.Wander(); // Wander
+			this.Wander();
 		else if (this.wanders >= 5)
-			this.GoHome(); // Go back to the closet
+			this.GoHome();
+		*/
 	}
 
 	private void Wander()
 	{
-		this.isEarlyActivation = true;
+		/*
+		this.hasActivated = true;
 
 		if (this.isParty)
 			this.agent.SetDestination(this.wanderer.NewTarget("Party"));
@@ -51,15 +163,15 @@ public class SweepScript : MonoBehaviour
 			this.agent.SetDestination(this.wanderer.NewTarget("Hallway"));
 
 		this.coolDown = 1f;
-		this.wanders++;
+		*/
+		this.agent.SetDestination(this.wanderer.NewTarget("Hallway"));
 	}
 
 	public void GoHome()
 	{
 		this.agent.SetDestination(this.origin);
-		this.waitTime = UnityEngine.Random.Range(120f, 180f);
-		this.wanders = 0;
-		this.active = false;
+		//this.waitTime = Random.Range(120f, 180f);
+		//this.active = false;
 	}
 
 	public void GoToAttendance()
@@ -71,36 +183,33 @@ public class SweepScript : MonoBehaviour
 	public void GoToParty()
 	{
 		this.isParty = true;
-		this.active = true;
-		this.waitTime = 199f;
-		this.wanders = -99;
-		this.agent.SetDestination(this.gc.partyLocation.position);
-		this.sweepHitbox.enabled = false;
 	}
 
 	public void LeaveParty()
 	{
 		this.isParty = false;
-		this.sweepHitbox.enabled = true;
-		this.GoHome();
 	}
 
 	private void OnTriggerEnter(Collider other)
 	{
-		if ((other.tag == "NPC" || other.tag == "Player") && !this.isParty)
+		if ((other.CompareTag("NPC") || other.CompareTag("Player")) && !this.isParty && this.speechCooldown <= 0f)
+		{
 			this.audioDevice.PlayOneShot(this.aud_Sweep);
+			this.speechCooldown = 1.5f;
+		}
 	}
 
+	/*
 	private void OnTriggerStay(Collider other)
 	{
-		if (other.tag == "Player" && this.agent.velocity.magnitude > 0.5f)
+		if (other.CompareTag("Player") && this.agent.velocity.magnitude > 0.5f)
 		{
 			this.playerSweepingTime += Time.deltaTime;
 
 			if (this.playerSweepingTime >= 30f && !this.achievementCollected)
 			{
 				this.achievementCollected = true;
-				if (this.achievementMonitor.isActiveAndEnabled)
+				if (this.achievementMonitor.isActiveAndEnabled && this.achievementMonitor != null)
 					this.achievementMonitor.CollectAchievement(4, 0);
 			}
 		}
@@ -113,34 +222,43 @@ public class SweepScript : MonoBehaviour
 			this.playerSweepingTime = 0f;
 		}
 	}
+	*/
 
 	public void EarlyActivate()
 	{
-		if (this.isEarlyActivation)
-			return;
-		
-		this.isEarlyActivation = true;
-		this.waitTime = 0f;
+		if (!this.hasActivated)
+		{
+			this.waitTime = 0f;
+			this.hasActivated = true;
+		}
 	}
 
 	[Header("Achievement")]
-	[SerializeField] private AchievementMonitor achievementMonitor;
-	[SerializeField] private float playerSweepingTime;
-	[SerializeField] private bool achievementCollected;
+	[SerializeField] AchievementMonitor achievementMonitor;
+	[SerializeField] float playerSweepingTime;
+	[SerializeField] bool achievementCollected;
 
 	[Header("Sweep State")]
-	public AILocationSelectorScript wanderer;
-	public float coolDown;
-	public float waitTime;
-	public int wanders;
-	public bool active;
-	public bool isEarlyActivation;
-	[SerializeField] private bool isParty;
+	[SerializeField] AILocationSelectorScript wanderer;
+	float coolDown;
+	float speechCooldown;
+	[SerializeField] float waitTime;
+	[SerializeField] int wanders;
+	[SerializeField] bool active;
+	CurrentSweepState currentSweepState;
+	enum CurrentSweepState
+	{
+		Stationary, Sweeping, Returning
+	}
+	[SerializeField] Vector2 v2Location;
+	[SerializeField] Vector2 v2Target;
+	[SerializeField] bool hasActivated;
+	[SerializeField] bool isParty;
 	Collider sweepHitbox;
-	private Vector3 origin;
-	public AudioClip aud_Sweep;
-	public AudioClip aud_Intro;
-	private NavMeshAgent agent;
-	private AudioSource audioDevice;
-	private GameControllerScript gc;
+	Vector3 origin;
+	[SerializeField] AudioClip aud_Sweep;
+	[SerializeField] AudioClip aud_Intro;
+	NavMeshAgent agent;
+	AudioSource audioDevice;
+	GameControllerScript gc;
 }

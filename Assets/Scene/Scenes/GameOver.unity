@@ -632,6 +632,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 1a4cc899c3b19654db255c8524768b55, type: 3}
   - {fileID: 21300000, guid: 227c23cf6ac190f4abef242db3f65f3a, type: 3}
   - {fileID: 21300000, guid: 1c97c27563e1340419323510a20c685c, type: 3}
+  - {fileID: 21300000, guid: 0697d63180bbe87429088bd2313bf9ae, type: 3}
   rare: {fileID: 21300000, guid: 1c4a613b94c86a3489f9db9a87167e01, type: 3}
   resetText: {fileID: 1595924768}
   aud_fakeError: {fileID: 8300000, guid: 1be84cea775ac4d4bb990678f2440f81, type: 3}
