@@ -1,16 +1,23 @@
 ### v0.5.5 ###
 Gameplay Changes:
-- The formula I was using to calculate Baldi's slap interval has been changed. What this means to players is that the speed curve in the Classic map will now be identical to how it was in the original game, but his speed curve in both Classic Extended and Juniper Hills is now significantly more aggressive.
--- Note that this change somehow led to Null unintentionally getting MUCH faster than before. I'm not even sure how that happened, it just did. If anyone plays this, I'm asking for feedback on his new speed because I'm unsure if he's too fast now or not. You can find ways to contact me about this at junimeek.net/contact
+- The formula I was using to calculate Baldi's slap interval has been changed. What this means to players is that his speed curve is now significantly more aggressive.
+-- As a result, Null is also now MUCH faster than before. If anyone plays this, I'm asking for feedback on his new speed because I'm unsure if he's too fast now or not. You can find ways to contact me about this at junimeek.net/contact
 
 Misc Changes:
 - The textures on the fronts of the vending machines now have a lit up variant for the "angry" school
 
 Bug Fixes:
+- The Attendance Slip now actually works in Juniper Hills
+- Firing a BSODA spray towards the attendance office will no longer erroneously send you to detention
 - Gotta Sweep will no longer get stuck on a corner if there are multiple characters caught in his hitbox
 - Gotta Sweep will no longer destroy your eardrums every time a character stays on the edge of his hitbox
 - Safe Mode Baldi will now properly yell "I'm gonna find you!!!" in the Classic and Juniper Hills maps
+- Safe Mode Baldi's audio when he catches you is now filtered through the Voice audio channel instead of the SFX channel
 - Null can no longer be pushed by a BSODA during his pre-bossfight monologue
+
+todo before releasing 0.5.5:
+- make principal actually function somewhat decently
+- make 1st prize faster when heading to party or attendance
 
 
 ### v0.5.4 ###

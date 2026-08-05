@@ -1010,7 +1010,7 @@ public class GameControllerScript : MonoBehaviour
 				case 4: // BSODA
 					Instantiate(this.bsodaSpray, this.playerTransform.position, this.cameraTransform.rotation);
 					this.ResetItem(4);
-					this.player.ResetGuilt("drink", 1f);
+					this.player.ResetGuilt(PlayerScript.GuiltType.Drinking, 1f);
 					this.audioDevice.PlayOneShot(this.aud_Soda);
 					break;
 				case 5: // Quarter
@@ -1095,7 +1095,7 @@ public class GameControllerScript : MonoBehaviour
 				case 13: // Diet BSODA
 					Instantiate(this.dietBsodaSpray, this.playerTransform.position, this.cameraTransform.rotation);
 					this.ResetItem(13);
-					this.player.ResetGuilt("drink", 1f);
+					this.player.ResetGuilt(PlayerScript.GuiltType.Drinking, 1f);
 					this.audioDevice.PlayOneShot(this.aud_Soda);
 					break;
 				case 14: // Crystal Zest

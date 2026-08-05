@@ -147,6 +147,11 @@ public class ChallengeController : MonoBehaviour
 
         gc.TemporaryBossActivation();
         gc.SwitchToMinimalUI();
+
+        foreach (VendingMachineScript i in gc.vendingMachines)
+        {
+            i.LightMachine();
+        }
     }
 
     	public void InitializeProjectileArrays()

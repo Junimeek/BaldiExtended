@@ -115,7 +115,7 @@ public class PlayerScript : MonoBehaviour
 				this.sensitivity = 1f;
 
 				if (this.cc.velocity.magnitude > 0.1f & !this.hugging & !this.sweeping)
-					this.ResetGuilt("running", 0.1f);
+					this.ResetGuilt(GuiltType.Running, 0.1f);
 			}
 			else
 			{
@@ -326,7 +326,7 @@ public class PlayerScript : MonoBehaviour
 				this.isInfiniteStamina = false;
 				break;
 			case "Office Trigger":
-				this.ResetGuilt("escape", this.gc.remainingDetentionTime);
+				this.ResetGuilt(GuiltType.Escaping, this.gc.remainingDetentionTime);
 				break;
 			case "Gotta Sweep":
 				this.sweeping = false;
@@ -345,7 +345,7 @@ public class PlayerScript : MonoBehaviour
 			return false;
     }
 
-	public void ResetGuilt(string type, float amount)
+	public void ResetGuilt(GuiltType type, float amount)
 	{
 		if (amount >= this.guilt)
 		{
@@ -449,7 +449,11 @@ public class PlayerScript : MonoBehaviour
 	public Transform firstPrizeTransform;
 	public Slider staminaBar;
 	public float db;
-	public string guiltType;
+	public GuiltType guiltType;
+	public enum GuiltType
+	{
+		Running, Faculty, Drinking, Escaping, Bullying
+	}
 	public GameObject jumpRopeScreen;
 	public float height;
 	public Material blackSky;

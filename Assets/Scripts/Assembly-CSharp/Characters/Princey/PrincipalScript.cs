@@ -5,7 +5,7 @@ public class PrincipalScript : MonoBehaviour
 {
 	private void Start()
 	{
-		this.agent = base.GetComponent<NavMeshAgent>(); //Get the agent
+		this.agent = base.GetComponent<NavMeshAgent>();
 		this.audioQueue = base.GetComponent<AudioQueueScript>();
 		this.audioDevice = base.GetComponent<AudioSource>();
 		notif = FindObjectOfType<NotificationBoard>();
@@ -115,29 +115,29 @@ public class PrincipalScript : MonoBehaviour
 		this.CorrectPlayer();
 	}
 
-	private void CorrectPlayer()
+	void CorrectPlayer()
 	{
 		this.audioQueue.ClearAudioQueue();
 
 		switch(this.playerScript.guiltType)
 		{
-			case "faculty":
+			case PlayerScript.GuiltType.Faculty:
 				this.audioQueue.QueueAudio(this.audNoFaculty);
 				notif.RuleText(1);
 				break;
-			case "running":
+			case PlayerScript.GuiltType.Running:
 				this.audioQueue.QueueAudio(this.audNoRunning);
 				notif.RuleText(2);
 				break;
-			case "drink":
+			case PlayerScript.GuiltType.Drinking:
 				this.audioQueue.QueueAudio(this.audNoDrinking);
 				notif.RuleText(3);
 				break;
-			case "escape":
+			case PlayerScript.GuiltType.Escaping:
 				this.audioQueue.QueueAudio(this.audNoEscaping);
 				notif.RuleText(4);
 				break;
-			case "bully":
+			case PlayerScript.GuiltType.Bullying:
 				this.audioQueue.QueueAudio(this.audNoBullying);
 				notif.RuleText(5);
 				break;
@@ -149,7 +149,7 @@ public class PrincipalScript : MonoBehaviour
 		if (other.name == "Office Trigger")
 			this.inOffice = true;
 
-		if (other.tag == "Player" & this.angry & !this.inOffice)
+		if (other.CompareTag("Player") && this.angry && !this.inOffice)
 		{
 			this.inOffice = true;
 			this.playerScript.principalBugFixer = 0;
@@ -205,19 +205,9 @@ public class PrincipalScript : MonoBehaviour
 	public bool inOffice;
 	public bool isParty;
 	private int detentions;
-	private int[] lockTime = new int[]
+	readonly int[] lockTime = new int[]
 	{
-		15,
-		20,
-		25,
-		30,
-		35,
-		40,
-		45,
-		50,
-		55,
-		60,
-		99
+		15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 99
 	};
 	public AudioClip[] audTimes = new AudioClip[5];
 	public AudioClip[] audScolds = new AudioClip[3];

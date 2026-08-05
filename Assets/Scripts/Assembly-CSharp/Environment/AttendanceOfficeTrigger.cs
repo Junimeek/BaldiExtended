@@ -1,42 +1,33 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class AttendanceOfficeTrigger : MonoBehaviour
 {
-    private void Start()
+    void OnTriggerEnter(Collider other)
     {
-        this.isTriggerDisabled = false;
-        this.gc = FindObjectOfType<GameControllerScript>();
-    }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if (!this.isTriggerDisabled)
+        if (other.CompareTag("NPC"))
         {
-            other.gameObject.SetActive(false);
-            this.StartCoroutine(Countdown());
+            switch(other.gameObject.name)
+            {
+                case "1st Prize":
+                    this.DisableCharacter(other.gameObject);
+                    break;
+                case "Gotta Sweep":
+                    this.DisableCharacter(other.gameObject);
+                    break;
+                case "Playtime":
+                    this.DisableCharacter(other.gameObject);
+                    break;
+            }
         }
     }
 
-    private IEnumerator Countdown()
+    void DisableCharacter(GameObject character)
     {
-        float timer;
-        timer = 1f;
-        this.playerScript.ResetGuilt("bully", 99f);
-        this.isTriggerDisabled = true;
-
-        while (timer > 0f)
-        {
-            timer -= Time.deltaTime;
-            yield return null;
-        }
-        
+        character.SetActive(false);
+        this.playerScript.ResetGuilt(PlayerScript.GuiltType.Bullying, 99f);
         this.princey.GuiltyAttendance();
     }
 
     [SerializeField] private PrincipalScript princey;
     [SerializeField] private PlayerScript playerScript;
-    [SerializeField] private bool isTriggerDisabled;
-    [SerializeField] private GameControllerScript gc;
 }

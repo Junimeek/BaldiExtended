@@ -176,7 +176,8 @@ public class SweepScript : MonoBehaviour
 
 	public void GoToAttendance()
 	{
-		this.waitTime = 199f;
+		StopCoroutine(this.SweepingRoutine());
+		this.sweepHitbox.enabled = false;
 		this.agent.SetDestination(gc.attendanceOffice.position);
 	}
 
