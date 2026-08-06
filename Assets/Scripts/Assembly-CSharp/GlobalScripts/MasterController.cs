@@ -5,7 +5,7 @@ public class MasterController : MonoBehaviour
 {
     void Awake()
     {
-        this.modeSetting = this.GetMode();
+        this.modeSetting = this.GetGameMode();
         this.PushVariables();
     }
 
@@ -14,7 +14,7 @@ public class MasterController : MonoBehaviour
         gc.notebookCountScript = this.notebookCountScript;
         gc.daFinalBookCount = this.finalNotebookCount;
         gc.totalSlotCount = this.inventorySlotCount;
-        gc.mode = this.modeSetting;
+        gc.gameMode = this.modeSetting;
         gc.entranceList = this.exitList;
         gc.vendingMachines = this.vendingMachines;
         gc.attendanceOffice = this.attendanceOfficeLocation;
@@ -52,19 +52,26 @@ public class MasterController : MonoBehaviour
         this.playerScript.sneakerIcon = this.sneakerIcon;
     }
 
-    string GetMode()
+    GameControllerScript.GameMode GetGameMode()
     {
-        switch (this.gameMode)
+        return this.gameMode switch
         {
-            case forceMode.Story_Mode:
-                return "story";
-            case forceMode.Endless_Mode:
-                return "endless";
-            case forceMode.Challenge_Mode:
-                return "challenge";
-            default:
-                return PlayerPrefs.GetString("CurrentMode");
-        }
+            ForceMode.Story_Mode => GameControllerScript.GameMode.Story,
+            ForceMode.Endless_Mode => GameControllerScript.GameMode.Endless,
+            ForceMode.Challenge_Mode => GameControllerScript.GameMode.Challenge,
+            _ => this.GetGameModeFromRegistry(),
+        };
+    }
+
+    GameControllerScript.GameMode GetGameModeFromRegistry()
+    {
+        return PlayerPrefs.GetString("CurrentMode") switch
+        {
+            "story" => GameControllerScript.GameMode.Story,
+            "endless" => GameControllerScript.GameMode.Endless,
+            "challenge" => GameControllerScript.GameMode.Challenge,
+            _ => GameControllerScript.GameMode.Story,
+        };
     }
 
     [Header("Game Configuration")]
@@ -72,12 +79,12 @@ public class MasterController : MonoBehaviour
     public int inventorySlotCount;
     public EntranceScript[] exitList;
     [SerializeField] VendingMachineScript[] vendingMachines;
-    public enum forceMode
+    public enum ForceMode
     {
         Dont_Force, Story_Mode, Endless_Mode, Challenge_Mode
     };
-    public forceMode gameMode;
-    [HideInInspector] public string modeSetting;
+    public ForceMode gameMode;
+    GameControllerScript.GameMode modeSetting;
     [SerializeField] CraftersWarpPoints[] craftersWarpPoints;
     public Transform attendanceOfficeLocation;
     public Vector3 detentionPlayerPosition;

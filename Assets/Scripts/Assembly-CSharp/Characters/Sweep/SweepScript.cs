@@ -9,7 +9,6 @@ public class SweepScript : MonoBehaviour
 	{
 		this.origin = base.transform.position;
 		this.gc = FindObjectOfType<GameControllerScript>();
-		this.currentSweepState = CurrentSweepState.Stationary;
 		this.speechCooldown = 0f;
 		StartCoroutine(this.WaitRoutine());
 	}
@@ -22,7 +21,6 @@ public class SweepScript : MonoBehaviour
 
 	IEnumerator WaitRoutine()
 	{
-		Debug.Log("started wait");
 		this.waitTime = Random.Range(120f, 180f);
 		while (waitTime > 0f && !this.isParty)
 		{
@@ -67,10 +65,8 @@ public class SweepScript : MonoBehaviour
 				if ((v2Location - v2Target).magnitude < 1.5f)
 					goto case 1;
 				this.wanders++;
-				Debug.Log("Heading to destination " + this.wanders);
 				goto case 0;
 			case 3: // Head home
-				Debug.Log("Heading home");
 				this.sweepHitbox.enabled = true;
 				this.agent.SetDestination(this.origin);
 				while (this.agent.pathPending)
@@ -81,7 +77,6 @@ public class SweepScript : MonoBehaviour
 					goto case 11;
 				break;
 			case 11:
-				Debug.Log("Heading to party");
 				this.agent.SetDestination(gc.partyLocation.position);
 				while (this.agent.pathPending)
 					yield return null;
@@ -241,12 +236,10 @@ public class SweepScript : MonoBehaviour
 
 	[Header("Sweep State")]
 	[SerializeField] AILocationSelectorScript wanderer;
-	float coolDown;
 	float speechCooldown;
 	[SerializeField] float waitTime;
 	[SerializeField] int wanders;
 	[SerializeField] bool active;
-	CurrentSweepState currentSweepState;
 	enum CurrentSweepState
 	{
 		Stationary, Sweeping, Returning

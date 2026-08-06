@@ -10,7 +10,7 @@ public class NotebookScript : MonoBehaviour
 
 	private void Update()
 	{
-		if (this.gc.mode == "endless") {
+		if (this.gc.gameMode == GameControllerScript.GameMode.Endless) {
 			if (this.respawnTime > 0f && (base.transform.position - this.player.position).magnitude > 60f)
 				this.respawnTime -= Time.deltaTime;
 			else if (!this.up) {

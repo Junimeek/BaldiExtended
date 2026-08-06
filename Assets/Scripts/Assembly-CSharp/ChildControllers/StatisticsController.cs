@@ -58,7 +58,7 @@ public class StatisticsController : MonoBehaviour
     {
         this.mapID = this.GetMapID();
 
-        if (this.gc.mode == "story" || this.gc.mode == "endless")
+        if (this.gc.gameMode != GameControllerScript.GameMode.Challenge)
         {
             SaveData_Story storyData = OldSaveDataLoader.LoadOldStoryData();
             SaveData_Endless endlessData = OldSaveDataLoader.LoadOldEndlessData();
@@ -70,7 +70,7 @@ public class StatisticsController : MonoBehaviour
             if (storyData.bestTime[this.mapID] == 0f)
                 this.data_bestTime[this.mapID] = 9999f;
 
-            if (this.gc.mode == "story")
+            if (this.gc.gameMode == GameControllerScript.GameMode.Story)
             {
                 this.data_totalDetentions = storyData.totalDetentions;
                 this.data_ClassicLifetimeItems = storyData.itemsUsed_Classic;
@@ -111,7 +111,7 @@ public class StatisticsController : MonoBehaviour
                 }
             }
         }
-        else if (this.gc.mode == "challenge")
+        else
         {
             SaveData_Challenge challengeData = OldSaveDataLoader.LoadOldChallengeData();
 
@@ -142,7 +142,7 @@ public class StatisticsController : MonoBehaviour
         
         this.data_totalDetentions[this.mapID] += this.detentions;
 
-        if (this.gc.mode == "story" || this.gc.mode == "endless")
+        if (this.gc.gameMode != GameControllerScript.GameMode.Challenge)
         {
             switch(this.mapID)
             {
@@ -168,7 +168,7 @@ public class StatisticsController : MonoBehaviour
                     this.data_notebooks[this.mapID] = this.notebooks;
             }
         }
-        else if (this.gc.mode == "challenge")
+        else
         {
             switch(this.mapID)
             {
@@ -193,15 +193,15 @@ public class StatisticsController : MonoBehaviour
             }
         }
 
-        switch (this.gc.mode)
+        switch (this.gc.gameMode)
         {
-            case "story":
+            case GameControllerScript.GameMode.Story:
                 OldSaveDataLoader.SaveOldStoryData(this);
                 break;
-            case "endless":
+            case GameControllerScript.GameMode.Endless:
                 OldSaveDataLoader.SaveOldEndlessData(this);
                 break;
-            case "challenge":
+            case GameControllerScript.GameMode.Challenge:
                 OldSaveDataLoader.SaveOldChallengeData(this);
                 break;
         }
@@ -213,32 +213,24 @@ public class StatisticsController : MonoBehaviour
 
     private short GetMapID()
     {
-        if (this.gc.mode == "story" || this.gc.mode == "endless")
+        if (this.gc.gameMode != GameControllerScript.GameMode.Challenge)
         {
-            switch(this.gc.curMap)
+            return this.gc.curMap switch
             {
-                case "Classic":
-                    return 0;
-                case "ClassicExtended":
-                    return 1;
-                case "JuniperHills":
-                    return 2;
-                default:
-                    return 0;
-            }
-        }
-        else if (this.gc.mode == "challenge")
-        {
-            switch(this.gc.curMap)
-            {
-                case "ClassicDark":
-                    return 0;
-                default:
-                    return 0;
-            }
+                "Classic" => 0,
+                "ClassicExtended" => 1,
+                "JuniperHills" => 2,
+                _ => 0,
+            };
         }
         else
-            return 0;
+        {
+            return this.gc.curMap switch
+            {
+                "ClassicDark" => 0,
+                _ => 0,
+            };
+        }
     }
 
     [SerializeField] private GameControllerScript gc;

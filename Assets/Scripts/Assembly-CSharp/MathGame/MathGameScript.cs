@@ -2,7 +2,6 @@
 using System.Collections;
 using TMPro;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class MathGameScript : MonoBehaviour
@@ -29,6 +28,11 @@ public class MathGameScript : MonoBehaviour
             this.QueueAudio(this.bal_howto);
         }
         this.NewProblem();
+
+        if (gc.curMap == "Classic")
+            this.resultSelector = 0;
+        else
+            this.resultSelector = 1;
 
         if (this.gc.spoopMode)
             this.baldiFeedTransform.position = new Vector3(-1000f, -1000f, 0f);
@@ -90,7 +94,7 @@ public class MathGameScript : MonoBehaviour
             int digit2 = Mathf.RoundToInt(UnityEngine.Random.Range(-9f,9f));
             int digit3 = Mathf.RoundToInt(UnityEngine.Random.Range(-9f,9f));
 
-            if ((this.gc.mode != "endless" && (this.problem <= 2 || this.gc.notebooks <= 1)) || (this.gc.mode == "endless" && (this.problem <= 2 || this.gc.notebooks != 2))/* || gc.isSafeMode*/)
+            if ((this.gc.gameMode != GameControllerScript.GameMode.Endless && (this.problem <= 2 || this.gc.notebooks <= 1)) || (this.gc.gameMode == GameControllerScript.GameMode.Endless && (this.problem <= 2 || this.gc.notebooks != 2)))
             {
                 switch (questionType)
                 {
@@ -171,13 +175,13 @@ public class MathGameScript : MonoBehaviour
                     this.gc.failedNotebooks++;
                 }
             }
-            else if (this.gc.mode == "endless" & this.problemsWrong <= 0)
+            else if (this.gc.gameMode == GameControllerScript.GameMode.Endless && this.problemsWrong <= 0)
             {
                 int num = Mathf.RoundToInt(UnityEngine.Random.Range(0f, 1f));
                 this.questionText.text = this.endlessHintText[num];
                 this.endDelay = 1.5f;
             }
-            else if (this.gc.mode == "story" & this.problemsWrong >= 3)
+            else if (this.gc.gameMode == GameControllerScript.GameMode.Story & this.problemsWrong >= 3)
             {
                 this.gc.failedNotebooks++;
 
@@ -489,23 +493,35 @@ public class MathGameScript : MonoBehaviour
 
     public void CheckAnswer()
     {
-        if (this.playerAnswer.text == "31718")
+        switch(this.playerAnswer.text)
         {
-            base.StartCoroutine(this.CheatText("THIS IS WHERE IT ALL BEGAN"));
-            SceneManager.LoadSceneAsync("TestRoom");
-            return;
-        }
-        else if (this.playerAnswer.text == "53045009")
-        {
-            base.StartCoroutine(this.CheatText("USE THESE TO STICK TO THE CEILING!"));
-            this.gc.Fliparoo();
+            case "31718":
+                StartCoroutine(this.CheatText("THIS IS WHERE IT ALL BEGAN"));
+                UnityEngine.SceneManagement.SceneManager.LoadSceneAsync("TestRoom");
+                return;
+            case "53045009":
+                StartCoroutine(this.CheatText("USE THESE TO STICK TO THE CEILING!"));
+                this.gc.Fliparoo();
+                break;
         }
 
         if (this.problem <= 3)
         {
+            Image result;
+            if (this.resultSelector == 0)
+            {
+                this.classicIcons[this.problem - 1].SetActive(true);
+                result = this.classicIcons[this.problem - 1].GetComponent<Image>();
+            }
+            else
+            {
+                this.resultIcons[this.problem - 1].SetActive(true);
+                result = this.resultIcons[this.problem - 1].GetComponent<Image>();
+            }
+            
             if (this.playerAnswer.text == this.solution.ToString() && !this.impossibleMode)
             {
-                this.results[this.problem - 1].texture = this.correct;
+                result.sprite = this.correct[this.resultSelector];
                 this.baldiAudio.Stop();
                 this.ClearAudioQueue();
                 int num = Mathf.RoundToInt(UnityEngine.Random.Range(0f, bal_praises.Length - 1f));
@@ -518,7 +534,7 @@ public class MathGameScript : MonoBehaviour
                 this.ClearAudioQueue();
                 this.baldiAudio.Stop();
                 this.problemsWrong++;
-                this.results[this.problem - 1].texture = this.incorrect;
+                result.sprite = this.incorrect[this.resultSelector];
 
                 if (this.gc.isSafeMode)
                 {
@@ -537,7 +553,7 @@ public class MathGameScript : MonoBehaviour
                     this.gc.ActivateSpoopMode();
                 }
 
-                if (this.gc.mode == "story")
+                if (this.gc.gameMode == GameControllerScript.GameMode.Story)
                 {
                     if (this.problem == 3 && this.impossibleMode)
                         this.baldiScript.GetAngry(1f);
@@ -582,7 +598,7 @@ public class MathGameScript : MonoBehaviour
 
     private void ExitGame()
     {
-        if (this.problemsWrong <= 0 & this.gc.mode == "endless")
+        if (this.problemsWrong <= 0 & this.gc.gameMode == GameControllerScript.GameMode.Endless)
         {
             this.baldiScript.GetAngry(-1f);
         }
@@ -611,11 +627,11 @@ public class MathGameScript : MonoBehaviour
 
     private IEnumerator CheatText(string text)
     {
-        for (; ; )
+        this.questionText.text = text;
+        this.questionText2.text = string.Empty;
+        this.questionText3.text = string.Empty;
+        while (true)
         {
-            this.questionText.text = text;
-            this.questionText2.text = string.Empty;
-            this.questionText3.text = string.Empty;
             yield return new WaitForEndOfFrame();
         }
     }
@@ -624,9 +640,11 @@ public class MathGameScript : MonoBehaviour
     public GameControllerScript gc;
     public BaldiScript baldiScript;
     public Vector3 playerPosition;
-    [SerializeField] RawImage[] results = new RawImage[3];
-    [SerializeField] Texture correct;
-    [SerializeField] Texture incorrect;
+    [SerializeField] Sprite[] correct;
+    [SerializeField] Sprite[] incorrect;
+    [SerializeField] int resultSelector;
+    [SerializeField] GameObject[] classicIcons;
+    [SerializeField] GameObject[] resultIcons;
     [SerializeField] TMP_InputField playerAnswer;
     [SerializeField] TMP_Text questionText;
     [SerializeField] TMP_Text questionText2;

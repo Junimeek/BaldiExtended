@@ -58,7 +58,6 @@ public class GameControllerScript : MonoBehaviour
 
 		this.cullingMask = this.playerCamera.cullingMask; // Changes cullingMask in the Camera
 		this.audioDevice = base.GetComponent<AudioSource>(); //Get the Audio Source
-		this.mode = PlayerPrefs.GetString("CurrentMode"); //Get the current mode
 
 		this.curMap = curSceneName;
 		PlayerPrefs.SetString("CurrentMap", this.curMap);
@@ -229,7 +228,7 @@ public class GameControllerScript : MonoBehaviour
 	{
 		this.bestTime = stats.data_bestTime[stats.mapID];
 
-		if (this.mode != "challenge")
+		if (this.gameMode != GameMode.Challenge)
 			this.highBooksScore = stats.data_notebooks[stats.mapID];
 	}
 
@@ -315,7 +314,7 @@ public class GameControllerScript : MonoBehaviour
 		if (this.player.gameOver)
 		{
 			this.cursorController.UnlockCursor();
-			if (this.mode == "endless" && this.notebooks > this.highBooksScore && !this.highScoreText.activeSelf)
+			if (this.gameMode == GameMode.Endless && this.notebooks > this.highBooksScore && !this.highScoreText.activeSelf)
 				this.highScoreText.SetActive(true);
 
 			Time.timeScale = 0f;
@@ -332,7 +331,7 @@ public class GameControllerScript : MonoBehaviour
 				if (this.modeType == "nullStyle")
 					challengeController.EndChallengeGame(1);
 				
-				if (this.mode != "endless")
+				if (this.gameMode != GameMode.Endless)
 					this.stats.SaveAllData(null);
 				else if (!this.isScareStarted)
 				{
@@ -628,13 +627,15 @@ public class GameControllerScript : MonoBehaviour
 	{
 		this.notebookCountText.text = this.notebooks.ToString();
 
-		if (this.mode != "endless")
-			this.notebookCountText.text += "/" + this.daFinalBookCount.ToString();
-
-		if (this.notebooks == daFinalBookCount && this.mode != "endless")
+		if (this.gameMode != GameMode.Endless)
 		{
-			this.exitCountGroup.SetActive(true);
-			this.notebookObject.SetActive(false);
+			if (this.notebooks == this.daFinalBookCount)
+			{
+				this.exitCountGroup.SetActive(true);
+				this.notebookObject.SetActive(false);
+			}
+			else
+				this.notebookCountText.text += "/" + this.daFinalBookCount.ToString();
 		}
 	}
 
@@ -886,14 +887,14 @@ public class GameControllerScript : MonoBehaviour
 			this.quarter.SetActive(true);
 			this.tutorBaldi.PlayOneShot(this.aud_Prize);
 		}
-		else if (this.notebooks >= this.daFinalBookCount && this.mode == "story") // Plays the all 7 notebook sound
+		else if (this.notebooks >= this.daFinalBookCount && this.gameMode == GameMode.Story) // Plays the all 7 notebook sound
 		{
 			this.ActivateFinaleMode();
 
 			if (!this.isSafeMode)
 				this.audioDevice.PlayOneShot(this.aud_AllNotebooks, 0.8f);
 		}
-		else if (this.mode == "endless")
+		else if (this.gameMode == GameMode.Endless)
 		{
 			if (this.baldiScrpt.isActiveAndEnabled)
 				this.baldiScrpt.endless = true;
@@ -1299,7 +1300,7 @@ public class GameControllerScript : MonoBehaviour
 
 	IEnumerator PartyRoutine()
     {
-        if (this.mode == "endless")
+        if (this.gameMode == GameMode.Endless)
 			this.remainingPartyTime = 60f;
 		else
 			this.remainingPartyTime = (-1.5f / this.daFinalBookCount * this.notebooks + 2f) * 60f;
@@ -1841,7 +1842,11 @@ public class GameControllerScript : MonoBehaviour
 	[SerializeField] private float remainingPartyTime;
 	public float gameOverDelay;
 	[SerializeField] private float darkLevel;
-	public string mode;
+	public enum GameMode
+	{
+		Story, Endless, Challenge
+	}
+	public GameMode gameMode;
 	public string modeType;
 	public string curMap;
 	[SerializeField] private string charInAttendance;

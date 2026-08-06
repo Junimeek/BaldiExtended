@@ -308,7 +308,7 @@ public class BaldiScript : MonoBehaviour
 
 		this.isAlarmClock = false;
 
-		if (!this.allowWindowBreaking && this.currentPriority > 1 && gc.mode == "challenge")
+		if (!this.allowWindowBreaking && this.currentPriority > 1 && gc.gameMode == GameControllerScript.GameMode.Challenge)
 			this.gc.StartCoroutine(this.challengeController.ToggleWindowBlockers());
 
 		if (priority >= this.currentPriority)

@@ -15,6 +15,9 @@ Bug Fixes:
 - Safe Mode Baldi's audio when he catches you is now filtered through the Voice audio channel instead of the SFX channel
 - Null can no longer be pushed by a BSODA during his pre-bossfight monologue
 
+Internal Changes and Fixes:
+- Fixed an issue where changing the GameMode setting in the MasterController script had no effect
+
 todo before releasing 0.5.5:
 - make principal actually function somewhat decently
 - make 1st prize faster when heading to party or attendance

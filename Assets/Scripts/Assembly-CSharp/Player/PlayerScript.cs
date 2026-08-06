@@ -25,11 +25,6 @@ public class PlayerScript : MonoBehaviour
 		this.isSecret = false;
 	}
 
-	public void OverrideValues(ScriptInjector injector)
-	{
-		this.speedOverrides = injector.inj_playerSpeed;
-	}
-
 	private void Update()
 	{
 		if (gc.isSlowmo)
