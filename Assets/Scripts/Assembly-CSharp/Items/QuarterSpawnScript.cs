@@ -1,17 +1,27 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class QuarterSpawnScript : MonoBehaviour
 {
 	private void Start()
 	{
-		if (base.gameObject.name == "Pickup_Quarter")
-			base.transform.position = this.wanderer.NewTarget("Quarter") + Vector3.up * 4f;
-		else if (base.gameObject.name == "Pickup_RoomQuarter")
-			base.transform.position = this.wanderer.NewTarget("RoomQuarter") + Vector3.up * 4f;
-		else if (base.gameObject.name == "Pickup_AttendanceSlip")
-			base.transform.position = this.wanderer.NewTarget("Attendance") + Vector3.up * 4f;
+		switch(this.pickupTargetLocation)
+		{
+			case PickupType.Hallway:
+				base.transform.position = this.wanderer.GetNewItemTarget(AILocationSelectorScript.ItemTargetType.Hallway) + Vector3.up * 4f;
+				break;
+			case PickupType.Classroom:
+				base.transform.position = this.wanderer.GetNewItemTarget(AILocationSelectorScript.ItemTargetType.Classroom) + Vector3.up * 4f;
+				break;
+			case PickupType.FacultyRoom:
+				base.transform.position = this.wanderer.GetNewItemTarget(AILocationSelectorScript.ItemTargetType.FacultyRoom) + Vector3.up * 4f;
+				break;
+		}
 	}
 
 	public AILocationSelectorScript wanderer;
+	enum PickupType
+	{
+		Hallway, Classroom, FacultyRoom
+	}
+	[SerializeField] PickupType pickupTargetLocation;
 }

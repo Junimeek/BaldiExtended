@@ -31,7 +31,7 @@ public class TestEnemy2 : MonoBehaviour
 
         //this.cornerList = this.agent.path.corners;
         NavMeshPath newPath = new NavMeshPath();
-        NavMesh.CalculatePath(base.transform.position, wanderer.NewTarget("kyoko"), NavMesh.AllAreas, newPath);
+        NavMesh.CalculatePath(base.transform.position, wanderer.GetNewNPCTarget(AILocationSelectorScript.NPCTargetType.AllWanderPoints), NavMesh.AllAreas, newPath);
         this.cornerList = newPath.corners;
 
         float valueLeft;
@@ -79,7 +79,7 @@ public class TestEnemy2 : MonoBehaviour
     NavMeshPath GetNewPath()
     {
         NavMeshPath newPath = new NavMeshPath();
-        NavMesh.CalculatePath(base.transform.position, wanderer.NewTarget("kyoko"), NavMesh.AllAreas, newPath);
+        NavMesh.CalculatePath(base.transform.position, wanderer.GetNewNPCTarget(AILocationSelectorScript.NPCTargetType.AllWanderPoints), NavMesh.AllAreas, newPath);
         this.cornerList = newPath.corners;
         return newPath;
     }

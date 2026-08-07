@@ -70,13 +70,13 @@ public class PlaytimeScript : MonoBehaviour
 			return;
 		
 		if (this.isParty)
-			this.agent.SetDestination(this.wanderer.NewTarget("Party"));
+			this.agent.SetDestination(this.wanderer.GetNewNPCTarget(AILocationSelectorScript.NPCTargetType.PartyWanderPoints));
 		else
-			this.agent.SetDestination(this.wanderer.NewTarget("Hallway"));
+			this.agent.SetDestination(this.wanderer.GetNewNPCTarget(AILocationSelectorScript.NPCTargetType.Hallways));
 
 		this.agent.speed = 15f;
 		this.playerSpotted = false;
-		this.audVal = Mathf.RoundToInt(UnityEngine.Random.Range(0f, 1f));
+		this.audVal = Mathf.RoundToInt(Random.Range(0f, 1f));
 
 		if (!this.audioDevice.isPlaying && !this.isParty)
 			this.audioDevice.PlayOneShot(this.aud_Random[this.audVal]);

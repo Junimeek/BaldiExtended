@@ -191,16 +191,16 @@ public class BaldiScript : MonoBehaviour
 	private void Wander()
 	{
 		if (this.isParty)
-			this.agent.SetDestination(this.wanderer.NewTarget("Party"));
+			this.agent.SetDestination(this.wanderer.GetNewNPCTarget(AILocationSelectorScript.NPCTargetType.PartyWanderPoints));
 		else
-			this.agent.SetDestination(this.wanderer.NewTarget("Baldi")); //Head towards the position of the wanderTarget object
+			this.agent.SetDestination(this.wanderer.GetNewNPCTarget(AILocationSelectorScript.NPCTargetType.AllWanderPoints));
 
-		this.coolDown = 1f; //Set the cooldown
+		this.coolDown = 1f;
 	}
 
 	public void TargetPlayer()
 	{
-		this.AddNewSound(this.player.position, 6); //Target the player
+		this.AddNewSound(this.player.position, 6);
 		this.coolDown = 1f;
 
 		if (sightCooldown <= 0f)
@@ -216,7 +216,7 @@ public class BaldiScript : MonoBehaviour
 			this.DecreasePriority();
 
 		this.moveFrames = 10f;
-		this.baldiAudio.PlayOneShot(this.slap); //Play the slap sound
+		this.baldiAudio.PlayOneShot(this.slap);
 
 		if (!this.isNullMode)
 		{
@@ -253,7 +253,7 @@ public class BaldiScript : MonoBehaviour
 
 	public void GetTempAngry(float value)
 	{
-		this.baldiTempAnger += value; //Increase Baldi's Temporary Anger
+		this.baldiTempAnger += value;
 	}
 
 	public void WarpToCrafterPoint(Vector3 point)

@@ -2,62 +2,62 @@
 
 public class BullyScript : MonoBehaviour
 {
-	private void Start()
+	void Start()
 	{
 		this.audioDevice = base.GetComponent<AudioSource>(); //Get the Audio Source
 		this.waitTime = Random.Range(60f, 120f); //Set the amount of time before the bully appears again
 	}
 
-	private void Update()
+	void Update()
 	{
-		if (this.waitTime > 0f) //Decrease the waittime
+		if (this.waitTime > 0f)
 			this.waitTime -= Time.deltaTime;
 		else if (!this.active)
-			this.Activate(); //Activate the Bully
+			this.Activate();
 
-		if (this.active) //If the Bully is on the map
+		if (this.active)
 		{
-			this.activeTime += Time.deltaTime; //Increase active time
+			this.activeTime += Time.deltaTime;
 			if (this.activeTime >= 180f && (base.transform.position - this.player.position).magnitude >= 120f) //If the bully has been in the map for a long time and the player is far away
 			{
 				this.audioDevice.PlayOneShot(this.aud_Bored);
-				this.Reset(); //Reset the bully
+				this.Reset();
 			}
 		}
 		if (this.guilt > 0f)
-			this.guilt -= Time.deltaTime; //Decrease Bully's guilt
+			this.guilt -= Time.deltaTime;
 	}
 
-	private void FixedUpdate()
+	void FixedUpdate()
 	{
 		Vector3 direction = this.player.position - base.transform.position;
 		RaycastHit raycastHit;
-		if (Physics.Raycast(base.transform.position + new Vector3(0f, 4f, 0f), direction, out raycastHit, float.PositiveInfinity, 769, QueryTriggerInteraction.Ignore) & raycastHit.transform.tag == "Player" & (base.transform.position - this.player.position).magnitude <= 30f & this.active)
+		if (Physics.Raycast(base.transform.position + new Vector3(0f, 4f, 0f), direction, out raycastHit, float.PositiveInfinity, 769, QueryTriggerInteraction.Ignore) & raycastHit.transform.CompareTag("Player") & (base.transform.position - this.player.position).magnitude <= 30f & this.active)
 		{
-			if (!this.spoken) // If the bully hasn't already spoken
+			if (!this.spoken)
 			{
-				int num = Mathf.RoundToInt(Random.Range(0f, 1f)); //Get a random number between 0 and 1
-				this.audioDevice.PlayOneShot(this.aud_Taunts[num]); //Say a line in an index using num
-				this.spoken = true; //Sets spoken to true, preventing the bully from talking again
+				int num = Mathf.RoundToInt(Random.Range(0f, 1f));
+				this.audioDevice.PlayOneShot(this.aud_Taunts[num]);
+				this.spoken = true;
 			}
-			this.guilt = 10f; //Makes the bully guilty for "Bullying in the halls"
+			this.guilt = 10f;
 		}
 	}
 
-	private void Activate()
+	void Activate()
 	{
 		this.isDetention = false;
-		base.transform.position = this.wanderer.NewTarget("Bully") + new Vector3(0f, 5f, 0f); // Go to the wanderTarget + 5 on the Y axis
-		while ((base.transform.position - this.player.position).magnitude < 20f) // While the Bully is close to the player
+		base.transform.position = this.wanderer.GetNewNPCTarget(AILocationSelectorScript.NPCTargetType.Bully) + new Vector3(0f, 5f, 0f);
+		while ((base.transform.position - this.player.position).magnitude < 20f)
 		{
-			base.transform.position = this.wanderer.NewTarget("Bully") + new Vector3(0f, 5f, 0f);// Go to the wanderTarget + 5 on the Y axis
-        } //This is here to prevent the bully from spawning ontop iof the player
-		this.active = true; //Set the bully to active
+			base.transform.position = this.wanderer.GetNewNPCTarget(AILocationSelectorScript.NPCTargetType.Bully) + new Vector3(0f, 5f, 0f);
+        }
+		this.active = true;
 	}
 
-	private void OnTriggerEnter(Collider other)
+	void OnTriggerEnter(Collider other)
 	{
-		if (other.transform.tag == "Player" && !this.isDetention)
+		if (other.transform.CompareTag("Player") && !this.isDetention)
 		{
 			for (int i = 0; i < this.gc.totalSlotCount; i++)
 			{
@@ -74,38 +74,38 @@ public class BullyScript : MonoBehaviour
 			this.audioDevice.PlayOneShot(this.aud_Bored);
 	}
 
-	private void TakeItem()
+	void TakeItem()
 	{
-		int num = Mathf.RoundToInt(UnityEngine.Random.Range(0f, this.gc.totalSlotCount - 1)); //Get a random item slot
-		while (this.gc.item[num] == 0) //If the selected slot is empty
+		int num = Mathf.RoundToInt(Random.Range(0f, this.gc.totalSlotCount - 1));
+		while (this.gc.item[num] == 0)
 		{
-			num = Mathf.RoundToInt(Random.Range(0f, this.gc.totalSlotCount - 1)); // Choose another slot
+			num = Mathf.RoundToInt(Random.Range(0f, this.gc.totalSlotCount - 1));
 		}
-		this.gc.LoseItem(num); // Remove the item selected
-		int num2 = Mathf.RoundToInt(UnityEngine.Random.Range(0f, 1f));
+		this.gc.LoseItem(num);
+		int num2 = Mathf.RoundToInt(Random.Range(0f, 1f));
 		this.longAudioDevice.PlayOneShot(this.aud_Thanks[num2]);
 		this.Reset();
 	}
 
-	private void OnTriggerStay(Collider other)
+	void OnTriggerStay(Collider other)
 	{
-		if (other.transform.name == "Principal of the Thing" && this.guilt > 0f) //If touching the principal and the bully is guilty
+		if (other.transform.name == "Principal of the Thing" && this.guilt > 0f)
 		{
 			this.isDetention = true;
-			this.Reset(); //Reset the bully
+			this.Reset();
 		}
 	}
 
-	private void Reset()
+	void Reset()
 	{
 		if (this.isDetention)
 			base.transform.position = this.detentionPos;
 		else
-			base.transform.position = base.transform.position + new Vector3(0f, 150f, 0f); // Go to X: 0, Y: 20, Z: 20
-		this.waitTime = Random.Range(60f, 120f); //Set the amount of time before the bully appears again
-		this.active = false; //Set active to false
-		this.activeTime = 0f; //Reset active time
-		this.spoken = false; //Reset spoken
+			base.transform.position = base.transform.position + new Vector3(0f, 150f, 0f);
+		this.waitTime = Random.Range(60f, 120f);
+		this.active = false;
+		this.activeTime = 0f;
+		this.spoken = false;
 	}
 
 	public Transform player;

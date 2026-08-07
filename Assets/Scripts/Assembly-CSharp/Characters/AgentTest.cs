@@ -38,7 +38,7 @@ public class AgentTest : MonoBehaviour
 
 	private void Wander()
 	{
-		this.agent.SetDestination(this.wanderer.NewTarget("PlaceFace"));
+		this.agent.SetDestination(this.wanderer.GetNewNPCTarget(AILocationSelectorScript.NPCTargetType.AllWanderPoints));
 		this.coolDown = 1f;
 	}
 

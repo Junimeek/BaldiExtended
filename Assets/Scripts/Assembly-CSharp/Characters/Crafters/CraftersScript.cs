@@ -84,7 +84,7 @@ public class CraftersScript : MonoBehaviour
 		}
 		else if (this.isParty && this.agent.isActiveAndEnabled)
 		{
-			this.agent.SetDestination(this.wanderer.NewTarget("Party"));
+			this.agent.SetDestination(this.wanderer.GetNewNPCTarget(AILocationSelectorScript.NPCTargetType.PartyWanderPoints));
 		}
 	}
 

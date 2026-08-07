@@ -1,34 +1,26 @@
-﻿using System;
-using UnityEngine;
-using UnityEngine.XR.WSA;
+﻿using UnityEngine;
 
 public class AILocationSelectorScript : MonoBehaviour
 {
-	public Vector3 NewTarget(string type)
+	public Vector3 GetNewNPCTarget(NPCTargetType type)
 	{
-		//if (!this.LocationCheck()) this.InitializeWanderPoints();
-
 		int randomID;
 		int randomID2;
 		Vector3 newLocation;
 
 		switch(type)
 		{
-			case "Quarter":
-				randomID = Mathf.RoundToInt(UnityEngine.Random.Range(0f, quarterPoints.Length-1));
-				newLocation = this.quarterPoints[randomID].position;
+			case NPCTargetType.Hallways:
+				randomID = Mathf.RoundToInt(UnityEngine.Random.Range(0f, hallwayPoints.Length-1));
+				newLocation = this.hallwayPoints[randomID].position;
 				break;
-			case "RoomQuarter":
-				randomID = Mathf.RoundToInt(UnityEngine.Random.Range(0f, roomQuarterPoints.Length-1));
-				newLocation = this.roomQuarterPoints[randomID].position;
-				break;
-			case "Bully":
+			case NPCTargetType.Bully:
 				randomID = Mathf.RoundToInt(UnityEngine.Random.Range(0f, bullyPoints.Length-1));
 				newLocation = this.bullyPoints[randomID].position;
 				break;
-			case "Hallway":
-				randomID = Mathf.RoundToInt(UnityEngine.Random.Range(0f, hallwayPoints.Length-1));
-				newLocation = this.hallwayPoints[randomID].position;
+			case NPCTargetType.PartyWanderPoints:
+				randomID = Mathf.RoundToInt(UnityEngine.Random.Range(0f, partyPoints.Length-1));
+				newLocation = this.partyPoints[randomID].position;
 				break;
 			default:
 				randomID2 = Mathf.RoundToInt(UnityEngine.Random.Range(1f, 2f));
@@ -44,73 +36,52 @@ public class AILocationSelectorScript : MonoBehaviour
 						break;
 				}
 				break;
-			case "Attendance":
-				randomID = Mathf.RoundToInt(UnityEngine.Random.Range(0f, attendancePoints.Length-1));
-				newLocation = this.attendancePoints[randomID].position;
-				break;
-			case "Party":
-				randomID = Mathf.RoundToInt(UnityEngine.Random.Range(0f, partyPoints.Length-1));
-				newLocation = this.partyPoints[randomID].position;
-				break;
-			case "Projectile":
-				randomID = Mathf.RoundToInt(UnityEngine.Random.Range(0f, projectilePoints.Length-1));
-				newLocation = this.projectilePoints[randomID].position;
-				break;
 		}
-
 		this.ambience.PlayAudio();
 		return newLocation;
 	}
 
-	private bool LocationCheck()
+	public Vector3 GetNewItemTarget(ItemTargetType type)
 	{
-		if (!(this.bullyPoints.Length > 0 /*&& this.quarterPoints.Length > 0 && this.hallwayPoints.Length > 0
-		&& this.roomPoints.Length > 0 && this.attendancePoints.Length > 0*/))
-			return true;
-		else
+		int randomID;
+		Vector3 newLocation;
+
+		switch(type)
 		{
-			Debug.Log(false);
-			return false;
+			case ItemTargetType.Hallway:
+				randomID = Mathf.RoundToInt(UnityEngine.Random.Range(0f, quarterPoints.Length-1));
+				newLocation = this.quarterPoints[randomID].position;
+				break;
+			case ItemTargetType.Classroom:
+				randomID = Mathf.RoundToInt(UnityEngine.Random.Range(0f, roomQuarterPoints.Length-1));
+				newLocation = this.roomQuarterPoints[randomID].position;
+				break;
+			case ItemTargetType.FacultyRoom:
+				randomID = Mathf.RoundToInt(UnityEngine.Random.Range(0f, attendancePoints.Length-1));
+				newLocation = this.attendancePoints[randomID].position;
+				break;
+			case ItemTargetType.BossProjectile:
+				randomID = Mathf.RoundToInt(UnityEngine.Random.Range(0f, projectilePoints.Length-1));
+				newLocation = this.projectilePoints[randomID].position;
+				break;
+			default:
+				newLocation = this.GetNewNPCTarget(NPCTargetType.AllWanderPoints);
+				break;
 		}
-			
-	}
-
-	private void InitializeWanderPoints()
-	{
-		Transform[] fetchedPoints = bullyParent.GetComponentsInChildren<Transform>();
-		Array.Resize(ref this.bullyPoints, fetchedPoints.Length);
-		for (int i = 0; i < this.bullyPoints.Length; i++)
-			this.bullyPoints[i] = fetchedPoints[i];
-
-		/*
-		fetchedPoints = quarterParent.GetComponentsInChildren<Transform>();
-		Array.Resize(ref this.quarterPoints, fetchedPoints.Length);
-		for (int i = 0; i < this.quarterPoints.Length; i++)
-			this.quarterPoints[i] = fetchedPoints[i];
-		*/
-
-		fetchedPoints = hallwayParent.GetComponentsInChildren<Transform>();
-		Array.Resize(ref this.hallwayPoints, fetchedPoints.Length);
-		for (int i = 0; i < this.hallwayPoints.Length; i++)
-			this.hallwayPoints[i] = fetchedPoints[i];
-
-		fetchedPoints = roomParent.GetComponentsInChildren<Transform>();
-		Array.Resize(ref this.roomPoints, fetchedPoints.Length);
-		for (int i = 0; i < this.roomPoints.Length; i++)
-			this.roomPoints[i] = fetchedPoints[i];
-
-		fetchedPoints = attendanceParent.GetComponentsInChildren<Transform>();
-		Array.Resize(ref this.attendancePoints, fetchedPoints.Length);
-		for (int i = 0; i < this.attendancePoints.Length; i++)
-			this.attendancePoints[i] = fetchedPoints[i];
+		return newLocation;
 	}
 
 	public AmbienceScript ambience;
-	[SerializeField] private GameObject bullyParent;
-	[SerializeField] private GameObject quarterParent;
-	[SerializeField] private GameObject hallwayParent;
-	[SerializeField] private GameObject roomParent;
-	[SerializeField] private GameObject attendanceParent;
+	public enum NPCTargetType
+	{
+		AllWanderPoints, Hallways, Bully, PartyWanderPoints
+	}
+	public NPCTargetType npcTargetType;
+	public enum ItemTargetType
+	{
+		Hallway, Classroom, FacultyRoom, BossProjectile
+	}
+	public ItemTargetType itemTargetType;
 	public Transform[] bullyPoints;
 	public Transform[] quarterPoints;
 	public Transform[] roomQuarterPoints;

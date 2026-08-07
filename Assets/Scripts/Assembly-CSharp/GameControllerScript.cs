@@ -809,11 +809,11 @@ public class GameControllerScript : MonoBehaviour
 			this.item[i] = 0;
     }
 
-	public Vector3 GetNewWanderLocation(string wanderType)
-    {
-        Vector3 newLocation = this.wanderer.NewTarget(wanderType);
+	public Vector3 GetNewProjectileLocation()
+	{
+		Vector3 newLocation = this.wanderer.GetNewItemTarget(AILocationSelectorScript.ItemTargetType.BossProjectile);
 		return newLocation;
-    }
+	}
 
 	public void EndSafeGame()
 	{

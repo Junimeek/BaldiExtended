@@ -15,8 +15,8 @@ public class PrincipalScript : MonoBehaviour
 	{
 		if (this.seesRuleBreak)
 		{
-			this.timeSeenRuleBreak += 1f * Time.deltaTime;
-			if ((double)this.timeSeenRuleBreak >= 0.5 & !this.angry) // If the principal sees the player break a rule for more then 1/2 of a second
+			this.timeSeenRuleBreak += Time.deltaTime;
+			if (this.timeSeenRuleBreak >= 0.5 & !this.angry) // If the principal sees the player break a rule for more then 1/2 of a second
 			{
 				this.angry = true;
 				this.seesRuleBreak = false;
@@ -29,14 +29,14 @@ public class PrincipalScript : MonoBehaviour
 			this.timeSeenRuleBreak = 0f;
 		
 		if (this.coolDown > 0f)
-			this.coolDown -= 1f * Time.deltaTime;
+			this.coolDown -= Time.deltaTime;
 	}
 
 	private void FixedUpdate()
 	{
 		if (!this.angry) // If the principal isn't angry
 		{
-			this.aim = this.player.position - base.transform.position; // If he sees the player and the player has guilt
+			this.aim = this.player.position - base.transform.position;
 			if (Physics.Raycast(base.transform.position, this.aim, out this.hit, float.PositiveInfinity, 769, QueryTriggerInteraction.Ignore) && this.hit.transform.tag == "Player")
 			{
 				this.db = true;
@@ -68,9 +68,9 @@ public class PrincipalScript : MonoBehaviour
 		this.playerScript.principalBugFixer = 1;
 
 		if (!this.isParty)
-			this.agent.SetDestination(this.wanderer.NewTarget("Princey"));
+			this.agent.SetDestination(this.wanderer.GetNewNPCTarget(AILocationSelectorScript.NPCTargetType.AllWanderPoints));
 		else
-			this.agent.SetDestination(this.wanderer.NewTarget("Party"));
+			this.agent.SetDestination(this.wanderer.GetNewNPCTarget(AILocationSelectorScript.NPCTargetType.PartyWanderPoints));
 
 		if (this.agent.isStopped)
 			this.agent.isStopped = false;

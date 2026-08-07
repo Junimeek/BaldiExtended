@@ -16,6 +16,7 @@ Bug Fixes:
 - Null can no longer be pushed by a BSODA during his pre-bossfight monologue
 
 Internal Changes and Fixes:
+- Switched some functions that check the contents of strings to check for enums instead
 - Fixed an issue where changing the GameMode setting in the MasterController script had no effect
 
 todo before releasing 0.5.5:

@@ -86,7 +86,7 @@ public class SweepScript : MonoBehaviour
 				goto case 12;
 			case 12:
 				this.sweepHitbox.enabled = false;
-				this.agent.SetDestination(wanderer.NewTarget("Party"));
+				this.agent.SetDestination(wanderer.GetNewNPCTarget(AILocationSelectorScript.NPCTargetType.PartyWanderPoints));
 				while (this.agent.pathPending)
 					yield return null;
 				this.SetV2Destination(this.agent.destination);
@@ -159,7 +159,7 @@ public class SweepScript : MonoBehaviour
 
 		this.coolDown = 1f;
 		*/
-		this.agent.SetDestination(this.wanderer.NewTarget("Hallway"));
+		this.agent.SetDestination(this.wanderer.GetNewNPCTarget(AILocationSelectorScript.NPCTargetType.Hallways));
 	}
 
 	public void GoHome()

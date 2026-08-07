@@ -174,7 +174,7 @@ public class ChallengeController : MonoBehaviour
 
 	Vector3 GetNewProjectileLocation()
     {
-        Vector3 newLocation = gc.GetNewWanderLocation("Projectile");
+        Vector3 newLocation = gc.GetNewProjectileLocation();
 		int checkStep = 0;
 		switch(checkStep)
         {
@@ -184,7 +184,7 @@ public class ChallengeController : MonoBehaviour
 				else
 					return newLocation;
 			case 1:
-				newLocation = gc.GetNewWanderLocation("Projectile");
+				newLocation = gc.GetNewProjectileLocation();
 				goto case 0;
         }
 		return newLocation; // this is just here because the compiler throws an error without it

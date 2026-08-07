@@ -107,9 +107,9 @@ public class FirstPrizeScript : MonoBehaviour
 	private void Wander()
 	{
 		if (!this.isParty)
-			this.agent.SetDestination(this.wanderer.NewTarget("Hallway"));
+			this.agent.SetDestination(this.wanderer.GetNewNPCTarget(AILocationSelectorScript.NPCTargetType.Hallways));
 		else
-			this.agent.SetDestination(this.wanderer.NewTarget("Party"));
+			this.agent.SetDestination(this.wanderer.GetNewNPCTarget(AILocationSelectorScript.NPCTargetType.PartyWanderPoints));
 			
 		this.hugAnnounced = false;
 		int num = Mathf.RoundToInt(UnityEngine.Random.Range(0f, 9f));
