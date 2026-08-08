@@ -17,7 +17,7 @@ public class NearExitTriggerScript : MonoBehaviour
 			if (this.gc.baldiScrpt.isActiveAndEnabled)
 			{
 				this.gc.baldiScrpt.AddNewSound(base.transform.position, 4);
-				this.gc.baldiScrpt.GetAngry(0.5f);
+				this.gc.baldiScrpt.GetAngry(0.25f);
 			}
 		}
 	}

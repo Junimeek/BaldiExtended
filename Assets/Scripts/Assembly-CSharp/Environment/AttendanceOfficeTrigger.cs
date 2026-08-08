@@ -4,20 +4,15 @@ public class AttendanceOfficeTrigger : MonoBehaviour
 {
     void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("NPC"))
+        AttendanceDetector attendanceDetector = other.gameObject.GetComponent<AttendanceDetector>();
+        if (attendanceDetector != null)
         {
-            switch(other.gameObject.name)
+            if (attendanceDetector.character == AttendanceDetector.Character.GottaSweep)
             {
-                case "1st Prize":
-                    this.DisableCharacter(other.gameObject);
-                    break;
-                case "Gotta Sweep":
-                    this.DisableCharacter(other.gameObject);
-                    break;
-                case "Playtime":
-                    this.DisableCharacter(other.gameObject);
-                    break;
+                this.DisableCharacter(attendanceDetector.sweepParent);
             }
+            else
+                this.DisableCharacter(other.gameObject);
         }
     }
 
@@ -28,6 +23,6 @@ public class AttendanceOfficeTrigger : MonoBehaviour
         this.princey.GuiltyAttendance();
     }
 
-    [SerializeField] private PrincipalScript princey;
-    [SerializeField] private PlayerScript playerScript;
+    [SerializeField] PrincipalScript princey;
+    [SerializeField] PlayerScript playerScript;
 }

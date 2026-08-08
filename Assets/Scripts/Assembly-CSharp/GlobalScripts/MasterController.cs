@@ -50,6 +50,7 @@ public class MasterController : MonoBehaviour
         notifboardScript.ruleGroup = this.notifRuleGroup;
         notifboardScript.notebooColor = this.notifNotebooColor;
         this.playerScript.sneakerIcon = this.sneakerIcon;
+        sweepAttendanceDetectorScript.sweepParent = this.gottaSweep;
     }
 
     GameControllerScript.GameMode GetGameMode()
@@ -118,10 +119,14 @@ public class MasterController : MonoBehaviour
     [SerializeField] GameObject notifRuleGroup;
     [SerializeField] Color notifNotebooColor;
 
+    [Header("Game Objects")]
+    [SerializeField] GameObject gottaSweep;
+
     [Header("Scripts")]
     [SerializeField] GameControllerScript gc;
     [SerializeField] PlayerScript playerScript;
     [SerializeField] BaldiScript baldiScript;
     [SerializeField] PrincipalScript princeyScript;
     [SerializeField] CraftersScript crafterScript;
+    [SerializeField] AttendanceDetector sweepAttendanceDetectorScript;
 }

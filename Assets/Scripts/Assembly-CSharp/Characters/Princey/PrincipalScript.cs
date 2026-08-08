@@ -3,67 +3,71 @@ using UnityEngine.AI;
 
 public class PrincipalScript : MonoBehaviour
 {
-	private void Start()
+	void Start()
 	{
 		this.agent = base.GetComponent<NavMeshAgent>();
 		this.audioQueue = base.GetComponent<AudioQueueScript>();
-		this.audioDevice = base.GetComponent<AudioSource>();
 		notif = FindObjectOfType<NotificationBoard>();
 	}
 
-	private void Update()
+	void Update()
 	{
-		if (this.seesRuleBreak)
+		if (!this.inOffice)
 		{
-			this.timeSeenRuleBreak += Time.deltaTime;
-			if (this.timeSeenRuleBreak >= 0.5 & !this.angry) // If the principal sees the player break a rule for more then 1/2 of a second
+			if (this.angry && this.db)
+				this.TargetPlayer();
+			else
+				this.CheckForRuleBreak();
+		}
+
+		if (this.seesRuleBreak && !this.angry && !this.inOffice)
+		{
+			if (this.timeSeenRuleBreak >= 0.5f)
 			{
 				this.angry = true;
-				this.seesRuleBreak = false;
 				this.timeSeenRuleBreak = 0f;
-				this.TargetPlayer(); //Target the player
 				this.CorrectPlayer();
 			}
+			else
+				this.timeSeenRuleBreak += Time.deltaTime;
 		}
-		else
-			this.timeSeenRuleBreak = 0f;
+		else if (this.timeSeenRuleBreak > 0f)
+			this.timeSeenRuleBreak -= Time.deltaTime;
 		
 		if (this.coolDown > 0f)
 			this.coolDown -= Time.deltaTime;
 	}
 
-	private void FixedUpdate()
+	void FixedUpdate()
 	{
-		if (!this.angry) // If the principal isn't angry
+		this.aim = this.player.position - base.transform.position;
+		if (Physics.Raycast(base.transform.position, this.aim, out this.raycastHit, float.PositiveInfinity, 769, QueryTriggerInteraction.Ignore) && this.raycastHit.transform.CompareTag("Player"))
+			this.db = true;
+		else
+			this.db = false;
+		
+		if (!this.angry)
 		{
-			this.aim = this.player.position - base.transform.position;
-			if (Physics.Raycast(base.transform.position, this.aim, out this.hit, float.PositiveInfinity, 769, QueryTriggerInteraction.Ignore) && this.hit.transform.tag == "Player")
-			{
-				this.db = true;
-
-				if (this.playerScript.guilt > 0f && !this.inOffice && !this.angry && this.gc.isPrinceyTriggerShared && !this.gc.isPrinceyIgnore)
-					this.seesRuleBreak = true;
-				else
-					this.seesRuleBreak = false;
-			}
-			else
-				this.db = false;
-
-			if (this.db == false)
-				this.seesRuleBreak = false;
-
 			this.aim = this.bully.position - base.transform.position;
-			if (Physics.Raycast(base.transform.position, this.aim, out this.hit, float.PositiveInfinity, 769) & this.hit.transform.name == "Its a Bully" & this.bullyScript.guilt > 0f & !this.inOffice & !this.angry)
+			if (Physics.Raycast(base.transform.position, this.aim, out this.raycastHit, float.PositiveInfinity, 769) && this.raycastHit.transform.name == "Its a Bully" && this.bullyScript.guilt > 0f)
 				this.TargetBully();
 		}
-		else if (this.db)
-			this.TargetPlayer(); // If the principal is angry, target the player
 
 		if (this.agent.velocity.magnitude <= 1f && this.coolDown <= 0f)
 			this.Wander();
 	}
 
-	private void Wander()
+	void CheckForRuleBreak()
+	{
+		if (!this.db)
+			this.seesRuleBreak = false;
+		else if (this.playerScript.guilt > 0f && this.gc.isPrinceyTriggerShared && !this.gc.isPrinceyIgnore)
+			this.seesRuleBreak = true;
+		else
+			this.seesRuleBreak = false;
+	}
+
+	void Wander()
 	{
 		this.playerScript.principalBugFixer = 1;
 
@@ -77,7 +81,7 @@ public class PrincipalScript : MonoBehaviour
 		
 		this.coolDown = 1f;
 
-		if (UnityEngine.Random.Range(0f, 10f) <= 1f && !this.isParty)
+		if (Random.Range(0f, 10f) <= 1f && !this.isParty)
 			this.quietAudioDevice.PlayOneShot(this.aud_Whistle);
 	}
 
@@ -93,19 +97,22 @@ public class PrincipalScript : MonoBehaviour
 		this.Wander();
 	}
 
-	private void TargetPlayer()
+	void TargetPlayer()
 	{
 		this.agent.SetDestination(this.player.position);
 		this.coolDown = 1f;
 	}
 
-	private void TargetBully()
+	void TargetBully()
 	{
 		if (!this.bullySeen)
 		{
 			this.agent.SetDestination(this.bully.position);
-			this.audioQueue.QueueAudio(this.audNoBullying);
 			this.bullySeen = true;
+			if (this.db)
+				this.audioQueue.QueueAudio(this.audNoBullying);
+			else
+				this.audioQueue.QueueAudio(this.audDistantBullying);
 		}
 	}
 
@@ -144,7 +151,7 @@ public class PrincipalScript : MonoBehaviour
 		}
 	}
 
-	private void OnTriggerStay(Collider other)
+	void OnTriggerStay(Collider other)
 	{
 		if (other.name == "Office Trigger")
 			this.inOffice = true;
@@ -154,18 +161,18 @@ public class PrincipalScript : MonoBehaviour
 			this.inOffice = true;
 			this.playerScript.principalBugFixer = 0;
 			this.playerScript.guilt = 0f;
-			this.agent.Warp(this.gc.detentionPrincipalPos); //Teleport the principal to the office
-			this.agent.isStopped = true; //Stop the principal from moving
+			this.agent.Warp(this.gc.detentionPrincipalPos);
+			this.agent.isStopped = true;
 			this.playerScript.WarpPlayer("detention");
-			this.playerScript.LookAtCharacter("princey"); // Get the plaer to look at the principal
+			this.playerScript.LookAtCharacter("princey");
 
 			this.audioQueue.QueueAudio(this.aud_Delay);
-			this.audioQueue.QueueAudio(this.audTimes[this.detentions]); //Play the detention time sound
+			this.audioQueue.QueueAudio(this.audTimes[this.detentions]);
 			this.audioQueue.QueueAudio(this.audDetention);
 			int num = Mathf.RoundToInt(Random.Range(0f, 3f));
-			this.audioQueue.QueueAudio(this.audScolds[num]); // Say one of the other lines
+			this.audioQueue.QueueAudio(this.audScolds[num]);
 
-			this.officeDoor.LockDoor(this.lockTime[this.detentions]); // Lock the door
+			this.officeDoor.LockDoor(this.lockTime[this.detentions]);
 			this.gc.remainingDetentionTime = this.lockTime[this.detentions];
 			if (this.baldiScript.isActiveAndEnabled)
 				this.baldiScript.AddNewSound(base.transform.position, 3);
@@ -180,7 +187,7 @@ public class PrincipalScript : MonoBehaviour
 		}
 	}
 
-	private void OnTriggerExit(Collider other)
+	void OnTriggerExit(Collider other)
 	{
 		if (other.name == "Office Trigger")
 			this.inOffice = false;
@@ -189,45 +196,42 @@ public class PrincipalScript : MonoBehaviour
 			this.bullySeen = false;
 	}
 
-	public bool seesRuleBreak;
-	[SerializeField] private bool db;
-	public Transform player;
-	public Transform bully;
-	public bool bullySeen;
-	public PlayerScript playerScript;
-	public BullyScript bullyScript;
-	public BaldiScript baldiScript;
-	public AILocationSelectorScript wanderer;
-	public ClassroomDoorScript officeDoor;
-	public float coolDown;
-	public float timeSeenRuleBreak;
-	public bool angry;
-	public bool inOffice;
-	public bool isParty;
-	private int detentions;
+	[SerializeField] bool seesRuleBreak;
+	[SerializeField] bool db;
+	[SerializeField] Transform player;
+	[SerializeField] Transform bully;
+	[SerializeField] bool bullySeen;
+	[SerializeField] PlayerScript playerScript;
+	[SerializeField] BullyScript bullyScript;
+	[SerializeField] BaldiScript baldiScript;
+	[SerializeField] AILocationSelectorScript wanderer;
+	[SerializeField] ClassroomDoorScript officeDoor;
+	[SerializeField] float coolDown;
+	[SerializeField] float timeSeenRuleBreak;
+	[SerializeField] bool angry;
+	[SerializeField] bool inOffice;
+	[SerializeField] bool isParty;
+	int detentions;
 	readonly int[] lockTime = new int[]
 	{
 		15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 99
 	};
-	public AudioClip[] audTimes = new AudioClip[5];
-	public AudioClip[] audScolds = new AudioClip[3];
-	public AudioClip audDetention;
-	public AudioClip audNoDrinking;
-	public AudioClip audNoBullying;
-	public AudioClip audNoFaculty;
-	public AudioClip audNoLockers;
-	public AudioClip audNoRunning;
-	public AudioClip audNoStabbing;
-	public AudioClip audNoEscaping;
-	public AudioClip aud_Whistle;
-	public AudioClip aud_Delay;
-	private NavMeshAgent agent;
-	private AudioQueueScript audioQueue;
-	private AudioSource audioDevice;
-	public AudioSource quietAudioDevice;
-	[SerializeField] private RaycastHit hit;
-	private Vector3 aim;
-	public CharacterController cc;
+	[SerializeField] AudioClip[] audTimes = new AudioClip[5];
+	[SerializeField] AudioClip[] audScolds = new AudioClip[3];
+	[SerializeField] AudioClip audDetention;
+	[SerializeField] AudioClip audNoDrinking;
+	[SerializeField] AudioClip audNoBullying;
+	[SerializeField] AudioClip audDistantBullying;
+	[SerializeField] AudioClip audNoFaculty;
+	[SerializeField] AudioClip audNoRunning;
+	[SerializeField] AudioClip audNoEscaping;
+	[SerializeField] AudioClip aud_Whistle;
+	[SerializeField] AudioClip aud_Delay;
+	NavMeshAgent agent;
+	AudioQueueScript audioQueue;
+	[SerializeField] AudioSource quietAudioDevice;
+	RaycastHit raycastHit;
+	Vector3 aim;
 	[SerializeField] private NotificationBoard notif;
 	[SerializeField] private GameControllerScript gc;
 }
