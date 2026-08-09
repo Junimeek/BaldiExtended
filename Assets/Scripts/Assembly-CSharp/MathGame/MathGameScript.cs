@@ -540,7 +540,7 @@ public class MathGameScript : MonoBehaviour
                 {
                     this.gc.ActivateSafeMode();
                     int num;
-                    if (this.problem == 3)
+                    if (this.problem == 3 && gc.notebooks <= 2)
                         num = 3;
                     else
                         num = Mathf.RoundToInt(UnityEngine.Random.Range(0f, bal_comfort.Length - 2f));

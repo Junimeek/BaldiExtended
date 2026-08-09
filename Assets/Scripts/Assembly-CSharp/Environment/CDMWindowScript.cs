@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 public class CDMWindowScript : MonoBehaviour
@@ -10,12 +9,6 @@ public class CDMWindowScript : MonoBehaviour
         GameControllerScript gc = FindObjectOfType<GameControllerScript>();
         this.player = gc.player;
         this.baldi = gc.baldiScrpt;
-
-        if (gc.modeType == "nullStyle")
-        {
-            Array.Resize(ref this.challengeController.windowBlockers, this.challengeController.windowBlockers.Length + 1);
-            this.challengeController.windowBlockers[^1] = this.agentObstacle;
-        }
     }
     
     void OnTriggerStay(Collider other)
@@ -40,8 +33,13 @@ public class CDMWindowScript : MonoBehaviour
             this.windows[i].material = this.brokenMatierial;
         }
 
+        Destroy(this.agentObstacle);
         this.audioDevice.Play();
-        this.agentObstacle.transform.position += new Vector3(0f, 20f, 0f);
+    }
+
+    public GameObject GetAgentObstacle()
+    {
+        return this.agentObstacle;
     }
 
     ChallengeController challengeController;

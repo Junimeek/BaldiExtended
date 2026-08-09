@@ -4,7 +4,7 @@ using UnityEngine.AI;
 
 public class NullBoss : MonoBehaviour
 {
-    private void Start()
+    void Start()
     {
         this.goCrazy = false;
         this.audioDevice = base.GetComponent<AudioSource>();
@@ -24,7 +24,7 @@ public class NullBoss : MonoBehaviour
         this.musicController.QueueClips(this.musicController.playlist[0]);
     }
 
-    private void Update()
+    void Update()
     {
         if (this.allowMovement)
         {
@@ -35,7 +35,7 @@ public class NullBoss : MonoBehaviour
             this.agent.speed = 0f;
     }
 
-    private float NullSpeed()
+    float NullSpeed()
     {
         if (this.speedOverride != 0f)
             return this.speedOverride;
@@ -43,7 +43,7 @@ public class NullBoss : MonoBehaviour
             return this.hits * 5.5f + 13f;
     }
 
-    private void OnTriggerEnter(Collider other)
+    void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.name.StartsWith("Projectile"))
         {
@@ -64,7 +64,7 @@ public class NullBoss : MonoBehaviour
         }
     }
 
-    private IEnumerator BeginFight()
+    IEnumerator BeginFight()
     {  
         this.hits++;
         this.playerScript.IncreaseFightSpeed(1);
@@ -109,7 +109,7 @@ public class NullBoss : MonoBehaviour
         this.audioDevice.clip = this.pain;
     }
 
-    private IEnumerator GetHit()
+    IEnumerator GetHit()
     {
         this.playerScript.isInvincible = true;
         this.hits++;
@@ -141,7 +141,7 @@ public class NullBoss : MonoBehaviour
         this.playerScript.isInvincible = false;
     }
 
-    private void QueueNextClip()
+    void QueueNextClip()
     {
         switch(this.hits)
         {
@@ -176,16 +176,16 @@ public class NullBoss : MonoBehaviour
         }
     }
 
-    private UnityEngine.Color RandomColor()
+    Color RandomColor()
     {
         float[] colors = {
             Random.Range(0f, 1f), Random.Range(0f, 1f), Random.Range(0f, 1f)
         };
 
-        return new UnityEngine.Color(colors[0], colors[1], colors[2]);
+        return new Color(colors[0], colors[1], colors[2]);
     }
 
-    private IEnumerator End()
+    IEnumerator End()
     {
         this.musicController.ClearQueue();
         this.audioDevice.clip = this.endClip_null;
@@ -222,13 +222,13 @@ public class NullBoss : MonoBehaviour
         Destroy(base.gameObject);
     }
 
-    private void FixedUpdate()
+    void FixedUpdate()
     {
         if (this.goCrazy)
             this.sprite.transform.localPosition = this.RandomPosition(this.remainingCrazyTime);
     }
 
-    private Vector3 RandomPosition(float intensity)
+    Vector3 RandomPosition(float intensity)
     {
         float newIntensity = 14.5f - intensity;
 
@@ -239,33 +239,34 @@ public class NullBoss : MonoBehaviour
         return new Vector3(posX, posY + 1.5f, posZ);
     }
 
-    [SerializeField] private float speedOverride;
-    [SerializeField] private Transform player;
-    [SerializeField] private PlayerScript playerScript;
-    [SerializeField] private GameControllerScript gc;
+    [SerializeField] float speedOverride;
+    [SerializeField] Transform player;
+    [SerializeField] PlayerScript playerScript;
+    [SerializeField] GameControllerScript gc;
     [SerializeField] ChallengeController challengeController;
     [SerializeField] BossHealthBar healthBar;
-    [SerializeField] private NavMeshAgent agent;
-    [SerializeField] private AudioSource audioDevice;
-    [SerializeField] private BossMusicController musicController;
-    [SerializeField] private MetronomeScript metronome;
-    [SerializeField] private SpriteRenderer sprite;
-    [SerializeField] private Sprite normalSprite;
-    [SerializeField] private Sprite grayscaleSprite;
+    [SerializeField] NavMeshAgent agent;
+    [SerializeField] AudioSource audioDevice;
+    [SerializeField] BossMusicController musicController;
+    [SerializeField] MetronomeScript metronome;
+    [SerializeField] SpriteRenderer sprite;
+    [SerializeField] Sprite normalSprite;
+    [SerializeField] Sprite grayscaleSprite;
 
     [Header("Null State")]
     public bool isFightStarted;
-    [SerializeField] private bool allowMovement;
+    [SerializeField] bool allowMovement;
     public byte hits;
-    [SerializeField] private bool goCrazy;
-    [SerializeField] private float remainingCrazyTime;
+    [SerializeField] bool goCrazy;
+    [SerializeField] float remainingCrazyTime;
 
     [Header("Audio")]
-    [SerializeField] private AudioClip introClip_start;
-    [SerializeField] private AudioClip introClip_loop;
-    [SerializeField] private AudioClip bossClip_start;
+    [SerializeField] AudioClip introClip_start;
+    [SerializeField] AudioClip introClip_loop;
+    [SerializeField] AudioClip bossClip_start;
     [SerializeField] AudioClip bossClip_startYell;
-    [SerializeField] private AudioClip pain;
-    [SerializeField] private AudioClip endClip_null;
-    [SerializeField] private AudioClip endClip_bg;
+    [SerializeField] AudioClip pain;
+    public AudioClip mockingClip;
+    [SerializeField] AudioClip endClip_null;
+    [SerializeField] AudioClip endClip_bg;
 }

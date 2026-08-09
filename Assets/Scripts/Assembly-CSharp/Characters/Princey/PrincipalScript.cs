@@ -46,12 +46,14 @@ public class PrincipalScript : MonoBehaviour
 		else
 			this.db = false;
 		
-		if (!this.angry)
-		{
-			this.aim = this.bully.position - base.transform.position;
-			if (Physics.Raycast(base.transform.position, this.aim, out this.raycastHit, float.PositiveInfinity, 769) && this.raycastHit.transform.name == "Its a Bully" && this.bullyScript.guilt > 0f)
-				this.TargetBully();
-		}
+		this.aim = (this.bully.position + Vector3.up * 8f) - (base.transform.position + Vector3.up * 7f);
+		if (Physics.Raycast(base.transform.position, this.aim, out this.raycastHit, float.PositiveInfinity, 769) && this.raycastHit.transform.name == "Its a Bully")
+			this.seesBully = true;
+		else
+			this.seesBully = false;
+		
+		if (this.seesBully && this.bullyScript.guilt > 0f && !this.angry)
+			this.TargetBully();
 
 		if (this.agent.velocity.magnitude <= 1f && this.coolDown <= 0f)
 			this.Wander();
@@ -198,6 +200,7 @@ public class PrincipalScript : MonoBehaviour
 
 	[SerializeField] bool seesRuleBreak;
 	[SerializeField] bool db;
+	[SerializeField] bool seesBully;
 	[SerializeField] Transform player;
 	[SerializeField] Transform bully;
 	[SerializeField] bool bullySeen;

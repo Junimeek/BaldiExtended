@@ -50,7 +50,9 @@ public class MasterController : MonoBehaviour
         notifboardScript.ruleGroup = this.notifRuleGroup;
         notifboardScript.notebooColor = this.notifNotebooColor;
         this.playerScript.sneakerIcon = this.sneakerIcon;
-        sweepAttendanceDetectorScript.sweepParent = this.gottaSweep;
+        
+        if (sweepAttendanceDetectorScript != null)
+            sweepAttendanceDetectorScript.sweepParent = this.gottaSweep;
     }
 
     GameControllerScript.GameMode GetGameMode()

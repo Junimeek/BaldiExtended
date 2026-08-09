@@ -165,6 +165,7 @@ public class FirstPrizeScript : MonoBehaviour
 		this.isDisabled = true;
 		this.currentSpeed = this.normSpeed;
 		this.agent.SetDestination(this.gc.attendanceOffice.position);
+		this.turnSpeed = 50f;
 	}
 
 	[SerializeField] float turnSpeed;

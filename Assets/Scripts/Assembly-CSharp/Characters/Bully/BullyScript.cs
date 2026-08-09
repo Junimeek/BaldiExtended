@@ -57,21 +57,18 @@ public class BullyScript : MonoBehaviour
 
 	void OnTriggerEnter(Collider other)
 	{
-		if (other.transform.CompareTag("Player") && !this.isDetention)
+		if (other.transform.CompareTag("Player"))
 		{
-			for (int i = 0; i < this.gc.totalSlotCount; i++)
+			if (this.isDetention)
+				this.audioDevice.PlayOneShot(this.aud_Bored);
+			else
 			{
-				if (!(this.gc.item[i] == 0))
-				{
-					this.TakeItem();
-					break;
-				}
-				else if (this.gc.item[i] == 0 && i == this.gc.totalSlotCount - 1)
+				if (this.gc.IsNoItems())
 					this.audioDevice.PlayOneShot(this.aud_Denied);
+				else
+					this.TakeItem();
 			}
 		}
-		else if (this.isDetention)
-			this.audioDevice.PlayOneShot(this.aud_Bored);
 	}
 
 	void TakeItem()
@@ -89,7 +86,7 @@ public class BullyScript : MonoBehaviour
 
 	void OnTriggerStay(Collider other)
 	{
-		if (other.transform.name == "Principal of the Thing" && this.guilt > 0f)
+		if (other.transform.name == "Principal of the Thing" && this.guilt > 0f && !this.isDetention)
 		{
 			this.isDetention = true;
 			this.Reset();
@@ -102,6 +99,7 @@ public class BullyScript : MonoBehaviour
 			base.transform.position = this.detentionPos;
 		else
 			base.transform.position = base.transform.position + new Vector3(0f, 150f, 0f);
+
 		this.waitTime = Random.Range(60f, 120f);
 		this.active = false;
 		this.activeTime = 0f;

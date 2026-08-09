@@ -329,7 +329,11 @@ public class GameControllerScript : MonoBehaviour
 			if (!this.player.isSecret && !this.isScareStarted)
 			{
 				if (this.modeType == "nullStyle")
+				{
 					challengeController.EndChallengeGame(1);
+					if (challengeController.nullBoss.activeInHierarchy)
+						this.audioDevice.PlayOneShot(challengeController.nullBoss.GetComponent<NullBoss>().mockingClip);
+				}
 				
 				if (this.gameMode != GameMode.Endless)
 					this.stats.SaveAllData(null);
@@ -945,7 +949,7 @@ public class GameControllerScript : MonoBehaviour
 		{
 			this.curItem.GetComponent<PickupScript>().ChangeItem(0);
 			this.UpdateDollarAmount(1f);
-			this.audioDevice.PlayOneShot(this.aud_CoinCollect);
+			this.audioDevice.PlayOneShot(this.aud_DollarCollect);
 			return;
 		}
 
@@ -1965,8 +1969,8 @@ public class GameControllerScript : MonoBehaviour
 	public GameObject dietBsodaSpray;
 	public RectTransform boots;
 	public GameObject alarmClock;
-	[SerializeField] private GameObject party;
-	[SerializeField] private GameObject attendanceBlocker;
+	[SerializeField] GameObject party;
+	[SerializeField] GameObject attendanceBlocker;
 
 
 	[Header("Detention")]
@@ -1980,29 +1984,30 @@ public class GameControllerScript : MonoBehaviour
 
 
 	[Header("SFX and Voices")]
-	[SerializeField] private AudioClip aud_Prize;
-	[SerializeField] private AudioSource audioDevice;
-	[SerializeField] private AudioClip aud_AllNotebooks;
-	[SerializeField] private AudioSource tutorBaldi;
-	[SerializeField] private AudioClip aud_Soda;
-	[SerializeField] private AudioClip aud_Spray;
-	[SerializeField] private AudioClip aud_EatFood;
-	[SerializeField] private AudioClip aud_Hang;
-	[SerializeField] private AudioClip aud_Error;
-	[SerializeField] private AudioClip aud_Switch;
-	[SerializeField] private AudioClip aud_BigClose;
-	[SerializeField] private AudioClip[] baldiJumpscareSounds;
-	[SerializeField] private AudioSource chaosDevice;
-	[SerializeField] private AudioClip chaosEarly;
-	[SerializeField] private AudioClip chaosEarlyLoop;
-	[SerializeField] private AudioClip chaosBuildup;
-	[SerializeField] private AudioClip chaosFinalLoop;
-	[SerializeField] private AudioClip quietNoiseLoop;
-	[SerializeField] private AudioClip glambience;
-	[SerializeField] private AudioClip aud_BalloonPop;
-	[SerializeField] private AudioClip aud_NotebookCollect;
-	[SerializeField] private AudioClip aud_ItemCollect;
-	[SerializeField] private AudioClip aud_CoinCollect;
+	[SerializeField] AudioClip aud_Prize;
+	[SerializeField] AudioSource audioDevice;
+	[SerializeField] AudioClip aud_AllNotebooks;
+	[SerializeField] AudioSource tutorBaldi;
+	[SerializeField] AudioClip aud_Soda;
+	[SerializeField] AudioClip aud_Spray;
+	[SerializeField] AudioClip aud_EatFood;
+	[SerializeField] AudioClip aud_Hang;
+	[SerializeField] AudioClip aud_Error;
+	[SerializeField] AudioClip aud_Switch;
+	[SerializeField] AudioClip aud_BigClose;
+	[SerializeField] AudioClip[] baldiJumpscareSounds;
+	[SerializeField] AudioSource chaosDevice;
+	[SerializeField] AudioClip chaosEarly;
+	[SerializeField] AudioClip chaosEarlyLoop;
+	[SerializeField] AudioClip chaosBuildup;
+	[SerializeField] AudioClip chaosFinalLoop;
+	[SerializeField] AudioClip quietNoiseLoop;
+	[SerializeField] AudioClip glambience;
+	[SerializeField] AudioClip aud_BalloonPop;
+	[SerializeField] AudioClip aud_NotebookCollect;
+	[SerializeField] AudioClip aud_ItemCollect;
+	[SerializeField] AudioClip aud_CoinCollect;
+	[SerializeField] AudioClip aud_DollarCollect;
 
 
 	[Header("Music")]
@@ -2017,8 +2022,8 @@ public class GameControllerScript : MonoBehaviour
 	public GameObject[] childScripts;
 	[SerializeField] ChallengeController challengeController;
 	[HideInInspector] public StatisticsController stats;
-	private DebugSceneLoader sceneLoader;
-	[SerializeField] private MathMusicScript mathMusicScript;
+	DebugSceneLoader sceneLoader;
+	[SerializeField] MathMusicScript mathMusicScript;
 	public CursorControllerScript cursorController;
 	public PlayerScript player;
 	public BaldiScript baldiScrpt;
@@ -2026,8 +2031,8 @@ public class GameControllerScript : MonoBehaviour
 	public FirstPrizeScript firstPrizeScript;
 	public PrincipalScript principalScript;
 	public CraftersScript crafterScript;
-	[SerializeField] private AILocationSelectorScript wanderer;
- 	[SerializeField] private SweepScript sweepScript;
-	[SerializeField] private AudioManager audioManager;
+	[SerializeField] AILocationSelectorScript wanderer;
+ 	[SerializeField] SweepScript sweepScript;
+	[SerializeField] AudioManager audioManager;
 	[HideInInspector] public HandIconScript handIconScript;
 }

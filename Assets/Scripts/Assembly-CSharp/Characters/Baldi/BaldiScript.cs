@@ -6,12 +6,12 @@ using UnityEngine.AI;
 [RequireComponent(typeof(NavMeshAgent))]
 public class BaldiScript : MonoBehaviour
 {
-	private void Awake()
+	void Awake()
 	{
 		gc = FindObjectOfType<GameControllerScript>();
 	}
 
-	private void Start()
+	void Start()
 	{
 		this.baldiAudio = GetComponent<AudioSource>();
 		this.agent = GetComponent<NavMeshAgent>();
@@ -48,7 +48,7 @@ public class BaldiScript : MonoBehaviour
 		}
 	}
 
-	private void Update()
+	void Update()
 	{
 		if (this.timeToMove > 0f)
 			this.timeToMove -= 1f * Time.deltaTime;
@@ -125,12 +125,12 @@ public class BaldiScript : MonoBehaviour
 		}
 	}
 
-	private void ResetSpeechTimer()
+	void ResetSpeechTimer()
 	{
 		this.speechTimer = Random.Range(35f, 75f);
 	}
 
-	private int RandomSpeech()
+	int RandomSpeech()
 	{
 		return Mathf.RoundToInt(Random.Range(0f, 4f));
 	}
@@ -146,7 +146,7 @@ public class BaldiScript : MonoBehaviour
 		this.baldiAudio.PlayOneShot(this.randomSpeechList[0]);
 	}
 
-	private IEnumerator NullSight()
+	IEnumerator NullSight()
 	{
 		while (this.db)
 		{
@@ -155,15 +155,9 @@ public class BaldiScript : MonoBehaviour
 		}
 	}
 
-	private void OnDisable()
+	void FixedUpdate()
 	{
-		if (this.isNullMode && !this.isDisabled && challengeController != null)
-			challengeController.EnableAllWindowBlockers();
-	}
-
-	private void FixedUpdate()
-	{
-		if (this.moveFrames > 0f) //Move for a certain amount of frames, and then stop moving.(Ruler slapping)
+		if (this.moveFrames > 0f)
 		{
 			this.moveFrames -= 1f;
 			this.agent.speed = this.speed;
@@ -173,22 +167,23 @@ public class BaldiScript : MonoBehaviour
 
 		Vector3 direction = this.player.position - base.transform.position; 
 		RaycastHit raycastHit;
-
 		if (Physics.Raycast(base.transform.position + Vector3.up * 2f, direction, out raycastHit, float.PositiveInfinity, 769, QueryTriggerInteraction.Ignore) & raycastHit.transform.tag == "Player") //Create a raycast, if the raycast hits the player, Baldi can see the player
 		{
 			Debug.DrawLine(base.transform.position, raycastHit.transform.position, Color.cyan);
 			this.db = true;
-
-			if (this.alarmClock != null)
-				Destroy(this.alarmClock);
-
-			this.TargetPlayer(); //Start attacking the player
 		}
 		else
 			this.db = false;
+		
+		if (this.db)
+		{
+			this.AddNewSound(this.player.position, 6);
+			if (this.isNullMode && !this.allowWindowBreaking)
+				StartCoroutine(challengeController.DisableAllWindowBlockers());
+		}
 	}
 
-	private void Wander()
+	void Wander()
 	{
 		if (this.isParty)
 			this.agent.SetDestination(this.wanderer.GetNewNPCTarget(AILocationSelectorScript.NPCTargetType.PartyWanderPoints));
@@ -198,16 +193,24 @@ public class BaldiScript : MonoBehaviour
 		this.coolDown = 1f;
 	}
 
-	public void TargetPlayer()
+	void TargetPlayer()
 	{
-		this.AddNewSound(this.player.position, 6);
 		this.coolDown = 1f;
+		this.ClearSoundList();
+		this.soundList[5] = this.player.position;
+		this.agent.SetDestination(this.soundList[this.currentPriority - 1]);
 
 		if (sightCooldown <= 0f)
 			baldicator.ChangeBaldicatorState("Sight");
 	}
 
-	private void Move()
+	void TargetPlayersssssssssss()
+	{
+		if (!this.allowWindowBreaking && this.isNullMode)
+			gc.StartCoroutine(challengeController.DisableAllWindowBlockers());
+	}
+
+	void Move()
 	{
 		Vector3 offset = this.agent.destination - base.transform.position;
 		float sqrLen = offset.sqrMagnitude;
@@ -272,7 +275,6 @@ public class BaldiScript : MonoBehaviour
 
 	public void NullOffset()
 	{
-		this.isDisabled = true;
 		this.agent.enabled = false;
 		Transform baldiSprite = base.transform.Find("BaldiSprite");
 		Vector3 curPosition = baldiSprite.position;
@@ -289,27 +291,37 @@ public class BaldiScript : MonoBehaviour
 	6 = Sight
 	*/
 	{
-		if (this.db)
-			this.StartCoroutine(FollowPlayer());
+		if (priority == 6)
+		{
+			this.currentPriority = 6;
+			this.TargetPlayer();
+			return;
+		}
+
 		if (this.antiHearing)
 			return;
 
-		if (priority == 5 && !this.db && this.isAlarmClock)
+		if (priority == 5 && this.isAlarmClock)
 		{
-			this.ClearSoundList();
-			this.soundList[priority - 1] = this.alarmClock.transform.position;
-			this.currentPriority = priority;
-			this.baldicator.ChangeBaldicatorState("Pursuit");
-			this.agent.SetDestination(this.alarmClock.transform.position);
-			this.isAlarmClock = false;
-			this.isParty = false;
+			if (this.db)
+				baldicator.ChangeBaldicatorState("Ignore");
+			else
+			{
+				this.ClearSoundList();
+				this.soundList[priority - 1] = this.alarmClock.transform.position;
+				this.currentPriority = priority;
+				baldicator.ChangeBaldicatorState("Pursuit");
+				this.agent.SetDestination(this.alarmClock.transform.position);
+				this.isAlarmClock = false;
+				this.isParty = false;
+			}
 			return;
 		}
 
 		this.isAlarmClock = false;
 
 		if (!this.allowWindowBreaking && this.currentPriority > 1 && gc.gameMode == GameControllerScript.GameMode.Challenge)
-			this.gc.StartCoroutine(this.challengeController.ToggleWindowBlockers());
+			gc.StartCoroutine(challengeController.DisableAllWindowBlockers());
 
 		if (priority >= this.currentPriority)
 		{
@@ -318,24 +330,24 @@ public class BaldiScript : MonoBehaviour
 			this.currentPriority = priority;
 			if (!this.db)
 			{
-				this.baldicator.ChangeBaldicatorState("Pursuit");
+				baldicator.ChangeBaldicatorState("Pursuit");
 				this.agent.SetDestination(this.soundList[this.currentPriority - 1]);
 			}
 		}
 		else
 		{
 			this.soundList[priority - 1] = location;
-			this.baldicator.ChangeBaldicatorState("Ignore");
+			baldicator.ChangeBaldicatorState("Ignore");
 		}
 	}
 
-	private void ClearSoundList()
+	void ClearSoundList()
 	{
 		for (int i = 0; i < 6; i++)
 			this.soundList[i] = new Vector3(99.9f, -99.9f, 39f);
 	}
 
-	private void DecreasePriority()
+	void DecreasePriority()
 	{
 		if (this.alarmClock != null)
 			Destroy(this.alarmClock);
@@ -358,7 +370,7 @@ public class BaldiScript : MonoBehaviour
 		if (this.currentPriority <= 0)
 		{
 			this.currentPriority = 0;
-			this.baldicator.ChangeBaldicatorState("End");
+			baldicator.ChangeBaldicatorState("End");
 			this.Wander();
 			return;
 		}
@@ -372,11 +384,12 @@ public class BaldiScript : MonoBehaviour
 		{
 			this.agent.SetDestination(this.soundList[this.currentPriority - 1]);
 			this.theNewLocation = agent.destination;
-			this.baldicator.ChangeBaldicatorState("Next");
+			baldicator.ChangeBaldicatorState("Next");
 		}
 	}
 
-	private IEnumerator FollowPlayer()
+	/*
+	IEnumerator FollowPlayer()
 	{
 		if (!this.allowWindowBreaking && this.isNullMode)
 			gc.StartCoroutine(this.challengeController.ToggleWindowBlockers());
@@ -390,6 +403,7 @@ public class BaldiScript : MonoBehaviour
 			yield return null;
 		}
 	}
+	*/
 
 	public void GoToParty()
 	{
@@ -399,7 +413,7 @@ public class BaldiScript : MonoBehaviour
 		this.StartCoroutine(this.WaitForPartyEnd());
 	}
 
-	private IEnumerator WaitForPartyEnd()
+	IEnumerator WaitForPartyEnd()
 	{
 		this.AddNewSound(gc.partyLocation.position, 5);
 		this.isParty = true;
@@ -453,7 +467,6 @@ public class BaldiScript : MonoBehaviour
 	float moveFrames;
 	public bool antiHearing;
 	public float antiHearingTime;
-	[SerializeField] bool isDisabled;
 	[SerializeField] Transform player;
 	[SerializeField] PlayerScript playerScript;
 	[SerializeField] AILocationSelectorScript wanderer;

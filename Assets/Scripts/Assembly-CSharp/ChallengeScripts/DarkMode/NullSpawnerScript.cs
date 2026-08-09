@@ -17,6 +17,7 @@ public class NullSpawnerScript : MonoBehaviour
             {
                 Destroy(i);
             }
+            Destroy(base.gameObject);
         }
     }
 }

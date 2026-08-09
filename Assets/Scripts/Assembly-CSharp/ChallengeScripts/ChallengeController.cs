@@ -12,7 +12,7 @@ public class ChallengeController : MonoBehaviour
     [SerializeField] BaldiScript baldiScript;
 
     [Header("Dark Mode")]
-	[SerializeField] GameObject nullBoss;
+	public GameObject nullBoss;
     [SerializeField] NullBoss nullBossScript;
 	public GameObject[] windowBlockers;
 	[SerializeField] GameObject projectile;
@@ -39,7 +39,7 @@ public class ChallengeController : MonoBehaviour
         if (this.darkModePhase == 1)
         {
             RenderSettings.ambientLight = Color.black;
-            this.baldiScript.NullOffset();
+            baldiScript.NullOffset();
         }
         else
         {
@@ -99,7 +99,7 @@ public class ChallengeController : MonoBehaviour
         }
     }
 
-    UnityEngine.Color GetRandomColor()
+    Color GetRandomColor()
     {
         float r = UnityEngine.Random.Range(0f, 1f);
 		float g = UnityEngine.Random.Range(0f, 1f);
@@ -108,28 +108,53 @@ public class ChallengeController : MonoBehaviour
 		return new Color(r, g, b);
     }
 
-    public IEnumerator ToggleWindowBlockers()
+    public IEnumerator DisableAllWindowBlockers()
 	{
-		this.baldiScript.allowWindowBreaking = true;
+        Debug.Log("Called");
+        if (baldiScript.allowWindowBreaking)
+            yield break;
+        
+		baldiScript.allowWindowBreaking = true;
 
-		for (int i = 0; i < this.windowBlockers.Length; i++)
-			this.windowBlockers[i].SetActive(false);
+        GameObject blocker;
+        foreach (GameObject i in this.windowBlockers)
+        {
+            blocker = i.GetComponent<CDMWindowScript>().GetAgentObstacle();
+            if (blocker == null)
+                continue;
+            else
+                blocker.SetActive(false);
+        }
 
-		while (this.baldiScript.currentPriority > 1)
-			yield return null;
+		do {
+            Debug.Log("Blocked");
+            yield return null;
+        }
+        while ((baldiScript.currentPriority > 1) && baldiScript.gameObject.activeInHierarchy);
+
+        Debug.Log("Escaped");
 		
-		for (int i = 0; i < this.windowBlockers.Length; i++)
-			this.windowBlockers[i].SetActive(true);
+		foreach (GameObject i in this.windowBlockers)
+        {
+            Debug.Log("Looping");
+            blocker = i.GetComponent<CDMWindowScript>().GetAgentObstacle();
+            if (blocker == null)
+                continue;
+            else
+                blocker.SetActive(true);
+        }
 		
-		this.baldiScript.allowWindowBreaking = false;
+        Debug.Log("Unblocked");
+		baldiScript.allowWindowBreaking = false;
 	}
 
     public void EnableAllWindowBlockers()
 	{
-		StopCoroutine(this.ToggleWindowBlockers());
+        Debug.Log("Stop coroutine called");
+		StopCoroutine(this.DisableAllWindowBlockers());
 
-		this.baldiScript.currentPriority = 0;
-		this.baldiScript.allowWindowBreaking = false;
+		baldiScript.currentPriority = 0;
+		baldiScript.allowWindowBreaking = false;
 
 		for (int i = 0; i < this.windowBlockers.Length; i++)
 			this.windowBlockers[i].SetActive(true);
@@ -139,8 +164,9 @@ public class ChallengeController : MonoBehaviour
     {
         gc.isDynamicColor = false;
         this.nullBoss.SetActive(true);
-        this.nullBossScript.WarpToExit(nullPosition);
+        nullBossScript.WarpToExit(nullPosition);
         RenderSettings.ambientLight = new Color(1f, 1f, 1f);
+        this.EnableAllWindowBlockers();
 
         this.darkModePhase = 2;
         this.createdProjectiles = 3;
