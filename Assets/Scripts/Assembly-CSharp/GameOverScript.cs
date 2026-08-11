@@ -37,19 +37,19 @@ public class GameOverScript : MonoBehaviour
 			int num = Mathf.RoundToInt(Random.Range(0f, this.images.Length - 1));
 			this.image.sprite = this.images[num];
 			
-			if (PlayerPrefs.GetInt("InstantReset") == 1 && curMap != "ClassicDark")
+			if (PlayerPrefs.GetInt("InstantReset") == 1 /*&& curMap != "ClassicDark"*/)
 				StartCoroutine(this.LoadSceneRoutine(curMap));
-			else if (curMap == "ClassicDark")
+			/*else if (curMap == "ClassicDark")
 			{
 				this.image.color = new Color(0f, 0f, 0f, 0f);
 				StartCoroutine(this.WaitForMenuLoad(0.75f));
-			}
+			}*/
 			else
 				StartCoroutine(this.WaitForMenuLoad(2f));
 		}
 		else
 		{
-			int secretChance = Mathf.FloorToInt(Random.Range(0f, 2.9f));
+			int secretChance = Mathf.FloorToInt(Random.Range(0f, 2.98f));
 			switch(secretChance)
 			{
 				case 0:

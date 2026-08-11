@@ -37,13 +37,16 @@ public class SettingsLoader : MonoBehaviour
 
         curSetting = loadType;
 
+        this.canvasGP.SetActive(false);
+        this.canvasPatches.SetActive(false);
+        this.canvasAccessibility.SetActive(false);
+        this.canvasAudio.SetActive(false);
+        this.canvasData.SetActive(false);
+
         switch(loadType)
         {
             case "menuGP":
                 this.canvasGP.SetActive(true);
-                this.canvasPatches.SetActive(false);
-                this.canvasAudio.SetActive(false);
-                this.canvasData.SetActive(false);
                 this.sliderSensitivity.value = container.turnSensitivity;
                 this.toggleInstantReset.isOn = container.instantReset;
                 this.toggleNotifBoard.isOn = container.notifBoard;
@@ -51,20 +54,19 @@ public class SettingsLoader : MonoBehaviour
                 this.sliderScript.UpdateSensitivityText();
                 break;
             case "menuPatches":
-                this.canvasGP.SetActive(false);
                 this.canvasPatches.SetActive(true);
-                this.canvasAudio.SetActive(false);
-                this.canvasData.SetActive(false);
                 this.toggleDoorFix.isOn = container.doorFix;
                 this.framerate = Mathf.RoundToInt(Screen.currentResolution.refreshRate);
                 this.refreshText.text = this.framerate + "fps";
                 this.SetFramerateToggles();
                 break;
+            case "menuAccessibility":
+                this.canvasAccessibility.SetActive(true);
+                this.toggleAutoDoors.isOn = container.automaticDoors;
+                this.toggleMapToggle.isOn = container.mapToggleMode;
+                break;
             case "menuAudio":
-                this.canvasGP.SetActive(false);
-                this.canvasPatches.SetActive(false);
                 this.canvasAudio.SetActive(true);
-                this.canvasData.SetActive(false);
                 this.sliderVoice.value = container.volumeVoice;
                 this.sliderBGM.value = container.volumeBGM;
                 this.sliderSFX.value = container.volumeSFX;
@@ -72,9 +74,6 @@ public class SettingsLoader : MonoBehaviour
                 this.sliderScript.UpdateVolumeText();
                 break;
             case "menuData":
-                this.canvasGP.SetActive(false);
-                this.canvasPatches.SetActive(false);
-                this.canvasAudio.SetActive(false);
                 this.canvasData.SetActive(true);
                 break;
         }
@@ -93,6 +92,10 @@ public class SettingsLoader : MonoBehaviour
             case "menuPatches":
                 container.doorFix = this.toggleDoorFix.isOn;
                 container.framerate = this.SetFramerate();
+                break;
+            case "menuAccessibility":
+                container.automaticDoors = this.toggleAutoDoors.isOn;
+                container.mapToggleMode = this.toggleMapToggle.isOn;
                 break;
             case "menuAudio":
                 container.volumeVoice = sliderVoice.value;
@@ -202,33 +205,36 @@ public class SettingsLoader : MonoBehaviour
     }
 */
 
-    [SerializeField] private SettingsContainer container;
-    [SerializeField] private AudioManager audioManager;
-    [SerializeField] private SettingsSliders sliderScript;
-    [SerializeField] private string sceneName;
+    [SerializeField] SettingsContainer container;
+    [SerializeField] AudioManager audioManager;
+    [SerializeField] SettingsSliders sliderScript;
+    [SerializeField] string sceneName;
     public string curSetting;
-    //private IDataService DataService = new JsonDataService();
-    //private SettingsContainer settingsContainer;
+    //IDataService DataService = new JsonDataService();
+    //SettingsContainer settingsContainer;
 
     [Header("Menus")]
-    [SerializeField] private GameObject canvasGP;
-    [SerializeField] private GameObject canvasPatches;
-    [SerializeField] private GameObject canvasAudio;
-    [SerializeField] private GameObject canvasData;
+    [SerializeField] GameObject canvasGP;
+    [SerializeField] GameObject canvasPatches;
+    [SerializeField] GameObject canvasAccessibility;
+    [SerializeField] GameObject canvasAudio;
+    [SerializeField] GameObject canvasData;
 
     [Header("Toggles")]
-    [SerializeField] private Slider sliderSensitivity;
-    [SerializeField] private Slider sliderVoice;
-    [SerializeField] private Slider sliderBGM;
-    [SerializeField] private Slider sliderSFX;
-    [SerializeField] private Toggle toggleAdditionalMusic;
-    [SerializeField] private Toggle toggleInstantReset;
-    [SerializeField] private Toggle toggleNotifBoard;
-    [SerializeField] private Toggle toggleFamilyFriendly;
-    [SerializeField] private Toggle toggleDoorFix;
-    [SerializeField] private int framerate;
-    [SerializeField] private RectTransform checkmark;
-    [SerializeField] private TMP_Text refreshText;
-    [SerializeField] private bool isUnlimited;
+    [SerializeField] Slider sliderSensitivity;
+    [SerializeField] Slider sliderVoice;
+    [SerializeField] Slider sliderBGM;
+    [SerializeField] Slider sliderSFX;
+    [SerializeField] Toggle toggleAdditionalMusic;
+    [SerializeField] Toggle toggleInstantReset;
+    [SerializeField] Toggle toggleNotifBoard;
+    [SerializeField] Toggle toggleFamilyFriendly;
+    [SerializeField] Toggle toggleDoorFix;
+    [SerializeField] int framerate;
+    [SerializeField] RectTransform checkmark;
+    [SerializeField] TMP_Text refreshText;
+    [SerializeField] bool isUnlimited;
+    [SerializeField] Toggle toggleAutoDoors;
+    [SerializeField] Toggle toggleMapToggle;
 
 }

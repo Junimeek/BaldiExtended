@@ -3940,7 +3940,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: https://junimeek.net
+          m_StringArgument: https://junimeek.net/about
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &421743480
@@ -6137,6 +6137,37 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 621189751}
   m_CullTransparentMesh: 1
+--- !u!1 &621345971
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 621345972}
+  m_Layer: 0
+  m_Name: DiscordRichPresence
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &621345972
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 621345971}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 12.993572, y: 13.381345, z: 206.14798}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 13
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &624595982
 GameObject:
   m_ObjectHideFlags: 0
@@ -8877,7 +8908,7 @@ MonoBehaviour:
   errorText: {fileID: 795948175}
   isNightly: 0
   stableBuild: 0.5.5
-  nightlyBuild: 26.32.7
+  nightlyBuild: 26.33.3
   curVersion: 
   stableURL: https://raw.githubusercontent.com/Junimeek/BaldiExtended/main/VersionStable.json
   nightlyURL: https://raw.githubusercontent.com/Junimeek/BaldiExtended/main/VersionNightly.json

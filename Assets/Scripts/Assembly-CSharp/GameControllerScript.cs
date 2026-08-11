@@ -29,6 +29,8 @@ public class GameControllerScript : MonoBehaviour
 		this.isParty = false;
 
 		this.isDoorFix = this.ReadBoolFromRegistry("doorFix");
+		this.isAutomaticDoors = this.ReadBoolFromRegistry("autoDoors");
+		this.isQuickMapToggle = this.ReadBoolFromRegistry("toggleMapMode");
 
 		if (audioManager != null)
 			audioManager.SetVolume(0);
@@ -149,6 +151,14 @@ public class GameControllerScript : MonoBehaviour
 				break;
 			case "doorFix":
 				entryDirectory = "pat_doorFix";
+				defaultValue = 1;
+				break;
+			case "autoDoors":
+				entryDirectory = "aby_autoDoors";
+				defaultValue = 0;
+				break;
+			case "toggleMapMode":
+				entryDirectory = "aby_mapToggle";
 				defaultValue = 1;
 				break;
 			default:
@@ -1324,7 +1334,7 @@ public class GameControllerScript : MonoBehaviour
 		if (principalScript.isActiveAndEnabled)
 			principalScript.LeaveParty();
 		if (firstPrizeScript.isActiveAndEnabled)
-			firstPrizeScript.isParty = false;
+			firstPrizeScript.LeaveParty();
 		if (baldiScrpt.isActiveAndEnabled)
 			baldiScrpt.isParty = false;
 		if (playtimeScript.isActiveAndEnabled)
@@ -1812,16 +1822,19 @@ public class GameControllerScript : MonoBehaviour
 	[HideInInspector] public Vector3 detentionPrincipalPos;
 	[HideInInspector] public bool forceQuarterPickup;
 
+	[Header("Player Settings")]
+	public bool isAdditionalMusic;
+	public bool isSafeMode;
+	public bool isDifficultMath;
+	public bool isDoorFix;
+	public bool isAutomaticDoors;
+	public bool isQuickMapToggle;
 
 	[Header("Game State")]
 	public bool spoopMode;
 	public bool finaleMode;
 	public bool learningActive;
 	public bool isSlowmo;
-	public bool isAdditionalMusic;
-	public bool isSafeMode;
-	public bool isDifficultMath;
-	public bool isDoorFix;
 	public bool mouseLocked;
 	public bool gamePaused;
 	public bool showTimer;

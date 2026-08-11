@@ -7,7 +7,6 @@ public class PlayerScript : MonoBehaviour
 {
 	private void Start()
 	{
-		//Yeah your on your own for this one
 		if (PlayerPrefs.GetInt("AnalogMove") == 1)
 			this.sensitivityActive = true;
 		

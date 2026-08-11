@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -7,21 +5,27 @@ public class NullAgent : MonoBehaviour
 {
     void Start()
     {
-        allowMovement = false;
+        this.allowMovement = false;
         this.agent = base.GetComponent<NavMeshAgent>();
     }
 
-    private void FixedUpdate()
+    void FixedUpdate()
     {
-        if (allowMovement) TargetPlayer();
+        if (this.allowMovement)
+            this.TargetPlayer();
     }
 
-    private void TargetPlayer()
+    void TargetPlayer()
 	{
 		this.agent.SetDestination(this.player.position);
 	}
 
-    private NavMeshAgent agent;
+    public void DisableAgent()
+    {
+        this.agent.enabled = false;
+    }
+
+    NavMeshAgent agent;
     public Transform player;
     public bool allowMovement;
 }

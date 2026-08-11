@@ -1,21 +1,20 @@
-using System;
+using System.Collections;
 using UnityEngine;
 
 public class MapCameraScript : MonoBehaviour
 {
     void Start()
 	{
+        gc = FindObjectOfType<GameControllerScript>();
 		this.initialOffset = base.transform.position - this.player.transform.position;
         this.isMapOn = true;
         this.ToggleMap();
 
         PickupScript[] fetchedItems = itemParent.GetComponentsInChildren<PickupScript>();
-        Array.Resize(ref this.itemList, fetchedItems.Length);
+        this.itemList = new PickupScript[fetchedItems.Length];
 
         for (int i = 0; i < this.itemList.Length; i++)
-        {
             this.itemList[i] = fetchedItems[i];
-        }
 
         this.HideCharacters();
 	}
@@ -24,24 +23,34 @@ public class MapCameraScript : MonoBehaviour
     {
         if (!FindObjectOfType<GameControllerScript>().ignoreInitializationChecks)
         {
-            this.baldiSprite.color = new Color(1f, 1f, 1f, 0f);
-            this.playtimeSprite.color = new Color(1f, 1f, 1f, 0f);
-            this.craftersSprite.color = new Color(1f, 1f, 1f, 0f);
-            this.sweepSprite.color = new Color(1f, 1f, 1f, 0f);
-            this.princeySprite.color = new Color(1f, 1f, 1f, 0f);
-            this.prizeSprite.color = new Color(1f, 1f, 1f, 0f);
-            this.bullySprite.color = new Color(1f, 1f, 1f, 0f);
+            this.baldiSprite.color = Color.clear;
+            this.playtimeSprite.color = Color.clear;
+            this.craftersSprite.color = Color.clear;
+            this.sweepSprite.color = Color.clear;
+            this.princeySprite.color = Color.clear;
+            this.prizeSprite.color = Color.clear;
+            this.bullySprite.color = Color.clear;
         }
     }
 
-    private void Update()
+    void Update()
     {
         if (Input.GetKeyDown(KeyCode.Tab))
-            this.ToggleMap();
+        {
+            if (gc.isQuickMapToggle)
+                this.ToggleMap();
+            else
+                StartCoroutine(this.HoldMapDisplay());
+        }
         this.playerIcon.transform.position = this.player.transform.position + this.iconOffset;
     }
 
-    private void ToggleMap()
+    void LateUpdate()
+    {
+        base.transform.position = this.player.transform.position + this.offset;
+    }
+
+    void ToggleMap()
     {
         if (this.isMapOn)
         {
@@ -57,6 +66,16 @@ public class MapCameraScript : MonoBehaviour
         }
     }
 
+    IEnumerator HoldMapDisplay()
+    {
+        this.ToggleMap();
+
+        while (Input.GetKey(KeyCode.Tab))
+            yield return null;
+        
+        this.ToggleMap();
+    }
+
     public void UpgradeMap(int upgrade)
     {
         switch(upgrade)
@@ -69,20 +88,15 @@ public class MapCameraScript : MonoBehaviour
                     this.itemList[i].mapIcon.sprite = itemList[i].mapSprite;
                 break;
             case 3:
-                this.baldiSprite.color = new Color(1f, 1f, 1f, 1f);
-                this.playtimeSprite.color = new Color(1f, 1f, 1f, 1f);
-                this.craftersSprite.color = new Color(1f, 1f, 1f, 1f);
-                this.sweepSprite.color = new Color(1f, 1f, 1f, 1f);
-                this.princeySprite.color = new Color(1f, 1f, 1f, 1f);
-                this.prizeSprite.color = new Color(1f, 1f, 1f, 1f);
-                this.bullySprite.color = new Color(1f, 1f, 1f, 1f);
+                this.baldiSprite.color = Color.white;
+                this.playtimeSprite.color = Color.white;
+                this.craftersSprite.color = Color.white;
+                this.sweepSprite.color = Color.white;
+                this.princeySprite.color = Color.white;
+                this.prizeSprite.color = Color.white;
+                this.bullySprite.color = Color.white;
                 break;
         }
-    }
-
-    private void LateUpdate()
-    {
-        base.transform.position = this.player.transform.position + this.offset;
     }
 
     public void DisableAllItems()
@@ -91,19 +105,20 @@ public class MapCameraScript : MonoBehaviour
             i.gameObject.SetActive(false);
     }
 
-    [SerializeField] private PlayerScript player;
-    [SerializeField] private GameObject playerIcon;
-    [SerializeField] private Vector3 offset;
-    [SerializeField] private Vector3 initialOffset;
-    [SerializeField] private Vector3 iconOffset;
-    [SerializeField] private GameObject itemParent;
-    [SerializeField] private PickupScript[] itemList;
-    [SerializeField] private SpriteRenderer baldiSprite;
-    [SerializeField] private SpriteRenderer playtimeSprite;
-    [SerializeField] private SpriteRenderer craftersSprite;
-    [SerializeField] private SpriteRenderer sweepSprite;
-    [SerializeField] private SpriteRenderer princeySprite;
-    [SerializeField] private SpriteRenderer prizeSprite;
-    [SerializeField] private SpriteRenderer bullySprite;
-    private bool isMapOn;
+    [SerializeField] PlayerScript player;
+    GameControllerScript gc;
+    [SerializeField] GameObject playerIcon;
+    [SerializeField] Vector3 offset;
+    Vector3 initialOffset;
+    [SerializeField] Vector3 iconOffset;
+    [SerializeField] GameObject itemParent;
+    [SerializeField] PickupScript[] itemList;
+    [SerializeField] SpriteRenderer baldiSprite;
+    [SerializeField] SpriteRenderer playtimeSprite;
+    [SerializeField] SpriteRenderer craftersSprite;
+    [SerializeField] SpriteRenderer sweepSprite;
+    [SerializeField] SpriteRenderer princeySprite;
+    [SerializeField] SpriteRenderer prizeSprite;
+    [SerializeField] SpriteRenderer bullySprite;
+    bool isMapOn;
 }

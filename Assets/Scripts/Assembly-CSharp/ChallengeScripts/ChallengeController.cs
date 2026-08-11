@@ -110,7 +110,6 @@ public class ChallengeController : MonoBehaviour
 
     public IEnumerator DisableAllWindowBlockers()
 	{
-        Debug.Log("Called");
         if (baldiScript.allowWindowBreaking)
             yield break;
         
@@ -127,16 +126,12 @@ public class ChallengeController : MonoBehaviour
         }
 
 		do {
-            Debug.Log("Blocked");
             yield return null;
         }
         while ((baldiScript.currentPriority > 1) && baldiScript.gameObject.activeInHierarchy);
-
-        Debug.Log("Escaped");
 		
 		foreach (GameObject i in this.windowBlockers)
         {
-            Debug.Log("Looping");
             blocker = i.GetComponent<CDMWindowScript>().GetAgentObstacle();
             if (blocker == null)
                 continue;
@@ -144,13 +139,11 @@ public class ChallengeController : MonoBehaviour
                 blocker.SetActive(true);
         }
 		
-        Debug.Log("Unblocked");
 		baldiScript.allowWindowBreaking = false;
 	}
 
     public void EnableAllWindowBlockers()
 	{
-        Debug.Log("Stop coroutine called");
 		StopCoroutine(this.DisableAllWindowBlockers());
 
 		baldiScript.currentPriority = 0;

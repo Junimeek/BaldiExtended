@@ -50,33 +50,43 @@ public class SettingsContainer : MonoBehaviour
                 QualitySettings.vSyncCount = 1;
             }
 
-            if (PlayerPrefs.GetInt("InstantReset") == 1)
+            if (PlayerPrefs.GetInt("InstantReset", 1) == 1)
                 this.instantReset = true;
             else
                 this.instantReset = false;
 
-            if (PlayerPrefs.GetInt("AdditionalMusic") == 1)
+            if (PlayerPrefs.GetInt("AdditionalMusic", 0) == 1)
                 this.additionalMusic = true;
             else
                 this.additionalMusic = false;
 
-            if (PlayerPrefs.GetInt("NotifBoard") == 1)
+            if (PlayerPrefs.GetInt("NotifBoard", 0) == 1)
                 this.notifBoard = true;
             else
                 this.notifBoard = false;
             
-            if (PlayerPrefs.GetInt("gps_familyFriendly") == 1)
+            if (PlayerPrefs.GetInt("gps_familyFriendly", 1) == 1)
                 this.familyFriendly = true;
             else
                 this.familyFriendly = false;
             
-            if (PlayerPrefs.GetInt("pat_doorFix") == 1)
+            if (PlayerPrefs.GetInt("pat_doorFix", 1) == 1)
                 this.doorFix = true;
             else
                 this.doorFix = false;
+            
+            if (PlayerPrefs.GetInt("aby_autoDoors", 0) == 1)
+                this.automaticDoors = true;
+            else
+                this.automaticDoors = false;
+            
+            if (PlayerPrefs.GetInt("aby_mapToggle", 1) == 1)
+                this.mapToggleMode = true;
+            else
+                this.mapToggleMode = false;
 
-            this.safeMode = PlayerPrefs.GetInt("gps_safemode");
-            this.difficultMath = PlayerPrefs.GetInt("gps_difficultmath");
+            this.safeMode = PlayerPrefs.GetInt("gps_safemode", 0);
+            this.difficultMath = PlayerPrefs.GetInt("gps_difficultmath", 0);
 
             Debug.Log("Loaded data from registry");
         }
@@ -123,6 +133,8 @@ public class SettingsContainer : MonoBehaviour
         PlayerPrefs.SetInt("highbooks_ClassicExtended", 0);
         PlayerPrefs.SetInt("highbooks_JuniperHills", 0);
         PlayerPrefs.SetInt("pat_doorFix", 1);
+        PlayerPrefs.SetInt("aby_autoDoors", 0);
+        PlayerPrefs.SetInt("aby_mapToggle", 1);
         SaveToRegistry("settings");
         SaveToSettingsFile();
         Debug.LogWarning("Settings binary file not found. Settings reset to defaults.");
@@ -177,6 +189,16 @@ public class SettingsContainer : MonoBehaviour
                     PlayerPrefs.SetInt("pat_doorFix", 1);
                 else
                     PlayerPrefs.SetInt("pat_doorFix", 0);
+                
+                if (this.automaticDoors)
+                    PlayerPrefs.SetInt("aby_autoDoors", 1);
+                else
+                    PlayerPrefs.SetInt("aby_autoDoors", 0);
+                
+                if (this.mapToggleMode)
+                    PlayerPrefs.SetInt("aby_mapToggle", 1);
+                else
+                    PlayerPrefs.SetInt("aby_mapToggle", 0);
                 break;
             case "map":
                 PlayerPrefs.SetString("CurrentMap", this.curMap);
@@ -299,6 +321,10 @@ public class SettingsContainer : MonoBehaviour
     [Header("Patches")]
     public bool doorFix;
     public int framerate;
+
+    [Header("Accessibility")]
+    public bool automaticDoors;
+    public bool mapToggleMode;
 
     [Header("Gameplay Styles")]
     public string curMap;

@@ -35,9 +35,14 @@ public class ClassroomDoorScript : MonoBehaviour
         }
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerStay(Collider other)
     {
-        if (!other.CompareTag("Player"))
+        if (other.CompareTag("Player") && gc.isAutomaticDoors && !this.isLocked && !this.permanentLock)
+        {
+            this.openTime = 3f;
+            StartCoroutine(this.DoorRoutine(true));
+        }
+        else if (!other.CompareTag("Player"))
         {
             this.openTime = 3f;
             StartCoroutine(this.DoorRoutine(false));
@@ -46,6 +51,9 @@ public class ClassroomDoorScript : MonoBehaviour
 
     private IEnumerator DoorRoutine(bool isPlayer)
     {
+        if (this.isOpen)
+            yield break;
+        
         this.isOpen = true;
 
         if (isPlayer && this.baldiScript.isActiveAndEnabled && this.remainingSilentOpens == 0)

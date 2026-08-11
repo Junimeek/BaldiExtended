@@ -16,6 +16,17 @@ public class CursorPrompt : MonoBehaviour
         this.promptParent.anchoredPosition = mousePos;
     }
 
+    public void ClearText()
+    {
+        this.positionMultiplier = Screen.height / 550f;
+        this.text.text = string.Empty;
+        this.promptParent.pivot = new Vector2(-0.3f * this.positionMultiplier, 0.4f * this.positionMultiplier);
+        this.promptColor.color = new Color(0f, 0f, 0f, 0f);
+        this.promptBG.localScale = this.GetBoxScale();
+        this.text.fontSize = this.GetFontSize();
+        this.text.rectTransform.anchoredPosition = this.GetTextOffset();
+    }
+
     public void ChangeText(float id)
     {
         if (id == 0)
@@ -68,6 +79,14 @@ public class CursorPrompt : MonoBehaviour
             case 2.6f:
                 this.promptParent.pivot = new Vector2(3f * this.positionMultiplier, -2f * this.positionMultiplier);
                 this.text.text = "In earlier versions of the game, there was a bug where going through yellow doors and clicking on blue doors would alert Baldi regardless of whether the door was open or not. Disabling this will bring back that buggy behavior.";
+                break;
+            case 2.7f:
+                this.promptParent.pivot = new Vector2(6f * this.positionMultiplier, 1.3f * this.positionMultiplier);
+                this.text.text = "When enabled, walking into a classroom or faculty door will automatically open the door.";
+                break;
+            case 2.8f:
+                this.promptParent.pivot = new Vector2(6f * this.positionMultiplier, 1f * this.positionMultiplier);
+                this.text.text = "OFF: You must hold down the TAB button to keep the Quick Map visible\nON: You only need to press the TAB button once to open and close the Quick Map";
                 break;
             case 4.1f:
                 this.promptParent.pivot = new Vector2(3f * this.positionMultiplier, -2f * this.positionMultiplier);

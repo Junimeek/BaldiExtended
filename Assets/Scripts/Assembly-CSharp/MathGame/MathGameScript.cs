@@ -503,6 +503,11 @@ public class MathGameScript : MonoBehaviour
                 StartCoroutine(this.CheatText("USE THESE TO STICK TO THE CEILING!"));
                 this.gc.Fliparoo();
                 break;
+            case "10212022":
+                PlayerPrefs.SetString("CurrentMap", "ClassicDark");
+                StartCoroutine(this.CheatText("The darkness lingers, be careful who you trust."));
+                UnityEngine.SceneManagement.SceneManager.LoadSceneAsync("ClassicDark");
+                break;
         }
 
         if (this.problem <= 3)
@@ -598,10 +603,8 @@ public class MathGameScript : MonoBehaviour
 
     private void ExitGame()
     {
-        if (this.problemsWrong <= 0 & this.gc.gameMode == GameControllerScript.GameMode.Endless)
-        {
+        if (this.problemsWrong <= 0 && this.baldiScript.isActiveAndEnabled && this.gc.gameMode == GameControllerScript.GameMode.Endless)
             this.baldiScript.GetAngry(-1f);
-        }
 
         if (this.problemsWrong == 0)
             this.gc.DeactivateLearningGame(base.gameObject, true);

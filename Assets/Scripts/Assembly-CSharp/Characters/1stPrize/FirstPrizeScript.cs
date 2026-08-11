@@ -112,10 +112,10 @@ public class FirstPrizeScript : MonoBehaviour
 			this.agent.SetDestination(this.wanderer.GetNewNPCTarget(AILocationSelectorScript.NPCTargetType.PartyWanderPoints));
 			
 		this.hugAnnounced = false;
-		int num = Mathf.RoundToInt(UnityEngine.Random.Range(0f, 9f));
+		int num = Mathf.RoundToInt(Random.Range(0f, 9f));
 		if (!this.audioDevice.isPlaying & num == 0 & this.coolDown <= 0f)
 		{
-			int num2 = Mathf.RoundToInt(UnityEngine.Random.Range(0f, 1f));
+			int num2 = Mathf.RoundToInt(Random.Range(0f, 1f));
 			this.audioDevice.PlayOneShot(this.aud_Random[num2]);
 		}
 		this.coolDown = 1f;
@@ -130,7 +130,15 @@ public class FirstPrizeScript : MonoBehaviour
 	public void GoToParty()
 	{
 		this.isParty = true;
+		this.turnSpeed = 50f;
 		this.agent.SetDestination(this.gc.partyLocation.position);
+	}
+
+	public void LeaveParty()
+	{
+		this.isParty = false;
+		this.turnSpeed = 15f;
+		this.Wander();
 	}
 
 	private void OnTriggerEnter(Collider other)

@@ -13,10 +13,9 @@ public class NullAudio : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.name == "Player" && !this.isPlaying)
+        if (other.CompareTag("Player") && !this.isPlaying)
 		{
             this.isPlaying = true;
-            Debug.Log("Collision with Audio trigger");
             
             if (PlayerPrefs.GetInt("gps_safemode") == 1)
                 StartCoroutine(this.WaitForDab());

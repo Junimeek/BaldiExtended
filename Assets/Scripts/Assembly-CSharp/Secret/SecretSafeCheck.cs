@@ -1,34 +1,39 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class SecretSafeCheck : MonoBehaviour
 {
-    private void OnTriggerEnter(Collider other)
+    void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.name == "Player")
+        if (other.gameObject.CompareTag("Player"))
         {
             int thebool = PlayerPrefs.GetInt("gps_safemode");
-            if (thebool == 1) Switcharoo();
+            if (thebool == 1)
+                Switcharoo();
             else
             {
                 Destroy(this.balChar);
                 Destroy(this.oink);
-                Destroy(this.gameObject);
             }
+            Destroy(base.gameObject);
         }
     }
 
-    private void Switcharoo()
+    void Switcharoo()
     {
-        Debug.Log("Safe mode is enabled, switching to Baldi.");
         Destroy(this.nullChar);
         Destroy(this.balStretched);
-        Destroy(this.gameObject);
+        
+        for (int i = 0; i < this.signRenderers.Length; i++)
+        {
+            this.signRenderers[i].sprite = this.signImages[i];
+        }
     }
 
-    [SerializeField] private GameObject nullChar;
-    [SerializeField] private GameObject balChar;
-    [SerializeField] private GameObject balStretched;
-    [SerializeField] private GameObject oink;
+    [SerializeField] GameObject nullChar;
+    [SerializeField] GameObject balChar;
+    [SerializeField] GameObject balStretched;
+    [SerializeField] GameObject oink;
+    [SerializeField] SpriteRenderer[] signRenderers;
+    [SerializeField] Sprite[] signImages;
 }

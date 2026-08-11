@@ -2,28 +2,27 @@ using UnityEngine;
 
 public class NullKill : MonoBehaviour
 {
-    private void Start()
+    void Start()
     {
         this.gameOver = false;
     }
     
-    private void OnTriggerEnter(Collider other)
+    void OnTriggerEnter(Collider other)
     {
-        if (other.name == "Player" && !this.nullAudioScript.audioDevice.isPlaying && !this.gameOver)
+        if (other.CompareTag("Player") && !this.nullAudioScript.audioDevice.isPlaying && !this.gameOver)
 		{
             this.gameOver = true;
-			Debug.Log("Collision with Kill trigger");
-            player.gameOver = true;
+            this.player.gameOver = true;
             nullAudioScript.audioDevice.Stop();
             nullAudioScript.nullGlitchLoop.Stop();
-            killAudio.Play();
-            RenderSettings.skybox = this.blackSky;
+            this.killAudio.Play();
+            nullAgent.DisableAgent();
 		}
     }
 
-    [SerializeField] private PlayerScript player;
-    [SerializeField] private Material blackSky;
-    [SerializeField] private AudioSource killAudio;
-    private bool gameOver;
+    [SerializeField] PlayerScript player;
+    [SerializeField] AudioSource killAudio;
+    bool gameOver;
     [SerializeField] NullAudio nullAudioScript;
+    [SerializeField] NullAgent nullAgent;
 }
