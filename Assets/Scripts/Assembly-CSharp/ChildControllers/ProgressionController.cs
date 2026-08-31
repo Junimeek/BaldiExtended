@@ -10,15 +10,15 @@ public class ProgressionController : MonoBehaviour
 
     private void LoadProgressionData()
     {
-        ProgressionData data = OldSaveDataLoader.LoadOldProgressionData();
+        //ProgressionData data = OldSaveDataLoader.LoadOldProgressionData();
 
-        this.fileVersion = data.fileVersion;
-        this.mapUnlocks = data.mapUnlocks;
+        //this.fileVersion = data.fileVersion;
+        //this.mapUnlocks = data.mapUnlocks;
     }
 
     public void SaveProgressionData()
     {
-        OldSaveDataLoader.SaveOldProgressionData(this);
+        //OldSaveDataLoader.SaveOldProgressionData(this);
     }
 
     public ushort fileVersion;

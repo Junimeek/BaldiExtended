@@ -1,258 +1,175 @@
-using System;
-using OldSaveData;
 using UnityEngine;
 
 public class StatisticsController : MonoBehaviour
 {
-    private void Start()
+    void Start()
     {
         if (instance == null)
             instance = this;
         else
         {
-            instance.ForceSave();
             Destroy(this.gameObject);
             return;
         }
 
-        this.finalSeconds = 0f;
-        this.itemsUsed = new int[0];
-        this.detentions = 0;
-        this.LoadAllData();
-    }
-
-    public void ForceSave()
-    {
-        if (this.disableSaving)
-            return;
-        
-        this.data_totalDetentions[this.mapID] += this.detentions;
-
-        switch(this.mapID)
-        {
-            case 0:
-                for (int i = 0; i < this.lifetimeItems.Length; i++)
-                    this.data_ClassicLifetimeItems[i] = this.lifetimeItems[i];
-                break;
-            case 1:
-                for (int i = 0; i < this.lifetimeItems.Length; i++)
-                    this.data_ClassicExtendedLifetimeItems[i] = this.lifetimeItems[i];
-                break;
-            case 2:
-                for (int i = 0; i < this.lifetimeItems.Length; i++)
-                    this.data_JuniperHillsLifetimeItems[i] = this.lifetimeItems[i];
-                break;
-        }
-
-        if (this.finalSeconds < this.data_bestTime[this.mapID])
-            this.data_bestTime[this.mapID] = this.finalSeconds;
-        
-        OldSaveDataLoader.SaveOldStoryData(this);
-
-        SaveHead saveHead = FindObjectOfType<SaveHead>();
-        if (saveHead != null)
-            saveHead.ActivateSaveHead(1.4f);
-    }
-
-    private void LoadAllData()
-    {
         this.mapID = this.GetMapID();
 
-        if (this.gc.gameMode != GameControllerScript.GameMode.Challenge)
-        {
-            SaveData_Story storyData = OldSaveDataLoader.LoadOldStoryData();
-            SaveData_Endless endlessData = OldSaveDataLoader.LoadOldEndlessData();
+        this.finalMS = 0;
+        this.itemsUsed = new int[18];
+        this.detentions = 0;
 
-            this.data_fileVersion = storyData.fileVersion;
-            this.data_bestTime = storyData.bestTime;
-            this.data_notebooks = endlessData.notebooks;
-
-            if (storyData.bestTime[this.mapID] == 0f)
-                this.data_bestTime[this.mapID] = 9999f;
-
-            if (this.gc.gameMode == GameControllerScript.GameMode.Story)
-            {
-                this.data_totalDetentions = storyData.totalDetentions;
-                this.data_ClassicLifetimeItems = storyData.itemsUsed_Classic;
-                this.data_ClassicExtendedLifetimeItems = storyData.itemsUsed_ClassicExtended;
-                this.data_JuniperHillsLifetimeItems = storyData.itemsUsed_JuniperHills;
-                
-                switch(this.mapID)
-                {
-                    case 0:
-                        this.lifetimeItems = this.data_ClassicLifetimeItems;
-                        break;
-                    case 1:
-                        this.lifetimeItems = this.data_ClassicExtendedLifetimeItems;
-                        break;
-                    case 2:
-                        this.lifetimeItems = this.data_JuniperHillsLifetimeItems;
-                        break;
-                }
-            }
-            else
-            {
-                this.data_totalDetentions = endlessData.totalDetentions;
-                this.data_ClassicLifetimeItems = endlessData.itemsUsed_Classic;
-                this.data_ClassicExtendedLifetimeItems = endlessData.itemsUsed_ClassicExtended;
-                this.data_JuniperHillsLifetimeItems = endlessData.itemsUsed_JuniperHills;
-
-                switch(this.mapID)
-                {
-                    case 0:
-                        this.lifetimeItems = this.data_ClassicLifetimeItems;
-                        break;
-                    case 1:
-                        this.lifetimeItems = this.data_ClassicExtendedLifetimeItems;
-                        break;
-                    case 2:
-                        this.lifetimeItems = this.data_JuniperHillsLifetimeItems;
-                        break;
-                }
-            }
-        }
-        else
-        {
-            SaveData_Challenge challengeData = OldSaveDataLoader.LoadOldChallengeData();
-
-            this.data_fileVersion = challengeData.fileVersion;
-            this.data_totalDetentions = challengeData.totalDetentions;
-            this.data_bestTime = challengeData.bestTime;
-
-            if (challengeData.bestTime[this.mapID] == 0f)
-                challengeData.bestTime[this.mapID] = 9999f;
-            
-            this.data_NullStyleLifetimeItems = challengeData.itemsUsed_NullStyle;
-
-            switch(this.mapID)
-            {
-                case 0:
-                    this.lifetimeItems = this.data_NullStyleLifetimeItems;
-                    break;
-            }
-        }
-
-        this.gc.InitializeScores();
+        this.InitializeSaveController();
+        this.itemUsageOrder = new int[20];
+        this.itemUsageOrderIndex = 0;
     }
 
-    public void SaveAllData(string bestType)
+    void Update()
     {
-        if (this.disableSaving)
+        this.currentSeconds += Time.unscaledDeltaTime;
+        if (this.currentSeconds >= 60f)
+        {
+            this.currentMinutes++;
+            this.currentSeconds -= 60f;
+        }
+    }
+
+    public void UpdateItemCount(int itemID)
+    {
+        this.itemsUsed[itemID]++;
+        this.UpdateItemOrder(itemID);
+    }
+
+    void UpdateItemOrder(int itemID)
+    {
+        this.itemUsageOrderIndex++;
+        if (this.itemUsageOrderIndex >= this.itemUsageOrder.Length)
+            System.Array.Resize(ref this.itemUsageOrder, this.itemUsageOrderIndex + 10);
+
+        this.itemUsageOrder[itemUsageOrderIndex - 1] = itemID;
+    }
+
+    void InitializeSaveController()
+    {
+        saveController.SetCurrentGamemode(gc.gameMode);
+        saveController.currentMapName = this.GetMapName();
+    }
+
+    public void BeginSaveProcess(bool calculateBestTime)
+    {
+        if (this.saveProcessStarted)
             return;
         
-        this.data_totalDetentions[this.mapID] += this.detentions;
-
-        if (this.gc.gameMode != GameControllerScript.GameMode.Challenge)
+        this.saveProcessStarted = true;
+        
+        if (calculateBestTime)
         {
-            switch(this.mapID)
-            {
-                case 0:
-                    for (int i = 0; i < this.lifetimeItems.Length; i++)
-                        this.data_ClassicLifetimeItems[i] = this.lifetimeItems[i];
-                    break;
-                case 1:
-                    for (int i = 0; i < this.lifetimeItems.Length; i++)
-                        this.data_ClassicExtendedLifetimeItems[i] = this.lifetimeItems[i];
-                    break;
-                case 2:
-                    for (int i = 0; i < this.lifetimeItems.Length; i++)
-                        this.data_JuniperHillsLifetimeItems[i] = this.lifetimeItems[i];
-                    break;
-            }
-
-            if (bestType != null)
-            {
-                if (bestType == "time")
-                    this.data_bestTime[this.mapID] = this.finalSeconds;
-                else if (bestType == "notebooks")
-                    this.data_notebooks[this.mapID] = this.notebooks;
-            }
+            Debug.Log("Beginning save process and checking best time.");
+            this.finalMS = this.GetTimeInMilliseconds();
         }
         else
         {
-            switch(this.mapID)
-            {
-                case 0:
-                    for (int i = 0; i < this.lifetimeItems.Length; i++)
-                    {
-                        try {
-                            this.data_NullStyleLifetimeItems[i] = this.lifetimeItems[i];
-                        }
-                        catch {
-                            Array.Resize(ref this.data_NullStyleLifetimeItems, this.data_NullStyleLifetimeItems.Length + 1);
-                            this.data_NullStyleLifetimeItems[i] = this.lifetimeItems[i];
-                        }
-                    }
-                    break;
-            }
-
-            if (bestType != null)
-            {
-                if (bestType == "time")
-                    this.data_bestTime[this.mapID] = this.finalSeconds;
-            }
+            Debug.Log("Beginning save process and ignoring best time.");
+            this.finalMS = 0;
         }
+        
+        this.SendRunData();
+        saveController.OverwriteFullSaveFile(this);
+    }
 
-        switch (this.gc.gameMode)
-        {
-            case GameControllerScript.GameMode.Story:
-                OldSaveDataLoader.SaveOldStoryData(this);
-                break;
-            case GameControllerScript.GameMode.Endless:
-                OldSaveDataLoader.SaveOldEndlessData(this);
-                break;
-            case GameControllerScript.GameMode.Challenge:
-                OldSaveDataLoader.SaveOldChallengeData(this);
-                break;
-        }
+    int GetTimeInMilliseconds()
+    {
+        float truncatedSeconds = System.MathF.Round(this.currentSeconds, 3);
+        int secondsInMilliseconds = Mathf.RoundToInt(truncatedSeconds * 1000f);
+        int minutesInMilliseconds = this.currentMinutes * 60000;
+        return secondsInMilliseconds + minutesInMilliseconds;
+    }
+
+    void SendRunData()
+    {
+        saveController.currentMapID = this.mapID;
+        saveController.currentMapName = this.GetMapName();
+        saveController.currentItemsUsed = this.itemsUsed;
+        saveController.currentTime = this.finalMS;
+        saveController.currentDetentions = this.detentions;
+        saveController.currentNotebookScore = this.notebooks;
 
         SaveHead saveHead = FindObjectOfType<SaveHead>();
         if (saveHead != null)
             saveHead.ActivateSaveHead(1.4f);
     }
 
-    private short GetMapID()
+    string GetMapName()
+    {
+        GameControllerScript.GameMode curMode = gc.gameMode;
+        if (curMode == GameControllerScript.GameMode.Challenge)
+        {
+            switch(this.mapID)
+            {
+                case 1:
+                    return "ClassicDark";
+                case 2:
+                    return "Vertigo";
+                default:
+                    return string.Empty;
+            }
+        }
+        else
+        {
+            switch(this.mapID)
+            {
+                case 1:
+                    return "Classic";
+                case 2:
+                    return "ClassicExtended";
+                case 3:
+                    return "JuniperHills";
+                case 4:
+                    return "Mitakihara";
+                default:
+                    return string.Empty;
+            }
+        }
+    }
+
+    int GetMapID()
     {
         if (this.gc.gameMode != GameControllerScript.GameMode.Challenge)
         {
             return this.gc.curMap switch
             {
-                "Classic" => 0,
-                "ClassicExtended" => 1,
-                "JuniperHills" => 2,
-                _ => 0,
+                "Classic" => 1,
+                "ClassicExtended" => 2,
+                "JuniperHills" => 3,
+                "Mitakihara" => 4,
+                _ => 1,
             };
         }
         else
         {
             return this.gc.curMap switch
             {
-                "ClassicDark" => 0,
-                _ => 0,
+                "ClassicDark" => 1,
+                "Vertigo" => 2,
+                _ => 1,
             };
         }
     }
 
-    [SerializeField] private GameControllerScript gc;
-    [SerializeField] private static StatisticsController instance;
+    [SerializeField] GameControllerScript gc;
+    [SerializeField] SD3Controller saveController;
+    [SerializeField] static StatisticsController instance;
 
     [Header("Game State")]
     public bool disableSaving;
-    public int[] itemsUsed;
-    public short mapID;
-    public float finalSeconds;
+    [SerializeField] bool saveProcessStarted;
+    [SerializeField] int[] itemsUsed;
+    [SerializeField] int itemUsageOrderIndex;
+    public int[] itemUsageOrder;
+    public int mapID;
+    public float currentSeconds;
+    public int currentMinutes;
+    public int finalMS;
+    public int prevBestTime;
     public int notebooks;
     public int detentions;
-    public int[] lifetimeItems;
-
-    [Header("File Data")]
-    public ushort data_fileVersion;
-    public bool[] data_challengeUnlocks;
-    public float[] data_bestTime;
-    public int[] data_notebooks;
-    public int[] data_totalDetentions;
-    public int[] data_ClassicLifetimeItems;
-    public int[] data_ClassicExtendedLifetimeItems;
-    public int[] data_JuniperHillsLifetimeItems;
-    public int[] data_NullStyleLifetimeItems;
 }

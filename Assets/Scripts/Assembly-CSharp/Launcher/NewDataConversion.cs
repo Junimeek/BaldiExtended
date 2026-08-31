@@ -15,7 +15,6 @@ public class NewDataConversion : MonoBehaviour
     [SerializeField] GameObject errorPrompt;
     [SerializeField] TMP_Text errorText;
     [SerializeField] SaveDataContainer saveDataContainer;
-    [SerializeField] ExportedSettings settingsContainer;
     [Header("Debug")]
     [SerializeField] bool isEncrypted;
 
@@ -82,6 +81,7 @@ public class NewDataConversion : MonoBehaviour
 
     void ConvertGameData()
     {
+        /*
         Debug.Log("Save files will now be converted to the Version 2 format.");
 
         SaveData_Story oldStoryData = OldSaveDataLoader.LoadOldStoryData();
@@ -133,6 +133,7 @@ public class NewDataConversion : MonoBehaviour
         timeInSeconds = oldChallengeData.bestTime;
         bestTimesInMS[0] = Mathf.RoundToInt(timeInSeconds[0] * 1000f);
         saveDataContainer.cBestTimes = bestTimesInMS;
+        */
     }
 
     void SaveGameDataInNewDirectory(string kyoDir)
@@ -194,26 +195,11 @@ public class NewDataConversion : MonoBehaviour
     {
         if (completedChecks[1])
             return;
-        
-        settingsContainer.turnSensitivity = PlayerPrefs.GetFloat("MouseSensitivity");
-        settingsContainer.volumeVoice = PlayerPrefs.GetFloat("VolumeVoice");
-        settingsContainer.volumeBGM = PlayerPrefs.GetFloat("VolumeBGM");
-        settingsContainer.volumeSFX = PlayerPrefs.GetFloat("VolumeSFX");
-        settingsContainer.framerate = PlayerPrefs.GetInt("Framerate");
-        settingsContainer.instantReset = PlayerPrefs.GetInt("InstantReset");
-        settingsContainer.additionalMusic = PlayerPrefs.GetInt("AdditionalMusic");
-        settingsContainer.notifBoard = PlayerPrefs.GetInt("NotifBoard");
-        settingsContainer.familyFriendly = PlayerPrefs.GetInt("gps_familyFriendly");
-        settingsContainer.doorFix = PlayerPrefs.GetInt("pat_doorFix");
-        settingsContainer.safeMode = PlayerPrefs.GetInt("gps_safemode");
-        settingsContainer.difficultMath = PlayerPrefs.GetInt("gps_difficultmath");
 
-        string jsonData = JsonUtility.ToJson(settingsContainer, true);
         string path = GetKyokuraDirectory(Application.persistentDataPath) + "/exportedsettings.json";
 
         using (StreamWriter sw = File.CreateText(path))
         {
-            sw.WriteLine(jsonData);
             sw.Close();
         }
 

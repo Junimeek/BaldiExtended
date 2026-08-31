@@ -13,8 +13,7 @@ public class GameControllerScript : MonoBehaviour
 	{
 		audioManager = FindObjectOfType<AudioManager>();
 
-		this.sceneLoader = this.childScripts[0].GetComponent<DebugSceneLoader>();
-		this.stats = this.childScripts[1].GetComponent<StatisticsController>();
+		this.sceneLoader = FindObjectOfType<DebugSceneLoader>();
 	}
 
 	private void Start()
@@ -41,7 +40,6 @@ public class GameControllerScript : MonoBehaviour
 				this.ignoreInitializationChecks = true;
 				this.masterTextColor = Color.white;
 				this.gameOverDelay = 5f;
-				this.modeType = "nullStyle";
 				this.isSafeMode = false;
 				this.isDifficultMath = false;
 				this.player.isNullStyle = true;
@@ -50,7 +48,7 @@ public class GameControllerScript : MonoBehaviour
 				this.ignoreInitializationChecks = false;
 				this.masterTextColor = Color.black;
 				this.gameOverDelay = 0.5f;
-				this.modeType = "";
+				this.currentChallenge = CurrentChallenge.None;
 
 				this.isSafeMode = this.ReadBoolFromRegistry("safeMode");
 				this.isDifficultMath = this.ReadBoolFromRegistry("difficultMath");
@@ -65,7 +63,8 @@ public class GameControllerScript : MonoBehaviour
 		PlayerPrefs.SetString("CurrentMap", this.curMap);
 
 		this.dollarTextTop.color = this.masterTextColor;
-		this.speedrunText.color = this.masterTextColor;
+		this.speedrunMinutesText.color = this.masterTextColor;
+		this.speedrunSecondsText.color = this.masterTextColor;
 		this.itemText.color = this.masterTextColor;
 		this.fpsCounter.color = this.masterTextColor;
 
@@ -96,21 +95,19 @@ public class GameControllerScript : MonoBehaviour
 
 		this.speedrunSeconds = 0f;
 
-		if (this.modeType != "nullStyle")
-			StartCoroutine(this.MusicRoutine(0)); //Play the school music
+		if (this.currentChallenge != CurrentChallenge.DarkMode)
+			StartCoroutine(this.MusicRoutine(0));
 
-		this.UpdateNotebookCount(); //Update the notebook count
+		this.UpdateNotebookCount();
 		this.UpdateDollarAmount(0f);
 		this.StartCoroutine(this.WaitForQuarterDisable(true, false));
 
 		if (this.isSafeMode)
 			this.stats.disableSaving = true;
-		this.stats.itemsUsed = new int[0];
+			
 		this.stats.detentions = 0;
 		
-		this.itemSelected = 0; //Set selection to item slot 0(the first item slot)
-
-		//debugScreen.DebugCloseMenu();
+		this.itemSelected = 0;
 	}
 
 	private string LogMapStart(string curSceneName)
@@ -234,14 +231,6 @@ public class GameControllerScript : MonoBehaviour
 		}
 	}
 
-	public void InitializeScores()
-	{
-		this.bestTime = stats.data_bestTime[stats.mapID];
-
-		if (this.gameMode != GameMode.Challenge)
-			this.highBooksScore = stats.data_notebooks[stats.mapID];
-	}
-
 	private void Update()
 	{
 		this.fpsTimer -= Time.unscaledDeltaTime;
@@ -338,30 +327,20 @@ public class GameControllerScript : MonoBehaviour
 
 			if (!this.player.isSecret && !this.isScareStarted)
 			{
-				if (this.modeType == "nullStyle")
-				{
-					challengeController.EndChallengeGame(1);
-					if (challengeController.nullBoss.activeInHierarchy)
-						this.audioDevice.PlayOneShot(challengeController.nullBoss.GetComponent<NullBoss>().mockingClip);
-				}
-				
-				if (this.gameMode != GameMode.Endless)
-					this.stats.SaveAllData(null);
-				else if (!this.isScareStarted)
-				{
-					this.isScareStarted = true;
-					PlayerPrefs.SetInt("CurrentBooks", this.notebooks);
-
-					if (this.notebooks > this.highBooksScore)
-					{
-						this.stats.notebooks = this.notebooks;
-						this.stats.SaveAllData("notebooks");
-					}
-					else
-						this.stats.SaveAllData(null);
-				}
-
 				this.isScareStarted = true;
+
+				if (this.currentChallenge == CurrentChallenge.DarkMode)
+				{
+					CCDarkMode darkModeController = FindObjectOfType<CCDarkMode>();
+					darkModeController.EndChallengeGame(1);
+					if (darkModeController.nullBoss.activeInHierarchy)
+						this.audioDevice.PlayOneShot(darkModeController.nullBoss.GetComponent<NullBoss>().mockingClip);
+				}
+
+				stats.notebooks = this.notebooks;
+				PlayerPrefs.SetInt("CurrentBooks", this.notebooks);
+				stats.BeginSaveProcess(false);
+
 				int randomScare = Mathf.RoundToInt(UnityEngine.Random.Range(0, this.baldiJumpscareSounds.Length - 1));
 				this.audioDevice.PlayOneShot(this.baldiJumpscareSounds[randomScare]);
 				if (audioManager != null)
@@ -401,8 +380,8 @@ public class GameControllerScript : MonoBehaviour
 
 		if (Time.timeScale != 0f && this.remainingDetentionTime > 0f)
 			this.remainingDetentionTime -= Time.deltaTime;
-
-		if (this.modeType == "nullStyle" && this.exitsReached < 3)
+		
+		if (this.currentChallenge == CurrentChallenge.DarkMode && this.exitsReached < 3)
 		{
 			Vector3 distance = this.baldi.transform.position - this.playerTransform.position;
 			float sqrLen = distance.sqrMagnitude;
@@ -413,7 +392,7 @@ public class GameControllerScript : MonoBehaviour
 			else
 				RenderSettings.ambientLight = new Color(this.darkLevel, this.darkLevel, this.darkLevel);
 		}
-		else if (this.modeType == "nullStyle" && this.isDynamicColor)
+		else if (this.currentChallenge == CurrentChallenge.DarkMode && this.isDynamicColor)
 		{
 			Vector3 distance = this.entranceDarkSources[0].position - this.playerTransform.position;
 			float sqrLen = distance.sqrMagnitude;
@@ -447,9 +426,15 @@ public class GameControllerScript : MonoBehaviour
 		}
 
 		if (this.showTimer)
-			this.speedrunText.text = this.speedrunHours + ":" + this.speedrunMinutes.ToString("00") + ":" + this.speedrunSeconds.ToString("00.000");
+		{
+			this.speedrunMinutesText.text = stats.currentMinutes.ToString() + ":";
+			this.speedrunSecondsText.text = stats.currentSeconds.ToString("00.000");
+		}
 		else
-			this.speedrunText.text = string.Empty;
+		{
+			this.speedrunMinutesText.text = string.Empty;
+			this.speedrunSecondsText.text = string.Empty;
+		}
 
 		this.CheckItemRaycast();
 
@@ -459,9 +444,8 @@ public class GameControllerScript : MonoBehaviour
 
 	public void CompleteGame()
 	{
-		DontDestroyOnLoad(this.stats.gameObject);
-		
-		this.stats.finalSeconds = this.FinalTime();
+		stats.BeginSaveProcess(true);
+		DontDestroyOnLoad(stats.gameObject);
 
 		if (this.failedNotebooks >= this.daFinalBookCount)
 			this.sceneLoader.LoadTheScene("SecretMap", 0);
@@ -504,7 +488,7 @@ public class GameControllerScript : MonoBehaviour
 		&& Vector3.Distance(this.playerTransform.position, raycastHit.transform.position) <= 10f
 		&& !this.isLookingAtVendingMachine)
 		{
-			this.CollectItem(this.curItem.GetComponent<PickupScript>().ItemID());
+			this.CollectItem(this.curItem.GetComponent<PickupScript>().GetItemID());
 		}
 	}
 
@@ -659,11 +643,12 @@ public class GameControllerScript : MonoBehaviour
 			this.player.stamina = 100f;
 
 		this.notebooks++;
+		stats.notebooks++;
 		this.UpdateNotebookCount();
 
-		switch(this.modeType)
+		switch(this.notebookActivityType)
 		{
-			case "nullStyle":
+			case NotebookActivityType.None:
 				if (notebookCountScript.isActiveAndEnabled)
 					notebookCountScript.FlipNotebooks();
 				this.audioDevice.PlayOneShot(this.aud_NotebookCollect);
@@ -681,7 +666,7 @@ public class GameControllerScript : MonoBehaviour
 						this.baldiScrpt.AddNewSound(this.player.transform.position, 2);
 				}
 				break;
-			default:
+			case NotebookActivityType.Math:
 				GameObject gameObject = Instantiate(this.mathGameUI);
 				MathGameScript mathScript = gameObject.GetComponent<MathGameScript>();
 				mathScript.gc = this;
@@ -732,7 +717,7 @@ public class GameControllerScript : MonoBehaviour
 		DontDestroyOnLoad(this.stats.gameObject);
 
 		if (this.curMap != "SecretMap")
-			this.stats.SaveAllData(null);
+			this.stats.BeginSaveProcess(false);
 
 		SceneManager.LoadSceneAsync("MainMenu");
 	}
@@ -811,10 +796,12 @@ public class GameControllerScript : MonoBehaviour
 	public void SwitchToMinimalUI()
     {
 		this.minimalUI.SetActive(true);
-        this.speedrunText = this.minimalSpeedrunText;
+        this.speedrunMinutesText = this.minimalSpeedrunMinutesText;
+		this.speedrunSecondsText = this.minimalSpeedrunSecondsText;
 		this.fpsCounter = this.minimalFpsCounter;
 		handIconScript.icon = this.minimalCenterIcon;
-		this.speedrunText.color = Color.black;
+		this.speedrunMinutesText.color = Color.black;
+		this.speedrunSecondsText.color = Color.black;
 		this.fpsCounter.color = Color.black;
 		this.mainHud.renderMode = RenderMode.WorldSpace;
 
@@ -1190,9 +1177,7 @@ public class GameControllerScript : MonoBehaviour
 						curVendingMachine.ResetQuarterCount();
 					}
 
-					Array.Resize(ref this.stats.itemsUsed, this.stats.itemsUsed.Length + 1);
-					this.stats.itemsUsed[this.stats.itemsUsed.Length - 1] = 5;
-					this.stats.lifetimeItems[5]++;
+					this.stats.UpdateItemCount(5);
 				}
 				else if (raycastHit3.collider.name == "PayPhone" && Vector3.Distance(this.playerTransform.position, raycastHit3.transform.position) <= 10f)
 				{
@@ -1207,9 +1192,7 @@ public class GameControllerScript : MonoBehaviour
 					this.UpdateDollarAmount(-0.25f);
 					raycastHit3.collider.gameObject.GetComponent<TapePlayerScript>().Play();
 
-					Array.Resize(ref this.stats.itemsUsed, this.stats.itemsUsed.Length + 1);
-					this.stats.itemsUsed[this.stats.itemsUsed.Length - 1] = 5;
-					this.stats.lifetimeItems[5]++;
+					this.stats.UpdateItemCount(5);
 				}
 			}
 		}
@@ -1413,22 +1396,13 @@ public class GameControllerScript : MonoBehaviour
 		yield break;
 	}
 
-	private void ResetItem(ushort item_ID)
+	void ResetItem(int item_ID)
 	{
 		this.item[this.itemSelected] = 0;
 		this.itemSlot[this.itemSelected].texture = this.itemTextures[0];
 		this.UpdateItemName(false);
 
-		Array.Resize(ref this.stats.itemsUsed, this.stats.itemsUsed.Length + 1);
-		this.stats.itemsUsed[this.stats.itemsUsed.Length - 1] = item_ID;
-
-		try {
-			this.stats.lifetimeItems[item_ID]++;
-		}
-		catch {
-			Array.Resize(ref this.stats.lifetimeItems, this.itemNames.Length);
-			this.stats.lifetimeItems[item_ID]++;
-		}
+		stats.UpdateItemCount(item_ID);
 	}
 
 	public void LoseItem(int id)
@@ -1438,12 +1412,22 @@ public class GameControllerScript : MonoBehaviour
 		this.UpdateItemName(false);
 	}
 
-	private void UpdateItemName(bool isWallet)
+	void UpdateItemName(bool isWallet)
 	{
 		if (isWallet)
 			this.itemText.text = "Wallet";
 		else
 			this.itemText.text = this.itemNames[this.item[this.itemSelected]];
+	}
+
+	public Sprite GetNewItemSprite(int itemID)
+	{
+		return this.pickup_itemSprites[itemID];
+	}
+
+	public Sprite GetNewItemMapSprite(int itemID)
+	{
+		return this.pickup_itemMapSprites[itemID];
 	}
 
 	public void ExitReached()
@@ -1457,7 +1441,7 @@ public class GameControllerScript : MonoBehaviour
 		if (this.exitsReached != 2 || this.isSafeMode)
 			this.audioDevice.PlayOneShot(this.aud_Switch, 0.8f);
 
-		if (this.modeType == "nullStyle")
+		if (this.currentChallenge == CurrentChallenge.DarkMode)
 		{
 			switch (this.exitsReached)
 			{
@@ -1714,7 +1698,7 @@ public class GameControllerScript : MonoBehaviour
 		switch(state)
 		{
 			case "start":
-				if (this.modeType == "nullStyle" || this.isSafeMode)
+				if (this.currentChallenge == CurrentChallenge.DarkMode || this.isSafeMode)
 					yield break;
 				this.chaosDevice.loop = false;
 				this.chaosDevice.volume = 0.8f;
@@ -1758,7 +1742,10 @@ public class GameControllerScript : MonoBehaviour
 
 	private void AngrySchoolColors(int phase)
 	{
-		if (!this.isSafeMode && this.modeType != "nullStyle")
+		if (this.currentChallenge == CurrentChallenge.DarkMode)
+			return;
+		
+		if (!this.isSafeMode)
 		{
 			RenderSettings.skybox = this.redSky;
 			StartCoroutine(ChangeSchoolColor(phase));
@@ -1864,7 +1851,16 @@ public class GameControllerScript : MonoBehaviour
 		Story, Endless, Challenge
 	}
 	public GameMode gameMode;
-	public string modeType;
+	public enum CurrentChallenge
+	{
+		None, DarkMode, Vertigo
+	}
+	public CurrentChallenge currentChallenge;
+	public enum NotebookActivityType
+	{
+		None, Math
+	}
+	public NotebookActivityType notebookActivityType;
 	public string curMap;
 	[SerializeField] private string charInAttendance;
 	public Transform partyLocation;
@@ -1891,7 +1887,8 @@ public class GameControllerScript : MonoBehaviour
 	[HideInInspector] public TMP_Text fpsCounter;
 	[SerializeField] private float fpsTimer;
 	[HideInInspector] public MapCameraScript mapScript;
-	[HideInInspector] public TMP_Text speedrunText;
+	[HideInInspector] public TMP_Text speedrunMinutesText;
+	[HideInInspector] public TMP_Text speedrunSecondsText;
 	[SerializeField] private Canvas mainHud;
 
 
@@ -1952,10 +1949,11 @@ public class GameControllerScript : MonoBehaviour
 	[Header("Items")]
 	public int[] item;
 	public RawImage[] itemSlot;
-	public Texture[] itemTextures;
-	public TMP_Text itemText;
-	public Sprite[] pickup_itemSprites;
-	public Sprite[] pickup_itemMapSprites;
+	[SerializeField] Texture[] itemTextures;
+	[SerializeField] TMP_Text itemText;
+	[SerializeField] Sprite[] pickup_itemSprites;
+	[SerializeField] Sprite[] pickup_itemMapSprites;
+	public Sprite mysteryItemSprite;
 	readonly string[] itemNames = new string[]
 	{
 		"Nothing",
@@ -1991,7 +1989,8 @@ public class GameControllerScript : MonoBehaviour
 	public bool isPrinceyIgnore;
 	public float remainingDetentionTime;
 	[SerializeField] GameObject minimalUI;
-	[SerializeField] TMP_Text minimalSpeedrunText;
+	[SerializeField] TMP_Text minimalSpeedrunMinutesText;
+	[SerializeField] TMP_Text minimalSpeedrunSecondsText;
 	[SerializeField] TMP_Text minimalFpsCounter;
 	[SerializeField] Image minimalCenterIcon;
 
@@ -2032,8 +2031,6 @@ public class GameControllerScript : MonoBehaviour
 
 
 	[Header("Scripts")]
-	public GameObject[] childScripts;
-	[SerializeField] ChallengeController challengeController;
 	[HideInInspector] public StatisticsController stats;
 	DebugSceneLoader sceneLoader;
 	[SerializeField] MathMusicScript mathMusicScript;

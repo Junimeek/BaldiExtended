@@ -11,7 +11,7 @@ public class DelayGameStart : MonoBehaviour
 
     private IEnumerator GameLoadDelay()
     {
-		float timeRem = 0.6f;
+		float timeRem = 0.3f;
 
 		while (timeRem > 0f)
 		{
@@ -25,7 +25,7 @@ public class DelayGameStart : MonoBehaviour
 
     private IEnumerator FadeOverlay()
 	{
-		float fadeTime = 1f;
+		float fadeTime = 0.5f;
 
 		while (imageOverlay.color.a > 0f)
 		{

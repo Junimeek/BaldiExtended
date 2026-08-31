@@ -36,6 +36,17 @@ public class MathGameScript : MonoBehaviour
 
         if (this.gc.spoopMode)
             this.baldiFeedTransform.position = new Vector3(-1000f, -1000f, 0f);
+        
+        if (this.gc.showTimer)
+        {
+            this.speedrunMinutesText.text = this.gc.speedrunMinutesText.text;
+            this.speedrunSecondsText.text = this.gc.speedrunSecondsText.text;
+        }
+        else
+        {
+            this.speedrunMinutesText.text = string.Empty;
+            this.speedrunSecondsText.text = string.Empty;
+        }
     }
 
     private void Update()
@@ -66,9 +77,15 @@ public class MathGameScript : MonoBehaviour
         }
 
         if (this.gc.showTimer)
-            this.speedrunText.text = this.gc.speedrunText.text;
+        {
+            this.speedrunMinutesText.text = this.gc.speedrunMinutesText.text;
+            this.speedrunSecondsText.text = this.gc.speedrunSecondsText.text;
+        }
         else
-            this.speedrunText.text = string.Empty;
+        {
+            this.speedrunMinutesText.text = string.Empty;
+            this.speedrunSecondsText.text = string.Empty;
+        }
     }
 
     private void NewProblem()
@@ -690,12 +707,13 @@ public class MathGameScript : MonoBehaviour
     };
 
     bool questionInProgress;
-    [SerializeField] private bool impossibleMode;
-    [SerializeField] private bool difficultMath;
+    [SerializeField] bool impossibleMode;
+    [SerializeField] bool difficultMath;
     int problemsWrong;
-    [SerializeField] private AudioClip[] audioQueue = new AudioClip[20];
+    [SerializeField] AudioClip[] audioQueue = new AudioClip[20];
     AudioSource baldiAudio;
     int randompraise;
-    [SerializeField] private MathMusicScript mathMusicScript;
-    [SerializeField] private TMP_Text speedrunText;
+    [SerializeField] MathMusicScript mathMusicScript;
+    [SerializeField] TMP_Text speedrunMinutesText;
+    [SerializeField] TMP_Text speedrunSecondsText;
 }

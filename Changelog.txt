@@ -1,3 +1,25 @@
+### v0.6 ###
+IMPORTANT CHANGE!
+If you've played any version of Baldi's Extended Schoolhouse from 0.5 to 0.5.5, your existing save file will be in an outdated format. But don't worry; the first time you launch 0.6 (or any version after this), you will be prompted to upgrade your save file to make it compatible with the new system. Assuming I programmed this correctly, it's just a two step process: click the button to convert your file, and then you can type in your name.
+
+Gameplay Changes:
+- Dark Mode has been re-enabled
+- In the Dark Mode map, the Crystal Zesty Bar and Diet BSODA have been replaced by their regular, stronger variants
+
+Misc Changes:
+- The fade transition for the map loading screen is now faster
+- The on-screen stopwatch no longer displays the number of hours that a run takes
+- The displayed items on the win screen will now stack when you've used multiple of the same item in a row
+
+Bug Fixes:
+- The on-screen stopwatch no longer jumps around as the numbers change
+- Fixed an issue where Null was unable to smash through windows for longer than intended
+
+Internal Changes:
+- The game now saves data in a new directory (on Windows for example, it now saves in AppData/LocalLow/Kyokura instead of AppData/LocalLow/JuniDev
+- The save file now supports saving any amount of map data in any arbitrary order so long as they all have a unique Map ID
+
+
 ### v0.5.5 ###
 Gameplay Changes:
 - Dark Mode has been temporarily disabled while I address a major bug I found in playtesting. If you'd still like to play Dark Mode anyway and accept the presence of the bug, just enter this code into the ThinkPad: 10212022

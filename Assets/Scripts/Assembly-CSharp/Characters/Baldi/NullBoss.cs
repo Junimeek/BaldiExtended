@@ -68,7 +68,7 @@ public class NullBoss : MonoBehaviour
     {  
         this.hits++;
         this.playerScript.IncreaseFightSpeed(1);
-        this.challengeController.DeleteProjectiles();
+        this.darkModeController.DeleteProjectiles();
         this.sprite.sprite = this.grayscaleSprite;
 
         while (this.audioDevice.isPlaying)
@@ -97,8 +97,8 @@ public class NullBoss : MonoBehaviour
             yield return null;
         }
 
-        this.challengeController.InitializeProjectileArrays();
-        this.challengeController.CreateProjectile(4);
+        this.darkModeController.InitializeProjectileArrays();
+        this.darkModeController.CreateProjectile(4);
         this.allowMovement = true;
         this.playerScript.isInvincible = false;
         
@@ -118,7 +118,7 @@ public class NullBoss : MonoBehaviour
         if (this.hits == 10)
         {
             this.StartCoroutine(this.End());
-            this.challengeController.DeleteProjectiles();
+            this.darkModeController.DeleteProjectiles();
             yield break;
         }
 
@@ -194,9 +194,7 @@ public class NullBoss : MonoBehaviour
         this.allowMovement = false;
         this.healthBar.HideHealthBar();
 
-        ProgressionController progressionController = FindObjectOfType<ProgressionController>();
-        progressionController.mapUnlocks[0] = true;
-        progressionController.SaveProgressionData();
+        this.SavePlayerProgressionData();
 
         float remTime = 6.206f;
 
@@ -218,8 +216,18 @@ public class NullBoss : MonoBehaviour
             yield return null;
         }
         
-        this.challengeController.DeactivateBossFight();
+        this.darkModeController.DeactivateBossFight();
         Destroy(base.gameObject);
+    }
+
+    void SavePlayerProgressionData()
+    {
+        Yui yui = Tsuruno.DataLoader.LoadAllV3Data(1);
+        SD3ProgressionData newProgressionData = yui.progressionData;
+        newProgressionData.challengeUnlocks[0] = true;
+
+        Yui newYui = new Yui(yui.playerData, yui.storyDatas, yui.endlessDatas, yui.challengeDatas, newProgressionData);
+        Tsuruno.DataSaver.SaveAllV3Data(newYui);
     }
 
     void FixedUpdate()
@@ -243,7 +251,7 @@ public class NullBoss : MonoBehaviour
     [SerializeField] Transform player;
     [SerializeField] PlayerScript playerScript;
     [SerializeField] GameControllerScript gc;
-    [SerializeField] ChallengeController challengeController;
+    [SerializeField] CCDarkMode darkModeController;
     [SerializeField] BossHealthBar healthBar;
     [SerializeField] NavMeshAgent agent;
     [SerializeField] AudioSource audioDevice;

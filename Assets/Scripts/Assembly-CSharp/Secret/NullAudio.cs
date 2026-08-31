@@ -4,14 +4,14 @@ using UnityEngine.SceneManagement;
 
 public class NullAudio : MonoBehaviour
 {
-    private void Start()
+    void Start()
     {
         this.audioCollider = GetComponent<BoxCollider>();
         this.isPlaying = false;
     }
     
 
-    private void OnTriggerEnter(Collider other)
+    void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player") && !this.isPlaying)
 		{
@@ -26,13 +26,26 @@ public class NullAudio : MonoBehaviour
                 this.gc.gameOverDelay = this.gameOverDelay;
                 StartCoroutine(this.WaitForGlitch());
 
-                this.progressionController.mapUnlocks[0] = true;
-                this.progressionController.SaveProgressionData();
+                this.SavePlayerProgressionData();
             }
 		}
     }
 
-    private IEnumerator WaitForGlitch()
+    void SavePlayerProgressionData()
+    {
+        Yui yui = Tsuruno.DataLoader.LoadAllV3Data(1);
+        SD3ProgressionData newProgressionData = yui.progressionData;
+        newProgressionData.challengeUnlocks[0] = true;
+
+        Yui newYui = new Yui(yui.playerData, yui.storyDatas, yui.endlessDatas, yui.challengeDatas, newProgressionData);
+        Tsuruno.DataSaver.SaveAllV3Data(newYui);
+
+        SaveHead saveHead = FindObjectOfType<SaveHead>();
+        if (saveHead != null)
+            saveHead.ActivateSaveHead(1.4f);
+    }
+
+    IEnumerator WaitForGlitch()
     {
         this.nullAgent.allowMovement = false;
 
@@ -45,7 +58,7 @@ public class NullAudio : MonoBehaviour
         this.nullGlitchLoop.Play();
     }
 
-    private IEnumerator WaitForDab()
+    IEnumerator WaitForDab()
     {
         this.baldiLecture.Play();
 
@@ -67,17 +80,16 @@ public class NullAudio : MonoBehaviour
     }
 
     public PlayerScript player;
-    [SerializeField] private ProgressionController progressionController;
-    [SerializeField] private GameControllerScript gc;
-    [SerializeField] private float gameOverDelay;
-    [SerializeField] private NullAgent nullAgent;
-    [SerializeField] private Collider audioCollider;
-    [SerializeField] private bool isPlaying;
-    [SerializeField] private GameObject balIdle;
-    [SerializeField] private GameObject balDab;
+    [SerializeField] GameControllerScript gc;
+    [SerializeField] float gameOverDelay;
+    [SerializeField] NullAgent nullAgent;
+    [SerializeField] Collider audioCollider;
+    [SerializeField] bool isPlaying;
+    [SerializeField] GameObject balIdle;
+    [SerializeField] GameObject balDab;
     public AudioSource audioDevice;
-    [SerializeField] private AudioSource baldiLecture;
-    [SerializeField] private AudioSource baldiLmfao;
+    [SerializeField] AudioSource baldiLecture;
+    [SerializeField] AudioSource baldiLmfao;
     public AudioClip nullMonologue;
     public AudioSource nullGlitchLoop;
 }

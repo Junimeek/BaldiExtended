@@ -1,10 +1,10 @@
 using System.IO;
 using System.Collections;
 using UnityEngine;
-using UpgradeSystem;
-using OldSaveData;
-using TMPro;
 using UnityEngine.UI;
+using UpgradeSystem;
+using Tsuruno;
+using TMPro;
 
 public class Launcher : MonoBehaviour
 {
@@ -23,8 +23,6 @@ public class Launcher : MonoBehaviour
         this.errorCanvas.SetActive(false);
         this.presentFiles = new bool[4];
 
-        quiltedTerminal.BeginGameBoot();
-
         if (Application.platform == RuntimePlatform.WindowsEditor || Application.platform == RuntimePlatform.LinuxEditor)
             this.versionText.text = "EDITOR\n";
         else if (Application.platform == RuntimePlatform.WindowsPlayer)
@@ -37,8 +35,13 @@ public class Launcher : MonoBehaviour
         else
             this.versionText.text += "Beta v" + this.updateScript.stableBuild;
 
-        this.savePath = Application.persistentDataPath + "/BaldiData/";
+        this.savePath = Application.persistentDataPath + "/ExtendedData/";
         this.FileChecks();
+    }
+
+    public void BeginBoot()
+    {
+        quiltedTerminal.BeginGameBoot();
     }
 
     public void FinalBoot()
@@ -53,34 +56,26 @@ public class Launcher : MonoBehaviour
         if (!Directory.Exists(this.savePath))
         {
             Directory.CreateDirectory(this.savePath);
-            if (!Directory.Exists(Application.persistentDataPath + "/BaldiData_Backup"))
-                Directory.CreateDirectory(Application.persistentDataPath + "/BaldiData_Backup");
             this.upgradeFlag = "factory";
             return;
         }
 
-        if (File.Exists(savePath + "story.sav"))
-            presentFiles[0] = true;
-        if (File.Exists(savePath + "endless.sav"))
-            presentFiles[1] = true;
-        if (File.Exists(savePath + "challenge.sav"))
-            presentFiles[2] = true;
-        if (File.Exists(savePath + "progression.sav"))
-            presentFiles[3] = true;
+        if (!Directory.Exists(Application.persistentDataPath + "/ExtendedData_Backup"))
+            Directory.CreateDirectory(Application.persistentDataPath + "/ExtendedData_Backup");
         
-        int checkedFiles = 0;
-        
-        for (int i = 0; i < presentFiles.Length; i++)
+        if (!File.Exists(this.savePath + "EXT01.sav"))
         {
-            if (presentFiles[i])
-                checkedFiles++;
+            SD3PlayerData playerData = new SD3PlayerData
+            {
+                playerName = "Player",
+                fileVersion = 3,
+                gameVersion = new int[3] { 0, 6, 0 },
+                playerIcon = 1,
+                totalPlaySeconds = 0
+            };
+            Yui yui = new Yui(playerData);
+            DataSaver.SaveAllV3Data(yui);
         }
-
-        if (checkedFiles != 4)
-            this.upgradeFlag = "fileMissing";
-        
-        if (!Directory.Exists(Application.persistentDataPath + "/BaldiData_Backup"))
-            Directory.CreateDirectory(Application.persistentDataPath + "/BaldiData_Backup");
     }
 
     void Update()
@@ -124,10 +119,6 @@ public class Launcher : MonoBehaviour
             this.launcherCanvas.SetActive(true);
             this.bannerCanvas.SetActive(true);
             this.audioDevice.PlayOneShot(this.music);
-            
-            if (PlayerPrefs.HasKey("highbooks_Classic") || PlayerPrefs.HasKey("highbooks_ClassicExtended")
-            || PlayerPrefs.HasKey("highbooks_JuniperHills"))
-                UnityEngine.Debug.Log("Playerprefs highscore data found. Will be deleted upon save file creation.");
         }
     }
 
@@ -291,7 +282,6 @@ public class Launcher : MonoBehaviour
         
         try
         {
-            CreateMissingFiles();
             this.logoCanvas.SetActive(true);
             this.saveNoticeCanvas.SetActive(false);
             StartCoroutine(WaitForLogo());
@@ -326,7 +316,6 @@ public class Launcher : MonoBehaviour
         
         try
         {
-            CreateMissingFiles();
             this.upgradeCanvas_Start.SetActive(false);
             StartCoroutine(this.WaitForLogo());
         }
@@ -337,20 +326,9 @@ public class Launcher : MonoBehaviour
         }
     }
 
-    void CreateMissingFiles()
-    {
-        if (!presentFiles[0])
-            OldSaveDataLoader.SaveOldStoryData(null);
-        if (!presentFiles[1])
-            OldSaveDataLoader.SaveOldEndlessData(null);
-        if (!presentFiles[2])
-            OldSaveDataLoader.SaveOldChallengeData(null);
-        if (!presentFiles[3])
-            OldSaveDataLoader.SaveOldProgressionData(null);
-    }
-
     [SerializeField] bool enableJsonEncryption;
     [SerializeField] QuiltedTerminal quiltedTerminal;
+    [SerializeField] SDConverter saveConverter;
     [SerializeField] SaveDataContainer dataContainer;
     [SerializeField] private LoadingManager loadingManager;
     [SerializeField] private VersionCheck updateScript;

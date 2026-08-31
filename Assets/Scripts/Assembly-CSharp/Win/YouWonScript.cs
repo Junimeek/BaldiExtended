@@ -6,7 +6,7 @@ using TMPro;
 
 public class YouWonScript : MonoBehaviour
 {
-	private void Start()
+	void Start()
 	{
 		Cursor.lockState = CursorLockMode.None;
 		Cursor.visible = true;
@@ -25,52 +25,31 @@ public class YouWonScript : MonoBehaviour
 		StartCoroutine(this.BeginBaldiDance());
 	}
 
-	private void SetPlaceholderStatistics()
+	void SetPlaceholderStatistics()
 	{
-		this.lastTime = 99.39f;
+		this.lastTime = 690420;
 		this.items = new int[]
 		{
-			5, 4, 9, 1, 11, 1, 1
+			5,4,9,9,1,11,1,5,5,5,5,1,1,1,14,
+			2,2,2,2,2,2,2,2,2,2,2,7,0,0,0,4,0,4
 		};
 		this.detentions = 2;
 	}
 
-	private void SetStatistics()
+	void SetStatistics()
 	{
-		this.lastTime = this.stats.finalSeconds;
+		this.lastTime = stats.finalMS;
 
-		if (this.lastTime < this.stats.data_bestTime[this.GetMapID()])
-		{
-			this.stats.SaveAllData("time");
+		if (this.lastTime < stats.prevBestTime)
 			this.isNewBest = true;
-		}
-		else
-			this.stats.SaveAllData(null);
 
-		this.items = this.stats.itemsUsed;
-		this.detentions = this.stats.detentions;
+		this.items = stats.itemUsageOrder;
+		this.detentions = stats.detentions;
 
 		Destroy(this.stats.gameObject);
 	}
 
-	private int GetMapID()
-	{
-		switch(PlayerPrefs.GetString("CurrentMap"))
-		{
-			case "Classic":
-				return 0;
-			case "ClassicExtended":
-				return 1;
-			case "JuniperHills":
-				return 2;
-			case "ClassicDark":
-				return 0;
-			default:
-				return 0;
-		}
-	}
-
-	private IEnumerator BeginBaldiDance()
+	IEnumerator BeginBaldiDance()
 	{
 		this.cover.SetActive(true);
 		
@@ -130,7 +109,7 @@ public class YouWonScript : MonoBehaviour
 		this.EnableCanvas(false);
 	}
 
-	private void Update()
+	void Update()
 	{
 		if (!this.isDanceFinished)
 		{
@@ -149,7 +128,7 @@ public class YouWonScript : MonoBehaviour
 		}
 	}
 
-	private void ChangeAnimState()
+	void ChangeAnimState()
 	{
 		if (this.curState == 1)
 		{
@@ -212,7 +191,7 @@ public class YouWonScript : MonoBehaviour
 		}
 	}
 
-	private void GetStatistics()
+	void GetStatistics()
 	{
 		if (this.isFetched)
 			return;
@@ -226,22 +205,32 @@ public class YouWonScript : MonoBehaviour
 
 		this.detentionsText.text = this.detentions.ToString();
 
-		int loops = -1;
+		int lastItemID = 0;
+		int actualItemNumber = -1;
+		int itemsInARow = 1;
+		WinItemInstance currentItemInstance = null;
+
 		for (int i = 0; i < this.items.Length; i++)
 		{
-			GameObject gameObject = Instantiate(new GameObject(this.items[i].ToString()), new Vector2(0f, 0f), Quaternion.identity, this.itemParent);
-			Image image = gameObject.AddComponent<Image>();
-			image.rectTransform.localScale = new Vector2(0.5f, 0.5f);
-			image.raycastTarget = false;
-
-			if (i % 6 == 0)
-				loops++;
-
-			image.rectTransform.anchoredPosition = new Vector2((i * 50f) - (loops * 300f), loops * -50f);
-
-			image.sprite = this.itemSprites[this.items[i]];
+			if (lastItemID == this.items[i])
+			{
+				itemsInARow++;
+				continue;
+			}
+			if (this.items[i] == 0)
+				continue;
+			if (currentItemInstance != null)
+				currentItemInstance.SetItemCount(itemsInARow);
+			itemsInARow = 1;
+			currentItemInstance = Instantiate(this.winItemObject, Vector2.zero, Quaternion.identity, this.itemParent).GetComponent<WinItemInstance>();
+			currentItemInstance.SetItemImageSprite(this.itemSprites[this.items[i]]);
+			Image image = currentItemInstance.GetItemImage();
+			actualItemNumber++;
+			image.rectTransform.anchoredPosition = this.GetItemPosition(actualItemNumber);
+			lastItemID = this.items[i];
 		}
-		//this.itemParent.GetComponent<RectTransform>().anchoredPosition = new Vector2(-80, -10 + (loops * 25f));
+		if (currentItemInstance != null)
+			currentItemInstance.SetItemCount(itemsInARow);
 
 		switch (PlayerPrefs.GetString("CurrentMap"))
 		{
@@ -263,61 +252,68 @@ public class YouWonScript : MonoBehaviour
 		}
 	}
 
+	Vector2 GetItemPosition(int itemNumber)
+	{
+		int loops = Mathf.FloorToInt(itemNumber / 6f);
+		return new Vector2((itemNumber * 50f) - (loops * 300f), loops * -50f);
+	}
+
 	public void WinReturn()
 	{
 		SceneManager.LoadSceneAsync("MainMenu");
 	}
 
-	private string FinalTime()
+	string FinalTime()
 	{
-		float seconds = this.lastTime % 60f;
-		int minutes =  Mathf.FloorToInt(this.lastTime / 60f);
-		int hours = Mathf.FloorToInt(minutes / 60f);
-		minutes -= hours * 60;
-		
-		return hours + ":" + minutes.ToString("00") + ":" + seconds.ToString("00.000");
+		float timeInSeconds = this.lastTime / 1000f;
+        int minutes = Mathf.FloorToInt(timeInSeconds / 60f);
+        timeInSeconds -= minutes * 60f;
+
+        return minutes.ToString() + ":" + timeInSeconds.ToString("00.000");
 	}
 
-	[SerializeField] private StatisticsController stats;
-	[SerializeField] private TMP_Text timeText;
-	[SerializeField] private GameObject newBestText;
-	[SerializeField] private TMP_Text detentionsText;
-	[SerializeField] private bool isFetched;
-	[SerializeField] private Transform itemParent;
+	[SerializeField] StatisticsController stats;
+	[SerializeField] TMP_Text timeText;
+	[SerializeField] GameObject newBestText;
+	[SerializeField] TMP_Text detentionsText;
+	[SerializeField] bool isFetched;
+	[SerializeField] Transform itemParent;
 
 	[Header("Baldi Dance")]
-	[SerializeField] private MetronomeScript metronome;
-	[SerializeField] private Animator animator;
-	[SerializeField] private int curState;
-	[SerializeField] private Transform cameraObject;
-	[SerializeField] private GameObject canvasRenderer;
-	[SerializeField] private GameObject skipCanvas;
-	[SerializeField] private GameObject cover;
-	[SerializeField] private bool isDanceFinished;
-	[SerializeField] private GameObject balloons;
+	[SerializeField] MetronomeScript metronome;
+	[SerializeField] Animator animator;
+	[SerializeField] int curState;
+	[SerializeField] Transform cameraObject;
+	[SerializeField] GameObject canvasRenderer;
+	[SerializeField] GameObject skipCanvas;
+	[SerializeField] GameObject cover;
+	[SerializeField] bool isDanceFinished;
+	[SerializeField] GameObject balloons;
+
 	[Header("Audio")]
-	[SerializeField] private AudioSource musicDevice;
-	[SerializeField] private AudioSource baldiDevice;
-	[SerializeField] private AudioClip[] baldiClips;
+	[SerializeField] AudioSource musicDevice;
+	[SerializeField] AudioSource baldiDevice;
+	[SerializeField] AudioClip[] baldiClips;
 	[SerializeField] AudioClip[] praises;
-	[SerializeField] private AudioSource wowDevice;
-	[SerializeField] private int[] bpmTargets;
-	[SerializeField] private float animationTimer;
+	[SerializeField] AudioSource wowDevice;
+	[SerializeField] int[] bpmTargets;
+	[SerializeField] float animationTimer;
 
 	[Header("Statistics")]
-	[SerializeField] private bool isNewBest;
-	[SerializeField] private float lastTime;
-	[SerializeField] private int[] items;
-	[SerializeField] private int detentions;
+	[SerializeField] bool isNewBest;
+	[SerializeField] int lastTime;
+	[SerializeField] int[] items;
+	[SerializeField] int detentions;
 
 	[Header("Screens")]
-	[SerializeField] private GameObject mainCanvas;
-	[SerializeField] private GameObject statsCanvas;
+	[SerializeField] GameObject mainCanvas;
+	[SerializeField] GameObject statsCanvas;
 
 	[Header("Sprites")]
-	[SerializeField] private Sprite[] itemSprites;
-	[SerializeField] private Sprite[] mapSprites;
+	[SerializeField] Sprite[] itemSprites;
+	[SerializeField] Sprite[] mapSprites;
+	[SerializeField] GameObject winItemObject;
 
 	[Header("Icons")]
-	[SerializeField] private Image mapIcon;
+	[SerializeField] Image mapIcon;
 }

@@ -4,6 +4,11 @@ using TMPro;
 
 public class QuiltedTerminal : MonoBehaviour
 {
+    void Start()
+    {
+        this.terminalText.text = string.Empty;
+    }
+
     public void BeginGameBoot()
     {
         terminalText.text = string.Empty;

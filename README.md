@@ -15,15 +15,19 @@ Major changes made from Baldi's Basics Classic version 1.4.3:
 
 I'll upload this to sites such as GameBanana at some point, but not until version 1.0 releases (i.e, whenever I stop doing major code rewrites and the only new content will be in the form of new maps and items).
 
-## Downloading and using the Source Code
+## Cloning this repository
 **Note**: If you just want to play the game, the download link is [here](https://github.com/Junimeek/BaldiExtended/releases/tag/beta-0.5.5). Just scroll down and click on `BaldiExtended_Windows_0.5.5.zip` and it'll start downloading. Note that there is no official build for mobile or MacOS.
 
-The stuff that follows is just for the nerds such as myself:<br/>
+The stuff that follows is just for the nerds such as myself.
+
 Download and install [Unity Hub](https://unity.com/download), and create a Unity account or log into your Unity account if you already have one. Next, install [Unity Engine 2021.3.45f2](https://unity.com/releases/editor/whats-new/2021.3.45f2).
 
 - **IMPORTANT NOTICE:** If you haven't updated Unity since October 2025, you need to update to a new version as a security vulnerability was discovered. You can read more about it [here](https://discussions.unity.com/t/unity-platform-protection-take-immediate-action-to-protect-your-games-and-apps/1688031).
 
-After that, you can clone this repository wherever you want. Then go back to Unity Hub, click the arrow directly next to the "Add" button, and hit "Add project from disk". Select the folder that contains all the files you just downloaded, click "Add project", and now you can open it in the Unity editor.
+After that, you can clone this repository wherever you want. Then go back to Unity Hub, click the arrow directly next to the "Add" button, and hit "Add project from disk". Select the folder that contains all the files you just downloaded, click "Add project", and now you can open it in the Unity editor. From there, you can do whatever you want.
+
+## Editing this project in the Unity Editor
+There's a lot of idiosyncrasies in my code that probably needs some kind of explanation. I might make a wiki at some point that explains a lot of this since I now recognize that this mod provides a halfway decent foundation for people to build their own mods. But for the time being, just try to figure it out.
 
 # Credits
 - The original game and assets are by mystman12 (aka, [Basically, Games](https://basically-games.itch.io/))

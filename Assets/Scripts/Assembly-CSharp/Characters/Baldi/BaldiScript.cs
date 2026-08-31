@@ -40,7 +40,7 @@ public class BaldiScript : MonoBehaviour
 			this.ResetSpeechTimer();
 		}
 		
-		if (gc.modeType == "nullStyle")
+		if (gc.currentChallenge == GameControllerScript.CurrentChallenge.DarkMode)
 		{
 			this.isNullMode = true;
 			this.agent.SetDestination(this.player.position);
@@ -179,7 +179,10 @@ public class BaldiScript : MonoBehaviour
 		{
 			this.AddNewSound(this.player.position, 6);
 			if (this.isNullMode && !this.allowWindowBreaking)
-				StartCoroutine(challengeController.DisableAllWindowBlockers());
+			{
+				this.allowWindowBreaking = true;
+				StartCoroutine(darkModeController.DisableAllWindowBlockers());
+			}
 		}
 	}
 
@@ -207,7 +210,7 @@ public class BaldiScript : MonoBehaviour
 	void TargetPlayersssssssssss()
 	{
 		if (!this.allowWindowBreaking && this.isNullMode)
-			gc.StartCoroutine(challengeController.DisableAllWindowBlockers());
+			gc.StartCoroutine(darkModeController.DisableAllWindowBlockers());
 	}
 
 	void Move()
@@ -320,8 +323,11 @@ public class BaldiScript : MonoBehaviour
 
 		this.isAlarmClock = false;
 
-		if (!this.allowWindowBreaking && this.currentPriority > 1 && gc.gameMode == GameControllerScript.GameMode.Challenge)
-			gc.StartCoroutine(challengeController.DisableAllWindowBlockers());
+		if (!this.allowWindowBreaking && this.currentPriority < 2 && gc.currentChallenge == GameControllerScript.CurrentChallenge.DarkMode)
+		{
+			this.allowWindowBreaking = true;
+			StartCoroutine(darkModeController.DisableAllWindowBlockers());
+		}
 
 		if (priority >= this.currentPriority)
 		{
@@ -388,23 +394,6 @@ public class BaldiScript : MonoBehaviour
 		}
 	}
 
-	/*
-	IEnumerator FollowPlayer()
-	{
-		if (!this.allowWindowBreaking && this.isNullMode)
-			gc.StartCoroutine(this.challengeController.ToggleWindowBlockers());
-
-		while (this.db && !this.isDisabled)
-		{
-			this.currentPriority = 6;
-			this.ClearSoundList();
-			this.soundList[this.currentPriority - 1] = this.player.position;
-			this.agent.SetDestination(this.soundList[this.currentPriority - 1]);
-			yield return null;
-		}
-	}
-	*/
-
 	public void GoToParty()
 	{
 		if (this.alarmClock != null)
@@ -434,7 +423,7 @@ public class BaldiScript : MonoBehaviour
 	public bool isParty;
 
 	[Header("Null Modifications")]
-	[SerializeField] ChallengeController challengeController;
+	[SerializeField] CCDarkMode darkModeController;
 	[SerializeField] bool isNullMode;
 	public bool allowWindowBreaking;
 	[SerializeField] AudioClip[] randomSpeechList;

@@ -299,8 +299,8 @@ public class SettingsContainer : MonoBehaviour
 
     void LoadAllUnlocks()
     {
-        SaveData_Challenge challengeData = OldSaveData.OldSaveDataLoader.LoadOldChallengeData();
-        this.challengeMapUnlocks = challengeData.challengeUnlocks;
+        //SaveData_Challenge challengeData = OldSaveData.OldSaveDataLoader.LoadOldChallengeData();
+        //this.challengeMapUnlocks = challengeData.challengeUnlocks;
     }
 
     [SerializeField] private string dataPath;

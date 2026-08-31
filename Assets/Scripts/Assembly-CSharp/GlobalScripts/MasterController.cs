@@ -11,10 +11,13 @@ public class MasterController : MonoBehaviour
 
     void PushVariables()
     {
+        gc.stats = this.statisticsController;
         gc.notebookCountScript = this.notebookCountScript;
         gc.daFinalBookCount = this.finalNotebookCount;
         gc.totalSlotCount = this.inventorySlotCount;
         gc.gameMode = this.modeSetting;
+        gc.currentChallenge = this.GetCurrentChallenge();
+        gc.notebookActivityType = this.GetActivityType();
         gc.entranceList = this.exitList;
         gc.vendingMachines = this.vendingMachines;
         gc.attendanceOffice = this.attendanceOfficeLocation;
@@ -32,7 +35,8 @@ public class MasterController : MonoBehaviour
         gc.staminaPercentText = this.staminaPercentText;
         gc.itemSelect = this.itemSelectBG;
         gc.handIconScript = this.handIconScript;
-        gc.speedrunText = this.speedrunText;
+        gc.speedrunMinutesText = this.speedrunMinutesText;
+        gc.speedrunSecondsText = this.speedrunSecondsText;
         gc.dollarTextCenter = this.dollarTextCenter;
         gc.dollarTextTop = this.dollarTextTop;
         gc.exitCountGroup = this.exitCountDisplay;
@@ -59,11 +63,35 @@ public class MasterController : MonoBehaviour
     {
         return this.gameMode switch
         {
-            ForceMode.Story_Mode => GameControllerScript.GameMode.Story,
-            ForceMode.Endless_Mode => GameControllerScript.GameMode.Endless,
-            ForceMode.Challenge_Mode => GameControllerScript.GameMode.Challenge,
+            ForceMode.StoryMode => GameControllerScript.GameMode.Story,
+            ForceMode.EndlessMode => GameControllerScript.GameMode.Endless,
+            ForceMode.ChallengeMode => GameControllerScript.GameMode.Challenge,
             _ => this.GetGameModeFromRegistry(),
         };
+    }
+
+    GameControllerScript.CurrentChallenge GetCurrentChallenge()
+    {
+        switch(this.challengeType)
+        {
+            case ChallengeType.DarkMode:
+                return GameControllerScript.CurrentChallenge.DarkMode;
+            case ChallengeType.Vertigo:
+                return GameControllerScript.CurrentChallenge.Vertigo;
+            default:
+                return GameControllerScript.CurrentChallenge.None;
+        }
+    }
+
+    GameControllerScript.NotebookActivityType GetActivityType()
+    {
+        switch(this.activityType)
+        {
+            case ActivityType.Math:
+                return GameControllerScript.NotebookActivityType.Math;
+            default:
+                return GameControllerScript.NotebookActivityType.None;
+        }
     }
 
     GameControllerScript.GameMode GetGameModeFromRegistry()
@@ -84,9 +112,19 @@ public class MasterController : MonoBehaviour
     [SerializeField] VendingMachineScript[] vendingMachines;
     public enum ForceMode
     {
-        Dont_Force, Story_Mode, Endless_Mode, Challenge_Mode
-    };
+        DontForce, StoryMode, EndlessMode, ChallengeMode
+    }
     public ForceMode gameMode;
+    enum ChallengeType
+    {
+        None, DarkMode, Vertigo
+    }
+    [SerializeField] ChallengeType challengeType;
+    enum ActivityType
+    {
+        None, Math
+    }
+    [SerializeField] ActivityType activityType;
     GameControllerScript.GameMode modeSetting;
     [SerializeField] CraftersWarpPoints[] craftersWarpPoints;
     public Transform attendanceOfficeLocation;
@@ -102,7 +140,8 @@ public class MasterController : MonoBehaviour
     [SerializeField] GameObject sneakerIcon;
     [SerializeField] GameObject notebookObject;
     [SerializeField] TMP_Text staminaPercentText;
-    [SerializeField] TMP_Text speedrunText;
+    [SerializeField] TMP_Text speedrunMinutesText;
+    [SerializeField] TMP_Text speedrunSecondsText;
     [SerializeField] TMP_Text dollarTextCenter;
     [SerializeField] TMP_Text dollarTextTop;
     [SerializeField] RectTransform itemSelectBG;
@@ -126,6 +165,7 @@ public class MasterController : MonoBehaviour
 
     [Header("Scripts")]
     [SerializeField] GameControllerScript gc;
+    [SerializeField] StatisticsController statisticsController;
     [SerializeField] PlayerScript playerScript;
     [SerializeField] BaldiScript baldiScript;
     [SerializeField] PrincipalScript princeyScript;

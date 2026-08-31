@@ -4,7 +4,6 @@ public class CDMWindowScript : MonoBehaviour
 {
     void Start()
     {
-        this.challengeController = FindObjectOfType<ChallengeController>();
         this.isBroken = false;
         GameControllerScript gc = FindObjectOfType<GameControllerScript>();
         this.player = gc.player;
@@ -15,12 +14,6 @@ public class CDMWindowScript : MonoBehaviour
     {
         if (other.gameObject.name == "Baldi" && !this.isBroken)
             BreakWindow();
-        else if (other.gameObject.CompareTag("Player") && player.CheckPlayerWindowState() && !this.isBroken)
-        {
-            BreakWindow();
-            if (baldi.isActiveAndEnabled)
-                baldi.AddNewSound(agentObstacle.transform.position, 3);
-        }
     }
 
     public void BreakWindow()
@@ -37,12 +30,12 @@ public class CDMWindowScript : MonoBehaviour
         this.audioDevice.Play();
     }
 
-    public GameObject GetAgentObstacle()
+    public void ToggleAgentObstacle(bool isTurnOn)
     {
-        return this.agentObstacle;
+        if (this.agentObstacle != null)
+            this.agentObstacle.SetActive(isTurnOn);
     }
 
-    ChallengeController challengeController;
     [SerializeField] MeshCollider[] barriers;
     [SerializeField] MeshRenderer[] windows;
     [SerializeField] Material brokenMatierial;

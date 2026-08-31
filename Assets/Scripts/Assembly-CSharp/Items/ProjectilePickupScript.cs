@@ -5,7 +5,7 @@ public class ProjectilePickupScript : MonoBehaviour
     private void Start()
     {
         this.gc = FindObjectOfType<GameControllerScript>();
-        this.challengeController = FindObjectOfType<ChallengeController>();
+        this.darkModeController = FindObjectOfType<CCDarkMode>();
         this.playerScript = FindObjectOfType<PlayerScript>();
         this.nullBoss = FindObjectOfType<NullBoss>();
 
@@ -50,7 +50,7 @@ public class ProjectilePickupScript : MonoBehaviour
             this.playerScript.isProjectileGrabbed = false;
             this.lifetime = 3.1f;
             base.gameObject.name = "Projectile";
-            this.challengeController.createdProjectiles--;
+            this.darkModeController.createdProjectiles--;
             //this.gc.StartCoroutine(this.gc.WaitForProjectile());
         }
         
@@ -77,13 +77,13 @@ public class ProjectilePickupScript : MonoBehaviour
 
     private void OnDestroy()
     {
-        this.challengeController.CheckProjectileCount(this.nullBoss);
+        this.darkModeController.CheckProjectileCount(this.nullBoss);
     }
 
     NullBoss nullBoss;
     [SerializeField] private GameObject[] gameObjects;
     GameControllerScript gc;
-    ChallengeController challengeController;
+    CCDarkMode darkModeController;
     PlayerScript playerScript;
     bool isPickedUp;
     bool isThrown;

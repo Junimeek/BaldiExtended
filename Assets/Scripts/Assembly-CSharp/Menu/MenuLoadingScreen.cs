@@ -26,6 +26,9 @@ public class MenuLoadingScreen : MonoBehaviour
                 foreach (TMP_Text i in this.staticTexts)
                     i.color = Color.white;
                 break;
+            case "Mitakihara":
+                this.image.sprite = this.backgrounds[5];
+                break;
             default:
                 this.image.sprite = this.backgrounds[0];
                 break;
@@ -34,7 +37,7 @@ public class MenuLoadingScreen : MonoBehaviour
         this.mapText.text = MapName();
         this.settingsText.text = SelectedSettings();
 
-        this.StartCoroutine(this.LoadMap());
+        StartCoroutine(this.LoadMap());
     }
 
     private IEnumerator LoadMap()
@@ -65,6 +68,8 @@ public class MenuLoadingScreen : MonoBehaviour
                 return "Loading map: JUNIPER HILLS";
             case "ClassicDark":
                 return "Loading challenge: DARK MODE";
+            case "Mitakihara":
+                return "Loading map: MITAKIHARA";
             default:
                 return "Failed to load map. The game must be closed.";
         }
@@ -89,13 +94,13 @@ public class MenuLoadingScreen : MonoBehaviour
         }
     }
 
-    [SerializeField] private SettingsContainer container;
-    [SerializeField] private string map;
-    [SerializeField] private TMP_Text percentage;
-    [SerializeField] private Slider slider;
-    [SerializeField] private Image image;
-    [SerializeField] private Sprite[] backgrounds;
-    [SerializeField] private TMP_Text mapText;
-    [SerializeField] private TMP_Text settingsText;
-    [SerializeField] private TMP_Text[] staticTexts;
+    [SerializeField] SettingsContainer container;
+    [SerializeField] string map;
+    [SerializeField] TMP_Text percentage;
+    [SerializeField] Slider slider;
+    [SerializeField] Image image;
+    [SerializeField] Sprite[] backgrounds;
+    [SerializeField] TMP_Text mapText;
+    [SerializeField] TMP_Text settingsText;
+    [SerializeField] TMP_Text[] staticTexts;
 }
