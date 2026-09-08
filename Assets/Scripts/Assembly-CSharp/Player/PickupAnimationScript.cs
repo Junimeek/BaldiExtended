@@ -15,6 +15,10 @@ public class PickupAnimationScript : MonoBehaviour
 		this.zPosition = itemTransform.localPosition.z;
 
 		this.modifiedSpeed = 4f / speed;
+		this.modifiedSpeedDivBy2 = this.modifiedSpeed / 2f;
+
+		if (this.randomizeStart)
+			this.sinPosition = Random.Range(0f, modifiedSpeedDivBy2);
 	}
 
 	void Update()
@@ -23,8 +27,8 @@ public class PickupAnimationScript : MonoBehaviour
 		itemTransform.localPosition = new Vector3(xPosition, yPosition, zPosition);
 		sinPosition += Time.deltaTime;
 
-		if (sinPosition > modifiedSpeed / 2f)
-			sinPosition -= modifiedSpeed / 2f;
+		if (sinPosition > modifiedSpeedDivBy2)
+			sinPosition -= modifiedSpeedDivBy2;
 	}
 
 	Transform itemTransform;
@@ -33,7 +37,9 @@ public class PickupAnimationScript : MonoBehaviour
 	float yOffset;
 	float zPosition;
 	float sinPosition;
+	[SerializeField] bool randomizeStart;
 	[SerializeField] float speed;
 	float modifiedSpeed;
+	float modifiedSpeedDivBy2;
 	[SerializeField] float amplitude;
 }
