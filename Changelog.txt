@@ -10,6 +10,7 @@ Misc Changes:
 - The fade transition for the map loading screen is now faster
 - The on-screen stopwatch no longer displays the number of hours that a run takes
 - The displayed items on the win screen will now stack when you've used multiple of the same item in a row
+- The poster textures no longer have the school wall baked into the background
 
 Bug Fixes:
 - The on-screen stopwatch no longer jumps around as the numbers change

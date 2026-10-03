@@ -28,6 +28,8 @@ public class SecretSafeCheck : MonoBehaviour
         {
             this.signRenderers[i].sprite = this.signImages[i];
         }
+
+        this.officePosterRenderer.material = this.noPoster;
     }
 
     [SerializeField] GameObject nullChar;
@@ -36,4 +38,6 @@ public class SecretSafeCheck : MonoBehaviour
     [SerializeField] GameObject oink;
     [SerializeField] SpriteRenderer[] signRenderers;
     [SerializeField] Sprite[] signImages;
+    [SerializeField] MeshRenderer officePosterRenderer;
+    [SerializeField] Material noPoster;
 }
